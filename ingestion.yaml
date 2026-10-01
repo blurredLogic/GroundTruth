@@ -1,0 +1,821 @@
+# ============================================================
+# Groundtruth — Kubernetes Corpus Ingestion Configuration
+# Schema version: 0.1
+# ============================================================
+
+schema_version: "0.1"
+
+# ------------------------------------------------------------
+# 1. Corpus identity
+# ------------------------------------------------------------
+
+corpus:
+  name: "groundtruth-kubernetes"
+  version: "0.1.0"
+  language: "en"
+
+  # The manifest is the authoritative list of documents.
+  manifest:
+    path: "manifest/kubernetes_v0.1.yaml"
+    expected_document_count: 61
+
+  # Only these domains are permitted by the manifest.
+  allowed_domains:
+    - "cluster_architecture"
+    - "workloads"
+    - "services_networking"
+    - "storage"
+    - "configuration"
+    - "security_policies"
+    - "scheduling_resource_management"
+
+  source:
+    publisher: "Kubernetes"
+    source_type: "official_documentation"
+    allowed_hosts:
+      - "kubernetes.io"
+      - "www.kubernetes.io"
+
+
+# ------------------------------------------------------------
+# 2. Ingestion pipeline version
+# ------------------------------------------------------------
+
+pipeline:
+  ingestion_version: "0.1.0"
+
+  # Used to identify the exact implementation/configuration
+  # that produced the processed corpus.
+  record_pipeline_version: true
+
+  deterministic: true
+
+  stages:
+    - "manifest_validation"
+    - "fetch"
+    - "raw_storage"
+    - "html_extraction"
+    - "normalization"
+    - "section_extraction"
+    - "chunking"
+    - "metadata_generation"
+    - "validation"
+    - "output"
+
+
+# ------------------------------------------------------------
+# 3. Input/output locations
+# ------------------------------------------------------------
+
+paths:
+  raw_dir: "data/raw/documents"
+  processed_dir: "data/processed"
+  reports_dir: "reports"
+  logs_dir: "logs"
+
+  outputs:
+    documents: "data/processed/documents.jsonl"
+    sections: "data/processed/sections.jsonl"
+    chunks: "data/processed/chunks.jsonl"
+    sources: "data/processed/sources.jsonl"
+    provenance: "data/processed/provenance.jsonl"
+    report: "reports/ingestion_report.json"
+    log: "logs/ingestion.log"
+
+
+# ------------------------------------------------------------
+# 4. Manifest validation
+# ------------------------------------------------------------
+
+manifest_validation:
+
+  enabled: true
+
+  # Number of manifest entries must exactly match this value.
+  exact_count: true
+
+  required_fields:
+    - "id"
+    - "domain"
+    - "title"
+    - "url"
+    - "rationale"
+
+  id:
+    required: true
+    unique: true
+
+    # IDs should be stable and human-readable.
+    pattern: "^[a-z0-9]+(-[a-z0-9]+)*$"
+
+  title:
+    required: true
+    min_length: 1
+    max_length: 300
+
+  domain:
+    required: true
+    allowed_from: "corpus.allowed_domains"
+
+  url:
+    required: true
+    schemes:
+      - "https"
+
+    allowed_hosts_from: "corpus.source.allowed_hosts"
+
+    unique: true
+
+    # Query strings and fragments are not expected in the
+    # Kubernetes documentation manifest.
+    allow_query_string: false
+    allow_fragment: false
+
+  rationale:
+    required: true
+    min_length: 1
+
+  duplicate_policy: "error"
+
+  missing_field_policy: "error"
+
+  invalid_entry_policy: "error"
+
+
+# ------------------------------------------------------------
+# 5. HTTP fetching
+# ------------------------------------------------------------
+
+fetch:
+
+  enabled: true
+
+  method: "GET"
+
+  timeout_seconds: 30
+
+  connect_timeout_seconds: 10
+
+  read_timeout_seconds: 30
+
+  max_retries: 3
+
+  retry_backoff:
+    strategy: "exponential"
+    initial_seconds: 1
+    multiplier: 2
+    max_seconds: 10
+
+  retry_on:
+    http_status:
+      - 408
+      - 429
+      - 500
+      - 502
+      - 503
+      - 504
+
+    network_errors: true
+
+  fail_on:
+    http_status:
+      - 400
+      - 401
+      - 403
+      - 404
+
+  follow_redirects: true
+
+  max_redirects: 5
+
+  user_agent: "groundtruth-k8s-ingestor/0.1"
+
+  headers:
+    Accept: "text/html"
+
+  expected_content_types:
+    - "text/html"
+    - "text/html; charset=utf-8"
+
+  max_response_size_mb: 10
+
+  rate_limit:
+    enabled: true
+    requests_per_second: 1
+    min_delay_seconds: 1.0
+
+  robots:
+    respect: true
+
+  ssl:
+    verify: true
+
+  # Never silently replace the manifest URL with a redirected URL.
+  redirect_policy:
+    preserve_manifest_url: true
+    record_final_url: true
+    final_url_must_use_allowed_host: true
+
+
+# ------------------------------------------------------------
+# 6. Raw document storage
+# ------------------------------------------------------------
+
+raw_storage:
+
+  enabled: true
+
+  format: "html"
+
+  filename:
+    source: "document_id"
+    extension: ".html"
+
+  save_response_headers: true
+
+  save_fetch_metadata: true
+
+  calculate_hash: true
+
+  hash:
+    algorithm: "sha256"
+    prefix: true
+
+  overwrite_existing: false
+
+  existing_file_policy: "verify_hash"
+
+
+# ------------------------------------------------------------
+# 7. HTML extraction
+# ------------------------------------------------------------
+
+extraction:
+
+  enabled: true
+
+  parser: "html"
+
+  content_selector:
+    strategy: "main_content"
+
+    # Primary Kubernetes documentation content.
+    selectors:
+      - "main"
+      - "article"
+
+  fallback_selectors:
+    - "#content"
+    - ".td-content"
+
+  remove_elements:
+    - "script"
+    - "style"
+    - "nav"
+    - "footer"
+    - "header"
+    - "aside"
+    - "noscript"
+
+  remove_selectors:
+    - ".navbar"
+    - ".footer"
+    - ".cookie-banner"
+    - ".breadcrumbs"
+
+  preserve:
+    headings: true
+    paragraphs: true
+    lists: true
+    tables: true
+    code_blocks: true
+    links: true
+
+  require_content: true
+
+  minimum_extracted_characters: 500
+
+  minimum_extracted_words: 100
+
+
+# ------------------------------------------------------------
+# 8. Text normalization
+# ------------------------------------------------------------
+
+normalization:
+
+  enabled: true
+
+  encoding:
+    input: "utf-8"
+    output: "utf-8"
+    invalid_character_policy: "replace"
+
+  line_endings:
+    normalize_to: "LF"
+
+  whitespace:
+    collapse_spaces: true
+    collapse_tabs: true
+    trim_lines: true
+    trim_document: true
+    max_consecutive_blank_lines: 2
+
+  unicode:
+    normalization: "NFC"
+
+  headings:
+    preserve: true
+    preserve_hierarchy: true
+
+  links:
+    preserve_text: true
+    preserve_url: true
+
+  code:
+    preserve: true
+
+  tables:
+    preserve: true
+
+  # Do NOT rewrite or paraphrase source text.
+  semantic_rewriting: false
+
+  remove:
+    navigation_text: true
+    repeated_header_text: true
+    repeated_footer_text: true
+
+
+# ------------------------------------------------------------
+# 9. Section extraction
+# ------------------------------------------------------------
+
+sections:
+
+  enabled: true
+
+  heading_detection:
+    source: "html_headings"
+
+    accepted_levels:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+
+  hierarchy:
+    preserve: true
+
+  fields:
+    include_heading_path: true
+    include_heading_level: true
+    include_section_order: true
+    include_parent_section_id: true
+    include_character_offsets: true
+    include_content_hash: true
+
+  ids:
+    strategy: "hierarchical"
+    format: "{document_id}-sec-{section_order:03d}"
+
+  validation:
+    unique_ids: true
+    require_nonempty_title: true
+    require_nonempty_content: false
+
+
+# ------------------------------------------------------------
+# 10. Chunking
+# ------------------------------------------------------------
+
+chunking:
+
+  enabled: true
+
+  strategy: "recursive"
+
+  tokenizer:
+    name: "cl100k_base"
+
+  target_tokens: 512
+
+  overlap_tokens: 64
+
+  min_tokens: 50
+
+  max_tokens: 700
+
+  respect_sections: true
+
+  respect_headings: true
+
+  avoid_crossing_sections: true
+
+  preserve_code_blocks: true
+
+  preserve_tables: true
+
+  split_priority:
+    - "heading"
+    - "paragraph"
+    - "list"
+    - "sentence"
+    - "whitespace"
+    - "token"
+
+  ids:
+    strategy: "hierarchical"
+    format: "{section_id}-ch-{chunk_index:03d}"
+
+  content_hash:
+    algorithm: "sha256"
+    prefix: true
+
+  configuration_hash:
+    enabled: true
+    algorithm: "sha256"
+    prefix: true
+
+  validation:
+    require_nonempty_text: true
+    require_positive_token_count: true
+    unique_ids: true
+    max_tokens_enforced: true
+
+
+# ------------------------------------------------------------
+# 11. Deterministic IDs
+# ------------------------------------------------------------
+
+ids:
+
+  deterministic: true
+
+  hash_algorithm: "sha256"
+
+  document:
+    strategy: "manifest_id"
+
+  source:
+    strategy: "document_id"
+    format: "src-{document_id}"
+
+  section:
+    strategy: "document_id_and_order"
+    format: "{document_id}-sec-{section_order:03d}"
+
+  chunk:
+    strategy: "section_id_and_order"
+    format: "{section_id}-ch-{chunk_index:03d}"
+
+  provenance:
+    strategy: "chunk_id"
+    format: "prov-{chunk_id}"
+
+  # Never use UUID4/random IDs.
+  random_ids: false
+
+
+# ------------------------------------------------------------
+# 12. Content hashing
+# ------------------------------------------------------------
+
+hashing:
+
+  enabled: true
+
+  algorithm: "sha256"
+
+  prefix: true
+
+  document:
+    hash_normalized_content: true
+
+  section:
+    hash_normalized_content: true
+
+  chunk:
+    hash_chunk_text: true
+
+  raw:
+    hash_raw_response: true
+
+
+# ------------------------------------------------------------
+# 13. Provenance
+# ------------------------------------------------------------
+
+provenance:
+
+  enabled: true
+
+  required: true
+
+  include:
+    manifest_id: true
+    source_id: true
+    document_id: true
+    section_id: true
+    chunk_id: true
+
+    source_url: true
+    canonical_url: true
+    retrieved_url: true
+
+    retrieved_at: true
+
+    raw_content_hash: true
+    normalized_content_hash: true
+    chunk_content_hash: true
+
+    ingestion_version: true
+    normalization_version: true
+    chunking_version: true
+
+    chunking_config_hash: true
+
+  transformations:
+    record: true
+
+    steps:
+      - "http_fetch"
+      - "html_to_text"
+      - "remove_navigation"
+      - "heading_extraction"
+      - "unicode_normalization"
+      - "whitespace_normalization"
+      - "section_extraction"
+      - "recursive_chunking"
+
+
+# ------------------------------------------------------------
+# 14. Source records
+# ------------------------------------------------------------
+
+sources:
+
+  enabled: true
+
+  required: true
+
+  fields:
+    source_id: true
+    document_id: true
+
+    url: true
+    canonical_url: true
+    retrieved_url: true
+
+    publisher: true
+    source_type: true
+
+    retrieved_at: true
+
+    http_status: true
+    content_type: true
+    content_length: true
+
+    raw_content_hash: true
+
+    retrieval_method: true
+
+
+# ------------------------------------------------------------
+# 15. Document validation
+# ------------------------------------------------------------
+
+document_validation:
+
+  enabled: true
+
+  required_fields:
+    - "document_id"
+    - "title"
+    - "domain"
+    - "url"
+    - "canonical_url"
+    - "content_hash"
+    - "corpus_version"
+
+  constraints:
+
+    document_id_unique: true
+
+    url_unique: true
+
+    canonical_url_unique: true
+
+    title_nonempty: true
+
+    domain_valid: true
+
+    content_nonempty: true
+
+    section_count_min: 1
+
+    chunk_count_min: 1
+
+
+# ------------------------------------------------------------
+# 16. Referential integrity
+# ------------------------------------------------------------
+
+referential_integrity:
+
+  enabled: true
+
+  checks:
+
+    sections_to_documents: true
+
+    chunks_to_documents: true
+
+    chunks_to_sections: true
+
+    sources_to_documents: true
+
+    provenance_to_documents: true
+
+    provenance_to_sections: true
+
+    provenance_to_chunks: true
+
+    provenance_to_sources: true
+
+  orphan_policy: "error"
+
+  duplicate_policy: "error"
+
+
+# ------------------------------------------------------------
+# 17. Corpus-level validation
+# ------------------------------------------------------------
+
+corpus_validation:
+
+  enabled: true
+
+  expected_documents: 61
+
+  require_all_manifest_documents: true
+
+  require_no_extra_documents: true
+
+  require_no_duplicate_documents: true
+
+  require_no_duplicate_urls: true
+
+  require_all_documents_successful: true
+
+  domain_distribution:
+    validate: true
+    source: "manifest"
+
+  hashes:
+    require_document_hashes: true
+    require_section_hashes: true
+    require_chunk_hashes: true
+
+
+# ------------------------------------------------------------
+# 18. Failure policy
+# ------------------------------------------------------------
+
+failure_policy:
+
+  # Overall behaviour
+  mode: "fail_fast"
+
+  # A document failure prevents a valid corpus from being
+  # produced.
+  partial_corpus: false
+
+  manifest_validation:
+    invalid_manifest: "fatal"
+    duplicate_id: "fatal"
+    duplicate_url: "fatal"
+    invalid_domain: "fatal"
+    missing_required_field: "fatal"
+
+  fetch:
+    timeout: "retry_then_fatal"
+    connection_error: "retry_then_fatal"
+    rate_limit: "retry_then_fatal"
+    server_error: "retry_then_fatal"
+    client_error: "fatal"
+    invalid_content_type: "fatal"
+    empty_response: "fatal"
+
+  extraction:
+    missing_main_content: "fatal"
+    empty_extraction: "fatal"
+    insufficient_content: "fatal"
+
+  normalization:
+    encoding_error: "fatal"
+    normalization_error: "fatal"
+
+  sections:
+    malformed_heading_structure: "warning"
+    no_sections: "fatal"
+
+  chunking:
+    empty_chunk: "fatal"
+    invalid_token_count: "fatal"
+    oversized_chunk: "fatal"
+
+  validation:
+    duplicate_id: "fatal"
+    orphan_record: "fatal"
+    hash_mismatch: "fatal"
+    manifest_mismatch: "fatal"
+
+  warnings:
+    continue_pipeline: true
+    write_to_report: true
+
+
+# ------------------------------------------------------------
+# 19. Logging
+# ------------------------------------------------------------
+
+logging:
+
+  level: "INFO"
+
+  format: "json"
+
+  include:
+    timestamp: true
+    document_id: true
+    url: true
+    stage: true
+    event: true
+    duration_ms: true
+
+  log_retries: true
+  log_redirects: true
+  log_validation_warnings: true
+
+  redact:
+    headers:
+      - "Authorization"
+      - "Cookie"
+
+
+# ------------------------------------------------------------
+# 20. Reproducibility
+# ------------------------------------------------------------
+
+reproducibility:
+
+  enabled: true
+
+  record:
+    corpus_version: true
+    ingestion_version: true
+    normalization_version: true
+    chunking_version: true
+
+    manifest_hash: true
+    raw_content_hash: true
+    normalized_content_hash: true
+    chunking_config_hash: true
+
+  deterministic_ordering:
+    documents: true
+    sections: true
+    chunks: true
+
+  jsonl:
+    sort_records_by_id: true
+    ensure_ascii: false
+    newline: "\n"
+
+
+# ------------------------------------------------------------
+# 21. Build behaviour
+# ------------------------------------------------------------
+
+build:
+
+  clean_output_before_run: false
+
+  overwrite_processed_files: true
+
+  atomic_write: true
+
+  write_only_on_success: true
+
+  generate_report: true
+
+  exit_codes:
+    success: 0
+    validation_error: 1
+    fetch_error: 2
+    extraction_error: 3
+    processing_error: 4
+    integrity_error: 5
