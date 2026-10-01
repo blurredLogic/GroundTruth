@@ -1,0 +1,809 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Priority and Preemption",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "[Pods](https://kubernetes.io/docs/concepts/workloads/pods/) can have *priority*. Priority indicates the\nimportance of a Pod relative to other Pods. If a Pod cannot be scheduled, the\nscheduler tries to preempt (evict) lower priority Pods to make scheduling of the\npending Pod possible.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 4,
+      "text": "Warning:",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "text": "In a cluster where not all users are trusted, a malicious user could create Pods\nat the highest possible priorities, causing other Pods to be evicted/not get\nscheduled.\nAn administrator can use ResourceQuota to prevent users from creating pods at\nhigh priorities.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "See [limit Priority Class consumption by default](https://kubernetes.io/docs/concepts/policy/resource-quotas/#limit-priority-class-consumption-by-default)\nfor details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "How to use priority and preemption",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "To use priority and preemption:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "ordered": true,
+      "text": "1. Add one or more [PriorityClasses](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass).\n2. Create Pods with[`priorityClassName`](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority) set to one of the added PriorityClasses. Of course you do not need to create the Pods directly; normally you would add `priorityClassName` to the Pod template of a collection object like a Deployment.",
+      "type": "list"
+    },
+    {
+      "block_index": 8,
+      "text": "Keep reading for more information about these steps.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "PriorityClass",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "A PriorityClass is a non-namespaced object that defines a mapping from a\npriority class name to the integer value of the priority. The name is specified\nin the `name` field of the PriorityClass object's metadata. The value is\nspecified in the required `value` field. The higher the value, the higher the\npriority.\nThe name of a PriorityClass object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names),\nand it cannot be prefixed with `system-`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "A PriorityClass object can have any 32-bit integer value smaller than or equal\nto 1 billion. This means that the range of values for a PriorityClass object is\nfrom -2147483648 to 1000000000 inclusive. Larger numbers are reserved for\nbuilt-in PriorityClasses that represent critical system Pods. A cluster\nadmin should create one PriorityClass object for each such mapping that they want.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "PriorityClass also has two optional fields: `globalDefault` and `description`.\nThe `globalDefault` field indicates that the value of this PriorityClass should\nbe used for Pods without a `priorityClassName`. Only one PriorityClass with\n`globalDefault` set to true can exist in the system. If there is no\nPriorityClass with `globalDefault` set, the priority of Pods with no\n`priorityClassName` is zero.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "The `description` field is an arbitrary string. It is meant to tell users of the\ncluster when they should use this PriorityClass.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Notes about PodPriority and existing clusters",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "ordered": false,
+      "text": "- If you upgrade an existing cluster without this feature, the priority of your existing Pods is effectively zero.\n- Addition of a PriorityClass with `globalDefault` set to `true` does not change the priorities of existing Pods. The value of such a PriorityClass is used only for Pods created after the PriorityClass is added.\n- If you delete a PriorityClass, existing Pods that use the name of the deleted PriorityClass remain unchanged, but you cannot create more Pods that use the name of the deleted PriorityClass.",
+      "type": "list"
+    },
+    {
+      "block_index": 17,
+      "level": 3,
+      "text": "Example PriorityClass",
+      "type": "heading"
+    },
+    {
+      "block_index": 18,
+      "language": "yaml",
+      "text": "apiVersion: scheduling.k8s.io/v1\nkind: PriorityClass\nmetadata:\n  name: high-priority\nvalue: 1000000\nglobalDefault: false\ndescription: \"This priority class should be used for XYZ service pods only.\"",
+      "type": "code"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "Non-preempting PriorityClass",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "text": "Pods with `preemptionPolicy: Never` will be placed in the scheduling queue\nahead of lower-priority pods,\nbut they cannot preempt other pods.\nA non-preempting pod waiting to be scheduled will stay in the scheduling queue,\nuntil sufficient resources are free,\nand it can be scheduled.\nNon-preempting pods,\nlike other pods,\nare subject to scheduler back-off.\nThis means that if the scheduler tries these pods and they cannot be scheduled,\nthey will be retried with lower frequency,\nallowing other pods with lower priority to be scheduled before them.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "text": "Non-preempting pods may still be preempted by other,\nhigh-priority pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "text": "`preemptionPolicy` defaults to `PreemptLowerPriority`,\nwhich will allow pods of that PriorityClass to preempt lower-priority pods\n(as is existing default behavior).\nIf `preemptionPolicy` is set to `Never`,\npods in that PriorityClass will be non-preempting.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "An example use case is for data science workloads.\nA user may submit a job that they want to be prioritized above other workloads,\nbut do not wish to discard existing work by preempting running pods.\nThe high priority job with `preemptionPolicy: Never` will be scheduled\nahead of other queued pods,\nas soon as sufficient cluster resources \"naturally\" become free.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "Example Non-preempting PriorityClass",
+      "type": "heading"
+    },
+    {
+      "block_index": 25,
+      "language": "yaml",
+      "text": "apiVersion: scheduling.k8s.io/v1\nkind: PriorityClass\nmetadata:\n  name: high-priority-nonpreempting\nvalue: 1000000\npreemptionPolicy: Never\nglobalDefault: false\ndescription: \"This priority class will not cause other pods to be preempted.\"",
+      "type": "code"
+    },
+    {
+      "block_index": 26,
+      "level": 2,
+      "text": "Pod priority",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "After you have one or more PriorityClasses, you can create Pods that specify one\nof those PriorityClass names in their specifications. The priority admission\ncontroller uses the `priorityClassName` field and populates the integer value of\nthe priority. If the priority class is not found, the Pod is rejected.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "text": "The following YAML is an example of a Pod configuration that uses the\nPriorityClass created in the preceding example. The priority admission\ncontroller checks the specification and resolves the priority of the Pod to\n1000000.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: nginx\n  labels:\n    env: test\nspec:\n  containers:\n  - name: nginx\n    image: nginx\n    imagePullPolicy: IfNotPresent\n  priorityClassName: high-priority",
+      "type": "code"
+    },
+    {
+      "block_index": 30,
+      "level": 3,
+      "text": "Effect of Pod priority on scheduling order",
+      "type": "heading"
+    },
+    {
+      "block_index": 31,
+      "text": "When Pod priority is enabled, the scheduler orders pending Pods by\ntheir priority and a pending Pod is placed ahead of other pending Pods\nwith lower priority in the scheduling queue. As a result, the higher\npriority Pod may be scheduled sooner than Pods with lower priority if\nits scheduling requirements are met. If such Pod cannot be scheduled, the\nscheduler will continue and try to schedule other lower priority Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "level": 4,
+      "text": "PodGroups and scheduling order",
+      "type": "heading"
+    },
+    {
+      "block_index": 33,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [GenericWorkload](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GenericWorkload) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "When the `GenericWorkload` feature gate is enabled, PodGroups are interleaved\nwith the standalone Pods in the scheduling queue. PodGroup object has its own\n`priority` field which is used for ordering with respect to other Pods and\nPodGroups. The details on how to set the priority of a PodGroup are available on the\n[Pod Group Disruption and Priority](https://kubernetes.io/docs/concepts/workloads/workload-api/disruption-and-priority/)\npage.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "level": 4,
+      "text": "CompositePodGroups and scheduling order",
+      "type": "heading"
+    },
+    {
+      "block_index": 37,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [CompositePodGroup](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#CompositePodGroup) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "text": "When the `CompositePodGroup` feature gate is enabled, the scheduler treats the following objects as\nunits of scheduling that can be enqueued:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "ordered": false,
+      "text": "- Standalone Pods - Pods that are not part of any PodGroup,\n- Standalone PodGroups - PodGroups that do not specify ParentCompositePodGroup ,\n- Root CompositePodGroups - CompositePodGroups that do not specify ParentCompositePodGroup .",
+      "type": "list"
+    },
+    {
+      "block_index": 41,
+      "text": "These objects specify a `priority` field value of which is used to determine their position in the\nactive scheduling queue.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "level": 2,
+      "text": "Preemption",
+      "type": "heading"
+    },
+    {
+      "block_index": 43,
+      "text": "When Pods are created, they go to a queue and wait to be scheduled. The\nscheduler picks a Pod from the queue and tries to schedule it on a Node. If no\nNode is found that satisfies all the specified requirements of the Pod,\npreemption logic is triggered for the pending Pod. Let's call the pending Pod P.\nPreemption logic tries to find a Node where removal of one or more Pods with\nlower priority than P would enable P to be scheduled on that Node. If such a\nNode is found, one or more lower priority Pods get evicted from the Node. After\nthe Pods are gone, P can be scheduled on the Node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "level": 3,
+      "text": "PodGroup preemption",
+      "type": "heading"
+    },
+    {
+      "block_index": 45,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [GenericWorkload](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GenericWorkload) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 47,
+      "text": "When the `GenericWorkload` feature gate is enabled, PodGroups can participate\nin preemption as either the initiator or the victim. When a PodGroup triggers\npreemption, it follows the\n[workload-aware preemption](https://kubernetes.io/docs/concepts/scheduling-eviction/workload-aware-preemption/)\nlogic to preempt other Pods and PodGroups to make room for itself.\nWhen a Pod triggers preemption, a PodGroup can become a victim. In that case the\nPodGroup `priority` field is used for ordering with respect to other potential\nvictims and `disruptionMode` field is used to dictate the PodGroup disruption behavior.\nThe detailed description of those fields is available on the\n[Pod Group Disruption and Priority](https://kubernetes.io/docs/concepts/workloads/workload-api/disruption-and-priority/)\npage.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "level": 3,
+      "text": "User exposed information",
+      "type": "heading"
+    },
+    {
+      "block_index": 49,
+      "text": "When Pod P preempts one or more Pods on Node N, `nominatedNodeName` field of Pod\nP's status is set to the name of Node N. This field helps the scheduler track\nresources reserved for Pod P and also gives users information about preemptions\nin their clusters.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 50,
+      "text": "Please note that Pod P is not necessarily scheduled to the \"nominated Node\".\nThe scheduler always tries the \"nominated Node\" before iterating over any other nodes.\nAfter victim Pods are preempted, they get their graceful termination period. If\nanother node becomes available while scheduler is waiting for the victim Pods to\nterminate, scheduler may use the other node to schedule Pod P. As a result\n`nominatedNodeName` and `nodeName` of Pod spec are not always the same. Also, if\nthe scheduler preempts Pods on Node N, but then a higher priority Pod than Pod P\narrives, the scheduler may give Node N to the new higher priority Pod. In such a\ncase, scheduler clears `nominatedNodeName` of Pod P. By doing this, scheduler\nmakes Pod P eligible to preempt Pods on another Node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "level": 3,
+      "text": "Limitations of preemption",
+      "type": "heading"
+    },
+    {
+      "block_index": 52,
+      "level": 4,
+      "text": "Graceful termination of preemption victims",
+      "type": "heading"
+    },
+    {
+      "block_index": 53,
+      "text": "When Pods are preempted, the victims get their\n[graceful termination period](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination).\nThey have that much time to finish their work and exit. If they don't, they are\nkilled. This graceful termination period creates a time gap between the point\nthat the scheduler preempts Pods and the time when the pending Pod (P) can be\nscheduled on the Node (N). In the meantime, the scheduler keeps scheduling other\npending Pods. As victims exit or get terminated, the scheduler tries to schedule\nPods in the pending queue. Therefore, there is usually a time gap between the\npoint that scheduler preempts victims and the time that Pod P is scheduled. In\norder to minimize this gap, one can set graceful termination period of lower\npriority Pods to zero or a small number.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 54,
+      "level": 4,
+      "text": "PodDisruptionBudget is supported, but not guaranteed",
+      "type": "heading"
+    },
+    {
+      "block_index": 55,
+      "text": "A [PodDisruptionBudget](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) (PDB)\nallows application owners to limit the number of Pods of a replicated application\nthat are down simultaneously from voluntary disruptions. Kubernetes supports\nPDB when preempting Pods, but respecting PDB is best effort. The scheduler tries\nto find victims whose PDB are not violated by preemption, but if no such victims\nare found, preemption will still happen, and lower priority Pods will be removed\ndespite their PDBs being violated.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 56,
+      "level": 4,
+      "text": "Inter-Pod affinity on lower-priority Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 57,
+      "text": "A Node is considered for preemption only when the answer to this question is\nyes: \"If all the Pods with lower priority than the pending Pod are removed from\nthe Node, can the pending Pod be scheduled on the Node?\"",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 58,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 59,
+      "text": "If a pending Pod has inter-pod [affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity)\nto one or more of the lower-priority Pods on the Node, the inter-Pod affinity\nrule cannot be satisfied in the absence of those lower-priority Pods. In this case,\nthe scheduler does not preempt any Pods on the Node. Instead, it looks for another\nNode. The scheduler might find a suitable Node or it might not. There is no\nguarantee that the pending Pod can be scheduled.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 60,
+      "text": "Our recommended solution for this problem is to create inter-Pod affinity only\ntowards equal or higher priority Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 61,
+      "level": 4,
+      "text": "Cross node preemption",
+      "type": "heading"
+    },
+    {
+      "block_index": 62,
+      "text": "Suppose a Node N is being considered for preemption so that a pending Pod P can\nbe scheduled on N. P might become feasible on N only if a Pod on another Node is\npreempted. Here's an example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 63,
+      "ordered": false,
+      "text": "- Pod P is being considered for Node N.\n- Pod Q is running on another Node in the same Zone as Node N.\n- Pod P has Zone-wide anti-affinity with Pod Q ( topologyKey: topology.kubernetes.io/zone ).\n- There are no other cases of anti-affinity between Pod P and other Pods in the Zone.\n- In order to schedule Pod P on Node N, Pod Q can be preempted, but scheduler does not perform cross-node preemption. So, Pod P will be deemed unschedulable on Node N.",
+      "type": "list"
+    },
+    {
+      "block_index": 64,
+      "text": "If Pod Q were removed from its Node, the Pod anti-affinity violation would be\ngone, and Pod P could possibly be scheduled on Node N.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 65,
+      "text": "We may consider adding cross Node preemption in future versions if there is\nenough demand and if we find an algorithm with reasonable performance.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 66,
+      "level": 3,
+      "text": "Preemption for in-place Pod resize",
+      "type": "heading"
+    },
+    {
+      "block_index": 67,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [InPlacePodVerticalScalingSchedulerPreemption](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#InPlacePodVerticalScalingSchedulerPreemption) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 68,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 69,
+      "text": "When the `InPlacePodVerticalScalingSchedulerPreemption` feature gate is enabled,\npreemption also applies when a running Pod's in-place resize request is `Deferred`\n(meaning the requested resize is temporarily not possible, but might become\nfeasible later) due to insufficient node capacity.\nFor details on resize states, see\n[Pod resize status](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#pod-resize-status).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 70,
+      "text": "If a higher-priority Pod cannot be resized in-place because its node lacks\navailable CPU or memory, `kube-scheduler` attempts to preempt lower-priority Pods\non that node to free up the required capacity.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 71,
+      "text": "Preemption for in-place Pod resize differs from standard Pod placement\npreemption in several key ways:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 72,
+      "ordered": false,
+      "text": "- Node restriction : Preemption is strictly restricted to the Pod's currently assigned node. The scheduler does not evaluate other candidate nodes across the cluster.\n- Resource delta calculation : Required preemption capacity is calculated based on the resource delta (the difference between the desired resources and currently allocated resources), rather than the total Pod request.\n- Resource blocking : The requested resources of the resizing Pod are considered already consumed for scheduler resource accounting on that node, blocking other lower-priority Pods from using them until the resize is eventually performed or the deferred status is removed by the Kubelet.\n- Nominated node status : The nominatedNodeName field in the Pod's status is not set, because the Pod is already assigned to and running on its target node.\n- Kubelet actuation : The scheduler triggers preemption to free up node capacity, but does not re-bind the Pod. The Kubelet detects the newly freed capacity on the node and performs the actual in-place resize actuation.\n- Node-level preemption policy : Preemption can be disabled specifically for in-place resizes on specific nodes using the Node spec's spec.podPreemptionPolicy.disableResizePreemption field. Unlike standard preemption, which can only be disabled per-priority-class using preemptionPolicy: Never , this allows operators or autoscaling systems to disable preemption on individual nodes.",
+      "type": "list"
+    },
+    {
+      "block_index": 73,
+      "text": "For more details on in-place Pod resizing, see\n[Resize CPU and Memory Resources assigned to Containers](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 74,
+      "level": 4,
+      "text": "Disabling preemption for in-place Pod resize at the Node level",
+      "type": "heading"
+    },
+    {
+      "block_index": 75,
+      "text": "Cluster operators and controllers can disable scheduler-triggered preemption\ncaused by in-place Pod resize requests on specific nodes.\nThis is useful for resizable nodes or nodes with custom autoscaling solutions,\nprotecting existing workloads from disruption and allowing node-upsizing to\nhandle the resource deficit instead.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 76,
+      "text": "This is configured using the `spec.podPreemptionPolicy` field on the `Node` spec.\nIf the `disableResizePreemption` list is non-empty, resize-induced preemption\nis disabled on that node, and `kube-scheduler` will skip preemption attempts\nfor any deferred resizes running on that node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 77,
+      "text": "Here is an example Node configuration:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 78,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Node\nmetadata:\n  name: resizable-node\nspec:\n  podPreemptionPolicy:\n    disableResizePreemption:\n      - autoscaling.k8s.io/cluster-autoscaler\n      - autoscaling.k8s.io/vpa-updater",
+      "type": "code"
+    },
+    {
+      "block_index": 79,
+      "text": "Constraints and validation rules:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 80,
+      "ordered": false,
+      "text": "- Label format : Each entry in the disableResizePreemption list must follow the standard Kubernetes label key format (for example, a DNS subdomain prefix and a name separated by a / ).\n- Max items : The list can contain a maximum of 20 entries.\n- Non-empty list : The policy is honored (preemption is disabled) if the list contains at least one entry. If the list is empty or the podPreemptionPolicy field is omitted, preemption for in-place resize is enabled on the node.",
+      "type": "list"
+    },
+    {
+      "block_index": 81,
+      "level": 2,
+      "text": "Troubleshooting",
+      "type": "heading"
+    },
+    {
+      "block_index": 82,
+      "text": "Pod priority and preemption can have unwanted side effects. Here are some\nexamples of potential problems and ways to deal with them.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 83,
+      "level": 3,
+      "text": "Pods are preempted unnecessarily",
+      "type": "heading"
+    },
+    {
+      "block_index": 84,
+      "text": "Preemption removes existing Pods from a cluster under resource pressure to make\nroom for higher priority pending Pods. If you give high priorities to\ncertain Pods by mistake, these unintentionally high priority Pods may cause\npreemption in your cluster. Pod priority is specified by setting the\n`priorityClassName` field in the Pod's specification. The integer value for\npriority is then resolved and populated to the `priority` field of `podSpec`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 85,
+      "text": "To address the problem, you can change the `priorityClassName` for those Pods\nto use lower priority classes, or leave that field empty. An empty\n`priorityClassName` is resolved to zero by default.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 86,
+      "text": "When a Pod is preempted, there will be events recorded for the preempted Pod.\nPreemption should happen only when a cluster does not have enough resources for\na Pod. In such cases, preemption happens only when the priority of the pending\nPod (preemptor) is higher than the victim Pods. Preemption must not happen when\nthere is no pending Pod, or when the pending Pods have equal or lower priority\nthan the victims. If preemption happens in such scenarios, please file an issue.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 87,
+      "level": 3,
+      "text": "Pods are preempted, but the preemptor is not scheduled",
+      "type": "heading"
+    },
+    {
+      "block_index": 88,
+      "text": "When pods are preempted, they receive their requested graceful termination\nperiod, which is by default 30 seconds. If the victim Pods do not terminate within\nthis period, they are forcibly terminated. Once all the victims go away, the\npreemptor Pod can be scheduled.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 89,
+      "text": "While the preemptor Pod is waiting for the victims to go away, a higher priority\nPod may be created that fits on the same Node. In this case, the scheduler will\nschedule the higher priority Pod instead of the preemptor.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 90,
+      "text": "This is expected behavior: the Pod with the higher priority should take the place\nof a Pod with a lower priority.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 91,
+      "level": 3,
+      "text": "Higher priority Pods are preempted before lower priority pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 92,
+      "text": "The scheduler tries to find nodes that can run a pending Pod. If no node is\nfound, the scheduler tries to remove Pods with lower priority from an arbitrary\nnode in order to make room for the pending pod.\nIf a node with low priority Pods is not feasible to run the pending Pod, the scheduler\nmay choose another node with higher priority Pods (compared to the Pods on the\nother node) for preemption. The victims must still have lower priority than the\npreemptor Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 93,
+      "text": "When there are multiple nodes available for preemption, the scheduler tries to\nchoose the node with a set of Pods with lowest priority. However, if such Pods\nhave PodDisruptionBudget that would be violated if they are preempted then the\nscheduler may choose another node with higher priority Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 94,
+      "text": "When multiple nodes exist for preemption and none of the above scenarios apply,\nthe scheduler chooses a node with the lowest priority.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 95,
+      "level": 2,
+      "text": "Interactions between Pod priority and quality of service",
+      "type": "heading"
+    },
+    {
+      "block_index": 96,
+      "text": "Pod priority and [QoS class](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/)\nare two orthogonal features with few interactions and no default restrictions on\nsetting the priority of a Pod based on its QoS classes. The scheduler's\npreemption logic does not consider QoS when choosing preemption targets.\nPreemption considers Pod priority and attempts to choose a set of targets with\nthe lowest priority. Higher-priority Pods are considered for preemption only if\nthe removal of the lowest priority Pods is not sufficient to allow the scheduler\nto schedule the preemptor Pod, or if the lowest priority Pods are protected by\n`PodDisruptionBudget`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 97,
+      "text": "The kubelet uses Priority to determine pod order for [node-pressure eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/).\nYou can use the QoS class to estimate the order in which pods are most likely\nto get evicted. The kubelet ranks pods for eviction based on the following factors:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 98,
+      "ordered": true,
+      "text": "1. Whether the starved resource usage exceeds requests\n2. Pod Priority\n3. Amount of resource usage relative to requests",
+      "type": "list"
+    },
+    {
+      "block_index": 99,
+      "text": "See [Pod selection for kubelet eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#pod-selection-for-kubelet-eviction)\nfor more details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 100,
+      "text": "kubelet node-pressure eviction does not evict Pods when their\nusage does not exceed their requests. If a Pod with lower priority is not\nexceeding its requests, it won't be evicted. Another Pod with higher priority\nthat exceeds its requests may be evicted.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 101,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 102,
+      "ordered": false,
+      "text": "- Read about using ResourceQuotas in connection with PriorityClasses: limit Priority Class consumption by default\n- Learn about Pod Disruption\n- Learn about API-initiated Eviction\n- Learn about Node-pressure Eviction",
+      "type": "list"
+    }
+  ],
+  "content": "# Pod Priority and Preemption\n\n[Pods](https://kubernetes.io/docs/concepts/workloads/pods/) can have *priority*. Priority indicates the\nimportance of a Pod relative to other Pods. If a Pod cannot be scheduled, the\nscheduler tries to preempt (evict) lower priority Pods to make scheduling of the\npending Pod possible.\n\n#### Warning:\n\nIn a cluster where not all users are trusted, a malicious user could create Pods\nat the highest possible priorities, causing other Pods to be evicted/not get\nscheduled.\nAn administrator can use ResourceQuota to prevent users from creating pods at\nhigh priorities.\n\nSee [limit Priority Class consumption by default](https://kubernetes.io/docs/concepts/policy/resource-quotas/#limit-priority-class-consumption-by-default)\nfor details.\n\n## How to use priority and preemption\n\nTo use priority and preemption:\n\n1. Add one or more [PriorityClasses](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass).\n2. Create Pods with[`priorityClassName`](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority) set to one of the added PriorityClasses. Of course you do not need to create the Pods directly; normally you would add `priorityClassName` to the Pod template of a collection object like a Deployment.\n\nKeep reading for more information about these steps.\n\n## PriorityClass\n\nA PriorityClass is a non-namespaced object that defines a mapping from a\npriority class name to the integer value of the priority. The name is specified\nin the `name` field of the PriorityClass object's metadata. The value is\nspecified in the required `value` field. The higher the value, the higher the\npriority.\nThe name of a PriorityClass object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names),\nand it cannot be prefixed with `system-`.\n\nA PriorityClass object can have any 32-bit integer value smaller than or equal\nto 1 billion. This means that the range of values for a PriorityClass object is\nfrom -2147483648 to 1000000000 inclusive. Larger numbers are reserved for\nbuilt-in PriorityClasses that represent critical system Pods. A cluster\nadmin should create one PriorityClass object for each such mapping that they want.\n\n#### Note:\n\nPriorityClass also has two optional fields: `globalDefault` and `description`.\nThe `globalDefault` field indicates that the value of this PriorityClass should\nbe used for Pods without a `priorityClassName`. Only one PriorityClass with\n`globalDefault` set to true can exist in the system. If there is no\nPriorityClass with `globalDefault` set, the priority of Pods with no\n`priorityClassName` is zero.\n\nThe `description` field is an arbitrary string. It is meant to tell users of the\ncluster when they should use this PriorityClass.\n\n### Notes about PodPriority and existing clusters\n\n- If you upgrade an existing cluster without this feature, the priority of your existing Pods is effectively zero.\n- Addition of a PriorityClass with `globalDefault` set to `true` does not change the priorities of existing Pods. The value of such a PriorityClass is used only for Pods created after the PriorityClass is added.\n- If you delete a PriorityClass, existing Pods that use the name of the deleted PriorityClass remain unchanged, but you cannot create more Pods that use the name of the deleted PriorityClass.\n\n### Example PriorityClass\n\n```yaml\napiVersion: scheduling.k8s.io/v1\nkind: PriorityClass\nmetadata:\n  name: high-priority\nvalue: 1000000\nglobalDefault: false\ndescription: \"This priority class should be used for XYZ service pods only.\"\n```\n\n## Non-preempting PriorityClass\n\nPods with `preemptionPolicy: Never` will be placed in the scheduling queue\nahead of lower-priority pods,\nbut they cannot preempt other pods.\nA non-preempting pod waiting to be scheduled will stay in the scheduling queue,\nuntil sufficient resources are free,\nand it can be scheduled.\nNon-preempting pods,\nlike other pods,\nare subject to scheduler back-off.\nThis means that if the scheduler tries these pods and they cannot be scheduled,\nthey will be retried with lower frequency,\nallowing other pods with lower priority to be scheduled before them.\n\nNon-preempting pods may still be preempted by other,\nhigh-priority pods.\n\n`preemptionPolicy` defaults to `PreemptLowerPriority`,\nwhich will allow pods of that PriorityClass to preempt lower-priority pods\n(as is existing default behavior).\nIf `preemptionPolicy` is set to `Never`,\npods in that PriorityClass will be non-preempting.\n\nAn example use case is for data science workloads.\nA user may submit a job that they want to be prioritized above other workloads,\nbut do not wish to discard existing work by preempting running pods.\nThe high priority job with `preemptionPolicy: Never` will be scheduled\nahead of other queued pods,\nas soon as sufficient cluster resources \"naturally\" become free.\n\n### Example Non-preempting PriorityClass\n\n```yaml\napiVersion: scheduling.k8s.io/v1\nkind: PriorityClass\nmetadata:\n  name: high-priority-nonpreempting\nvalue: 1000000\npreemptionPolicy: Never\nglobalDefault: false\ndescription: \"This priority class will not cause other pods to be preempted.\"\n```\n\n## Pod priority\n\nAfter you have one or more PriorityClasses, you can create Pods that specify one\nof those PriorityClass names in their specifications. The priority admission\ncontroller uses the `priorityClassName` field and populates the integer value of\nthe priority. If the priority class is not found, the Pod is rejected.\n\nThe following YAML is an example of a Pod configuration that uses the\nPriorityClass created in the preceding example. The priority admission\ncontroller checks the specification and resolves the priority of the Pod to\n1000000.\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: nginx\n  labels:\n    env: test\nspec:\n  containers:\n  - name: nginx\n    image: nginx\n    imagePullPolicy: IfNotPresent\n  priorityClassName: high-priority\n```\n\n### Effect of Pod priority on scheduling order\n\nWhen Pod priority is enabled, the scheduler orders pending Pods by\ntheir priority and a pending Pod is placed ahead of other pending Pods\nwith lower priority in the scheduling queue. As a result, the higher\npriority Pod may be scheduled sooner than Pods with lower priority if\nits scheduling requirements are met. If such Pod cannot be scheduled, the\nscheduler will continue and try to schedule other lower priority Pods.\n\n#### PodGroups and scheduling order\n\nTo use this feature, you (or a cluster administrator) will need to enable the [GenericWorkload](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GenericWorkload) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nWhen the `GenericWorkload` feature gate is enabled, PodGroups are interleaved\nwith the standalone Pods in the scheduling queue. PodGroup object has its own\n`priority` field which is used for ordering with respect to other Pods and\nPodGroups. The details on how to set the priority of a PodGroup are available on the\n[Pod Group Disruption and Priority](https://kubernetes.io/docs/concepts/workloads/workload-api/disruption-and-priority/)\npage.\n\n#### CompositePodGroups and scheduling order\n\nTo use this feature, you (or a cluster administrator) will need to enable the [CompositePodGroup](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#CompositePodGroup) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nWhen the `CompositePodGroup` feature gate is enabled, the scheduler treats the following objects as\nunits of scheduling that can be enqueued:\n\n- Standalone Pods - Pods that are not part of any PodGroup,\n- Standalone PodGroups - PodGroups that do not specify ParentCompositePodGroup ,\n- Root CompositePodGroups - CompositePodGroups that do not specify ParentCompositePodGroup .\n\nThese objects specify a `priority` field value of which is used to determine their position in the\nactive scheduling queue.\n\n## Preemption\n\nWhen Pods are created, they go to a queue and wait to be scheduled. The\nscheduler picks a Pod from the queue and tries to schedule it on a Node. If no\nNode is found that satisfies all the specified requirements of the Pod,\npreemption logic is triggered for the pending Pod. Let's call the pending Pod P.\nPreemption logic tries to find a Node where removal of one or more Pods with\nlower priority than P would enable P to be scheduled on that Node. If such a\nNode is found, one or more lower priority Pods get evicted from the Node. After\nthe Pods are gone, P can be scheduled on the Node.\n\n### PodGroup preemption\n\nTo use this feature, you (or a cluster administrator) will need to enable the [GenericWorkload](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GenericWorkload) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nWhen the `GenericWorkload` feature gate is enabled, PodGroups can participate\nin preemption as either the initiator or the victim. When a PodGroup triggers\npreemption, it follows the\n[workload-aware preemption](https://kubernetes.io/docs/concepts/scheduling-eviction/workload-aware-preemption/)\nlogic to preempt other Pods and PodGroups to make room for itself.\nWhen a Pod triggers preemption, a PodGroup can become a victim. In that case the\nPodGroup `priority` field is used for ordering with respect to other potential\nvictims and `disruptionMode` field is used to dictate the PodGroup disruption behavior.\nThe detailed description of those fields is available on the\n[Pod Group Disruption and Priority](https://kubernetes.io/docs/concepts/workloads/workload-api/disruption-and-priority/)\npage.\n\n### User exposed information\n\nWhen Pod P preempts one or more Pods on Node N, `nominatedNodeName` field of Pod\nP's status is set to the name of Node N. This field helps the scheduler track\nresources reserved for Pod P and also gives users information about preemptions\nin their clusters.\n\nPlease note that Pod P is not necessarily scheduled to the \"nominated Node\".\nThe scheduler always tries the \"nominated Node\" before iterating over any other nodes.\nAfter victim Pods are preempted, they get their graceful termination period. If\nanother node becomes available while scheduler is waiting for the victim Pods to\nterminate, scheduler may use the other node to schedule Pod P. As a result\n`nominatedNodeName` and `nodeName` of Pod spec are not always the same. Also, if\nthe scheduler preempts Pods on Node N, but then a higher priority Pod than Pod P\narrives, the scheduler may give Node N to the new higher priority Pod. In such a\ncase, scheduler clears `nominatedNodeName` of Pod P. By doing this, scheduler\nmakes Pod P eligible to preempt Pods on another Node.\n\n### Limitations of preemption\n\n#### Graceful termination of preemption victims\n\nWhen Pods are preempted, the victims get their\n[graceful termination period](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination).\nThey have that much time to finish their work and exit. If they don't, they are\nkilled. This graceful termination period creates a time gap between the point\nthat the scheduler preempts Pods and the time when the pending Pod (P) can be\nscheduled on the Node (N). In the meantime, the scheduler keeps scheduling other\npending Pods. As victims exit or get terminated, the scheduler tries to schedule\nPods in the pending queue. Therefore, there is usually a time gap between the\npoint that scheduler preempts victims and the time that Pod P is scheduled. In\norder to minimize this gap, one can set graceful termination period of lower\npriority Pods to zero or a small number.\n\n#### PodDisruptionBudget is supported, but not guaranteed\n\nA [PodDisruptionBudget](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) (PDB)\nallows application owners to limit the number of Pods of a replicated application\nthat are down simultaneously from voluntary disruptions. Kubernetes supports\nPDB when preempting Pods, but respecting PDB is best effort. The scheduler tries\nto find victims whose PDB are not violated by preemption, but if no such victims\nare found, preemption will still happen, and lower priority Pods will be removed\ndespite their PDBs being violated.\n\n#### Inter-Pod affinity on lower-priority Pods\n\nA Node is considered for preemption only when the answer to this question is\nyes: \"If all the Pods with lower priority than the pending Pod are removed from\nthe Node, can the pending Pod be scheduled on the Node?\"\n\n#### Note:\n\nIf a pending Pod has inter-pod [affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity)\nto one or more of the lower-priority Pods on the Node, the inter-Pod affinity\nrule cannot be satisfied in the absence of those lower-priority Pods. In this case,\nthe scheduler does not preempt any Pods on the Node. Instead, it looks for another\nNode. The scheduler might find a suitable Node or it might not. There is no\nguarantee that the pending Pod can be scheduled.\n\nOur recommended solution for this problem is to create inter-Pod affinity only\ntowards equal or higher priority Pods.\n\n#### Cross node preemption\n\nSuppose a Node N is being considered for preemption so that a pending Pod P can\nbe scheduled on N. P might become feasible on N only if a Pod on another Node is\npreempted. Here's an example:\n\n- Pod P is being considered for Node N.\n- Pod Q is running on another Node in the same Zone as Node N.\n- Pod P has Zone-wide anti-affinity with Pod Q ( topologyKey: topology.kubernetes.io/zone ).\n- There are no other cases of anti-affinity between Pod P and other Pods in the Zone.\n- In order to schedule Pod P on Node N, Pod Q can be preempted, but scheduler does not perform cross-node preemption. So, Pod P will be deemed unschedulable on Node N.\n\nIf Pod Q were removed from its Node, the Pod anti-affinity violation would be\ngone, and Pod P could possibly be scheduled on Node N.\n\nWe may consider adding cross Node preemption in future versions if there is\nenough demand and if we find an algorithm with reasonable performance.\n\n### Preemption for in-place Pod resize\n\nTo use this feature, you (or a cluster administrator) will need to enable the [InPlacePodVerticalScalingSchedulerPreemption](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#InPlacePodVerticalScalingSchedulerPreemption) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nWhen the `InPlacePodVerticalScalingSchedulerPreemption` feature gate is enabled,\npreemption also applies when a running Pod's in-place resize request is `Deferred`\n(meaning the requested resize is temporarily not possible, but might become\nfeasible later) due to insufficient node capacity.\nFor details on resize states, see\n[Pod resize status](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#pod-resize-status).\n\nIf a higher-priority Pod cannot be resized in-place because its node lacks\navailable CPU or memory, `kube-scheduler` attempts to preempt lower-priority Pods\non that node to free up the required capacity.\n\nPreemption for in-place Pod resize differs from standard Pod placement\npreemption in several key ways:\n\n- Node restriction : Preemption is strictly restricted to the Pod's currently assigned node. The scheduler does not evaluate other candidate nodes across the cluster.\n- Resource delta calculation : Required preemption capacity is calculated based on the resource delta (the difference between the desired resources and currently allocated resources), rather than the total Pod request.\n- Resource blocking : The requested resources of the resizing Pod are considered already consumed for scheduler resource accounting on that node, blocking other lower-priority Pods from using them until the resize is eventually performed or the deferred status is removed by the Kubelet.\n- Nominated node status : The nominatedNodeName field in the Pod's status is not set, because the Pod is already assigned to and running on its target node.\n- Kubelet actuation : The scheduler triggers preemption to free up node capacity, but does not re-bind the Pod. The Kubelet detects the newly freed capacity on the node and performs the actual in-place resize actuation.\n- Node-level preemption policy : Preemption can be disabled specifically for in-place resizes on specific nodes using the Node spec's spec.podPreemptionPolicy.disableResizePreemption field. Unlike standard preemption, which can only be disabled per-priority-class using preemptionPolicy: Never , this allows operators or autoscaling systems to disable preemption on individual nodes.\n\nFor more details on in-place Pod resizing, see\n[Resize CPU and Memory Resources assigned to Containers](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/).\n\n#### Disabling preemption for in-place Pod resize at the Node level\n\nCluster operators and controllers can disable scheduler-triggered preemption\ncaused by in-place Pod resize requests on specific nodes.\nThis is useful for resizable nodes or nodes with custom autoscaling solutions,\nprotecting existing workloads from disruption and allowing node-upsizing to\nhandle the resource deficit instead.\n\nThis is configured using the `spec.podPreemptionPolicy` field on the `Node` spec.\nIf the `disableResizePreemption` list is non-empty, resize-induced preemption\nis disabled on that node, and `kube-scheduler` will skip preemption attempts\nfor any deferred resizes running on that node.\n\nHere is an example Node configuration:\n\n```yaml\napiVersion: v1\nkind: Node\nmetadata:\n  name: resizable-node\nspec:\n  podPreemptionPolicy:\n    disableResizePreemption:\n      - autoscaling.k8s.io/cluster-autoscaler\n      - autoscaling.k8s.io/vpa-updater\n```\n\nConstraints and validation rules:\n\n- Label format : Each entry in the disableResizePreemption list must follow the standard Kubernetes label key format (for example, a DNS subdomain prefix and a name separated by a / ).\n- Max items : The list can contain a maximum of 20 entries.\n- Non-empty list : The policy is honored (preemption is disabled) if the list contains at least one entry. If the list is empty or the podPreemptionPolicy field is omitted, preemption for in-place resize is enabled on the node.\n\n## Troubleshooting\n\nPod priority and preemption can have unwanted side effects. Here are some\nexamples of potential problems and ways to deal with them.\n\n### Pods are preempted unnecessarily\n\nPreemption removes existing Pods from a cluster under resource pressure to make\nroom for higher priority pending Pods. If you give high priorities to\ncertain Pods by mistake, these unintentionally high priority Pods may cause\npreemption in your cluster. Pod priority is specified by setting the\n`priorityClassName` field in the Pod's specification. The integer value for\npriority is then resolved and populated to the `priority` field of `podSpec`.\n\nTo address the problem, you can change the `priorityClassName` for those Pods\nto use lower priority classes, or leave that field empty. An empty\n`priorityClassName` is resolved to zero by default.\n\nWhen a Pod is preempted, there will be events recorded for the preempted Pod.\nPreemption should happen only when a cluster does not have enough resources for\na Pod. In such cases, preemption happens only when the priority of the pending\nPod (preemptor) is higher than the victim Pods. Preemption must not happen when\nthere is no pending Pod, or when the pending Pods have equal or lower priority\nthan the victims. If preemption happens in such scenarios, please file an issue.\n\n### Pods are preempted, but the preemptor is not scheduled\n\nWhen pods are preempted, they receive their requested graceful termination\nperiod, which is by default 30 seconds. If the victim Pods do not terminate within\nthis period, they are forcibly terminated. Once all the victims go away, the\npreemptor Pod can be scheduled.\n\nWhile the preemptor Pod is waiting for the victims to go away, a higher priority\nPod may be created that fits on the same Node. In this case, the scheduler will\nschedule the higher priority Pod instead of the preemptor.\n\nThis is expected behavior: the Pod with the higher priority should take the place\nof a Pod with a lower priority.\n\n### Higher priority Pods are preempted before lower priority pods\n\nThe scheduler tries to find nodes that can run a pending Pod. If no node is\nfound, the scheduler tries to remove Pods with lower priority from an arbitrary\nnode in order to make room for the pending pod.\nIf a node with low priority Pods is not feasible to run the pending Pod, the scheduler\nmay choose another node with higher priority Pods (compared to the Pods on the\nother node) for preemption. The victims must still have lower priority than the\npreemptor Pod.\n\nWhen there are multiple nodes available for preemption, the scheduler tries to\nchoose the node with a set of Pods with lowest priority. However, if such Pods\nhave PodDisruptionBudget that would be violated if they are preempted then the\nscheduler may choose another node with higher priority Pods.\n\nWhen multiple nodes exist for preemption and none of the above scenarios apply,\nthe scheduler chooses a node with the lowest priority.\n\n## Interactions between Pod priority and quality of service\n\nPod priority and [QoS class](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/)\nare two orthogonal features with few interactions and no default restrictions on\nsetting the priority of a Pod based on its QoS classes. The scheduler's\npreemption logic does not consider QoS when choosing preemption targets.\nPreemption considers Pod priority and attempts to choose a set of targets with\nthe lowest priority. Higher-priority Pods are considered for preemption only if\nthe removal of the lowest priority Pods is not sufficient to allow the scheduler\nto schedule the preemptor Pod, or if the lowest priority Pods are protected by\n`PodDisruptionBudget`.\n\nThe kubelet uses Priority to determine pod order for [node-pressure eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/).\nYou can use the QoS class to estimate the order in which pods are most likely\nto get evicted. The kubelet ranks pods for eviction based on the following factors:\n\n1. Whether the starved resource usage exceeds requests\n2. Pod Priority\n3. Amount of resource usage relative to requests\n\nSee [Pod selection for kubelet eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#pod-selection-for-kubelet-eviction)\nfor more details.\n\nkubelet node-pressure eviction does not evict Pods when their\nusage does not exceed their requests. If a Pod with lower priority is not\nexceeding its requests, it won't be evicted. Another Pod with higher priority\nthat exceeds its requests may be evicted.\n\n## What's next\n\n- Read about using ResourceQuotas in connection with PriorityClasses: limit Priority Class consumption by default\n- Learn about Pod Disruption\n- Learn about API-initiated Eviction\n- Learn about Node-pressure Eviction\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:52ce9b4e0bd7f545d92e1c858b9bf38f16260c4ad20fb2dc69097519bf0c80a9",
+  "document_id": "sched-006",
+  "domain": "scheduling_resource_management",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Priority and Preemption"
+    },
+    {
+      "block_index": 2,
+      "level": 4,
+      "text": "Warning:"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "How to use priority and preemption"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "PriorityClass"
+    },
+    {
+      "block_index": 12,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Notes about PodPriority and existing clusters"
+    },
+    {
+      "block_index": 17,
+      "level": 3,
+      "text": "Example PriorityClass"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "Non-preempting PriorityClass"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "Example Non-preempting PriorityClass"
+    },
+    {
+      "block_index": 26,
+      "level": 2,
+      "text": "Pod priority"
+    },
+    {
+      "block_index": 30,
+      "level": 3,
+      "text": "Effect of Pod priority on scheduling order"
+    },
+    {
+      "block_index": 32,
+      "level": 4,
+      "text": "PodGroups and scheduling order"
+    },
+    {
+      "block_index": 36,
+      "level": 4,
+      "text": "CompositePodGroups and scheduling order"
+    },
+    {
+      "block_index": 42,
+      "level": 2,
+      "text": "Preemption"
+    },
+    {
+      "block_index": 44,
+      "level": 3,
+      "text": "PodGroup preemption"
+    },
+    {
+      "block_index": 48,
+      "level": 3,
+      "text": "User exposed information"
+    },
+    {
+      "block_index": 51,
+      "level": 3,
+      "text": "Limitations of preemption"
+    },
+    {
+      "block_index": 52,
+      "level": 4,
+      "text": "Graceful termination of preemption victims"
+    },
+    {
+      "block_index": 54,
+      "level": 4,
+      "text": "PodDisruptionBudget is supported, but not guaranteed"
+    },
+    {
+      "block_index": 56,
+      "level": 4,
+      "text": "Inter-Pod affinity on lower-priority Pods"
+    },
+    {
+      "block_index": 58,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 61,
+      "level": 4,
+      "text": "Cross node preemption"
+    },
+    {
+      "block_index": 66,
+      "level": 3,
+      "text": "Preemption for in-place Pod resize"
+    },
+    {
+      "block_index": 74,
+      "level": 4,
+      "text": "Disabling preemption for in-place Pod resize at the Node level"
+    },
+    {
+      "block_index": 81,
+      "level": 2,
+      "text": "Troubleshooting"
+    },
+    {
+      "block_index": 83,
+      "level": 3,
+      "text": "Pods are preempted unnecessarily"
+    },
+    {
+      "block_index": 87,
+      "level": 3,
+      "text": "Pods are preempted, but the preemptor is not scheduled"
+    },
+    {
+      "block_index": 91,
+      "level": 3,
+      "text": "Higher priority Pods are preempted before lower priority pods"
+    },
+    {
+      "block_index": 95,
+      "level": 2,
+      "text": "Interactions between Pod priority and quality of service"
+    },
+    {
+      "block_index": 101,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Pods",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "limit Priority Class consumption by default",
+      "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/#limit-priority-class-consumption-by-default"
+    },
+    {
+      "text": "PriorityClasses",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass"
+    },
+    {
+      "text": "DNS subdomain name",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names"
+    },
+    {
+      "text": "GenericWorkload",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GenericWorkload"
+    },
+    {
+      "text": "Enable Or Disable Feature Gates",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/"
+    },
+    {
+      "text": "Pod Group Disruption and Priority",
+      "url": "https://kubernetes.io/docs/concepts/workloads/workload-api/disruption-and-priority/"
+    },
+    {
+      "text": "CompositePodGroup",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#CompositePodGroup"
+    },
+    {
+      "text": "workload-aware preemption",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/workload-aware-preemption/"
+    },
+    {
+      "text": "graceful termination period",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination"
+    },
+    {
+      "text": "PodDisruptionBudget",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/"
+    },
+    {
+      "text": "affinity",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity"
+    },
+    {
+      "text": "InPlacePodVerticalScalingSchedulerPreemption",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#InPlacePodVerticalScalingSchedulerPreemption"
+    },
+    {
+      "text": "Pod resize status",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#pod-resize-status"
+    },
+    {
+      "text": "Resize CPU and Memory Resources assigned to Containers",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/"
+    },
+    {
+      "text": "QoS class",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/"
+    },
+    {
+      "text": "node-pressure eviction",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/"
+    },
+    {
+      "text": "Pod selection for kubelet eviction",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#pod-selection-for-kubelet-eviction"
+    }
+  ],
+  "raw_path": "data/raw/documents/sched-006.html",
+  "raw_sha256": "sha256:c5104c5b6b8e319182a0451288a50dbc74ac320196edcefcb4ccb4de04f10e2f",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/",
+  "statistics": {
+    "block_count": 103,
+    "character_count": 23630,
+    "code_block_count": 4,
+    "heading_count": 30,
+    "link_count": 18,
+    "list_count": 8,
+    "paragraph_count": 61,
+    "table_count": 0,
+    "word_count": 3476
+  },
+  "title": "Pod Priority and Preemption"
+}

@@ -1,0 +1,848 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "ReplicaSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "A ReplicaSet's purpose is to maintain a stable set of replica Pods running at any given time. As such, it is often\nused to guarantee the availability of a specified number of identical Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "How a ReplicaSet works",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "text": "A ReplicaSet is defined with fields, including a selector that specifies how to identify Pods it can acquire, a number\nof replicas indicating how many Pods it should be maintaining, and a pod template specifying the data of new Pods\nit should create to meet the number of replicas criteria. A ReplicaSet then fulfills its purpose by creating\nand deleting Pods as needed to reach the desired number. When a ReplicaSet needs to create new Pods, it uses its Pod\ntemplate.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "A ReplicaSet is linked to its Pods via the Pods' [metadata.ownerReferences](https://kubernetes.io/docs/concepts/architecture/garbage-collection/#owners-dependents)\nfield, which specifies what resource the current object is owned by. All Pods acquired by a ReplicaSet have their owning\nReplicaSet's identifying information within their ownerReferences field. It's through this link that the ReplicaSet\nknows of the state of the Pods it is maintaining and plans accordingly.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "text": "A ReplicaSet identifies new Pods to acquire by using its selector. If there is a Pod that has no\nOwnerReference or the OwnerReference is not a [Controller](https://kubernetes.io/docs/concepts/architecture/controller/) and it\nmatches a ReplicaSet's selector, it will be immediately acquired by said ReplicaSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "level": 2,
+      "text": "When to use a ReplicaSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "text": "A ReplicaSet ensures that a specified number of pod replicas are running at any given\ntime. However, a Deployment is a higher-level concept that manages ReplicaSets and\nprovides declarative updates to Pods along with a lot of other useful features.\nTherefore, we recommend using Deployments instead of directly using ReplicaSets, unless\nyou require custom update orchestration or don't require updates at all.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "This actually means that you may never need to manipulate ReplicaSet objects:\nuse a Deployment instead, and define your application in the spec section.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Example",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "language": "yaml",
+      "text": "apiVersion: apps/v1\nkind: ReplicaSet\nmetadata:\n  name: frontend\n  labels:\n    app: guestbook\n    tier: frontend\nspec:\n  # modify replicas according to your case\n  replicas: 3\n  selector:\n    matchLabels:\n      tier: frontend\n  template:\n    metadata:\n      labels:\n        tier: frontend\n    spec:\n      containers:\n      - name: php-redis\n        image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5",
+      "type": "code"
+    },
+    {
+      "block_index": 11,
+      "text": "Saving this manifest into `frontend.yaml` and submitting it to a Kubernetes cluster will\ncreate the defined ReplicaSet and the Pods that it manages.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "language": "shell",
+      "text": "kubectl apply -f https://kubernetes.io/examples/controllers/frontend.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 13,
+      "text": "You can then get the current ReplicaSets deployed:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "language": "shell",
+      "text": "kubectl get rs",
+      "type": "code"
+    },
+    {
+      "block_index": 15,
+      "text": "And see the frontend one you created:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "language": null,
+      "text": "NAME       DESIRED   CURRENT   READY   AGE\nfrontend   3         3         3       6s",
+      "type": "code"
+    },
+    {
+      "block_index": 17,
+      "text": "You can also check on the state of the ReplicaSet:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "language": "shell",
+      "text": "kubectl describe rs/frontend",
+      "type": "code"
+    },
+    {
+      "block_index": 19,
+      "text": "And you will see output similar to:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "language": null,
+      "text": "Name:         frontend\nNamespace:    default\nSelector:     tier=frontend\nLabels:       app=guestbook\n              tier=frontend\nAnnotations:  <none>\nReplicas:     3 current / 3 desired\nPods Status:  3 Running / 0 Waiting / 0 Succeeded / 0 Failed\nPod Template:\n  Labels:  tier=frontend\n  Containers:\n   php-redis:\n    Image:        us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5\n    Port:         <none>\n    Host Port:    <none>\n    Environment:  <none>\n    Mounts:       <none>\n  Volumes:        <none>\nEvents:\n  Type    Reason            Age   From                   Message\n  ----    ------            ----  ----                   -------\n  Normal  SuccessfulCreate  13s   replicaset-controller  Created pod: frontend-gbgfx\n  Normal  SuccessfulCreate  13s   replicaset-controller  Created pod: frontend-rwz57\n  Normal  SuccessfulCreate  13s   replicaset-controller  Created pod: frontend-wkl7w",
+      "type": "code"
+    },
+    {
+      "block_index": 21,
+      "text": "And lastly you can check for the Pods brought up:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "language": "shell",
+      "text": "kubectl get pods",
+      "type": "code"
+    },
+    {
+      "block_index": 23,
+      "text": "You should see Pod information similar to:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "language": null,
+      "text": "NAME             READY   STATUS    RESTARTS   AGE\nfrontend-gbgfx   1/1     Running   0          10m\nfrontend-rwz57   1/1     Running   0          10m\nfrontend-wkl7w   1/1     Running   0          10m",
+      "type": "code"
+    },
+    {
+      "block_index": 25,
+      "text": "You can also verify that the owner reference of these pods is set to the frontend ReplicaSet.\nTo do this, get the yaml of one of the Pods running:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "language": "shell",
+      "text": "kubectl get pods frontend-gbgfx -o yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 27,
+      "text": "The output will look similar to this, with the frontend ReplicaSet's info set in the metadata's ownerReferences field:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  creationTimestamp: \"2024-02-28T22:30:44Z\"\n  generateName: frontend-\n  labels:\n    tier: frontend\n  name: frontend-gbgfx\n  namespace: default\n  ownerReferences:\n  - apiVersion: apps/v1\n    blockOwnerDeletion: true\n    controller: true\n    kind: ReplicaSet\n    name: frontend\n    uid: e129deca-f864-481b-bb16-b27abfd92292\n...",
+      "type": "code"
+    },
+    {
+      "block_index": 29,
+      "level": 2,
+      "text": "Non-Template Pod acquisitions",
+      "type": "heading"
+    },
+    {
+      "block_index": 30,
+      "text": "While you can create bare Pods with no problems, it is strongly recommended to make sure that the bare Pods do not have\nlabels which match the selector of one of your ReplicaSets. The reason for this is because a ReplicaSet is not limited\nto owning Pods specified by its template-- it can acquire other Pods in the manner specified in the previous sections.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "Take the previous frontend ReplicaSet example, and the Pods specified in the following manifest:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: pod1\n  labels:\n    tier: frontend\nspec:\n  containers:\n  - name: hello1\n    image: gcr.io/google-samples/hello-app:2.0\n\n---\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: pod2\n  labels:\n    tier: frontend\nspec:\n  containers:\n  - name: hello2\n    image: gcr.io/google-samples/hello-app:1.0",
+      "type": "code"
+    },
+    {
+      "block_index": 33,
+      "text": "As those Pods do not have a Controller (or any object) as their owner reference and match the selector of the frontend\nReplicaSet, they will immediately be acquired by it.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "text": "Suppose you create the Pods after the frontend ReplicaSet has been deployed and has set up its initial Pod replicas to\nfulfill its replica count requirement:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "language": "shell",
+      "text": "kubectl apply -f https://kubernetes.io/examples/pods/pod-rs.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 36,
+      "text": "The new Pods will be acquired by the ReplicaSet, and then immediately terminated as the ReplicaSet would be over\nits desired count.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "text": "Fetching the Pods:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "language": "shell",
+      "text": "kubectl get pods",
+      "type": "code"
+    },
+    {
+      "block_index": 39,
+      "text": "The output shows that the new Pods are either already terminated, or in the process of being terminated:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "language": null,
+      "text": "NAME             READY   STATUS        RESTARTS   AGE\nfrontend-b2zdv   1/1     Running       0          10m\nfrontend-vcmts   1/1     Running       0          10m\nfrontend-wtsmm   1/1     Running       0          10m\npod1             0/1     Terminating   0          1s\npod2             0/1     Terminating   0          1s",
+      "type": "code"
+    },
+    {
+      "block_index": 41,
+      "text": "If you create the Pods first:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "language": "shell",
+      "text": "kubectl apply -f https://kubernetes.io/examples/pods/pod-rs.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 43,
+      "text": "And then create the ReplicaSet however:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "language": "shell",
+      "text": "kubectl apply -f https://kubernetes.io/examples/controllers/frontend.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 45,
+      "text": "You shall see that the ReplicaSet has acquired the Pods and has only created new ones according to its spec until the\nnumber of its new Pods and the original matches its desired count. As fetching the Pods:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "language": "shell",
+      "text": "kubectl get pods",
+      "type": "code"
+    },
+    {
+      "block_index": 47,
+      "text": "Will reveal in its output:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "language": null,
+      "text": "NAME             READY   STATUS    RESTARTS   AGE\nfrontend-hmmj2   1/1     Running   0          9s\npod1             1/1     Running   0          36s\npod2             1/1     Running   0          36s",
+      "type": "code"
+    },
+    {
+      "block_index": 49,
+      "text": "In this manner, a ReplicaSet can own a non-homogeneous set of Pods",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 50,
+      "level": 2,
+      "text": "Writing a ReplicaSet manifest",
+      "type": "heading"
+    },
+    {
+      "block_index": 51,
+      "text": "As with all other Kubernetes API objects, a ReplicaSet needs the `apiVersion`, `kind`, and `metadata` fields.\nFor ReplicaSets, the `kind` is always a ReplicaSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 52,
+      "text": "When the control plane creates new Pods for a ReplicaSet, the `.metadata.name` of the\nReplicaSet is part of the basis for naming those Pods. The name of a ReplicaSet must be a valid\n[DNS subdomain](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names)\nvalue, but this can produce unexpected results for the Pod hostnames. For best compatibility,\nthe name should follow the more restrictive rules for a\n[DNS label](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 53,
+      "text": "A ReplicaSet also needs a [`.spec` section](https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 54,
+      "level": 3,
+      "text": "Pod Template",
+      "type": "heading"
+    },
+    {
+      "block_index": 55,
+      "text": "The `.spec.template` is a [pod template](https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates) which is also\nrequired to have labels in place. In our `frontend.yaml` example we had one label: `tier: frontend`.\nBe careful not to overlap with the selectors of other controllers, lest they try to adopt this Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 56,
+      "text": "For the template's [restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy) field,\n`.spec.template.spec.restartPolicy`, the only allowed value is `Always`, which is the default.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 57,
+      "level": 3,
+      "text": "Pod Selector",
+      "type": "heading"
+    },
+    {
+      "block_index": 58,
+      "text": "The `.spec.selector` field is a [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/). As discussed\n[earlier](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#how-a-replicaset-works) these are the labels used to identify potential Pods to acquire. In our\n`frontend.yaml` example, the selector was:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "language": "yaml",
+      "text": "matchLabels:\n  tier: frontend",
+      "type": "code"
+    },
+    {
+      "block_index": 60,
+      "text": "In the ReplicaSet, `.spec.template.metadata.labels` must match `spec.selector`, or it will\nbe rejected by the API.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 61,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 62,
+      "level": 3,
+      "text": "Replicas",
+      "type": "heading"
+    },
+    {
+      "block_index": 63,
+      "text": "You can specify how many Pods should run concurrently by setting `.spec.replicas`. The ReplicaSet will create/delete\nits Pods to match this number.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 64,
+      "text": "If you do not specify `.spec.replicas`, then it defaults to 1.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 65,
+      "level": 2,
+      "text": "Working with ReplicaSets",
+      "type": "heading"
+    },
+    {
+      "block_index": 66,
+      "level": 3,
+      "text": "Deleting a ReplicaSet and its Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 67,
+      "text": "To delete a ReplicaSet and all of its Pods, use\n[`kubectl delete`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#delete). The\n[Garbage collector](https://kubernetes.io/docs/concepts/architecture/garbage-collection/) automatically deletes all of\nthe dependent Pods by default.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 68,
+      "text": "When using the REST API or the `client-go` library, you must set `propagationPolicy` to\n`Background` or `Foreground` in the `-d` option. For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 69,
+      "language": "shell",
+      "text": "kubectl proxy --port=8080\ncurl -X DELETE  'localhost:8080/apis/apps/v1/namespaces/default/replicasets/frontend' \\\n  -d '{\"kind\":\"DeleteOptions\",\"apiVersion\":\"v1\",\"propagationPolicy\":\"Foreground\"}' \\\n  -H \"Content-Type: application/json\"",
+      "type": "code"
+    },
+    {
+      "block_index": 70,
+      "level": 3,
+      "text": "Deleting just a ReplicaSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 71,
+      "text": "You can delete a ReplicaSet without affecting any of its Pods using\n[`kubectl delete`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#delete)\nwith the `--cascade=orphan` option.\nWhen using the REST API or the `client-go` library, you must set `propagationPolicy` to `Orphan`.\nFor example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 72,
+      "language": "shell",
+      "text": "kubectl proxy --port=8080\ncurl -X DELETE  'localhost:8080/apis/apps/v1/namespaces/default/replicasets/frontend' \\\n  -d '{\"kind\":\"DeleteOptions\",\"apiVersion\":\"v1\",\"propagationPolicy\":\"Orphan\"}' \\\n  -H \"Content-Type: application/json\"",
+      "type": "code"
+    },
+    {
+      "block_index": 73,
+      "text": "Once the original is deleted, you can create a new ReplicaSet to replace it. As long\nas the old and new `.spec.selector` are the same, then the new one will adopt the old Pods.\nHowever, it will not make any effort to make existing Pods match a new, different pod template.\nTo update Pods to a new spec in a controlled way, use a\n[Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#creating-a-deployment), as\nReplicaSets do not support a rolling update directly.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 74,
+      "level": 3,
+      "text": "Terminating Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 75,
+      "text": "You can enable this feature by setting the `DeploymentReplicaSetTerminatingReplicas`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)\non the [API server](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/)\nand on the [kube-controller-manager](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/)",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 76,
+      "text": "Pods that become terminating due to deletion or scale down may take a long time to terminate, and may consume\nadditional resources during that period. As a result, the total number of all pods can temporarily exceed\n`.spec.replicas`. Terminating pods can be tracked using the `.status.terminatingReplicas` field of the ReplicaSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 77,
+      "level": 3,
+      "text": "Isolating Pods from a ReplicaSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 78,
+      "text": "You can remove Pods from a ReplicaSet by changing their labels. This technique may be used to remove Pods\nfrom service for debugging, data recovery, etc. Pods that are removed in this way will be replaced automatically (\nassuming that the number of replicas is not also changed).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 79,
+      "level": 3,
+      "text": "Scaling a ReplicaSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 80,
+      "text": "A ReplicaSet can be easily scaled up or down by simply updating the `.spec.replicas` field. The ReplicaSet controller\nensures that a desired number of Pods with a matching label selector are available and operational.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 81,
+      "text": "When scaling down, the ReplicaSet controller chooses which pods to delete by sorting the available pods to\nprioritize scaling down pods based on the following general algorithm:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 82,
+      "ordered": true,
+      "text": "1. Pending (and unschedulable) pods are scaled down first\n2. If controller.kubernetes.io/pod-deletion-cost annotation is set, then the pod with the lower value will come first.\n3. Pods on nodes with more replicas come before pods on nodes with fewer replicas.\n4. If the pods' creation times differ, the pod that was created more recently comes before the older pod (the creation times are bucketed on an integer log scale).",
+      "type": "list"
+    },
+    {
+      "block_index": 83,
+      "text": "If all of the above match, then selection is random.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 84,
+      "level": 3,
+      "text": "Pod deletion cost",
+      "type": "heading"
+    },
+    {
+      "block_index": 85,
+      "text": "Using the [`controller.kubernetes.io/pod-deletion-cost`](https://kubernetes.io/docs/reference/labels-annotations-taints/#pod-deletion-cost)\nannotation, users can set a preference regarding which pods to remove first when downscaling a ReplicaSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 86,
+      "text": "The annotation should be set on the pod, the range is [-2147483648, 2147483647]. It represents the cost of\ndeleting a pod compared to other pods belonging to the same ReplicaSet. Pods with lower deletion\ncost are preferred to be deleted before pods with higher deletion cost.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 87,
+      "text": "The implicit value for this annotation for pods that don't set it is 0; negative values are permitted.\nInvalid values will be rejected by the API server.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 88,
+      "text": "This feature is beta and enabled by default. You can disable it using the\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)\n`PodDeletionCost` in both kube-apiserver and kube-controller-manager.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 89,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 90,
+      "ordered": false,
+      "text": "- This is honored on a best-effort basis, so it does not offer any guarantees on pod deletion order.\n- Users should avoid updating the annotation frequently, such as updating it based on a metric value, because doing so will generate a significant number of pod updates on the apiserver.",
+      "type": "list"
+    },
+    {
+      "block_index": 91,
+      "level": 4,
+      "text": "Example Use Case",
+      "type": "heading"
+    },
+    {
+      "block_index": 92,
+      "text": "The different pods of an application could have different utilization levels. On scale down, the application\nmay prefer to remove the pods with lower utilization. To avoid frequently updating the pods, the application\nshould update `controller.kubernetes.io/pod-deletion-cost` once before issuing a scale down (setting the\nannotation to a value proportional to pod utilization level). This works if the application itself controls\nthe down scaling; for example, the driver pod of a Spark deployment.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 93,
+      "level": 3,
+      "text": "ReplicaSet as a Horizontal Pod Autoscaler Target",
+      "type": "heading"
+    },
+    {
+      "block_index": 94,
+      "text": "A ReplicaSet can also be a target for\n[Horizontal Pod Autoscalers (HPA)](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). That is,\na ReplicaSet can be auto-scaled by an HPA. Here is an example HPA targeting\nthe ReplicaSet we created in the previous example.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 95,
+      "language": "yaml",
+      "text": "apiVersion: autoscaling/v1\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: frontend-scaler\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: ReplicaSet\n    name: frontend\n  minReplicas: 3\n  maxReplicas: 10\n  targetCPUUtilizationPercentage: 50",
+      "type": "code"
+    },
+    {
+      "block_index": 96,
+      "text": "Saving this manifest into `hpa-rs.yaml` and submitting it to a Kubernetes cluster should\ncreate the defined HPA that autoscales the target ReplicaSet depending on the CPU usage\nof the replicated Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 97,
+      "language": "shell",
+      "text": "kubectl apply -f https://k8s.io/examples/controllers/hpa-rs.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 98,
+      "text": "Alternatively, you can use the `kubectl autoscale` command to accomplish the same\n(and it's easier!)",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 99,
+      "language": "shell",
+      "text": "kubectl autoscale rs frontend --max=10 --min=3 --cpu=50%",
+      "type": "code"
+    },
+    {
+      "block_index": 100,
+      "level": 2,
+      "text": "Alternatives to ReplicaSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 101,
+      "level": 3,
+      "text": "Deployment (recommended)",
+      "type": "heading"
+    },
+    {
+      "block_index": 102,
+      "text": "[`Deployment`](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) is an object which can own ReplicaSets and update\nthem and their Pods via declarative, server-side rolling updates.\nWhile ReplicaSets can be used independently, today they're mainly used by Deployments as a mechanism to orchestrate Pod\ncreation, deletion and updates. When you use Deployments you don't have to worry about managing the ReplicaSets that\nthey create. Deployments own and manage their ReplicaSets.\nAs such, it is recommended to use Deployments when you want ReplicaSets.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 103,
+      "level": 3,
+      "text": "Bare Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 104,
+      "text": "Unlike the case where a user directly created Pods, a ReplicaSet replaces Pods that are deleted or\nterminated for any reason, such as in the case of node failure or disruptive node maintenance,\nsuch as a kernel upgrade. For this reason, we recommend that you use a ReplicaSet even if your\napplication requires only a single Pod. Think of it similarly to a process supervisor, only it\nsupervises multiple Pods across multiple nodes instead of individual processes on a single node. A\nReplicaSet delegates local container restarts to some agent on the node such as Kubelet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 105,
+      "level": 3,
+      "text": "Job",
+      "type": "heading"
+    },
+    {
+      "block_index": 106,
+      "text": "Use a [`Job`](https://kubernetes.io/docs/concepts/workloads/controllers/job/) instead of a ReplicaSet for Pods that are\nexpected to terminate on their own (that is, batch jobs).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 107,
+      "level": 3,
+      "text": "DaemonSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 108,
+      "text": "Use a [`DaemonSet`](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) instead of a ReplicaSet for Pods that provide a\nmachine-level function, such as machine monitoring or machine logging. These Pods have a lifetime that is tied\nto a machine lifetime: the Pod needs to be running on the machine before other Pods start, and are\nsafe to terminate when the machine is otherwise ready to be rebooted/shutdown.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 109,
+      "level": 3,
+      "text": "ReplicationController",
+      "type": "heading"
+    },
+    {
+      "block_index": 110,
+      "text": "ReplicaSets are the successors to [ReplicationControllers](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/).\nThe two serve the same purpose, and behave similarly, except that a ReplicationController does not support set-based\nselector requirements as described in the [labels user guide](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).\nAs such, ReplicaSets are preferred over ReplicationControllers",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 111,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 112,
+      "ordered": false,
+      "text": "- Learn about Pods .\n- Learn about Deployments .\n- Run a Stateless Application Using a Deployment , which relies on ReplicaSets to work.\n- ReplicaSet is a top-level resource in the Kubernetes REST API. Read the ReplicaSet object definition to understand the API for replica sets.\n- Read about PodDisruptionBudget and how you can use it to manage application availability during disruptions.",
+      "type": "list"
+    }
+  ],
+  "content": "# ReplicaSet\n\nA ReplicaSet's purpose is to maintain a stable set of replica Pods running at any given time. As such, it is often\nused to guarantee the availability of a specified number of identical Pods.\n\n## How a ReplicaSet works\n\nA ReplicaSet is defined with fields, including a selector that specifies how to identify Pods it can acquire, a number\nof replicas indicating how many Pods it should be maintaining, and a pod template specifying the data of new Pods\nit should create to meet the number of replicas criteria. A ReplicaSet then fulfills its purpose by creating\nand deleting Pods as needed to reach the desired number. When a ReplicaSet needs to create new Pods, it uses its Pod\ntemplate.\n\nA ReplicaSet is linked to its Pods via the Pods' [metadata.ownerReferences](https://kubernetes.io/docs/concepts/architecture/garbage-collection/#owners-dependents)\nfield, which specifies what resource the current object is owned by. All Pods acquired by a ReplicaSet have their owning\nReplicaSet's identifying information within their ownerReferences field. It's through this link that the ReplicaSet\nknows of the state of the Pods it is maintaining and plans accordingly.\n\nA ReplicaSet identifies new Pods to acquire by using its selector. If there is a Pod that has no\nOwnerReference or the OwnerReference is not a [Controller](https://kubernetes.io/docs/concepts/architecture/controller/) and it\nmatches a ReplicaSet's selector, it will be immediately acquired by said ReplicaSet.\n\n## When to use a ReplicaSet\n\nA ReplicaSet ensures that a specified number of pod replicas are running at any given\ntime. However, a Deployment is a higher-level concept that manages ReplicaSets and\nprovides declarative updates to Pods along with a lot of other useful features.\nTherefore, we recommend using Deployments instead of directly using ReplicaSets, unless\nyou require custom update orchestration or don't require updates at all.\n\nThis actually means that you may never need to manipulate ReplicaSet objects:\nuse a Deployment instead, and define your application in the spec section.\n\n## Example\n\n```yaml\napiVersion: apps/v1\nkind: ReplicaSet\nmetadata:\n  name: frontend\n  labels:\n    app: guestbook\n    tier: frontend\nspec:\n  # modify replicas according to your case\n  replicas: 3\n  selector:\n    matchLabels:\n      tier: frontend\n  template:\n    metadata:\n      labels:\n        tier: frontend\n    spec:\n      containers:\n      - name: php-redis\n        image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5\n```\n\nSaving this manifest into `frontend.yaml` and submitting it to a Kubernetes cluster will\ncreate the defined ReplicaSet and the Pods that it manages.\n\n```shell\nkubectl apply -f https://kubernetes.io/examples/controllers/frontend.yaml\n```\n\nYou can then get the current ReplicaSets deployed:\n\n```shell\nkubectl get rs\n```\n\nAnd see the frontend one you created:\n\n```\nNAME       DESIRED   CURRENT   READY   AGE\nfrontend   3         3         3       6s\n```\n\nYou can also check on the state of the ReplicaSet:\n\n```shell\nkubectl describe rs/frontend\n```\n\nAnd you will see output similar to:\n\n```\nName:         frontend\nNamespace:    default\nSelector:     tier=frontend\nLabels:       app=guestbook\n              tier=frontend\nAnnotations:  <none>\nReplicas:     3 current / 3 desired\nPods Status:  3 Running / 0 Waiting / 0 Succeeded / 0 Failed\nPod Template:\n  Labels:  tier=frontend\n  Containers:\n   php-redis:\n    Image:        us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5\n    Port:         <none>\n    Host Port:    <none>\n    Environment:  <none>\n    Mounts:       <none>\n  Volumes:        <none>\nEvents:\n  Type    Reason            Age   From                   Message\n  ----    ------            ----  ----                   -------\n  Normal  SuccessfulCreate  13s   replicaset-controller  Created pod: frontend-gbgfx\n  Normal  SuccessfulCreate  13s   replicaset-controller  Created pod: frontend-rwz57\n  Normal  SuccessfulCreate  13s   replicaset-controller  Created pod: frontend-wkl7w\n```\n\nAnd lastly you can check for the Pods brought up:\n\n```shell\nkubectl get pods\n```\n\nYou should see Pod information similar to:\n\n```\nNAME             READY   STATUS    RESTARTS   AGE\nfrontend-gbgfx   1/1     Running   0          10m\nfrontend-rwz57   1/1     Running   0          10m\nfrontend-wkl7w   1/1     Running   0          10m\n```\n\nYou can also verify that the owner reference of these pods is set to the frontend ReplicaSet.\nTo do this, get the yaml of one of the Pods running:\n\n```shell\nkubectl get pods frontend-gbgfx -o yaml\n```\n\nThe output will look similar to this, with the frontend ReplicaSet's info set in the metadata's ownerReferences field:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  creationTimestamp: \"2024-02-28T22:30:44Z\"\n  generateName: frontend-\n  labels:\n    tier: frontend\n  name: frontend-gbgfx\n  namespace: default\n  ownerReferences:\n  - apiVersion: apps/v1\n    blockOwnerDeletion: true\n    controller: true\n    kind: ReplicaSet\n    name: frontend\n    uid: e129deca-f864-481b-bb16-b27abfd92292\n...\n```\n\n## Non-Template Pod acquisitions\n\nWhile you can create bare Pods with no problems, it is strongly recommended to make sure that the bare Pods do not have\nlabels which match the selector of one of your ReplicaSets. The reason for this is because a ReplicaSet is not limited\nto owning Pods specified by its template-- it can acquire other Pods in the manner specified in the previous sections.\n\nTake the previous frontend ReplicaSet example, and the Pods specified in the following manifest:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: pod1\n  labels:\n    tier: frontend\nspec:\n  containers:\n  - name: hello1\n    image: gcr.io/google-samples/hello-app:2.0\n\n---\n\napiVersion: v1\nkind: Pod\nmetadata:\n  name: pod2\n  labels:\n    tier: frontend\nspec:\n  containers:\n  - name: hello2\n    image: gcr.io/google-samples/hello-app:1.0\n```\n\nAs those Pods do not have a Controller (or any object) as their owner reference and match the selector of the frontend\nReplicaSet, they will immediately be acquired by it.\n\nSuppose you create the Pods after the frontend ReplicaSet has been deployed and has set up its initial Pod replicas to\nfulfill its replica count requirement:\n\n```shell\nkubectl apply -f https://kubernetes.io/examples/pods/pod-rs.yaml\n```\n\nThe new Pods will be acquired by the ReplicaSet, and then immediately terminated as the ReplicaSet would be over\nits desired count.\n\nFetching the Pods:\n\n```shell\nkubectl get pods\n```\n\nThe output shows that the new Pods are either already terminated, or in the process of being terminated:\n\n```\nNAME             READY   STATUS        RESTARTS   AGE\nfrontend-b2zdv   1/1     Running       0          10m\nfrontend-vcmts   1/1     Running       0          10m\nfrontend-wtsmm   1/1     Running       0          10m\npod1             0/1     Terminating   0          1s\npod2             0/1     Terminating   0          1s\n```\n\nIf you create the Pods first:\n\n```shell\nkubectl apply -f https://kubernetes.io/examples/pods/pod-rs.yaml\n```\n\nAnd then create the ReplicaSet however:\n\n```shell\nkubectl apply -f https://kubernetes.io/examples/controllers/frontend.yaml\n```\n\nYou shall see that the ReplicaSet has acquired the Pods and has only created new ones according to its spec until the\nnumber of its new Pods and the original matches its desired count. As fetching the Pods:\n\n```shell\nkubectl get pods\n```\n\nWill reveal in its output:\n\n```\nNAME             READY   STATUS    RESTARTS   AGE\nfrontend-hmmj2   1/1     Running   0          9s\npod1             1/1     Running   0          36s\npod2             1/1     Running   0          36s\n```\n\nIn this manner, a ReplicaSet can own a non-homogeneous set of Pods\n\n## Writing a ReplicaSet manifest\n\nAs with all other Kubernetes API objects, a ReplicaSet needs the `apiVersion`, `kind`, and `metadata` fields.\nFor ReplicaSets, the `kind` is always a ReplicaSet.\n\nWhen the control plane creates new Pods for a ReplicaSet, the `.metadata.name` of the\nReplicaSet is part of the basis for naming those Pods. The name of a ReplicaSet must be a valid\n[DNS subdomain](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names)\nvalue, but this can produce unexpected results for the Pod hostnames. For best compatibility,\nthe name should follow the more restrictive rules for a\n[DNS label](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names).\n\nA ReplicaSet also needs a [`.spec` section](https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status).\n\n### Pod Template\n\nThe `.spec.template` is a [pod template](https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates) which is also\nrequired to have labels in place. In our `frontend.yaml` example we had one label: `tier: frontend`.\nBe careful not to overlap with the selectors of other controllers, lest they try to adopt this Pod.\n\nFor the template's [restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy) field,\n`.spec.template.spec.restartPolicy`, the only allowed value is `Always`, which is the default.\n\n### Pod Selector\n\nThe `.spec.selector` field is a [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/). As discussed\n[earlier](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#how-a-replicaset-works) these are the labels used to identify potential Pods to acquire. In our\n`frontend.yaml` example, the selector was:\n\n```yaml\nmatchLabels:\n  tier: frontend\n```\n\nIn the ReplicaSet, `.spec.template.metadata.labels` must match `spec.selector`, or it will\nbe rejected by the API.\n\n#### Note:\n\n### Replicas\n\nYou can specify how many Pods should run concurrently by setting `.spec.replicas`. The ReplicaSet will create/delete\nits Pods to match this number.\n\nIf you do not specify `.spec.replicas`, then it defaults to 1.\n\n## Working with ReplicaSets\n\n### Deleting a ReplicaSet and its Pods\n\nTo delete a ReplicaSet and all of its Pods, use\n[`kubectl delete`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#delete). The\n[Garbage collector](https://kubernetes.io/docs/concepts/architecture/garbage-collection/) automatically deletes all of\nthe dependent Pods by default.\n\nWhen using the REST API or the `client-go` library, you must set `propagationPolicy` to\n`Background` or `Foreground` in the `-d` option. For example:\n\n```shell\nkubectl proxy --port=8080\ncurl -X DELETE  'localhost:8080/apis/apps/v1/namespaces/default/replicasets/frontend' \\\n  -d '{\"kind\":\"DeleteOptions\",\"apiVersion\":\"v1\",\"propagationPolicy\":\"Foreground\"}' \\\n  -H \"Content-Type: application/json\"\n```\n\n### Deleting just a ReplicaSet\n\nYou can delete a ReplicaSet without affecting any of its Pods using\n[`kubectl delete`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#delete)\nwith the `--cascade=orphan` option.\nWhen using the REST API or the `client-go` library, you must set `propagationPolicy` to `Orphan`.\nFor example:\n\n```shell\nkubectl proxy --port=8080\ncurl -X DELETE  'localhost:8080/apis/apps/v1/namespaces/default/replicasets/frontend' \\\n  -d '{\"kind\":\"DeleteOptions\",\"apiVersion\":\"v1\",\"propagationPolicy\":\"Orphan\"}' \\\n  -H \"Content-Type: application/json\"\n```\n\nOnce the original is deleted, you can create a new ReplicaSet to replace it. As long\nas the old and new `.spec.selector` are the same, then the new one will adopt the old Pods.\nHowever, it will not make any effort to make existing Pods match a new, different pod template.\nTo update Pods to a new spec in a controlled way, use a\n[Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#creating-a-deployment), as\nReplicaSets do not support a rolling update directly.\n\n### Terminating Pods\n\nYou can enable this feature by setting the `DeploymentReplicaSetTerminatingReplicas`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)\non the [API server](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/)\nand on the [kube-controller-manager](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/)\n\nPods that become terminating due to deletion or scale down may take a long time to terminate, and may consume\nadditional resources during that period. As a result, the total number of all pods can temporarily exceed\n`.spec.replicas`. Terminating pods can be tracked using the `.status.terminatingReplicas` field of the ReplicaSet.\n\n### Isolating Pods from a ReplicaSet\n\nYou can remove Pods from a ReplicaSet by changing their labels. This technique may be used to remove Pods\nfrom service for debugging, data recovery, etc. Pods that are removed in this way will be replaced automatically (\nassuming that the number of replicas is not also changed).\n\n### Scaling a ReplicaSet\n\nA ReplicaSet can be easily scaled up or down by simply updating the `.spec.replicas` field. The ReplicaSet controller\nensures that a desired number of Pods with a matching label selector are available and operational.\n\nWhen scaling down, the ReplicaSet controller chooses which pods to delete by sorting the available pods to\nprioritize scaling down pods based on the following general algorithm:\n\n1. Pending (and unschedulable) pods are scaled down first\n2. If controller.kubernetes.io/pod-deletion-cost annotation is set, then the pod with the lower value will come first.\n3. Pods on nodes with more replicas come before pods on nodes with fewer replicas.\n4. If the pods' creation times differ, the pod that was created more recently comes before the older pod (the creation times are bucketed on an integer log scale).\n\nIf all of the above match, then selection is random.\n\n### Pod deletion cost\n\nUsing the [`controller.kubernetes.io/pod-deletion-cost`](https://kubernetes.io/docs/reference/labels-annotations-taints/#pod-deletion-cost)\nannotation, users can set a preference regarding which pods to remove first when downscaling a ReplicaSet.\n\nThe annotation should be set on the pod, the range is [-2147483648, 2147483647]. It represents the cost of\ndeleting a pod compared to other pods belonging to the same ReplicaSet. Pods with lower deletion\ncost are preferred to be deleted before pods with higher deletion cost.\n\nThe implicit value for this annotation for pods that don't set it is 0; negative values are permitted.\nInvalid values will be rejected by the API server.\n\nThis feature is beta and enabled by default. You can disable it using the\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)\n`PodDeletionCost` in both kube-apiserver and kube-controller-manager.\n\n#### Note:\n\n- This is honored on a best-effort basis, so it does not offer any guarantees on pod deletion order.\n- Users should avoid updating the annotation frequently, such as updating it based on a metric value, because doing so will generate a significant number of pod updates on the apiserver.\n\n#### Example Use Case\n\nThe different pods of an application could have different utilization levels. On scale down, the application\nmay prefer to remove the pods with lower utilization. To avoid frequently updating the pods, the application\nshould update `controller.kubernetes.io/pod-deletion-cost` once before issuing a scale down (setting the\nannotation to a value proportional to pod utilization level). This works if the application itself controls\nthe down scaling; for example, the driver pod of a Spark deployment.\n\n### ReplicaSet as a Horizontal Pod Autoscaler Target\n\nA ReplicaSet can also be a target for\n[Horizontal Pod Autoscalers (HPA)](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). That is,\na ReplicaSet can be auto-scaled by an HPA. Here is an example HPA targeting\nthe ReplicaSet we created in the previous example.\n\n```yaml\napiVersion: autoscaling/v1\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: frontend-scaler\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: ReplicaSet\n    name: frontend\n  minReplicas: 3\n  maxReplicas: 10\n  targetCPUUtilizationPercentage: 50\n```\n\nSaving this manifest into `hpa-rs.yaml` and submitting it to a Kubernetes cluster should\ncreate the defined HPA that autoscales the target ReplicaSet depending on the CPU usage\nof the replicated Pods.\n\n```shell\nkubectl apply -f https://k8s.io/examples/controllers/hpa-rs.yaml\n```\n\nAlternatively, you can use the `kubectl autoscale` command to accomplish the same\n(and it's easier!)\n\n```shell\nkubectl autoscale rs frontend --max=10 --min=3 --cpu=50%\n```\n\n## Alternatives to ReplicaSet\n\n### Deployment (recommended)\n\n[`Deployment`](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) is an object which can own ReplicaSets and update\nthem and their Pods via declarative, server-side rolling updates.\nWhile ReplicaSets can be used independently, today they're mainly used by Deployments as a mechanism to orchestrate Pod\ncreation, deletion and updates. When you use Deployments you don't have to worry about managing the ReplicaSets that\nthey create. Deployments own and manage their ReplicaSets.\nAs such, it is recommended to use Deployments when you want ReplicaSets.\n\n### Bare Pods\n\nUnlike the case where a user directly created Pods, a ReplicaSet replaces Pods that are deleted or\nterminated for any reason, such as in the case of node failure or disruptive node maintenance,\nsuch as a kernel upgrade. For this reason, we recommend that you use a ReplicaSet even if your\napplication requires only a single Pod. Think of it similarly to a process supervisor, only it\nsupervises multiple Pods across multiple nodes instead of individual processes on a single node. A\nReplicaSet delegates local container restarts to some agent on the node such as Kubelet.\n\n### Job\n\nUse a [`Job`](https://kubernetes.io/docs/concepts/workloads/controllers/job/) instead of a ReplicaSet for Pods that are\nexpected to terminate on their own (that is, batch jobs).\n\n### DaemonSet\n\nUse a [`DaemonSet`](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) instead of a ReplicaSet for Pods that provide a\nmachine-level function, such as machine monitoring or machine logging. These Pods have a lifetime that is tied\nto a machine lifetime: the Pod needs to be running on the machine before other Pods start, and are\nsafe to terminate when the machine is otherwise ready to be rebooted/shutdown.\n\n### ReplicationController\n\nReplicaSets are the successors to [ReplicationControllers](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/).\nThe two serve the same purpose, and behave similarly, except that a ReplicationController does not support set-based\nselector requirements as described in the [labels user guide](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).\nAs such, ReplicaSets are preferred over ReplicationControllers\n\n## What's next\n\n- Learn about Pods .\n- Learn about Deployments .\n- Run a Stateless Application Using a Deployment , which relies on ReplicaSets to work.\n- ReplicaSet is a top-level resource in the Kubernetes REST API. Read the ReplicaSet object definition to understand the API for replica sets.\n- Read about PodDisruptionBudget and how you can use it to manage application availability during disruptions.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:e13d2290f515747710d4462ce74d74fbdcea208912c7557e2d233cf28236e695",
+  "document_id": "work-010",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "ReplicaSet"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "How a ReplicaSet works"
+    },
+    {
+      "block_index": 6,
+      "level": 2,
+      "text": "When to use a ReplicaSet"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Example"
+    },
+    {
+      "block_index": 29,
+      "level": 2,
+      "text": "Non-Template Pod acquisitions"
+    },
+    {
+      "block_index": 50,
+      "level": 2,
+      "text": "Writing a ReplicaSet manifest"
+    },
+    {
+      "block_index": 54,
+      "level": 3,
+      "text": "Pod Template"
+    },
+    {
+      "block_index": 57,
+      "level": 3,
+      "text": "Pod Selector"
+    },
+    {
+      "block_index": 61,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 62,
+      "level": 3,
+      "text": "Replicas"
+    },
+    {
+      "block_index": 65,
+      "level": 2,
+      "text": "Working with ReplicaSets"
+    },
+    {
+      "block_index": 66,
+      "level": 3,
+      "text": "Deleting a ReplicaSet and its Pods"
+    },
+    {
+      "block_index": 70,
+      "level": 3,
+      "text": "Deleting just a ReplicaSet"
+    },
+    {
+      "block_index": 74,
+      "level": 3,
+      "text": "Terminating Pods"
+    },
+    {
+      "block_index": 77,
+      "level": 3,
+      "text": "Isolating Pods from a ReplicaSet"
+    },
+    {
+      "block_index": 79,
+      "level": 3,
+      "text": "Scaling a ReplicaSet"
+    },
+    {
+      "block_index": 84,
+      "level": 3,
+      "text": "Pod deletion cost"
+    },
+    {
+      "block_index": 89,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 91,
+      "level": 4,
+      "text": "Example Use Case"
+    },
+    {
+      "block_index": 93,
+      "level": 3,
+      "text": "ReplicaSet as a Horizontal Pod Autoscaler Target"
+    },
+    {
+      "block_index": 100,
+      "level": 2,
+      "text": "Alternatives to ReplicaSet"
+    },
+    {
+      "block_index": 101,
+      "level": 3,
+      "text": "Deployment (recommended)"
+    },
+    {
+      "block_index": 103,
+      "level": 3,
+      "text": "Bare Pods"
+    },
+    {
+      "block_index": 105,
+      "level": 3,
+      "text": "Job"
+    },
+    {
+      "block_index": 107,
+      "level": 3,
+      "text": "DaemonSet"
+    },
+    {
+      "block_index": 109,
+      "level": 3,
+      "text": "ReplicationController"
+    },
+    {
+      "block_index": 111,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "metadata.ownerReferences",
+      "url": "https://kubernetes.io/docs/concepts/architecture/garbage-collection/#owners-dependents"
+    },
+    {
+      "text": "Controller",
+      "url": "https://kubernetes.io/docs/concepts/architecture/controller/"
+    },
+    {
+      "text": "DNS subdomain",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names"
+    },
+    {
+      "text": "DNS label",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names"
+    },
+    {
+      "text": "pod template",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates"
+    },
+    {
+      "text": "restart policy",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy"
+    },
+    {
+      "text": "label selector",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
+    },
+    {
+      "text": "earlier",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#how-a-replicaset-works"
+    },
+    {
+      "text": "Garbage collector",
+      "url": "https://kubernetes.io/docs/concepts/architecture/garbage-collection/"
+    },
+    {
+      "text": "Deployment",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#creating-a-deployment"
+    },
+    {
+      "text": "feature gate",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/"
+    },
+    {
+      "text": "API server",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/"
+    },
+    {
+      "text": "kube-controller-manager",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/"
+    },
+    {
+      "text": "Horizontal Pod Autoscalers (HPA)",
+      "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"
+    },
+    {
+      "text": "ReplicationControllers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/"
+    },
+    {
+      "text": "labels user guide",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-010.html",
+  "raw_sha256": "sha256:1375876893290632ebf97610e3219d10a839c856a938a6b691c76da5b9bea30b",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
+  "statistics": {
+    "block_count": 113,
+    "character_count": 19380,
+    "code_block_count": 24,
+    "heading_count": 27,
+    "link_count": 16,
+    "list_count": 3,
+    "paragraph_count": 59,
+    "table_count": 0,
+    "word_count": 2682
+  },
+  "title": "ReplicaSets"
+}

@@ -1,0 +1,585 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "DNS for Services and Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Kubernetes creates DNS records for Services and Pods. You can contact\nServices with consistent DNS names instead of IP addresses.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Kubernetes publishes information about Pods and Services which is used\nto program DNS. kubelet configures Pods' DNS so that running containers\ncan look up Services by name rather than IP.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "Services defined in the cluster are assigned DNS names. By default, a\nclient Pod's DNS search list includes the Pod's own namespace and the\ncluster's default domain.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 3,
+      "text": "Namespaces of Services",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "A DNS query may return different results based on the namespace of the Pod making\nit. DNS queries that don't specify a namespace are limited to the Pod's\nnamespace. Access Services in other namespaces by specifying it in the DNS query.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "For example, consider a Pod in a `test` namespace. A `data` Service is in\nthe `prod` namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "A query for `data` returns no results, because it uses the Pod's `test` namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "A query for `data.prod` returns the intended result, because it specifies the\nnamespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "text": "DNS queries may be expanded using the Pod's `/etc/resolv.conf`. kubelet\nconfigures this file for each Pod. For example, a query for just `data` may be\nexpanded to `data.test.svc.cluster.local`. The values of the `search` option\nare used to expand queries. To learn more about DNS queries, see\n[the `resolv.conf` manual page](https://www.man7.org/linux/man-pages/man5/resolv.conf.5.html).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "language": null,
+      "text": "nameserver 10.32.0.10\nsearch <namespace>.svc.cluster.local svc.cluster.local cluster.local\noptions ndots:5",
+      "type": "code"
+    },
+    {
+      "block_index": 11,
+      "text": "In summary, a Pod in the *test* namespace can successfully resolve either\n`data.prod` or `data.prod.svc.cluster.local`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "level": 3,
+      "text": "DNS Records",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "What objects get DNS records?",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "ordered": true,
+      "text": "1. Services\n2. Pods",
+      "type": "list"
+    },
+    {
+      "block_index": 15,
+      "text": "The following sections detail the supported DNS record types and layout that is\nsupported. Any other layout or names or queries that happen to work are\nconsidered implementation details and are subject to change without warning.\nFor more up-to-date specification, see\n[Kubernetes DNS-Based Service Discovery](https://github.com/kubernetes/dns/blob/master/docs/specification.md).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "level": 2,
+      "text": "Services",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "level": 3,
+      "text": "A/AAAA records",
+      "type": "heading"
+    },
+    {
+      "block_index": 18,
+      "text": "\"Normal\" (not headless) Services are assigned DNS A and/or AAAA records,\ndepending on the IP family or families of the Service, with a name of the form\n`my-svc.my-namespace.svc.cluster-domain.example`. This resolves to the cluster IP\nof the Service.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "text": "[Headless Services](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services)\n(without a cluster IP) are also assigned DNS A and/or AAAA records,\nwith a name of the form `my-svc.my-namespace.svc.cluster-domain.example`. Unlike normal\nServices, this resolves to the set of IPs of all of the Pods selected by the Service.\nClients are expected to consume the set or else use standard round-robin\nselection from the set.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "SRV records",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "SRV Records are created for named ports that are part of normal or headless\nservices.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "ordered": false,
+      "text": "- For each named port, the SRV record has the form _port-name._port-protocol.my-svc.my-namespace.svc.cluster-domain.example .\n- For a regular Service, this resolves to the port number and the domain name: my-svc.my-namespace.svc.cluster-domain.example .\n- For a headless Service, this resolves to multiple answers, one for each Pod that is backing the Service, and contains the port number and the domain name of the Pod of the form hostname.my-svc.my-namespace.svc.cluster-domain.example .",
+      "type": "list"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "A/AAAA records",
+      "type": "heading"
+    },
+    {
+      "block_index": 25,
+      "text": "Kube-DNS versions, prior to the implementation of the\n[DNS specification](https://github.com/kubernetes/dns/blob/master/docs/specification.md),\nhad the following DNS resolution:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "language": null,
+      "text": "<pod-IPv4-address>.<namespace>.pod.<cluster-domain>",
+      "type": "code"
+    },
+    {
+      "block_index": 27,
+      "text": "For example, if a Pod in the `default` namespace has the IP address 172.17.0.3,\nand the domain name for your cluster is `cluster.local`, then the Pod has a DNS name:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "language": null,
+      "text": "172-17-0-3.default.pod.cluster.local",
+      "type": "code"
+    },
+    {
+      "block_index": 29,
+      "text": "Some cluster DNS mechanisms, like [CoreDNS](https://coredns.io/), also provide `A` records for:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "language": null,
+      "text": "<pod-ipv4-address>.<service-name>.<my-namespace>.svc.<cluster-domain.example>",
+      "type": "code"
+    },
+    {
+      "block_index": 31,
+      "text": "For example, if a Pod in the `cafe` namespace has the IP address 172.17.0.3,\nis an endpoint of a Service named `barista`, and the domain name for your cluster is\n`cluster.local`, then the Pod would have this service-scoped DNS `A` record.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "language": null,
+      "text": "172-17-0-3.barista.cafe.svc.cluster.local",
+      "type": "code"
+    },
+    {
+      "block_index": 33,
+      "level": 3,
+      "text": "Pod's hostname and subdomain fields",
+      "type": "heading"
+    },
+    {
+      "block_index": 34,
+      "text": "Currently when a Pod is created, its hostname (as observed from within the Pod)\nis the Pod's `metadata.name` value.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "The Pod spec has an optional `hostname` field, which can be used to specify a\ndifferent hostname. When specified, it takes precedence over the Pod's name to be\nthe hostname of the Pod (again, as observed from within the Pod). For example,\ngiven a Pod with `spec.hostname` set to `\"my-host\"`, the Pod will have its\nhostname set to `\"my-host\"`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "text": "The Pod spec also has an optional `subdomain` field which can be used to indicate\nthat the pod is part of sub-group of the namespace. For example, a Pod with `spec.hostname`\nset to `\"foo\"`, and `spec.subdomain` set to `\"bar\"`, in namespace `\"my-namespace\"`, will\nhave its hostname set to `\"foo\"` and its fully qualified domain name (FQDN) set to\n`\"foo.bar.my-namespace.svc.cluster.local\"` (once more, as observed from within\nthe Pod).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "text": "If there exists a headless Service in the same namespace as the Pod, with\nthe same name as the subdomain, the cluster's DNS Server also returns A and/or AAAA\nrecords for the Pod's fully qualified hostname.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "text": "Example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Service\nmetadata:\n  name: busybox-subdomain\nspec:\n  selector:\n    name: busybox\n  clusterIP: None\n  ports:\n  - name: foo # name is not required for single-port Services\n    port: 1234\n---\napiVersion: v1\nkind: Pod\nmetadata:\n  name: busybox1\n  labels:\n    name: busybox\nspec:\n  hostname: busybox-1\n  subdomain: busybox-subdomain\n  containers:\n  - image: busybox:1.28\n    command:\n      - sleep\n      - \"3600\"\n    name: busybox\n---\napiVersion: v1\nkind: Pod\nmetadata:\n  name: busybox2\n  labels:\n    name: busybox\nspec:\n  hostname: busybox-2\n  subdomain: busybox-subdomain\n  containers:\n  - image: busybox:1.28\n    command:\n      - sleep\n      - \"3600\"\n    name: busybox",
+      "type": "code"
+    },
+    {
+      "block_index": 40,
+      "text": "Given the above Service `\"busybox-subdomain\"` and the Pods which set `spec.subdomain`\nto `\"busybox-subdomain\"`, the first Pod will see its own FQDN as\n`\"busybox-1.busybox-subdomain.my-namespace.svc.cluster-domain.example\"`. DNS serves\nA and/or AAAA records at that name, pointing to the Pod's IP. Both Pods \"`busybox1`\" and\n\"`busybox2`\" will have their own address records.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 41,
+      "text": "An [EndpointSlice](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/) can specify\nthe DNS hostname for any endpoint addresses, along with its IP.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 43,
+      "level": 3,
+      "text": "Pod's setHostnameAsFQDN field",
+      "type": "heading"
+    },
+    {
+      "block_index": 44,
+      "text": "When a Pod is configured to have fully qualified domain name (FQDN), its\nhostname is the short hostname. For example, if you have a Pod with the fully\nqualified domain name `busybox-1.busybox-subdomain.my-namespace.svc.cluster-domain.example`,\nthen by default the `hostname` command inside that Pod returns `busybox-1` and the\n`hostname --fqdn` command returns the FQDN.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 45,
+      "text": "When you set `setHostnameAsFQDN: true` in the Pod spec, the kubelet writes the Pod's FQDN\ninto the hostname for that Pod's namespace. In this case, both `hostname` and `hostname --fqdn`\nreturn the Pod's FQDN.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "text": "In Linux, the hostname field of the kernel (the `nodename` field of `struct utsname`) is limited to 64 characters.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "text": "If a Pod enables this feature and its FQDN is longer than 64 character, it will fail to start.\nThe Pod will remain in `Pending` status (`ContainerCreating` as seen by `kubectl`) generating\nerror events, such as Failed to construct FQDN from Pod hostname and cluster domain,\nFQDN `long-FQDN` is too long (64 characters is the max, 70 characters requested).\nOne way of improving user experience for this scenario is to create an\n[admission webhook controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#what-are-admission-webhooks)\nto control FQDN size when users create top level objects, for example, Deployment.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 49,
+      "level": 3,
+      "text": "Pod's DNS Policy",
+      "type": "heading"
+    },
+    {
+      "block_index": 50,
+      "text": "DNS policies can be set on a per-Pod basis. Currently Kubernetes supports the\nfollowing Pod-specific DNS policies. These policies are specified in the\n`dnsPolicy` field of a Pod Spec.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "ordered": false,
+      "text": "- \"`Default`\": The Pod inherits the name resolution configuration from the node that the Pods run on. See [related discussion](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/) for more details.\n- \"`ClusterFirst`\": Any DNS query that does not match the configured cluster domain suffix, such as \"`www.kubernetes.io`\", is forwarded to an upstream nameserver by the DNS server. Cluster administrators may have extra stub-domain and upstream DNS servers configured. See [related discussion](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/) for details on how DNS queries are handled in those cases.\n- \"`ClusterFirstWithHostNet`\": For Pods running with hostNetwork, you should explicitly set its DNS policy to \"`ClusterFirstWithHostNet`\". Otherwise, Pods running with hostNetwork and `\"ClusterFirst\"` will fallback to the behavior of the `\"Default\"` policy. Note:This is not supported on Windows. See [below](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#dns-windows) for details.\n- \"`None`\": It allows a Pod to ignore DNS settings from the Kubernetes environment. All DNS settings are supposed to be provided using the `dnsConfig` field in the Pod Spec. See [Pod's DNS config](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config) subsection below.",
+      "type": "list"
+    },
+    {
+      "block_index": 52,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 53,
+      "text": "The example below shows a Pod with its DNS policy set to\n\"`ClusterFirstWithHostNet`\" because it has `hostNetwork` set to `true`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 54,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: busybox\n  namespace: default\nspec:\n  containers:\n  - image: busybox:1.28\n    command:\n      - sleep\n      - \"3600\"\n    imagePullPolicy: IfNotPresent\n    name: busybox\n  restartPolicy: Always\n  hostNetwork: true\n  dnsPolicy: ClusterFirstWithHostNet",
+      "type": "code"
+    },
+    {
+      "block_index": 55,
+      "level": 3,
+      "text": "Pod's DNS Config",
+      "type": "heading"
+    },
+    {
+      "block_index": 56,
+      "text": "Pod's DNS Config allows users more control on the DNS settings for a Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 57,
+      "text": "The `dnsConfig` field is optional and it can work with any `dnsPolicy` settings.\nHowever, when a Pod's `dnsPolicy` is set to \"`None`\", the `dnsConfig` field has\nto be specified.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 58,
+      "text": "Below are the properties a user can specify in the `dnsConfig` field:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "ordered": false,
+      "text": "- nameservers : a list of IP addresses that will be used as DNS servers for the Pod. There can be at most 3 IP addresses specified. When the Pod's dnsPolicy is set to \" None \", the list must contain at least one IP address, otherwise this property is optional. The servers listed will be combined to the base nameservers generated from the specified DNS policy with duplicate addresses removed.\n- searches : a list of DNS search domains for hostname lookup in the Pod. This property is optional. When specified, the provided list will be merged into the base search domain names generated from the chosen DNS policy. Duplicate domain names are removed. Kubernetes allows up to 32 search domains.\n- options : an optional list of objects where each object may have a name property (required) and a value property (optional). The contents in this property will be merged to the options generated from the specified DNS policy. Duplicate entries are removed.",
+      "type": "list"
+    },
+    {
+      "block_index": 60,
+      "text": "The following is an example Pod with custom DNS settings:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 61,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  namespace: default\n  name: dns-example\nspec:\n  containers:\n    - name: test\n      image: nginx\n  dnsPolicy: \"None\"\n  dnsConfig:\n    nameservers:\n      - 192.0.2.1 # this is an example\n    searches:\n      - ns1.svc.cluster-domain.example\n      - my.dns.search.suffix\n    options:\n      - name: ndots\n        value: \"2\"\n      - name: edns0",
+      "type": "code"
+    },
+    {
+      "block_index": 62,
+      "text": "When the Pod above is created, the container `test` gets the following contents\nin its `/etc/resolv.conf` file:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 63,
+      "language": null,
+      "text": "nameserver 192.0.2.1\nsearch ns1.svc.cluster-domain.example my.dns.search.suffix\noptions ndots:2 edns0",
+      "type": "code"
+    },
+    {
+      "block_index": 64,
+      "text": "For IPv6 setup, search path and name server should be set up like this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 65,
+      "language": "shell",
+      "text": "kubectl exec -it dns-example -- cat /etc/resolv.conf",
+      "type": "code"
+    },
+    {
+      "block_index": 66,
+      "text": "The output is similar to this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 67,
+      "language": null,
+      "text": "nameserver 2001:db8:30::a\nsearch default.svc.cluster-domain.example svc.cluster-domain.example cluster-domain.example\noptions ndots:5",
+      "type": "code"
+    },
+    {
+      "block_index": 68,
+      "level": 2,
+      "text": "DNS search domain list limits",
+      "type": "heading"
+    },
+    {
+      "block_index": 69,
+      "text": "Kubernetes itself does not limit the DNS Config until the length of the search\ndomain list exceeds 32 or the total length of all search domains exceeds 2048.\nThis limit applies to the node's resolver configuration file, the Pod's DNS\nConfig, and the merged DNS Config respectively.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 70,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 71,
+      "text": "Some container runtimes of earlier versions may have their own restrictions on\nthe number of DNS search domains. Depending on the container runtime\nenvironment, the pods with a large number of DNS search domains may get stuck in\nthe pending state.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 72,
+      "text": "It is known that containerd v1.5.5 or earlier and CRI-O v1.21 or earlier have\nthis problem.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 73,
+      "level": 2,
+      "text": "DNS resolution on Windows nodes",
+      "type": "heading"
+    },
+    {
+      "block_index": 74,
+      "ordered": false,
+      "text": "- ClusterFirstWithHostNet is not supported for Pods that run on Windows nodes. Windows treats all names with a . as a FQDN and skips FQDN resolution.\n- On Windows, there are multiple DNS resolvers that can be used. As these come with slightly different behaviors, using the `Resolve-DNSName` powershell cmdlet for name query resolutions is recommended.\n- On Linux, you have a DNS suffix list, which is used after resolution of a name as fully qualified has failed. On Windows, you can only have 1 DNS suffix, which is the DNS suffix associated with that Pod's namespace (example: mydns.svc.cluster.local ). Windows can resolve FQDNs, Services, or network name which can be resolved with this single suffix. For example, a Pod spawned in the default namespace, will have the DNS suffix default.svc.cluster.local . Inside a Windows Pod, you can resolve both kubernetes.default.svc.cluster.local and kubernetes , but not the partially qualified names ( kubernetes.default or kubernetes.default.svc ).",
+      "type": "list"
+    },
+    {
+      "block_index": 75,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 76,
+      "text": "For guidance on administering DNS configurations, check\n[Configure DNS Service](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/).",
+      "type": "paragraph"
+    }
+  ],
+  "content": "# DNS for Services and Pods\n\nKubernetes creates DNS records for Services and Pods. You can contact\nServices with consistent DNS names instead of IP addresses.\n\nKubernetes publishes information about Pods and Services which is used\nto program DNS. kubelet configures Pods' DNS so that running containers\ncan look up Services by name rather than IP.\n\nServices defined in the cluster are assigned DNS names. By default, a\nclient Pod's DNS search list includes the Pod's own namespace and the\ncluster's default domain.\n\n### Namespaces of Services\n\nA DNS query may return different results based on the namespace of the Pod making\nit. DNS queries that don't specify a namespace are limited to the Pod's\nnamespace. Access Services in other namespaces by specifying it in the DNS query.\n\nFor example, consider a Pod in a `test` namespace. A `data` Service is in\nthe `prod` namespace.\n\nA query for `data` returns no results, because it uses the Pod's `test` namespace.\n\nA query for `data.prod` returns the intended result, because it specifies the\nnamespace.\n\nDNS queries may be expanded using the Pod's `/etc/resolv.conf`. kubelet\nconfigures this file for each Pod. For example, a query for just `data` may be\nexpanded to `data.test.svc.cluster.local`. The values of the `search` option\nare used to expand queries. To learn more about DNS queries, see\n[the `resolv.conf` manual page](https://www.man7.org/linux/man-pages/man5/resolv.conf.5.html).\n\n```\nnameserver 10.32.0.10\nsearch <namespace>.svc.cluster.local svc.cluster.local cluster.local\noptions ndots:5\n```\n\nIn summary, a Pod in the *test* namespace can successfully resolve either\n`data.prod` or `data.prod.svc.cluster.local`.\n\n### DNS Records\n\nWhat objects get DNS records?\n\n1. Services\n2. Pods\n\nThe following sections detail the supported DNS record types and layout that is\nsupported. Any other layout or names or queries that happen to work are\nconsidered implementation details and are subject to change without warning.\nFor more up-to-date specification, see\n[Kubernetes DNS-Based Service Discovery](https://github.com/kubernetes/dns/blob/master/docs/specification.md).\n\n## Services\n\n### A/AAAA records\n\n\"Normal\" (not headless) Services are assigned DNS A and/or AAAA records,\ndepending on the IP family or families of the Service, with a name of the form\n`my-svc.my-namespace.svc.cluster-domain.example`. This resolves to the cluster IP\nof the Service.\n\n[Headless Services](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services)\n(without a cluster IP) are also assigned DNS A and/or AAAA records,\nwith a name of the form `my-svc.my-namespace.svc.cluster-domain.example`. Unlike normal\nServices, this resolves to the set of IPs of all of the Pods selected by the Service.\nClients are expected to consume the set or else use standard round-robin\nselection from the set.\n\n### SRV records\n\nSRV Records are created for named ports that are part of normal or headless\nservices.\n\n- For each named port, the SRV record has the form _port-name._port-protocol.my-svc.my-namespace.svc.cluster-domain.example .\n- For a regular Service, this resolves to the port number and the domain name: my-svc.my-namespace.svc.cluster-domain.example .\n- For a headless Service, this resolves to multiple answers, one for each Pod that is backing the Service, and contains the port number and the domain name of the Pod of the form hostname.my-svc.my-namespace.svc.cluster-domain.example .\n\n## Pods\n\n### A/AAAA records\n\nKube-DNS versions, prior to the implementation of the\n[DNS specification](https://github.com/kubernetes/dns/blob/master/docs/specification.md),\nhad the following DNS resolution:\n\n```\n<pod-IPv4-address>.<namespace>.pod.<cluster-domain>\n```\n\nFor example, if a Pod in the `default` namespace has the IP address 172.17.0.3,\nand the domain name for your cluster is `cluster.local`, then the Pod has a DNS name:\n\n```\n172-17-0-3.default.pod.cluster.local\n```\n\nSome cluster DNS mechanisms, like [CoreDNS](https://coredns.io/), also provide `A` records for:\n\n```\n<pod-ipv4-address>.<service-name>.<my-namespace>.svc.<cluster-domain.example>\n```\n\nFor example, if a Pod in the `cafe` namespace has the IP address 172.17.0.3,\nis an endpoint of a Service named `barista`, and the domain name for your cluster is\n`cluster.local`, then the Pod would have this service-scoped DNS `A` record.\n\n```\n172-17-0-3.barista.cafe.svc.cluster.local\n```\n\n### Pod's hostname and subdomain fields\n\nCurrently when a Pod is created, its hostname (as observed from within the Pod)\nis the Pod's `metadata.name` value.\n\nThe Pod spec has an optional `hostname` field, which can be used to specify a\ndifferent hostname. When specified, it takes precedence over the Pod's name to be\nthe hostname of the Pod (again, as observed from within the Pod). For example,\ngiven a Pod with `spec.hostname` set to `\"my-host\"`, the Pod will have its\nhostname set to `\"my-host\"`.\n\nThe Pod spec also has an optional `subdomain` field which can be used to indicate\nthat the pod is part of sub-group of the namespace. For example, a Pod with `spec.hostname`\nset to `\"foo\"`, and `spec.subdomain` set to `\"bar\"`, in namespace `\"my-namespace\"`, will\nhave its hostname set to `\"foo\"` and its fully qualified domain name (FQDN) set to\n`\"foo.bar.my-namespace.svc.cluster.local\"` (once more, as observed from within\nthe Pod).\n\nIf there exists a headless Service in the same namespace as the Pod, with\nthe same name as the subdomain, the cluster's DNS Server also returns A and/or AAAA\nrecords for the Pod's fully qualified hostname.\n\nExample:\n\n```yaml\napiVersion: v1\nkind: Service\nmetadata:\n  name: busybox-subdomain\nspec:\n  selector:\n    name: busybox\n  clusterIP: None\n  ports:\n  - name: foo # name is not required for single-port Services\n    port: 1234\n---\napiVersion: v1\nkind: Pod\nmetadata:\n  name: busybox1\n  labels:\n    name: busybox\nspec:\n  hostname: busybox-1\n  subdomain: busybox-subdomain\n  containers:\n  - image: busybox:1.28\n    command:\n      - sleep\n      - \"3600\"\n    name: busybox\n---\napiVersion: v1\nkind: Pod\nmetadata:\n  name: busybox2\n  labels:\n    name: busybox\nspec:\n  hostname: busybox-2\n  subdomain: busybox-subdomain\n  containers:\n  - image: busybox:1.28\n    command:\n      - sleep\n      - \"3600\"\n    name: busybox\n```\n\nGiven the above Service `\"busybox-subdomain\"` and the Pods which set `spec.subdomain`\nto `\"busybox-subdomain\"`, the first Pod will see its own FQDN as\n`\"busybox-1.busybox-subdomain.my-namespace.svc.cluster-domain.example\"`. DNS serves\nA and/or AAAA records at that name, pointing to the Pod's IP. Both Pods \"`busybox1`\" and\n\"`busybox2`\" will have their own address records.\n\nAn [EndpointSlice](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/) can specify\nthe DNS hostname for any endpoint addresses, along with its IP.\n\n#### Note:\n\n### Pod's setHostnameAsFQDN field\n\nWhen a Pod is configured to have fully qualified domain name (FQDN), its\nhostname is the short hostname. For example, if you have a Pod with the fully\nqualified domain name `busybox-1.busybox-subdomain.my-namespace.svc.cluster-domain.example`,\nthen by default the `hostname` command inside that Pod returns `busybox-1` and the\n`hostname --fqdn` command returns the FQDN.\n\nWhen you set `setHostnameAsFQDN: true` in the Pod spec, the kubelet writes the Pod's FQDN\ninto the hostname for that Pod's namespace. In this case, both `hostname` and `hostname --fqdn`\nreturn the Pod's FQDN.\n\n#### Note:\n\nIn Linux, the hostname field of the kernel (the `nodename` field of `struct utsname`) is limited to 64 characters.\n\nIf a Pod enables this feature and its FQDN is longer than 64 character, it will fail to start.\nThe Pod will remain in `Pending` status (`ContainerCreating` as seen by `kubectl`) generating\nerror events, such as Failed to construct FQDN from Pod hostname and cluster domain,\nFQDN `long-FQDN` is too long (64 characters is the max, 70 characters requested).\nOne way of improving user experience for this scenario is to create an\n[admission webhook controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#what-are-admission-webhooks)\nto control FQDN size when users create top level objects, for example, Deployment.\n\n### Pod's DNS Policy\n\nDNS policies can be set on a per-Pod basis. Currently Kubernetes supports the\nfollowing Pod-specific DNS policies. These policies are specified in the\n`dnsPolicy` field of a Pod Spec.\n\n- \"`Default`\": The Pod inherits the name resolution configuration from the node that the Pods run on. See [related discussion](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/) for more details.\n- \"`ClusterFirst`\": Any DNS query that does not match the configured cluster domain suffix, such as \"`www.kubernetes.io`\", is forwarded to an upstream nameserver by the DNS server. Cluster administrators may have extra stub-domain and upstream DNS servers configured. See [related discussion](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/) for details on how DNS queries are handled in those cases.\n- \"`ClusterFirstWithHostNet`\": For Pods running with hostNetwork, you should explicitly set its DNS policy to \"`ClusterFirstWithHostNet`\". Otherwise, Pods running with hostNetwork and `\"ClusterFirst\"` will fallback to the behavior of the `\"Default\"` policy. Note:This is not supported on Windows. See [below](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#dns-windows) for details.\n- \"`None`\": It allows a Pod to ignore DNS settings from the Kubernetes environment. All DNS settings are supposed to be provided using the `dnsConfig` field in the Pod Spec. See [Pod's DNS config](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config) subsection below.\n\n#### Note:\n\nThe example below shows a Pod with its DNS policy set to\n\"`ClusterFirstWithHostNet`\" because it has `hostNetwork` set to `true`.\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: busybox\n  namespace: default\nspec:\n  containers:\n  - image: busybox:1.28\n    command:\n      - sleep\n      - \"3600\"\n    imagePullPolicy: IfNotPresent\n    name: busybox\n  restartPolicy: Always\n  hostNetwork: true\n  dnsPolicy: ClusterFirstWithHostNet\n```\n\n### Pod's DNS Config\n\nPod's DNS Config allows users more control on the DNS settings for a Pod.\n\nThe `dnsConfig` field is optional and it can work with any `dnsPolicy` settings.\nHowever, when a Pod's `dnsPolicy` is set to \"`None`\", the `dnsConfig` field has\nto be specified.\n\nBelow are the properties a user can specify in the `dnsConfig` field:\n\n- nameservers : a list of IP addresses that will be used as DNS servers for the Pod. There can be at most 3 IP addresses specified. When the Pod's dnsPolicy is set to \" None \", the list must contain at least one IP address, otherwise this property is optional. The servers listed will be combined to the base nameservers generated from the specified DNS policy with duplicate addresses removed.\n- searches : a list of DNS search domains for hostname lookup in the Pod. This property is optional. When specified, the provided list will be merged into the base search domain names generated from the chosen DNS policy. Duplicate domain names are removed. Kubernetes allows up to 32 search domains.\n- options : an optional list of objects where each object may have a name property (required) and a value property (optional). The contents in this property will be merged to the options generated from the specified DNS policy. Duplicate entries are removed.\n\nThe following is an example Pod with custom DNS settings:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  namespace: default\n  name: dns-example\nspec:\n  containers:\n    - name: test\n      image: nginx\n  dnsPolicy: \"None\"\n  dnsConfig:\n    nameservers:\n      - 192.0.2.1 # this is an example\n    searches:\n      - ns1.svc.cluster-domain.example\n      - my.dns.search.suffix\n    options:\n      - name: ndots\n        value: \"2\"\n      - name: edns0\n```\n\nWhen the Pod above is created, the container `test` gets the following contents\nin its `/etc/resolv.conf` file:\n\n```\nnameserver 192.0.2.1\nsearch ns1.svc.cluster-domain.example my.dns.search.suffix\noptions ndots:2 edns0\n```\n\nFor IPv6 setup, search path and name server should be set up like this:\n\n```shell\nkubectl exec -it dns-example -- cat /etc/resolv.conf\n```\n\nThe output is similar to this:\n\n```\nnameserver 2001:db8:30::a\nsearch default.svc.cluster-domain.example svc.cluster-domain.example cluster-domain.example\noptions ndots:5\n```\n\n## DNS search domain list limits\n\nKubernetes itself does not limit the DNS Config until the length of the search\ndomain list exceeds 32 or the total length of all search domains exceeds 2048.\nThis limit applies to the node's resolver configuration file, the Pod's DNS\nConfig, and the merged DNS Config respectively.\n\n#### Note:\n\nSome container runtimes of earlier versions may have their own restrictions on\nthe number of DNS search domains. Depending on the container runtime\nenvironment, the pods with a large number of DNS search domains may get stuck in\nthe pending state.\n\nIt is known that containerd v1.5.5 or earlier and CRI-O v1.21 or earlier have\nthis problem.\n\n## DNS resolution on Windows nodes\n\n- ClusterFirstWithHostNet is not supported for Pods that run on Windows nodes. Windows treats all names with a . as a FQDN and skips FQDN resolution.\n- On Windows, there are multiple DNS resolvers that can be used. As these come with slightly different behaviors, using the `Resolve-DNSName` powershell cmdlet for name query resolutions is recommended.\n- On Linux, you have a DNS suffix list, which is used after resolution of a name as fully qualified has failed. On Windows, you can only have 1 DNS suffix, which is the DNS suffix associated with that Pod's namespace (example: mydns.svc.cluster.local ). Windows can resolve FQDNs, Services, or network name which can be resolved with this single suffix. For example, a Pod spawned in the default namespace, will have the DNS suffix default.svc.cluster.local . Inside a Windows Pod, you can resolve both kubernetes.default.svc.cluster.local and kubernetes , but not the partially qualified names ( kubernetes.default or kubernetes.default.svc ).\n\n## What's next\n\nFor guidance on administering DNS configurations, check\n[Configure DNS Service](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/).\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:e569d332f9e2bc4c7cefd5b94ce232c42b460e4079d1f372d0eb23e034f9afd9",
+  "document_id": "net-007",
+  "domain": "services_networking",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "DNS for Services and Pods"
+    },
+    {
+      "block_index": 4,
+      "level": 3,
+      "text": "Namespaces of Services"
+    },
+    {
+      "block_index": 12,
+      "level": 3,
+      "text": "DNS Records"
+    },
+    {
+      "block_index": 16,
+      "level": 2,
+      "text": "Services"
+    },
+    {
+      "block_index": 17,
+      "level": 3,
+      "text": "A/AAAA records"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "SRV records"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "Pods"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "A/AAAA records"
+    },
+    {
+      "block_index": 33,
+      "level": 3,
+      "text": "Pod's hostname and subdomain fields"
+    },
+    {
+      "block_index": 42,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 43,
+      "level": 3,
+      "text": "Pod's setHostnameAsFQDN field"
+    },
+    {
+      "block_index": 46,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 49,
+      "level": 3,
+      "text": "Pod's DNS Policy"
+    },
+    {
+      "block_index": 52,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 55,
+      "level": 3,
+      "text": "Pod's DNS Config"
+    },
+    {
+      "block_index": 68,
+      "level": 2,
+      "text": "DNS search domain list limits"
+    },
+    {
+      "block_index": 70,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 73,
+      "level": 2,
+      "text": "DNS resolution on Windows nodes"
+    },
+    {
+      "block_index": 75,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Kubernetes DNS-Based Service Discovery",
+      "url": "https://github.com/kubernetes/dns/blob/master/docs/specification.md"
+    },
+    {
+      "text": "Headless Services",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/#headless-services"
+    },
+    {
+      "text": "DNS specification",
+      "url": "https://github.com/kubernetes/dns/blob/master/docs/specification.md"
+    },
+    {
+      "text": "CoreDNS",
+      "url": "https://coredns.io/"
+    },
+    {
+      "text": "EndpointSlice",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/"
+    },
+    {
+      "text": "admission webhook controller",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#what-are-admission-webhooks"
+    },
+    {
+      "text": "related discussion",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/"
+    },
+    {
+      "text": "below",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#dns-windows"
+    },
+    {
+      "text": "Pod's DNS config",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config"
+    },
+    {
+      "text": "Configure DNS Service",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/"
+    }
+  ],
+  "raw_path": "data/raw/documents/net-007.html",
+  "raw_sha256": "sha256:714cb838f22c007dc8a337e9d2112a872aeb042dfb487bbdd7b10ee9ff62fd08",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/",
+  "statistics": {
+    "block_count": 77,
+    "character_count": 14412,
+    "code_block_count": 11,
+    "heading_count": 19,
+    "link_count": 10,
+    "list_count": 5,
+    "paragraph_count": 42,
+    "table_count": 0,
+    "word_count": 2047
+  },
+  "title": "DNS for Services and Pods"
+}

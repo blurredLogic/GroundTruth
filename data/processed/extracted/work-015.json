@@ -1,0 +1,713 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Liveness, Readiness, and Startup Probes",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Kubernetes lets you define *probes* to continuously monitor the health\nof containers in a Pod. A probe is a diagnostic performed periodically\nby the [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) on a container.\nTo perform a diagnostic, the kubelet either executes code within\nthe container or makes a network request.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Based on the probe results, Kubernetes can restart unhealthy containers\nor stop sending traffic to containers that are not ready.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Types of probe",
+      "type": "heading"
+    },
+    {
+      "block_index": 4,
+      "text": "The kubelet can optionally perform and react to three kinds of probes on running\ncontainers, each serving a different purpose:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "ordered": false,
+      "text": "- Startup probe\n- Liveness probe\n- Readiness probe",
+      "type": "list"
+    },
+    {
+      "block_index": 6,
+      "level": 3,
+      "text": "Startup probe",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "text": "Startup probes verify whether the application within a container is started.\nIf a startup probe is configured, Kubernetes does not execute liveness or\nreadiness probes until the startup probe succeeds, allowing the application\ntime to finish its initialization.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "This type of probe is only executed at startup, unlike liveness and readiness\nprobes, which are run periodically.\nIf the startup probe fails, the kubelet kills the container, and the container\nis subjected to its [restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "Liveness probe",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "Liveness probes determine when to restart a container.\nFor example, liveness probes could catch a deadlock, where an application is\nrunning, but unable to make progress. Restarting a container in such a state\ncan help to make the application more available despite bugs.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "If a container fails its liveness probe more times than the configured tolerance,\nthe kubelet restarts that container.\nLiveness probes do not wait for readiness probes to succeed. If you want to\nwait before executing a liveness probe, you can either define\n`initialDelaySeconds` or use a [startup probe](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#startup-probe).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "Liveness probes can be a powerful way to recover from application failures,\nbut they should be used with caution.\nLiveness probes must be configured carefully to ensure that they truly indicate\nunrecoverable application failure, for example a deadlock.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "Incorrect implementation of liveness probes can lead to cascading failures.\nThis results in restarting of container under high load; failed client requests\nas your application became less scalable; and increased workload on remaining\npods due to some failed pods. Understand the difference between liveness and\nreadiness probes and when to apply them for your app.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Readiness probe",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "Readiness probes determine when a container is ready to accept traffic.\nThis is useful when waiting for an application to perform time-consuming initial\ntasks, such as establishing network connections, loading files, and warming\ncaches.\nReadiness probes can also be useful later in the container’s lifecycle,\nfor example, when recovering from temporary faults or overloads.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "If the readiness probe returns a failed state, the\n[EndpointSlice](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/)\ncontroller removes the Pod's IP address from the EndpointSlices of all Services\nthat match the Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "Readiness probes run on the container during its whole lifecycle.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "When to use each probe",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "level": 3,
+      "text": "When should you use a startup probe?",
+      "type": "heading"
+    },
+    {
+      "block_index": 22,
+      "text": "Startup probes are useful for Pods that have containers that take a long time to\ncome into service. Rather than set a long liveness interval, you can configure a\nseparate configuration for probing the container as it starts up, allowing a\ntime longer than the liveness interval would allow.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "If your container usually starts in more than\n\\( initialDelaySeconds + failureThreshold \\times periodSeconds \\), you should specify a\nstartup probe that checks the same endpoint as the liveness probe. The default\nfor `periodSeconds` is 10s. You should then set its `failureThreshold` high\nenough to allow the container to start, without changing the default values of\nthe liveness probe. This helps to protect against deadlocks.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "When should you use a liveness probe?",
+      "type": "heading"
+    },
+    {
+      "block_index": 25,
+      "text": "If the process in your container is able to crash on its own whenever it\nencounters an issue or becomes unhealthy, you do not necessarily need a liveness\nprobe; the kubelet will automatically perform the correct action in accordance\nwith the Pod's `restartPolicy`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "If you'd like your container to be killed and restarted if a probe fails, then\nspecify a liveness probe, and specify a `restartPolicy` of `Always` or\n`OnFailure`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "text": "A common pattern for liveness probes is to use the same low-cost HTTP endpoint\nas for readiness probes, but with a higher `failureThreshold`. This ensures\nthat the pod is observed as not-ready for some period of time before it is hard\nkilled.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "level": 3,
+      "text": "When should you use a readiness probe?",
+      "type": "heading"
+    },
+    {
+      "block_index": 29,
+      "text": "To start sending traffic to a Pod only when a probe succeeds, specify a\nreadiness probe. The readiness probe might be the same as the liveness probe,\nbut the existence of the readiness probe in the spec means that the Pod will\nstart without receiving any traffic and only start receiving traffic after the\nprobe starts succeeding.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "text": "You can also use a readiness probe to let a container take itself down for\nmaintenance, by checking an endpoint specific to readiness that is different\nfrom the liveness probe.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "When your app has a strict dependency on back-end services, you can implement\nboth a liveness and a readiness probe. The liveness probe passes when the app\nitself is healthy, but the readiness probe additionally checks that each\nrequired back-end service is available. This helps you avoid directing traffic\nto Pods that can only respond with error messages.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "text": "For containers that need to work on loading large data, configuration files, or\nmigrations during startup, consider using a [startup probe](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#startup-probe).\nHowever, if you want to detect the difference between an app that has failed\nand an app that is still processing its startup data, you might prefer a readiness probe.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "level": 2,
+      "text": "Check mechanisms",
+      "type": "heading"
+    },
+    {
+      "block_index": 34,
+      "text": "There are four different ways to check a container using a probe. Each probe\nmust define exactly one of these four mechanisms:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "**`exec`**\n: Executes a specified command inside the container. The diagnostic is\nconsidered successful if the command exits with a status code of 0.\n**`grpc`**\n: Performs a remote procedure call using [gRPC](https://grpc.io/). The target\nshould implement [gRPC health checks](https://grpc.io/grpc/core/md_doc_health-checking.html).\nThe diagnostic is considered successful if the `status` of the response is\n`SERVING`. For more details, see [gRPC probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#grpc-probes).\n**`httpGet`**\n: Performs an HTTP `GET` request against the Pod's IP address on a specified\nport and path. The diagnostic is considered successful if the response has a\nstatus code greater than or equal to 200 and less than 400.\nFor more details, see [HTTP probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#http-probes).\n**`tcpSocket`**\n: Performs a TCP check against the Pod's IP address on a specified port. The\ndiagnostic is considered successful if the port is open. If the remote system\n(the container) closes the connection immediately after it opens, this counts\nas healthy.\nFor more details, see [TCP probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#tcp-probes).",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 36,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 37,
+      "level": 2,
+      "text": "Probe results",
+      "type": "heading"
+    },
+    {
+      "block_index": 38,
+      "text": "The kubelet evaluates the result of each probe execution and takes action\naccordingly. Each probe has one of three results:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "text": "**`Success`**\n: The container passed the diagnostic.\n**`Failure`**\n: The container failed the diagnostic. For liveness and startup probes, the\nkubelet kills the container, and the container is subjected to its\n[restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).\nFor readiness probes, the kubelet marks the container as not ready, and the\nPod stops receiving traffic from matching Services.\n**`Unknown`**\n: The diagnostic failed (no action should be taken, and the kubelet will make\nfurther checks).",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 40,
+      "text": "If a container does not provide a particular probe, the kubelet always\nconsiders the result as `Success`. For readiness probes specifically,\nthe result is considered `Failure` before the initial delay.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 41,
+      "level": 2,
+      "text": "Configuration fields",
+      "type": "heading"
+    },
+    {
+      "block_index": 42,
+      "text": "[Probes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#probe-v1-core)\nhave a number of fields that you can use to more precisely control the behavior of startup,\nliveness and readiness checks. For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 43,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: probe-example\nspec:\n  containers:\n  - name: app\n    image: registry.k8s.io/e2e-test-images/agnhost:2.40\n    ports:\n    - containerPort: 8080\n    startupProbe:\n      httpGet:\n        path: /healthz\n        port: 8080\n      failureThreshold: 30\n      periodSeconds: 10\n    livenessProbe:\n      httpGet:\n        path: /healthz\n        port: 8080\n      initialDelaySeconds: 10\n      periodSeconds: 5\n      timeoutSeconds: 3\n      failureThreshold: 3\n    readinessProbe:\n      httpGet:\n        path: /ready\n        port: 8080\n      periodSeconds: 5",
+      "type": "code"
+    },
+    {
+      "block_index": 44,
+      "text": "**`initialDelaySeconds`**\n: Number of seconds after the container has started before startup, liveness or readiness probes are initiated. If a startup probe is defined, liveness and readiness probe delays do not begin until the startup probe has succeeded. In some older Kubernetes versions, the initialDelaySeconds might be ignored if periodSeconds was set to a value higher than initialDelaySeconds. However, in current versions, initialDelaySeconds is always honored and the probe will not start until after this initial delay. Defaults to 0 seconds. Minimum value is 0.\n**`periodSeconds`**\n: How often (in seconds) to perform the probe. Default to 10 seconds. The minimum value is 1. While a container is not Ready, the readiness probe may be executed at times other than the configured `periodSeconds` interval. This is to make the Pod ready faster.\n**`timeoutSeconds`**\n: Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1.\n**`successThreshold`**\n: Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup Probes. Minimum value is 1.\n**`failureThreshold`**\n: After a probe fails `failureThreshold` times in a row, Kubernetes considers that the overall check has failed: the container is *not* ready/healthy/live. Defaults to 3. Minimum value is 1. For the case of a startup or liveness probe, if at least `failureThreshold` probes have failed, Kubernetes treats the container as unhealthy and triggers a restart for that specific container. The kubelet honors the setting of `terminationGracePeriodSeconds` for that container. For a failed readiness probe, the kubelet continues running the container that failed checks, and also continues to run more probes; because the check failed, the kubelet sets the `Ready` [condition](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions) on the Pod to `false`.\n**`terminationGracePeriodSeconds`**\n: configure a grace period for the kubelet to wait between triggering a shut down of the failed container, and then forcing the container runtime to stop that container. The default is to inherit the Pod-level value for `terminationGracePeriodSeconds` (30 seconds if not specified), and the minimum value is 1. See [probe-level `terminationGracePeriodSeconds`](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#probe-level-terminationgraceperiodseconds) for more detail.",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 45,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 46,
+      "level": 3,
+      "text": "Probe-level `terminationGracePeriodSeconds`",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "text": "In 1.25 and above, users can specify a probe-level `terminationGracePeriodSeconds`\nas part of the probe specification. When both a pod- and probe-level\n`terminationGracePeriodSeconds` are set, the kubelet will use the probe-level\nvalue.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "text": "When setting the `terminationGracePeriodSeconds`, note the following:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 49,
+      "ordered": false,
+      "text": "- The kubelet always honors the probe-level terminationGracePeriodSeconds field if it is present on a Pod.\n- If you have existing Pods where the terminationGracePeriodSeconds field is set and you no longer wish to use per-probe termination grace periods, you must delete those existing Pods.",
+      "type": "list"
+    },
+    {
+      "block_index": 50,
+      "text": "For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "language": "yaml",
+      "text": "spec:\n  terminationGracePeriodSeconds: 3600  # pod-level\n  containers:\n  - name: test\n    image: ...\n\n    ports:\n    - name: liveness-port\n      containerPort: 8080\n\n    livenessProbe:\n      httpGet:\n        path: /healthz\n        port: liveness-port\n      failureThreshold: 1\n      periodSeconds: 60\n      # Override pod-level terminationGracePeriodSeconds\n      terminationGracePeriodSeconds: 60",
+      "type": "code"
+    },
+    {
+      "block_index": 52,
+      "text": "Probe-level `terminationGracePeriodSeconds` **cannot** be set for readiness probes.\nIt will be rejected by the API server.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 53,
+      "level": 2,
+      "text": "Probe mechanism details",
+      "type": "heading"
+    },
+    {
+      "block_index": 54,
+      "level": 3,
+      "text": "HTTP probes",
+      "type": "heading"
+    },
+    {
+      "block_index": 55,
+      "text": "[HTTP probes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#httpgetaction-v1-core)\nhave additional fields that can be set on `httpGet`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 56,
+      "ordered": false,
+      "text": "- host : Host name to connect to, defaults to the pod IP. You probably want to set \"Host\" in httpHeaders instead.\n- scheme : Scheme to use for connecting to the host (HTTP or HTTPS). Defaults to \"HTTP\".\n- path : Path to access on the HTTP server. Defaults to \"/\".\n- httpHeaders : Custom headers to set in the request. HTTP allows repeated headers.\n- port : Name or number of the port to access on the container. Number must be in the range 1 to 65535.\n- protocol : Protocol to use for the probe request. Defaults to HTTP1 . Set to HTTP2 to probe over HTTP/2 cleartext (h2c). Requires the H2CContainerProbe feature gate to be enabled.",
+      "type": "list"
+    },
+    {
+      "block_index": 57,
+      "text": "For an HTTP probe, the kubelet sends an HTTP request to the specified port and\npath to perform the check. The kubelet sends the probe to the Pod's IP address,\nunless the address is overridden by the optional `host` field in `httpGet`. If\n`scheme` field is set to `HTTPS`, the kubelet sends an HTTPS request skipping\nthe certificate verification. In most scenarios, you do not want to set the\n`host` field. Here's one scenario where you would set it. Suppose the container\nlistens on 127.0.0.1 and the Pod's `hostNetwork` field is true. Then `host`,\nunder `httpGet`, should be set to 127.0.0.1. If your pod relies on virtual\nhosts, which is probably the more common case, you should not use `host`, but\nrather set the `Host` header in `httpHeaders`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 58,
+      "text": "For an HTTP probe, the kubelet sends two request headers in addition to the\nmandatory `Host` header:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "ordered": false,
+      "text": "- User-Agent , which defaults to kube-probe/1.37 where 1.37 is the version of the kubelet.\n- Accept , which defaults to */* .",
+      "type": "list"
+    },
+    {
+      "block_index": 60,
+      "text": "You can override these headers by defining `httpHeaders` for the probe.\nFor example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 61,
+      "language": "yaml",
+      "text": "livenessProbe:\n  httpGet:\n    httpHeaders:\n      - name: Accept\n        value: application/json\n\nstartupProbe:\n  httpGet:\n    httpHeaders:\n      - name: User-Agent\n        value: MyUserAgent",
+      "type": "code"
+    },
+    {
+      "block_index": 62,
+      "text": "You can also remove these two headers by defining them with an empty value.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 63,
+      "language": "yaml",
+      "text": "livenessProbe:\n  httpGet:\n    httpHeaders:\n      - name: Accept\n        value: \"\"\n\nstartupProbe:\n  httpGet:\n    httpHeaders:\n      - name: User-Agent\n        value: \"\"",
+      "type": "code"
+    },
+    {
+      "block_index": 64,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [H2CContainerProbe](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#H2CContainerProbe) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 65,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 66,
+      "text": "You can configure an HTTP probe to use HTTP/2 cleartext (h2c) by setting the\n`protocol` field to `HTTP2`. When `protocol` is set to `HTTP2`, the kubelet\nuses h2c (HTTP/2 over plain TCP) instead of HTTP/1.1. The default `protocol`\nis `HTTP1`. Setting `protocol: HTTP2` requires `scheme: HTTP` (the default);\nthe API server rejects the combination of `protocol: HTTP2` with\n`scheme: HTTPS`. For more details, see\n[Use HTTP/2 cleartext (h2c) with HTTP probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#use-h2c-with-http-probes).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 67,
+      "level": 4,
+      "text": "Redirect handling",
+      "type": "heading"
+    },
+    {
+      "block_index": 68,
+      "text": "When the kubelet probes a container using HTTP, it follows redirects only if\nthe redirect is to the same host. This includes redirects that change the\nprotocol from HTTP to HTTPS, even if the probe is configured with\n`scheme: HTTP`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 69,
+      "text": "If the redirect is to a different hostname, the kubelet does not follow it.\nInstead, the kubelet treats the probe as successful and records a\n`ProbeWarning` event.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 70,
+      "text": "If the kubelet follows a redirect and receives 11 or more redirects in total, the probe\nis considered successful and records a `ProbeWarning` event. For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 71,
+      "language": "none",
+      "text": "Events:\n  Type     Reason        Age                     From               Message\n  ----     ------        ----                    ----               -------\n  Normal   Scheduled     29m                     default-scheduler  Successfully assigned default/httpbin-7b8bc9cb85-bjzwn to daocloud\n  Normal   Pulling       29m                     kubelet            Pulling image \"docker.io/kennethreitz/httpbin\"\n  Normal   Pulled        24m                     kubelet            Successfully pulled image \"docker.io/kennethreitz/httpbin\" in 5m12.402735213s\n  Normal   Created       24m                     kubelet            Created container httpbin\n  Normal   Started       24m                     kubelet            Started container httpbin\n Warning  ProbeWarning  4m11s (x1197 over 24m)  kubelet            Readiness probe warning: Probe terminated redirects",
+      "type": "code"
+    },
+    {
+      "block_index": 72,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 73,
+      "text": "When processing an `httpGet` probe, the kubelet stops reading the response body after 10KiB.\nThe probe's success is determined solely by the response status code, which is found in the response headers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 74,
+      "text": "If you probe an endpoint that returns a response body larger than **10KiB**,\nthe kubelet will still mark the probe as successful based on the status code,\nbut it will close the connection after reaching the 10KiB limit.\nThis abrupt closure can cause **connection reset by peer** or **broken pipe errors** to appear in your application's logs,\nwhich can be difficult to distinguish from legitimate network issues.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 75,
+      "text": "For reliable `httpGet` probes, it is strongly recommended to use dedicated health check endpoints\nthat return a minimal response body. If you must use an existing endpoint with a large payload,\nconsider using an `exec` probe to perform a HEAD request instead.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 76,
+      "level": 3,
+      "text": "TCP probes",
+      "type": "heading"
+    },
+    {
+      "block_index": 77,
+      "text": "For a TCP probe, the kubelet makes the probe connection at the node, not in the\nPod, which means that you can not use a service name in the `host` parameter\nsince the kubelet is unable to resolve it.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 78,
+      "level": 3,
+      "text": "gRPC probes",
+      "type": "heading"
+    },
+    {
+      "block_index": 79,
+      "text": "If your application implements the\n[gRPC Health Checking Protocol](https://github.com/grpc/grpc/blob/master/doc/health-checking.md),\nyou can configure Kubernetes to use it for application startup, liveness or readiness checks.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 80,
+      "text": "Here is an example manifest:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 81,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: etcd-with-grpc\nspec:\n  containers:\n  - name: etcd\n    image: registry.k8s.io/etcd:3.5.1-0\n    command: [ \"/usr/local/bin/etcd\", \"--data-dir\",  \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\", \"http://127.0.0.1:2379\", \"--log-level\", \"debug\"]\n    ports:\n    - containerPort: 2379\n    livenessProbe:\n      grpc:\n        port: 2379\n      initialDelaySeconds: 10",
+      "type": "code"
+    },
+    {
+      "block_index": 82,
+      "text": "To use a gRPC probe, `port` must be configured. If you want to\ndistinguish probes of different types and probes for different features you can\nuse the `service` field. You can set `service` to the value `liveness` and make\nyour gRPC Health Checking endpoint respond to this request differently than when\nyou set `service` set to `readiness`. This lets you use the same endpoint for\ndifferent kinds of container health check rather than listening on two different\nports. If you want to specify your own custom service name and also specify a\nprobe type, the Kubernetes project recommends that you use a name that\nconcatenates those. For example: `myservice-liveness` (using `-` as a separator).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 83,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 84,
+      "text": "Configuration problems (for example: incorrect port or service, unimplemented\nhealth checking protocol) are considered a probe failure, similar to HTTP and\nTCP probes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 85,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [GRPCContainerProbeTLS](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GRPCContainerProbeTLS) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 86,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 87,
+      "text": "You can configure a gRPC probe to connect over TLS by setting the `mode` field\nto `TLS`. When `mode` is set to `TLS`, the kubelet uses TLS with\n`InsecureSkipVerify` (it does not verify the server certificate). The default\n`mode` is `Plaintext`. For more details, see\n[Use TLS with gRPC probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#grpc-probe-tls).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 88,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 89,
+      "ordered": false,
+      "text": "- Learn how to Configure Liveness, Readiness and Startup Probes .\n- For the full specification of probe-related fields, see the API reference: Pod , Container , Probe",
+      "type": "list"
+    }
+  ],
+  "content": "# Liveness, Readiness, and Startup Probes\n\nKubernetes lets you define *probes* to continuously monitor the health\nof containers in a Pod. A probe is a diagnostic performed periodically\nby the [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) on a container.\nTo perform a diagnostic, the kubelet either executes code within\nthe container or makes a network request.\n\nBased on the probe results, Kubernetes can restart unhealthy containers\nor stop sending traffic to containers that are not ready.\n\n## Types of probe\n\nThe kubelet can optionally perform and react to three kinds of probes on running\ncontainers, each serving a different purpose:\n\n- Startup probe\n- Liveness probe\n- Readiness probe\n\n### Startup probe\n\nStartup probes verify whether the application within a container is started.\nIf a startup probe is configured, Kubernetes does not execute liveness or\nreadiness probes until the startup probe succeeds, allowing the application\ntime to finish its initialization.\n\nThis type of probe is only executed at startup, unlike liveness and readiness\nprobes, which are run periodically.\nIf the startup probe fails, the kubelet kills the container, and the container\nis subjected to its [restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).\n\n### Liveness probe\n\nLiveness probes determine when to restart a container.\nFor example, liveness probes could catch a deadlock, where an application is\nrunning, but unable to make progress. Restarting a container in such a state\ncan help to make the application more available despite bugs.\n\nIf a container fails its liveness probe more times than the configured tolerance,\nthe kubelet restarts that container.\nLiveness probes do not wait for readiness probes to succeed. If you want to\nwait before executing a liveness probe, you can either define\n`initialDelaySeconds` or use a [startup probe](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#startup-probe).\n\n#### Caution:\n\nLiveness probes can be a powerful way to recover from application failures,\nbut they should be used with caution.\nLiveness probes must be configured carefully to ensure that they truly indicate\nunrecoverable application failure, for example a deadlock.\n\nIncorrect implementation of liveness probes can lead to cascading failures.\nThis results in restarting of container under high load; failed client requests\nas your application became less scalable; and increased workload on remaining\npods due to some failed pods. Understand the difference between liveness and\nreadiness probes and when to apply them for your app.\n\n### Readiness probe\n\nReadiness probes determine when a container is ready to accept traffic.\nThis is useful when waiting for an application to perform time-consuming initial\ntasks, such as establishing network connections, loading files, and warming\ncaches.\nReadiness probes can also be useful later in the container’s lifecycle,\nfor example, when recovering from temporary faults or overloads.\n\nIf the readiness probe returns a failed state, the\n[EndpointSlice](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/)\ncontroller removes the Pod's IP address from the EndpointSlices of all Services\nthat match the Pod.\n\nReadiness probes run on the container during its whole lifecycle.\n\n#### Note:\n\n## When to use each probe\n\n### When should you use a startup probe?\n\nStartup probes are useful for Pods that have containers that take a long time to\ncome into service. Rather than set a long liveness interval, you can configure a\nseparate configuration for probing the container as it starts up, allowing a\ntime longer than the liveness interval would allow.\n\nIf your container usually starts in more than\n\\( initialDelaySeconds + failureThreshold \\times periodSeconds \\), you should specify a\nstartup probe that checks the same endpoint as the liveness probe. The default\nfor `periodSeconds` is 10s. You should then set its `failureThreshold` high\nenough to allow the container to start, without changing the default values of\nthe liveness probe. This helps to protect against deadlocks.\n\n### When should you use a liveness probe?\n\nIf the process in your container is able to crash on its own whenever it\nencounters an issue or becomes unhealthy, you do not necessarily need a liveness\nprobe; the kubelet will automatically perform the correct action in accordance\nwith the Pod's `restartPolicy`.\n\nIf you'd like your container to be killed and restarted if a probe fails, then\nspecify a liveness probe, and specify a `restartPolicy` of `Always` or\n`OnFailure`.\n\nA common pattern for liveness probes is to use the same low-cost HTTP endpoint\nas for readiness probes, but with a higher `failureThreshold`. This ensures\nthat the pod is observed as not-ready for some period of time before it is hard\nkilled.\n\n### When should you use a readiness probe?\n\nTo start sending traffic to a Pod only when a probe succeeds, specify a\nreadiness probe. The readiness probe might be the same as the liveness probe,\nbut the existence of the readiness probe in the spec means that the Pod will\nstart without receiving any traffic and only start receiving traffic after the\nprobe starts succeeding.\n\nYou can also use a readiness probe to let a container take itself down for\nmaintenance, by checking an endpoint specific to readiness that is different\nfrom the liveness probe.\n\nWhen your app has a strict dependency on back-end services, you can implement\nboth a liveness and a readiness probe. The liveness probe passes when the app\nitself is healthy, but the readiness probe additionally checks that each\nrequired back-end service is available. This helps you avoid directing traffic\nto Pods that can only respond with error messages.\n\nFor containers that need to work on loading large data, configuration files, or\nmigrations during startup, consider using a [startup probe](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#startup-probe).\nHowever, if you want to detect the difference between an app that has failed\nand an app that is still processing its startup data, you might prefer a readiness probe.\n\n## Check mechanisms\n\nThere are four different ways to check a container using a probe. Each probe\nmust define exactly one of these four mechanisms:\n\n**`exec`**\n: Executes a specified command inside the container. The diagnostic is\nconsidered successful if the command exits with a status code of 0.\n**`grpc`**\n: Performs a remote procedure call using [gRPC](https://grpc.io/). The target\nshould implement [gRPC health checks](https://grpc.io/grpc/core/md_doc_health-checking.html).\nThe diagnostic is considered successful if the `status` of the response is\n`SERVING`. For more details, see [gRPC probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#grpc-probes).\n**`httpGet`**\n: Performs an HTTP `GET` request against the Pod's IP address on a specified\nport and path. The diagnostic is considered successful if the response has a\nstatus code greater than or equal to 200 and less than 400.\nFor more details, see [HTTP probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#http-probes).\n**`tcpSocket`**\n: Performs a TCP check against the Pod's IP address on a specified port. The\ndiagnostic is considered successful if the port is open. If the remote system\n(the container) closes the connection immediately after it opens, this counts\nas healthy.\nFor more details, see [TCP probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#tcp-probes).\n\n#### Caution:\n\n## Probe results\n\nThe kubelet evaluates the result of each probe execution and takes action\naccordingly. Each probe has one of three results:\n\n**`Success`**\n: The container passed the diagnostic.\n**`Failure`**\n: The container failed the diagnostic. For liveness and startup probes, the\nkubelet kills the container, and the container is subjected to its\n[restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).\nFor readiness probes, the kubelet marks the container as not ready, and the\nPod stops receiving traffic from matching Services.\n**`Unknown`**\n: The diagnostic failed (no action should be taken, and the kubelet will make\nfurther checks).\n\nIf a container does not provide a particular probe, the kubelet always\nconsiders the result as `Success`. For readiness probes specifically,\nthe result is considered `Failure` before the initial delay.\n\n## Configuration fields\n\n[Probes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#probe-v1-core)\nhave a number of fields that you can use to more precisely control the behavior of startup,\nliveness and readiness checks. For example:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: probe-example\nspec:\n  containers:\n  - name: app\n    image: registry.k8s.io/e2e-test-images/agnhost:2.40\n    ports:\n    - containerPort: 8080\n    startupProbe:\n      httpGet:\n        path: /healthz\n        port: 8080\n      failureThreshold: 30\n      periodSeconds: 10\n    livenessProbe:\n      httpGet:\n        path: /healthz\n        port: 8080\n      initialDelaySeconds: 10\n      periodSeconds: 5\n      timeoutSeconds: 3\n      failureThreshold: 3\n    readinessProbe:\n      httpGet:\n        path: /ready\n        port: 8080\n      periodSeconds: 5\n```\n\n**`initialDelaySeconds`**\n: Number of seconds after the container has started before startup, liveness or readiness probes are initiated. If a startup probe is defined, liveness and readiness probe delays do not begin until the startup probe has succeeded. In some older Kubernetes versions, the initialDelaySeconds might be ignored if periodSeconds was set to a value higher than initialDelaySeconds. However, in current versions, initialDelaySeconds is always honored and the probe will not start until after this initial delay. Defaults to 0 seconds. Minimum value is 0.\n**`periodSeconds`**\n: How often (in seconds) to perform the probe. Default to 10 seconds. The minimum value is 1. While a container is not Ready, the readiness probe may be executed at times other than the configured `periodSeconds` interval. This is to make the Pod ready faster.\n**`timeoutSeconds`**\n: Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1.\n**`successThreshold`**\n: Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup Probes. Minimum value is 1.\n**`failureThreshold`**\n: After a probe fails `failureThreshold` times in a row, Kubernetes considers that the overall check has failed: the container is *not* ready/healthy/live. Defaults to 3. Minimum value is 1. For the case of a startup or liveness probe, if at least `failureThreshold` probes have failed, Kubernetes treats the container as unhealthy and triggers a restart for that specific container. The kubelet honors the setting of `terminationGracePeriodSeconds` for that container. For a failed readiness probe, the kubelet continues running the container that failed checks, and also continues to run more probes; because the check failed, the kubelet sets the `Ready` [condition](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions) on the Pod to `false`.\n**`terminationGracePeriodSeconds`**\n: configure a grace period for the kubelet to wait between triggering a shut down of the failed container, and then forcing the container runtime to stop that container. The default is to inherit the Pod-level value for `terminationGracePeriodSeconds` (30 seconds if not specified), and the minimum value is 1. See [probe-level `terminationGracePeriodSeconds`](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#probe-level-terminationgraceperiodseconds) for more detail.\n\n#### Caution:\n\n### Probe-level `terminationGracePeriodSeconds`\n\nIn 1.25 and above, users can specify a probe-level `terminationGracePeriodSeconds`\nas part of the probe specification. When both a pod- and probe-level\n`terminationGracePeriodSeconds` are set, the kubelet will use the probe-level\nvalue.\n\nWhen setting the `terminationGracePeriodSeconds`, note the following:\n\n- The kubelet always honors the probe-level terminationGracePeriodSeconds field if it is present on a Pod.\n- If you have existing Pods where the terminationGracePeriodSeconds field is set and you no longer wish to use per-probe termination grace periods, you must delete those existing Pods.\n\nFor example:\n\n```yaml\nspec:\n  terminationGracePeriodSeconds: 3600  # pod-level\n  containers:\n  - name: test\n    image: ...\n\n    ports:\n    - name: liveness-port\n      containerPort: 8080\n\n    livenessProbe:\n      httpGet:\n        path: /healthz\n        port: liveness-port\n      failureThreshold: 1\n      periodSeconds: 60\n      # Override pod-level terminationGracePeriodSeconds\n      terminationGracePeriodSeconds: 60\n```\n\nProbe-level `terminationGracePeriodSeconds` **cannot** be set for readiness probes.\nIt will be rejected by the API server.\n\n## Probe mechanism details\n\n### HTTP probes\n\n[HTTP probes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#httpgetaction-v1-core)\nhave additional fields that can be set on `httpGet`:\n\n- host : Host name to connect to, defaults to the pod IP. You probably want to set \"Host\" in httpHeaders instead.\n- scheme : Scheme to use for connecting to the host (HTTP or HTTPS). Defaults to \"HTTP\".\n- path : Path to access on the HTTP server. Defaults to \"/\".\n- httpHeaders : Custom headers to set in the request. HTTP allows repeated headers.\n- port : Name or number of the port to access on the container. Number must be in the range 1 to 65535.\n- protocol : Protocol to use for the probe request. Defaults to HTTP1 . Set to HTTP2 to probe over HTTP/2 cleartext (h2c). Requires the H2CContainerProbe feature gate to be enabled.\n\nFor an HTTP probe, the kubelet sends an HTTP request to the specified port and\npath to perform the check. The kubelet sends the probe to the Pod's IP address,\nunless the address is overridden by the optional `host` field in `httpGet`. If\n`scheme` field is set to `HTTPS`, the kubelet sends an HTTPS request skipping\nthe certificate verification. In most scenarios, you do not want to set the\n`host` field. Here's one scenario where you would set it. Suppose the container\nlistens on 127.0.0.1 and the Pod's `hostNetwork` field is true. Then `host`,\nunder `httpGet`, should be set to 127.0.0.1. If your pod relies on virtual\nhosts, which is probably the more common case, you should not use `host`, but\nrather set the `Host` header in `httpHeaders`.\n\nFor an HTTP probe, the kubelet sends two request headers in addition to the\nmandatory `Host` header:\n\n- User-Agent , which defaults to kube-probe/1.37 where 1.37 is the version of the kubelet.\n- Accept , which defaults to */* .\n\nYou can override these headers by defining `httpHeaders` for the probe.\nFor example:\n\n```yaml\nlivenessProbe:\n  httpGet:\n    httpHeaders:\n      - name: Accept\n        value: application/json\n\nstartupProbe:\n  httpGet:\n    httpHeaders:\n      - name: User-Agent\n        value: MyUserAgent\n```\n\nYou can also remove these two headers by defining them with an empty value.\n\n```yaml\nlivenessProbe:\n  httpGet:\n    httpHeaders:\n      - name: Accept\n        value: \"\"\n\nstartupProbe:\n  httpGet:\n    httpHeaders:\n      - name: User-Agent\n        value: \"\"\n```\n\nTo use this feature, you (or a cluster administrator) will need to enable the [H2CContainerProbe](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#H2CContainerProbe) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nYou can configure an HTTP probe to use HTTP/2 cleartext (h2c) by setting the\n`protocol` field to `HTTP2`. When `protocol` is set to `HTTP2`, the kubelet\nuses h2c (HTTP/2 over plain TCP) instead of HTTP/1.1. The default `protocol`\nis `HTTP1`. Setting `protocol: HTTP2` requires `scheme: HTTP` (the default);\nthe API server rejects the combination of `protocol: HTTP2` with\n`scheme: HTTPS`. For more details, see\n[Use HTTP/2 cleartext (h2c) with HTTP probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#use-h2c-with-http-probes).\n\n#### Redirect handling\n\nWhen the kubelet probes a container using HTTP, it follows redirects only if\nthe redirect is to the same host. This includes redirects that change the\nprotocol from HTTP to HTTPS, even if the probe is configured with\n`scheme: HTTP`.\n\nIf the redirect is to a different hostname, the kubelet does not follow it.\nInstead, the kubelet treats the probe as successful and records a\n`ProbeWarning` event.\n\nIf the kubelet follows a redirect and receives 11 or more redirects in total, the probe\nis considered successful and records a `ProbeWarning` event. For example:\n\n```none\nEvents:\n  Type     Reason        Age                     From               Message\n  ----     ------        ----                    ----               -------\n  Normal   Scheduled     29m                     default-scheduler  Successfully assigned default/httpbin-7b8bc9cb85-bjzwn to daocloud\n  Normal   Pulling       29m                     kubelet            Pulling image \"docker.io/kennethreitz/httpbin\"\n  Normal   Pulled        24m                     kubelet            Successfully pulled image \"docker.io/kennethreitz/httpbin\" in 5m12.402735213s\n  Normal   Created       24m                     kubelet            Created container httpbin\n  Normal   Started       24m                     kubelet            Started container httpbin\n Warning  ProbeWarning  4m11s (x1197 over 24m)  kubelet            Readiness probe warning: Probe terminated redirects\n```\n\n#### Caution:\n\nWhen processing an `httpGet` probe, the kubelet stops reading the response body after 10KiB.\nThe probe's success is determined solely by the response status code, which is found in the response headers.\n\nIf you probe an endpoint that returns a response body larger than **10KiB**,\nthe kubelet will still mark the probe as successful based on the status code,\nbut it will close the connection after reaching the 10KiB limit.\nThis abrupt closure can cause **connection reset by peer** or **broken pipe errors** to appear in your application's logs,\nwhich can be difficult to distinguish from legitimate network issues.\n\nFor reliable `httpGet` probes, it is strongly recommended to use dedicated health check endpoints\nthat return a minimal response body. If you must use an existing endpoint with a large payload,\nconsider using an `exec` probe to perform a HEAD request instead.\n\n### TCP probes\n\nFor a TCP probe, the kubelet makes the probe connection at the node, not in the\nPod, which means that you can not use a service name in the `host` parameter\nsince the kubelet is unable to resolve it.\n\n### gRPC probes\n\nIf your application implements the\n[gRPC Health Checking Protocol](https://github.com/grpc/grpc/blob/master/doc/health-checking.md),\nyou can configure Kubernetes to use it for application startup, liveness or readiness checks.\n\nHere is an example manifest:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: etcd-with-grpc\nspec:\n  containers:\n  - name: etcd\n    image: registry.k8s.io/etcd:3.5.1-0\n    command: [ \"/usr/local/bin/etcd\", \"--data-dir\",  \"/var/lib/etcd\", \"--listen-client-urls\", \"http://0.0.0.0:2379\", \"--advertise-client-urls\", \"http://127.0.0.1:2379\", \"--log-level\", \"debug\"]\n    ports:\n    - containerPort: 2379\n    livenessProbe:\n      grpc:\n        port: 2379\n      initialDelaySeconds: 10\n```\n\nTo use a gRPC probe, `port` must be configured. If you want to\ndistinguish probes of different types and probes for different features you can\nuse the `service` field. You can set `service` to the value `liveness` and make\nyour gRPC Health Checking endpoint respond to this request differently than when\nyou set `service` set to `readiness`. This lets you use the same endpoint for\ndifferent kinds of container health check rather than listening on two different\nports. If you want to specify your own custom service name and also specify a\nprobe type, the Kubernetes project recommends that you use a name that\nconcatenates those. For example: `myservice-liveness` (using `-` as a separator).\n\n#### Note:\n\nConfiguration problems (for example: incorrect port or service, unimplemented\nhealth checking protocol) are considered a probe failure, similar to HTTP and\nTCP probes.\n\nTo use this feature, you (or a cluster administrator) will need to enable the [GRPCContainerProbeTLS](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GRPCContainerProbeTLS) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nYou can configure a gRPC probe to connect over TLS by setting the `mode` field\nto `TLS`. When `mode` is set to `TLS`, the kubelet uses TLS with\n`InsecureSkipVerify` (it does not verify the server certificate). The default\n`mode` is `Plaintext`. For more details, see\n[Use TLS with gRPC probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#grpc-probe-tls).\n\n## What's next\n\n- Learn how to Configure Liveness, Readiness and Startup Probes .\n- For the full specification of probe-related fields, see the API reference: Pod , Container , Probe\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:cf54c5df20e3b65af1bf77adeba5169211cff683de6e9b3e23bde9867a237699",
+  "document_id": "work-015",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Liveness, Readiness, and Startup Probes"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Types of probe"
+    },
+    {
+      "block_index": 6,
+      "level": 3,
+      "text": "Startup probe"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "Liveness probe"
+    },
+    {
+      "block_index": 12,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Readiness probe"
+    },
+    {
+      "block_index": 19,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "When to use each probe"
+    },
+    {
+      "block_index": 21,
+      "level": 3,
+      "text": "When should you use a startup probe?"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "When should you use a liveness probe?"
+    },
+    {
+      "block_index": 28,
+      "level": 3,
+      "text": "When should you use a readiness probe?"
+    },
+    {
+      "block_index": 33,
+      "level": 2,
+      "text": "Check mechanisms"
+    },
+    {
+      "block_index": 36,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 37,
+      "level": 2,
+      "text": "Probe results"
+    },
+    {
+      "block_index": 41,
+      "level": 2,
+      "text": "Configuration fields"
+    },
+    {
+      "block_index": 45,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 46,
+      "level": 3,
+      "text": "Probe-level `terminationGracePeriodSeconds`"
+    },
+    {
+      "block_index": 53,
+      "level": 2,
+      "text": "Probe mechanism details"
+    },
+    {
+      "block_index": 54,
+      "level": 3,
+      "text": "HTTP probes"
+    },
+    {
+      "block_index": 67,
+      "level": 4,
+      "text": "Redirect handling"
+    },
+    {
+      "block_index": 72,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 76,
+      "level": 3,
+      "text": "TCP probes"
+    },
+    {
+      "block_index": 78,
+      "level": 3,
+      "text": "gRPC probes"
+    },
+    {
+      "block_index": 83,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 88,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "kubelet",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet"
+    },
+    {
+      "text": "restart policy",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy"
+    },
+    {
+      "text": "startup probe",
+      "url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#startup-probe"
+    },
+    {
+      "text": "EndpointSlice",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/"
+    },
+    {
+      "text": "gRPC",
+      "url": "https://grpc.io/"
+    },
+    {
+      "text": "gRPC health checks",
+      "url": "https://grpc.io/grpc/core/md_doc_health-checking.html"
+    },
+    {
+      "text": "gRPC probes",
+      "url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#grpc-probes"
+    },
+    {
+      "text": "HTTP probes",
+      "url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#http-probes"
+    },
+    {
+      "text": "TCP probes",
+      "url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#tcp-probes"
+    },
+    {
+      "text": "Probes",
+      "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#probe-v1-core"
+    },
+    {
+      "text": "condition",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions"
+    },
+    {
+      "text": "HTTP probes",
+      "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#httpgetaction-v1-core"
+    },
+    {
+      "text": "H2CContainerProbe",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#H2CContainerProbe"
+    },
+    {
+      "text": "Enable Or Disable Feature Gates",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/"
+    },
+    {
+      "text": "Use HTTP/2 cleartext (h2c) with HTTP probes",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#use-h2c-with-http-probes"
+    },
+    {
+      "text": "gRPC Health Checking Protocol",
+      "url": "https://github.com/grpc/grpc/blob/master/doc/health-checking.md"
+    },
+    {
+      "text": "GRPCContainerProbeTLS",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GRPCContainerProbeTLS"
+    },
+    {
+      "text": "Use TLS with gRPC probes",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#grpc-probe-tls"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-015.html",
+  "raw_sha256": "sha256:069b1074e57c6eb61eaddeabe0f19a0578e20e223f2e1c2d7cb8ce5e6b904fbd",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+  "statistics": {
+    "block_count": 90,
+    "character_count": 21687,
+    "code_block_count": 6,
+    "heading_count": 25,
+    "link_count": 18,
+    "list_count": 5,
+    "paragraph_count": 51,
+    "table_count": 0,
+    "word_count": 3018
+  },
+  "title": "Liveness, Readiness, and Startup Probes"
+}

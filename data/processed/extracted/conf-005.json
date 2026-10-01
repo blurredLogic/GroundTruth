@@ -1,0 +1,254 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Organizing Cluster Access Using kubeconfig Files",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Use kubeconfig files to organize information about clusters, users, namespaces, and\nauthentication mechanisms. The `kubectl` command-line tool uses kubeconfig files to\nfind the information it needs to choose a cluster and communicate with the API server\nof a cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "level": 4,
+      "text": "Warning:",
+      "type": "heading"
+    },
+    {
+      "block_index": 4,
+      "text": "By default, `kubectl` looks for a file named `config` in the `$HOME/.kube` directory.\nYou can specify other kubeconfig files by setting the `KUBECONFIG` environment\nvariable or by setting the\n[`--kubeconfig`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl/) flag.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "text": "For step-by-step instructions on creating and specifying kubeconfig files, see\n[Configure Access to Multiple Clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "level": 2,
+      "text": "Supporting multiple clusters, users, and authentication mechanisms",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "text": "Suppose you have several clusters, and your users and components authenticate\nin a variety of ways. For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "ordered": false,
+      "text": "- A running kubelet might authenticate using certificates.\n- A user might authenticate using tokens.\n- Administrators might have sets of certificates that they provide to individual users.",
+      "type": "list"
+    },
+    {
+      "block_index": 9,
+      "text": "With kubeconfig files, you can organize your clusters, users, and namespaces.\nYou can also define contexts to quickly and easily switch between\nclusters and namespaces.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "level": 2,
+      "text": "Context",
+      "type": "heading"
+    },
+    {
+      "block_index": 11,
+      "text": "A *context* element in a kubeconfig file is used to group access parameters\nunder a convenient name. Each context has three parameters: cluster, namespace, and user.\nBy default, the `kubectl` command-line tool uses parameters from\nthe *current context* to communicate with the cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "text": "To choose the current context:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "language": null,
+      "text": "kubectl config use-context",
+      "type": "code"
+    },
+    {
+      "block_index": 14,
+      "level": 2,
+      "text": "The KUBECONFIG environment variable",
+      "type": "heading"
+    },
+    {
+      "block_index": 15,
+      "text": "The `KUBECONFIG` environment variable holds a list of kubeconfig files.\nFor Linux and Mac, the list is colon-delimited. For Windows, the list\nis semicolon-delimited. The `KUBECONFIG` environment variable is not\nrequired. If the `KUBECONFIG` environment variable doesn't exist,\n`kubectl` uses the default kubeconfig file, `$HOME/.kube/config`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "text": "If the `KUBECONFIG` environment variable does exist, `kubectl` uses\nan effective configuration that is the result of merging the files\nlisted in the `KUBECONFIG` environment variable.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "level": 2,
+      "text": "Merging kubeconfig files",
+      "type": "heading"
+    },
+    {
+      "block_index": 18,
+      "text": "To see your configuration, enter this command:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "language": "shell",
+      "text": "kubectl config view",
+      "type": "code"
+    },
+    {
+      "block_index": 20,
+      "text": "As described previously, the output might be from a single kubeconfig file,\nor it might be the result of merging several kubeconfig files.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "text": "Here are the rules that `kubectl` uses when it merges kubeconfig files:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "ordered": true,
+      "text": "1. If the `--kubeconfig` flag is set, use only the specified file. Do not merge. Only one instance of this flag is allowed. Otherwise, if the `KUBECONFIG` environment variable is set, use it as a list of files that should be merged. Merge the files listed in the `KUBECONFIG` environment variable according to these rules: For an example of setting the `KUBECONFIG` environment variable, see [Setting the KUBECONFIG environment variable](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/#set-the-kubeconfig-environment-variable). Otherwise, use the default kubeconfig file, `$HOME/.kube/config`, with no merging.\n- Ignore empty filenames.\n  - Produce errors for files with content that cannot be deserialized.\n  - The first file to set a particular value or map key wins.\n  - Never change the value or map key. Example: Preserve the context of the first file to set current-context . Example: If two files specify a red-user , use only values from the first file's red-user . Even if the second file has non-conflicting entries under red-user , discard them.\n2. Determine the context to use based on the first hit in this chain: An empty context is allowed at this point.\n1. Use the --context command-line flag if it exists.\n  2. Use the current-context from the merged kubeconfig files.\n3. Determine the cluster and user. At this point, there might or might not be a context. Determine the cluster and user based on the first hit in this chain, which is run twice: once for user and once for cluster: The user and cluster can be empty at this point.\n1. Use a command-line flag if it exists: --user or --cluster .\n  2. If the context is non-empty, take the user or cluster from the context.\n4. Determine the actual cluster information to use. At this point, there might or might not be cluster information. Build each piece of the cluster information based on this chain; the first hit wins:\n1. Use command line flags if they exist: --server , --certificate-authority , --insecure-skip-tls-verify .\n  2. If any cluster information attributes exist from the merged kubeconfig files, use them.\n  3. If there is no server location, fail.\n5. Determine the actual user information to use. Build user information using the same rules as cluster information, except allow only one authentication technique per user:\n1. Use command line flags if they exist: --client-certificate , --client-key , --username , --password , --token .\n  2. Use the user fields from the merged kubeconfig files.\n  3. If there are two conflicting techniques, fail.\n6. For any information still missing, use default values and potentially prompt for authentication information.",
+      "type": "list"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "File references",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "File and path references in a kubeconfig file are relative to the location of the kubeconfig file.\nFile references on the command line are relative to the current working directory.\nIn `$HOME/.kube/config`, relative paths are stored relatively, and absolute paths\nare stored absolutely.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "level": 2,
+      "text": "Proxy",
+      "type": "heading"
+    },
+    {
+      "block_index": 26,
+      "text": "You can configure `kubectl` to use a proxy per cluster using `proxy-url` in your kubeconfig file, like this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Config\n\nclusters:\n- cluster:\n    proxy-url: http://proxy.example.org:3128\n    server: https://k8s.example.org/k8s/clusters/c-xxyyzz\n  name: development\n\nusers:\n- name: developer\n\ncontexts:\n- context:\n  name: development",
+      "type": "code"
+    },
+    {
+      "block_index": 28,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 29,
+      "ordered": false,
+      "text": "- Configure Access to Multiple Clusters\n- `kubectl config`",
+      "type": "list"
+    }
+  ],
+  "content": "# Organizing Cluster Access Using kubeconfig Files\n\nUse kubeconfig files to organize information about clusters, users, namespaces, and\nauthentication mechanisms. The `kubectl` command-line tool uses kubeconfig files to\nfind the information it needs to choose a cluster and communicate with the API server\nof a cluster.\n\n#### Note:\n\n#### Warning:\n\nBy default, `kubectl` looks for a file named `config` in the `$HOME/.kube` directory.\nYou can specify other kubeconfig files by setting the `KUBECONFIG` environment\nvariable or by setting the\n[`--kubeconfig`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl/) flag.\n\nFor step-by-step instructions on creating and specifying kubeconfig files, see\n[Configure Access to Multiple Clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/).\n\n## Supporting multiple clusters, users, and authentication mechanisms\n\nSuppose you have several clusters, and your users and components authenticate\nin a variety of ways. For example:\n\n- A running kubelet might authenticate using certificates.\n- A user might authenticate using tokens.\n- Administrators might have sets of certificates that they provide to individual users.\n\nWith kubeconfig files, you can organize your clusters, users, and namespaces.\nYou can also define contexts to quickly and easily switch between\nclusters and namespaces.\n\n## Context\n\nA *context* element in a kubeconfig file is used to group access parameters\nunder a convenient name. Each context has three parameters: cluster, namespace, and user.\nBy default, the `kubectl` command-line tool uses parameters from\nthe *current context* to communicate with the cluster.\n\nTo choose the current context:\n\n```\nkubectl config use-context\n```\n\n## The KUBECONFIG environment variable\n\nThe `KUBECONFIG` environment variable holds a list of kubeconfig files.\nFor Linux and Mac, the list is colon-delimited. For Windows, the list\nis semicolon-delimited. The `KUBECONFIG` environment variable is not\nrequired. If the `KUBECONFIG` environment variable doesn't exist,\n`kubectl` uses the default kubeconfig file, `$HOME/.kube/config`.\n\nIf the `KUBECONFIG` environment variable does exist, `kubectl` uses\nan effective configuration that is the result of merging the files\nlisted in the `KUBECONFIG` environment variable.\n\n## Merging kubeconfig files\n\nTo see your configuration, enter this command:\n\n```shell\nkubectl config view\n```\n\nAs described previously, the output might be from a single kubeconfig file,\nor it might be the result of merging several kubeconfig files.\n\nHere are the rules that `kubectl` uses when it merges kubeconfig files:\n\n1. If the `--kubeconfig` flag is set, use only the specified file. Do not merge. Only one instance of this flag is allowed. Otherwise, if the `KUBECONFIG` environment variable is set, use it as a list of files that should be merged. Merge the files listed in the `KUBECONFIG` environment variable according to these rules: For an example of setting the `KUBECONFIG` environment variable, see [Setting the KUBECONFIG environment variable](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/#set-the-kubeconfig-environment-variable). Otherwise, use the default kubeconfig file, `$HOME/.kube/config`, with no merging.\n- Ignore empty filenames.\n  - Produce errors for files with content that cannot be deserialized.\n  - The first file to set a particular value or map key wins.\n  - Never change the value or map key. Example: Preserve the context of the first file to set current-context . Example: If two files specify a red-user , use only values from the first file's red-user . Even if the second file has non-conflicting entries under red-user , discard them.\n2. Determine the context to use based on the first hit in this chain: An empty context is allowed at this point.\n1. Use the --context command-line flag if it exists.\n  2. Use the current-context from the merged kubeconfig files.\n3. Determine the cluster and user. At this point, there might or might not be a context. Determine the cluster and user based on the first hit in this chain, which is run twice: once for user and once for cluster: The user and cluster can be empty at this point.\n1. Use a command-line flag if it exists: --user or --cluster .\n  2. If the context is non-empty, take the user or cluster from the context.\n4. Determine the actual cluster information to use. At this point, there might or might not be cluster information. Build each piece of the cluster information based on this chain; the first hit wins:\n1. Use command line flags if they exist: --server , --certificate-authority , --insecure-skip-tls-verify .\n  2. If any cluster information attributes exist from the merged kubeconfig files, use them.\n  3. If there is no server location, fail.\n5. Determine the actual user information to use. Build user information using the same rules as cluster information, except allow only one authentication technique per user:\n1. Use command line flags if they exist: --client-certificate , --client-key , --username , --password , --token .\n  2. Use the user fields from the merged kubeconfig files.\n  3. If there are two conflicting techniques, fail.\n6. For any information still missing, use default values and potentially prompt for authentication information.\n\n## File references\n\nFile and path references in a kubeconfig file are relative to the location of the kubeconfig file.\nFile references on the command line are relative to the current working directory.\nIn `$HOME/.kube/config`, relative paths are stored relatively, and absolute paths\nare stored absolutely.\n\n## Proxy\n\nYou can configure `kubectl` to use a proxy per cluster using `proxy-url` in your kubeconfig file, like this:\n\n```yaml\napiVersion: v1\nkind: Config\n\nclusters:\n- cluster:\n    proxy-url: http://proxy.example.org:3128\n    server: https://k8s.example.org/k8s/clusters/c-xxyyzz\n  name: development\n\nusers:\n- name: developer\n\ncontexts:\n- context:\n  name: development\n```\n\n## What's next\n\n- Configure Access to Multiple Clusters\n- `kubectl config`\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:47d15583fa3789fd1ef065e08e5ea6eb837bdcfc9e53f722e8e27b77e643dbde",
+  "document_id": "conf-005",
+  "domain": "configuration",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Organizing Cluster Access Using kubeconfig Files"
+    },
+    {
+      "block_index": 2,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 3,
+      "level": 4,
+      "text": "Warning:"
+    },
+    {
+      "block_index": 6,
+      "level": 2,
+      "text": "Supporting multiple clusters, users, and authentication mechanisms"
+    },
+    {
+      "block_index": 10,
+      "level": 2,
+      "text": "Context"
+    },
+    {
+      "block_index": 14,
+      "level": 2,
+      "text": "The KUBECONFIG environment variable"
+    },
+    {
+      "block_index": 17,
+      "level": 2,
+      "text": "Merging kubeconfig files"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "File references"
+    },
+    {
+      "block_index": 25,
+      "level": 2,
+      "text": "Proxy"
+    },
+    {
+      "block_index": 28,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Configure Access to Multiple Clusters",
+      "url": "https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/"
+    },
+    {
+      "text": "Setting the KUBECONFIG environment variable",
+      "url": "https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/#set-the-kubeconfig-environment-variable"
+    }
+  ],
+  "raw_path": "data/raw/documents/conf-005.html",
+  "raw_sha256": "sha256:dc4b31421be3d9035a10560f7038e4e21cc9327ae9ec04f90b50b6d949de6b15",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/",
+  "statistics": {
+    "block_count": 30,
+    "character_count": 6103,
+    "code_block_count": 3,
+    "heading_count": 10,
+    "link_count": 2,
+    "list_count": 3,
+    "paragraph_count": 14,
+    "table_count": 0,
+    "word_count": 878
+  },
+  "title": "Organizing Cluster Access Using kubeconfig Files"
+}

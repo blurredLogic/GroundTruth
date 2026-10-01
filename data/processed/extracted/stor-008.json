@@ -1,0 +1,446 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Volume Snapshots",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "In Kubernetes, a *VolumeSnapshot* represents a snapshot of a volume on a storage\nsystem. This document assumes that you are already familiar with Kubernetes\n[persistent volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Introduction",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "text": "Similar to how API resources `PersistentVolume` and `PersistentVolumeClaim` are\nused to provision volumes for users and administrators, `VolumeSnapshotContent`\nand `VolumeSnapshot` API resources are provided to create volume snapshots for\nusers and administrators.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "A `VolumeSnapshotContent` is a snapshot taken from a volume in the cluster that\nhas been provisioned by an administrator. It is a resource in the cluster just\nlike a PersistentVolume is a cluster resource.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "text": "A `VolumeSnapshot` is a request for snapshot of a volume by a user. It is similar\nto a PersistentVolumeClaim.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "`VolumeSnapshotClass` allows you to specify different attributes belonging to a\n`VolumeSnapshot`. These attributes may differ among snapshots taken from the same\nvolume on the storage system and therefore cannot be expressed by using the same\n`StorageClass` of a `PersistentVolumeClaim`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "Volume snapshots provide Kubernetes users with a standardized way to copy a volume's\ncontents at a particular point in time without creating an entirely new volume. This\nfunctionality enables, for example, database administrators to backup databases before\nperforming edit or delete modifications.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "Users need to be aware of the following when using this feature:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "ordered": false,
+      "text": "- API Objects VolumeSnapshot , VolumeSnapshotContent , and VolumeSnapshotClass are CRDs , not part of the core API.\n- VolumeSnapshot support is only available for CSI drivers.\n- As part of the deployment process of VolumeSnapshot , the Kubernetes team provides a snapshot controller to be deployed into the control plane, and a sidecar helper container called csi-snapshotter to be deployed together with the CSI driver. The snapshot controller watches VolumeSnapshot and VolumeSnapshotContent objects and is responsible for the creation and deletion of VolumeSnapshotContent object. The sidecar csi-snapshotter watches VolumeSnapshotContent objects and triggers CreateSnapshot and DeleteSnapshot operations against a CSI endpoint.\n- There is also a validating webhook server which provides tightened validation on snapshot objects. This should be installed by the Kubernetes distros along with the snapshot controller and CRDs, not CSI drivers. It should be installed in all Kubernetes clusters that has the snapshot feature enabled.\n- CSI drivers may or may not have implemented the volume snapshot functionality. The CSI drivers that have provided support for volume snapshot will likely use the csi-snapshotter. See CSI Driver documentation for details.\n- The CRDs and snapshot controller installations are the responsibility of the Kubernetes distribution.",
+      "type": "list"
+    },
+    {
+      "block_index": 10,
+      "text": "For advanced use cases, such as creating group snapshots of multiple volumes, see the external\n[CSI Volume Group Snapshot documentation](https://kubernetes-csi.github.io/docs/group-snapshot-restore-feature.html).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "In clusters where a snapshot is only usable from part of the cluster (for example, a\nsnapshot of a volume in one zone of a multi-zone cluster without shared storage),\nthe snapshot's topology can be recorded and honored when restoring from it. For\ndetails, see the external\n[CSI Documentation](https://kubernetes-csi.github.io/docs/introduction.html).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "Lifecycle of a volume snapshot and volume snapshot content",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "`VolumeSnapshotContents` are resources in the cluster. `VolumeSnapshots` are requests\nfor those resources. The interaction between `VolumeSnapshotContents` and `VolumeSnapshots`\nfollow this lifecycle:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "level": 3,
+      "text": "Provisioning Volume Snapshot",
+      "type": "heading"
+    },
+    {
+      "block_index": 15,
+      "text": "There are two ways snapshots may be provisioned: pre-provisioned or dynamically provisioned.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "level": 4,
+      "text": "Pre-provisioned",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "text": "A cluster administrator creates a number of `VolumeSnapshotContents`. They carry the details\nof the real volume snapshot on the storage system which is available for use by cluster users.\nThey exist in the Kubernetes API and are available for consumption.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "level": 4,
+      "text": "Dynamic",
+      "type": "heading"
+    },
+    {
+      "block_index": 19,
+      "text": "Instead of using a pre-existing snapshot, you can request that a snapshot to be dynamically\ntaken from a PersistentVolumeClaim. The [VolumeSnapshotClass](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)\nspecifies storage provider-specific parameters to use when taking a snapshot.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Binding",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "The snapshot controller handles the binding of a `VolumeSnapshot` object with an appropriate\n`VolumeSnapshotContent` object, in both pre-provisioned and dynamically provisioned scenarios.\nThe binding is a one-to-one mapping.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "text": "In the case of pre-provisioned binding, the VolumeSnapshot will remain unbound until the\nrequested VolumeSnapshotContent object is created.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Persistent Volume Claim as Snapshot Source Protection",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "The purpose of this protection is to ensure that in-use\n[PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims)\nAPI objects are not removed from the system while a snapshot is being taken from it\n(as this may result in data loss).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "text": "While a snapshot is being taken of a PersistentVolumeClaim, that PersistentVolumeClaim\nis in-use. If you delete a PersistentVolumeClaim API object in active use as a snapshot\nsource, the PersistentVolumeClaim object is not removed immediately. Instead, removal of\nthe PersistentVolumeClaim object is postponed until the snapshot is readyToUse or aborted.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Delete",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "Deletion is triggered by deleting the `VolumeSnapshot` object, and the `DeletionPolicy`\nwill be followed. If the `DeletionPolicy` is `Delete`, then the underlying storage snapshot\nwill be deleted along with the `VolumeSnapshotContent` object. If the `DeletionPolicy` is\n`Retain`, then both the underlying snapshot and `VolumeSnapshotContent` remain.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "level": 2,
+      "text": "VolumeSnapshots",
+      "type": "heading"
+    },
+    {
+      "block_index": 29,
+      "text": "Each VolumeSnapshot contains a spec and a status.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "language": "yaml",
+      "text": "apiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshot\nmetadata:\n  name: new-snapshot-test\nspec:\n  volumeSnapshotClassName: csi-hostpath-snapclass\n  source:\n    persistentVolumeClaimName: pvc-test",
+      "type": "code"
+    },
+    {
+      "block_index": 31,
+      "text": "`persistentVolumeClaimName` is the name of the PersistentVolumeClaim data source\nfor the snapshot. This field is required for dynamically provisioning a snapshot.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "text": "A volume snapshot can request a particular class by specifying the name of a\n[VolumeSnapshotClass](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)\nusing the attribute `volumeSnapshotClassName`. If nothing is set, then the\ndefault class is used if available.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "text": "For pre-provisioned snapshots, you need to specify a `volumeSnapshotContentName`\nas the source for the snapshot as shown in the following example. The\n`volumeSnapshotContentName` source field is required for pre-provisioned snapshots.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "language": "yaml",
+      "text": "apiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshot\nmetadata:\n  name: test-snapshot\nspec:\n  source:\n    volumeSnapshotContentName: test-content",
+      "type": "code"
+    },
+    {
+      "block_index": 35,
+      "level": 2,
+      "text": "Volume Snapshot Contents",
+      "type": "heading"
+    },
+    {
+      "block_index": 36,
+      "text": "Each VolumeSnapshotContent contains a spec and status. In dynamic provisioning,\nthe snapshot common controller creates `VolumeSnapshotContent` objects. Here is an example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "language": "yaml",
+      "text": "apiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshotContent\nmetadata:\n  name: snapcontent-72d9a349-aacd-42d2-a240-d775650d2455\nspec:\n  deletionPolicy: Delete\n  driver: hostpath.csi.k8s.io\n  source:\n    volumeHandle: ee0cfb94-f8d4-11e9-b2d8-0242ac110002\n  sourceVolumeMode: Filesystem\n  volumeSnapshotClassName: csi-hostpath-snapclass\n  volumeSnapshotRef:\n    name: new-snapshot-test\n    namespace: default\n    uid: 72d9a349-aacd-42d2-a240-d775650d2455",
+      "type": "code"
+    },
+    {
+      "block_index": 38,
+      "text": "`volumeHandle` is the unique identifier of the volume created on the storage\nbackend and returned by the CSI driver during the volume creation. This field\nis required for dynamically provisioning a snapshot.\nIt specifies the volume source of the snapshot.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "text": "For pre-provisioned snapshots, you (as cluster administrator) are responsible\nfor creating the `VolumeSnapshotContent` object as follows.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "language": "yaml",
+      "text": "apiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshotContent\nmetadata:\n  name: new-snapshot-content-test\nspec:\n  deletionPolicy: Delete\n  driver: hostpath.csi.k8s.io\n  source:\n    snapshotHandle: 7bdd0de3-aaeb-11e8-9aae-0242ac110002\n  sourceVolumeMode: Filesystem\n  volumeSnapshotRef:\n    name: new-snapshot-test\n    namespace: default",
+      "type": "code"
+    },
+    {
+      "block_index": 41,
+      "text": "`snapshotHandle` is the unique identifier of the volume snapshot created on\nthe storage backend. This field is required for the pre-provisioned snapshots.\nIt specifies the CSI snapshot id on the storage system that this\n`VolumeSnapshotContent` represents.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "text": "`sourceVolumeMode` is the mode of the volume whose snapshot is taken. The value\nof the `sourceVolumeMode` field can be either `Filesystem` or `Block`. If the\nsource volume mode is not specified, Kubernetes treats the snapshot as if the\nsource volume's mode is unknown.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 43,
+      "text": "`volumeSnapshotRef` is the reference of the corresponding `VolumeSnapshot`. Note that\nwhen the `VolumeSnapshotContent` is being created as a pre-provisioned snapshot, the\n`VolumeSnapshot` referenced in `volumeSnapshotRef` might not exist yet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "level": 2,
+      "text": "Converting the volume mode of a Snapshot",
+      "type": "heading"
+    },
+    {
+      "block_index": 45,
+      "text": "If the `VolumeSnapshots` API installed on your cluster supports the `sourceVolumeMode`\nfield, then the API has the capability to prevent unauthorized users from converting\nthe mode of a volume.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "text": "To check if your cluster has capability for this feature, run the following command:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 47,
+      "language": "yaml",
+      "text": "$ kubectl get crd volumesnapshotcontent -o yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 48,
+      "text": "If you want to allow users to create a `PersistentVolumeClaim` from an existing\n`VolumeSnapshot`, but with a different volume mode than the source, the annotation\n`snapshot.storage.kubernetes.io/allow-volume-mode-change: \"true\"`needs to be added to\nthe `VolumeSnapshotContent` that corresponds to the `VolumeSnapshot`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 49,
+      "text": "For pre-provisioned snapshots, `spec.sourceVolumeMode` needs to be populated\nby the cluster administrator.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 50,
+      "text": "An example `VolumeSnapshotContent` resource with this feature enabled would look like:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "language": "yaml",
+      "text": "apiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshotContent\nmetadata:\n  name: new-snapshot-content-test\n  annotations:\n    - snapshot.storage.kubernetes.io/allow-volume-mode-change: \"true\"\nspec:\n  deletionPolicy: Delete\n  driver: hostpath.csi.k8s.io\n  source:\n    snapshotHandle: 7bdd0de3-aaeb-11e8-9aae-0242ac110002\n  sourceVolumeMode: Filesystem\n  volumeSnapshotRef:\n    name: new-snapshot-test\n    namespace: default",
+      "type": "code"
+    },
+    {
+      "block_index": 52,
+      "level": 2,
+      "text": "Volume Snapshot Topology",
+      "type": "heading"
+    },
+    {
+      "block_index": 53,
+      "text": "In some clusters a snapshot is only usable from part of the cluster. For example, in\na multi-zone cluster where storage is not shared across zones, a snapshot of a volume\nin one zone is only usable from that zone: volumes restored from the snapshot can only\nbe created where the snapshot data resides.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 54,
+      "text": "When the `VolumeSnapshotTopology` feature is enabled, this topology is recorded and\nhonored:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 55,
+      "ordered": false,
+      "text": "- A cluster administrator can set allowedTopologies on a VolumeSnapshotClass to request where dynamically created snapshots should be usable from.\n- The CSI driver reports where a snapshot is usable from, and the csi-snapshotter sidecar records it on VolumeSnapshotContent.spec.nodeAffinity .\n- When you provision a volume from a snapshot, this topology is used to place the restored volume where the snapshot data is accessible.",
+      "type": "list"
+    },
+    {
+      "block_index": 56,
+      "text": "This is an alpha feature of the CSI sidecars, enabled with the\n`VolumeSnapshotTopology` feature gate on the csi-snapshotter and external-provisioner.\nFor details, see the external\n[CSI Documentation](https://kubernetes-csi.github.io/docs/introduction.html).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 57,
+      "level": 2,
+      "text": "Provisioning Volumes from Snapshots",
+      "type": "heading"
+    },
+    {
+      "block_index": 58,
+      "text": "You can provision a new volume, pre-populated with data from a snapshot, by using\nthe *dataSource* field in the `PersistentVolumeClaim` object.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "text": "For more details, see\n[Volume Snapshot and Restore Volume from Snapshot](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-snapshot-and-restore-volume-from-snapshot-support).",
+      "type": "paragraph"
+    }
+  ],
+  "content": "# Volume Snapshots\n\nIn Kubernetes, a *VolumeSnapshot* represents a snapshot of a volume on a storage\nsystem. This document assumes that you are already familiar with Kubernetes\n[persistent volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/).\n\n## Introduction\n\nSimilar to how API resources `PersistentVolume` and `PersistentVolumeClaim` are\nused to provision volumes for users and administrators, `VolumeSnapshotContent`\nand `VolumeSnapshot` API resources are provided to create volume snapshots for\nusers and administrators.\n\nA `VolumeSnapshotContent` is a snapshot taken from a volume in the cluster that\nhas been provisioned by an administrator. It is a resource in the cluster just\nlike a PersistentVolume is a cluster resource.\n\nA `VolumeSnapshot` is a request for snapshot of a volume by a user. It is similar\nto a PersistentVolumeClaim.\n\n`VolumeSnapshotClass` allows you to specify different attributes belonging to a\n`VolumeSnapshot`. These attributes may differ among snapshots taken from the same\nvolume on the storage system and therefore cannot be expressed by using the same\n`StorageClass` of a `PersistentVolumeClaim`.\n\nVolume snapshots provide Kubernetes users with a standardized way to copy a volume's\ncontents at a particular point in time without creating an entirely new volume. This\nfunctionality enables, for example, database administrators to backup databases before\nperforming edit or delete modifications.\n\nUsers need to be aware of the following when using this feature:\n\n- API Objects VolumeSnapshot , VolumeSnapshotContent , and VolumeSnapshotClass are CRDs , not part of the core API.\n- VolumeSnapshot support is only available for CSI drivers.\n- As part of the deployment process of VolumeSnapshot , the Kubernetes team provides a snapshot controller to be deployed into the control plane, and a sidecar helper container called csi-snapshotter to be deployed together with the CSI driver. The snapshot controller watches VolumeSnapshot and VolumeSnapshotContent objects and is responsible for the creation and deletion of VolumeSnapshotContent object. The sidecar csi-snapshotter watches VolumeSnapshotContent objects and triggers CreateSnapshot and DeleteSnapshot operations against a CSI endpoint.\n- There is also a validating webhook server which provides tightened validation on snapshot objects. This should be installed by the Kubernetes distros along with the snapshot controller and CRDs, not CSI drivers. It should be installed in all Kubernetes clusters that has the snapshot feature enabled.\n- CSI drivers may or may not have implemented the volume snapshot functionality. The CSI drivers that have provided support for volume snapshot will likely use the csi-snapshotter. See CSI Driver documentation for details.\n- The CRDs and snapshot controller installations are the responsibility of the Kubernetes distribution.\n\nFor advanced use cases, such as creating group snapshots of multiple volumes, see the external\n[CSI Volume Group Snapshot documentation](https://kubernetes-csi.github.io/docs/group-snapshot-restore-feature.html).\n\nIn clusters where a snapshot is only usable from part of the cluster (for example, a\nsnapshot of a volume in one zone of a multi-zone cluster without shared storage),\nthe snapshot's topology can be recorded and honored when restoring from it. For\ndetails, see the external\n[CSI Documentation](https://kubernetes-csi.github.io/docs/introduction.html).\n\n## Lifecycle of a volume snapshot and volume snapshot content\n\n`VolumeSnapshotContents` are resources in the cluster. `VolumeSnapshots` are requests\nfor those resources. The interaction between `VolumeSnapshotContents` and `VolumeSnapshots`\nfollow this lifecycle:\n\n### Provisioning Volume Snapshot\n\nThere are two ways snapshots may be provisioned: pre-provisioned or dynamically provisioned.\n\n#### Pre-provisioned\n\nA cluster administrator creates a number of `VolumeSnapshotContents`. They carry the details\nof the real volume snapshot on the storage system which is available for use by cluster users.\nThey exist in the Kubernetes API and are available for consumption.\n\n#### Dynamic\n\nInstead of using a pre-existing snapshot, you can request that a snapshot to be dynamically\ntaken from a PersistentVolumeClaim. The [VolumeSnapshotClass](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)\nspecifies storage provider-specific parameters to use when taking a snapshot.\n\n### Binding\n\nThe snapshot controller handles the binding of a `VolumeSnapshot` object with an appropriate\n`VolumeSnapshotContent` object, in both pre-provisioned and dynamically provisioned scenarios.\nThe binding is a one-to-one mapping.\n\nIn the case of pre-provisioned binding, the VolumeSnapshot will remain unbound until the\nrequested VolumeSnapshotContent object is created.\n\n### Persistent Volume Claim as Snapshot Source Protection\n\nThe purpose of this protection is to ensure that in-use\n[PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims)\nAPI objects are not removed from the system while a snapshot is being taken from it\n(as this may result in data loss).\n\nWhile a snapshot is being taken of a PersistentVolumeClaim, that PersistentVolumeClaim\nis in-use. If you delete a PersistentVolumeClaim API object in active use as a snapshot\nsource, the PersistentVolumeClaim object is not removed immediately. Instead, removal of\nthe PersistentVolumeClaim object is postponed until the snapshot is readyToUse or aborted.\n\n### Delete\n\nDeletion is triggered by deleting the `VolumeSnapshot` object, and the `DeletionPolicy`\nwill be followed. If the `DeletionPolicy` is `Delete`, then the underlying storage snapshot\nwill be deleted along with the `VolumeSnapshotContent` object. If the `DeletionPolicy` is\n`Retain`, then both the underlying snapshot and `VolumeSnapshotContent` remain.\n\n## VolumeSnapshots\n\nEach VolumeSnapshot contains a spec and a status.\n\n```yaml\napiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshot\nmetadata:\n  name: new-snapshot-test\nspec:\n  volumeSnapshotClassName: csi-hostpath-snapclass\n  source:\n    persistentVolumeClaimName: pvc-test\n```\n\n`persistentVolumeClaimName` is the name of the PersistentVolumeClaim data source\nfor the snapshot. This field is required for dynamically provisioning a snapshot.\n\nA volume snapshot can request a particular class by specifying the name of a\n[VolumeSnapshotClass](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)\nusing the attribute `volumeSnapshotClassName`. If nothing is set, then the\ndefault class is used if available.\n\nFor pre-provisioned snapshots, you need to specify a `volumeSnapshotContentName`\nas the source for the snapshot as shown in the following example. The\n`volumeSnapshotContentName` source field is required for pre-provisioned snapshots.\n\n```yaml\napiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshot\nmetadata:\n  name: test-snapshot\nspec:\n  source:\n    volumeSnapshotContentName: test-content\n```\n\n## Volume Snapshot Contents\n\nEach VolumeSnapshotContent contains a spec and status. In dynamic provisioning,\nthe snapshot common controller creates `VolumeSnapshotContent` objects. Here is an example:\n\n```yaml\napiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshotContent\nmetadata:\n  name: snapcontent-72d9a349-aacd-42d2-a240-d775650d2455\nspec:\n  deletionPolicy: Delete\n  driver: hostpath.csi.k8s.io\n  source:\n    volumeHandle: ee0cfb94-f8d4-11e9-b2d8-0242ac110002\n  sourceVolumeMode: Filesystem\n  volumeSnapshotClassName: csi-hostpath-snapclass\n  volumeSnapshotRef:\n    name: new-snapshot-test\n    namespace: default\n    uid: 72d9a349-aacd-42d2-a240-d775650d2455\n```\n\n`volumeHandle` is the unique identifier of the volume created on the storage\nbackend and returned by the CSI driver during the volume creation. This field\nis required for dynamically provisioning a snapshot.\nIt specifies the volume source of the snapshot.\n\nFor pre-provisioned snapshots, you (as cluster administrator) are responsible\nfor creating the `VolumeSnapshotContent` object as follows.\n\n```yaml\napiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshotContent\nmetadata:\n  name: new-snapshot-content-test\nspec:\n  deletionPolicy: Delete\n  driver: hostpath.csi.k8s.io\n  source:\n    snapshotHandle: 7bdd0de3-aaeb-11e8-9aae-0242ac110002\n  sourceVolumeMode: Filesystem\n  volumeSnapshotRef:\n    name: new-snapshot-test\n    namespace: default\n```\n\n`snapshotHandle` is the unique identifier of the volume snapshot created on\nthe storage backend. This field is required for the pre-provisioned snapshots.\nIt specifies the CSI snapshot id on the storage system that this\n`VolumeSnapshotContent` represents.\n\n`sourceVolumeMode` is the mode of the volume whose snapshot is taken. The value\nof the `sourceVolumeMode` field can be either `Filesystem` or `Block`. If the\nsource volume mode is not specified, Kubernetes treats the snapshot as if the\nsource volume's mode is unknown.\n\n`volumeSnapshotRef` is the reference of the corresponding `VolumeSnapshot`. Note that\nwhen the `VolumeSnapshotContent` is being created as a pre-provisioned snapshot, the\n`VolumeSnapshot` referenced in `volumeSnapshotRef` might not exist yet.\n\n## Converting the volume mode of a Snapshot\n\nIf the `VolumeSnapshots` API installed on your cluster supports the `sourceVolumeMode`\nfield, then the API has the capability to prevent unauthorized users from converting\nthe mode of a volume.\n\nTo check if your cluster has capability for this feature, run the following command:\n\n```yaml\n$ kubectl get crd volumesnapshotcontent -o yaml\n```\n\nIf you want to allow users to create a `PersistentVolumeClaim` from an existing\n`VolumeSnapshot`, but with a different volume mode than the source, the annotation\n`snapshot.storage.kubernetes.io/allow-volume-mode-change: \"true\"`needs to be added to\nthe `VolumeSnapshotContent` that corresponds to the `VolumeSnapshot`.\n\nFor pre-provisioned snapshots, `spec.sourceVolumeMode` needs to be populated\nby the cluster administrator.\n\nAn example `VolumeSnapshotContent` resource with this feature enabled would look like:\n\n```yaml\napiVersion: snapshot.storage.k8s.io/v1\nkind: VolumeSnapshotContent\nmetadata:\n  name: new-snapshot-content-test\n  annotations:\n    - snapshot.storage.kubernetes.io/allow-volume-mode-change: \"true\"\nspec:\n  deletionPolicy: Delete\n  driver: hostpath.csi.k8s.io\n  source:\n    snapshotHandle: 7bdd0de3-aaeb-11e8-9aae-0242ac110002\n  sourceVolumeMode: Filesystem\n  volumeSnapshotRef:\n    name: new-snapshot-test\n    namespace: default\n```\n\n## Volume Snapshot Topology\n\nIn some clusters a snapshot is only usable from part of the cluster. For example, in\na multi-zone cluster where storage is not shared across zones, a snapshot of a volume\nin one zone is only usable from that zone: volumes restored from the snapshot can only\nbe created where the snapshot data resides.\n\nWhen the `VolumeSnapshotTopology` feature is enabled, this topology is recorded and\nhonored:\n\n- A cluster administrator can set allowedTopologies on a VolumeSnapshotClass to request where dynamically created snapshots should be usable from.\n- The CSI driver reports where a snapshot is usable from, and the csi-snapshotter sidecar records it on VolumeSnapshotContent.spec.nodeAffinity .\n- When you provision a volume from a snapshot, this topology is used to place the restored volume where the snapshot data is accessible.\n\nThis is an alpha feature of the CSI sidecars, enabled with the\n`VolumeSnapshotTopology` feature gate on the csi-snapshotter and external-provisioner.\nFor details, see the external\n[CSI Documentation](https://kubernetes-csi.github.io/docs/introduction.html).\n\n## Provisioning Volumes from Snapshots\n\nYou can provision a new volume, pre-populated with data from a snapshot, by using\nthe *dataSource* field in the `PersistentVolumeClaim` object.\n\nFor more details, see\n[Volume Snapshot and Restore Volume from Snapshot](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-snapshot-and-restore-volume-from-snapshot-support).\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:cbc2487cb72a87bc86508c7dded5b93dfb59d21a6416accc9cdd4c3e610064fb",
+  "document_id": "stor-008",
+  "domain": "storage",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Volume Snapshots"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Introduction"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "Lifecycle of a volume snapshot and volume snapshot content"
+    },
+    {
+      "block_index": 14,
+      "level": 3,
+      "text": "Provisioning Volume Snapshot"
+    },
+    {
+      "block_index": 16,
+      "level": 4,
+      "text": "Pre-provisioned"
+    },
+    {
+      "block_index": 18,
+      "level": 4,
+      "text": "Dynamic"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Binding"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Persistent Volume Claim as Snapshot Source Protection"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Delete"
+    },
+    {
+      "block_index": 28,
+      "level": 2,
+      "text": "VolumeSnapshots"
+    },
+    {
+      "block_index": 35,
+      "level": 2,
+      "text": "Volume Snapshot Contents"
+    },
+    {
+      "block_index": 44,
+      "level": 2,
+      "text": "Converting the volume mode of a Snapshot"
+    },
+    {
+      "block_index": 52,
+      "level": 2,
+      "text": "Volume Snapshot Topology"
+    },
+    {
+      "block_index": 57,
+      "level": 2,
+      "text": "Provisioning Volumes from Snapshots"
+    }
+  ],
+  "links": [
+    {
+      "text": "persistent volumes",
+      "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/"
+    },
+    {
+      "text": "CSI Volume Group Snapshot documentation",
+      "url": "https://kubernetes-csi.github.io/docs/group-snapshot-restore-feature.html"
+    },
+    {
+      "text": "CSI Documentation",
+      "url": "https://kubernetes-csi.github.io/docs/introduction.html"
+    },
+    {
+      "text": "VolumeSnapshotClass",
+      "url": "https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/"
+    },
+    {
+      "text": "PersistentVolumeClaim",
+      "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims"
+    },
+    {
+      "text": "Volume Snapshot and Restore Volume from Snapshot",
+      "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-snapshot-and-restore-volume-from-snapshot-support"
+    }
+  ],
+  "raw_path": "data/raw/documents/stor-008.html",
+  "raw_sha256": "sha256:c36cc9e42c711cd04e08f9c463c42dead34cba70a0cf65c6dd6f55e89be704f3",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+  "statistics": {
+    "block_count": 60,
+    "character_count": 12052,
+    "code_block_count": 6,
+    "heading_count": 14,
+    "link_count": 6,
+    "list_count": 2,
+    "paragraph_count": 38,
+    "table_count": 0,
+    "word_count": 1509
+  },
+  "title": "Volume Snapshots"
+}

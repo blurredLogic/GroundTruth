@@ -1,0 +1,572 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Init Containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "This page provides an overview of init containers: specialized containers that run\nbefore app containers in a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/).\nInit containers can contain utilities or setup scripts not present in an app image.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "You can specify init containers in the Pod specification alongside the `containers`\narray (which describes app containers).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "In Kubernetes, a [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) is a container that\nstarts before the main application container and *continues to run*. This document is about init containers:\ncontainers that run to completion during Pod initialization.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Understanding init containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "A [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) can have multiple containers\nrunning apps within it, but it can also have one or more init containers, which are run\nbefore the app containers are started.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "Init containers are exactly like regular containers, except:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "ordered": false,
+      "text": "- Init containers always run to completion.\n- Each init container must complete successfully before the next one starts.",
+      "type": "list"
+    },
+    {
+      "block_index": 8,
+      "text": "If a Pod's init container fails, the kubelet repeatedly restarts that init container until it succeeds.\nHowever, if the Pod has a `restartPolicy` of Never, and an init container fails during startup of that Pod, Kubernetes treats the overall Pod as failed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "text": "To specify an init container for a Pod, add the `initContainers` field into\nthe [Pod specification](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodSpec),\nas an array of `container` items (similar to the app `containers` field and its contents).\nSee [Container](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#Container) in the\nAPI reference for more details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "text": "The status of the init containers is returned in `.status.initContainerStatuses`\nfield as an array of the container statuses (similar to the `.status.containerStatuses`\nfield).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Differences from regular containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 12,
+      "text": "Init containers support all the fields and features of app containers,\nincluding resource limits, [volumes](https://kubernetes.io/docs/concepts/storage/volumes/), and security settings. However, the\nresource requests and limits for an init container are handled differently,\nas documented in [Resource sharing within containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#resource-sharing-within-containers).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "text": "Regular init containers (in other words: excluding sidecar containers) do not support the\n`lifecycle`, `livenessProbe`, `readinessProbe`, or `startupProbe` fields. Init containers\nmust run to completion before the Pod can be ready; sidecar containers continue running\nduring a Pod's lifetime, and *do* support some probes. See [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\nfor further details about sidecar containers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "If you specify multiple init containers for a Pod, kubelet runs each init\ncontainer sequentially. Each init container must succeed before the next can run.\nWhen all of the init containers have run to completion, kubelet initializes\nthe application containers for the Pod and runs them as usual.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Differences from sidecar containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "Init containers run and complete their tasks before the main application container starts.\nUnlike [sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/),\ninit containers are not continuously running alongside the main containers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "Init containers run to completion sequentially, and the main container does not start\nuntil all the init containers have successfully completed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "init containers do not support `lifecycle`, `livenessProbe`, `readinessProbe`, or\n`startupProbe` whereas sidecar containers support all these [probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe) to control their lifecycle.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "text": "Init containers share the same resources (CPU, memory, network) with the main application\ncontainers but do not interact directly with them. They can, however, use shared volumes\nfor data exchange.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "Using init containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "Because init containers have separate images from app containers, they\nhave some advantages for start-up related code:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "ordered": false,
+      "text": "- Init containers can contain utilities or custom code for setup that are not present in an app image. For example, there is no need to make an image FROM another image just to use a tool like sed , awk , python , or dig during setup.\n- The application image builder and deployer roles can work independently without the need to jointly build a single app image.\n- Init containers can run with a different view of the filesystem than app containers in the same Pod. Consequently, they can be given access to Secrets that app containers cannot access.\n- Because init containers run to completion before any app containers start, init containers offer a mechanism to block or delay app container startup until a set of preconditions are met. Once preconditions are met, all of the app containers in a Pod can start in parallel.\n- Init containers can securely run utilities or custom code that would otherwise make an app container image less secure. By keeping unnecessary tools separate you can limit the attack surface of your app container image.",
+      "type": "list"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Examples",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "Here are some ideas for how to use init containers:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "ordered": false,
+      "text": "- Wait for a [Service](https://kubernetes.io/docs/concepts/services-networking/service/) to be created, using a shell one-line command like: `for i in { 1..100 } ; do sleep 1 ; if nslookup myservice ; then exit 0 ; fi ; done ; exit 1`\n- Register this Pod with a remote server from the downward API with a command like: `curl -X POST http:// $MANAGEMENT_SERVICE_HOST : $MANAGEMENT_SERVICE_PORT /register -d 'instance=$(<POD_NAME>)&ip=$(<POD_IP>)'`\n- Wait for some time before starting the app container with a command like `sleep 60`\n- Clone a Git repository into a [Volume](https://kubernetes.io/docs/concepts/storage/volumes/)\n- Place values into a configuration file and run a template tool to dynamically generate a configuration file for the main app container. For example, place the `POD_IP` value in a configuration and generate the main app configuration file using Jinja.",
+      "type": "list"
+    },
+    {
+      "block_index": 26,
+      "level": 4,
+      "text": "Init containers in use",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "This example defines a simple Pod that has two init containers.\nThe first waits for `myservice`, and the second waits for `mydb`. Once both\ninit containers complete, the Pod runs the app container from its `spec` section.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: myapp-pod\n  labels:\n    app.kubernetes.io/name: MyApp\nspec:\n  containers:\n  - name: myapp-container\n    image: busybox:1.28\n    command: ['sh', '-c', 'echo The app is running! && sleep 3600']\n  initContainers:\n  - name: init-myservice\n    image: busybox:1.28\n    command: ['sh', '-c', \"until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done\"]\n  - name: init-mydb\n    image: busybox:1.28\n    command: ['sh', '-c', \"until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done\"]",
+      "type": "code"
+    },
+    {
+      "block_index": 29,
+      "text": "You can start this Pod by running:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "language": "shell",
+      "text": "kubectl apply -f myapp.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 31,
+      "text": "The output is similar to this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "language": null,
+      "text": "pod/myapp-pod created",
+      "type": "code"
+    },
+    {
+      "block_index": 33,
+      "text": "And check on its status with:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "language": "shell",
+      "text": "kubectl get -f myapp.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 35,
+      "text": "The output is similar to this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "language": null,
+      "text": "NAME        READY     STATUS     RESTARTS   AGE\nmyapp-pod   0/1       Init:0/2   0          6m",
+      "type": "code"
+    },
+    {
+      "block_index": 37,
+      "text": "or for more details:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "language": "shell",
+      "text": "kubectl describe -f myapp.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 39,
+      "text": "The output is similar to this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "language": null,
+      "text": "Name:          myapp-pod\nNamespace:     default\n[...]\nLabels:        app.kubernetes.io/name=MyApp\nStatus:        Pending\n[...]\nInit Containers:\n  init-myservice:\n[...]\n    State:         Running\n[...]\n  init-mydb:\n[...]\n    State:         Waiting\n      Reason:      PodInitializing\n    Ready:         False\n[...]\nContainers:\n  myapp-container:\n[...]\n    State:         Waiting\n      Reason:      PodInitializing\n    Ready:         False\n[...]\nEvents:\n  FirstSeen    LastSeen    Count    From                      SubObjectPath                           Type          Reason        Message\n  ---------    --------    -----    ----                      -------------                           --------      ------        -------\n  16s          16s         1        {default-scheduler }                                              Normal        Scheduled     Successfully assigned myapp-pod to 172.17.4.201\n  16s          16s         1        {kubelet 172.17.4.201}    spec.initContainers{init-myservice}     Normal        Pulling       pulling image \"busybox\"\n  13s          13s         1        {kubelet 172.17.4.201}    spec.initContainers{init-myservice}     Normal        Pulled        Successfully pulled image \"busybox\"\n  13s          13s         1        {kubelet 172.17.4.201}    spec.initContainers{init-myservice}     Normal        Created       Created container init-myservice\n  13s          13s         1        {kubelet 172.17.4.201}    spec.initContainers{init-myservice}     Normal        Started       Started container init-myservice",
+      "type": "code"
+    },
+    {
+      "block_index": 41,
+      "text": "To see logs for the init containers in this Pod, run:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "language": "shell",
+      "text": "kubectl logs myapp-pod -c init-myservice # Inspect the first init container\nkubectl logs myapp-pod -c init-mydb      # Inspect the second init container",
+      "type": "code"
+    },
+    {
+      "block_index": 43,
+      "text": "At this point, those init containers will be waiting to discover [Services](https://kubernetes.io/docs/concepts/services-networking/service/) named\n`mydb` and `myservice`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "text": "Here's a configuration you can use to make those Services appear:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 45,
+      "language": "yaml",
+      "text": "---\napiVersion: v1\nkind: Service\nmetadata:\n  name: myservice\nspec:\n  ports:\n  - protocol: TCP\n    port: 80\n    targetPort: 9376\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: mydb\nspec:\n  ports:\n  - protocol: TCP\n    port: 80\n    targetPort: 9377",
+      "type": "code"
+    },
+    {
+      "block_index": 46,
+      "text": "To create the `mydb` and `myservice` services:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 47,
+      "language": "shell",
+      "text": "kubectl apply -f services.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 48,
+      "text": "The output is similar to this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 49,
+      "language": null,
+      "text": "service/myservice created\nservice/mydb created",
+      "type": "code"
+    },
+    {
+      "block_index": 50,
+      "text": "You'll then see that those init containers complete, and that the `myapp-pod`\nPod moves into the Running state:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "language": "shell",
+      "text": "kubectl get -f myapp.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 52,
+      "text": "The output is similar to this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 53,
+      "language": null,
+      "text": "NAME        READY     STATUS    RESTARTS   AGE\nmyapp-pod   1/1       Running   0          9m",
+      "type": "code"
+    },
+    {
+      "block_index": 54,
+      "text": "This simple example should provide some inspiration for you to create your own\ninit containers. [What's next](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#what-s-next) contains a link to a more detailed example.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 55,
+      "level": 2,
+      "text": "Detailed behavior",
+      "type": "heading"
+    },
+    {
+      "block_index": 56,
+      "text": "During Pod startup, the kubelet delays running init containers until the networking\nand storage are ready. Then the kubelet runs the Pod's init containers in the order\nthey appear in the Pod's spec.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 57,
+      "text": "Each init container must exit successfully before\nthe next container starts. If a container fails to start due to the runtime or\nexits with failure, it is retried according to the Pod `restartPolicy`. However,\nif the Pod `restartPolicy` is set to Always, the init containers use\n`restartPolicy` OnFailure.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 58,
+      "text": "A Pod cannot be `Ready` until all init containers have succeeded. The ports on an\ninit container are not aggregated under a Service. A Pod that is initializing\nis in the `Pending` state but should have a condition `Initialized` set to false.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "text": "If the Pod [restarts](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#pod-restart-reasons), or is restarted, all init containers\nmust execute again.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 60,
+      "text": "Changes to the init container spec are limited to the container image field.\nDirectly altering the `image` field of an init container does *not* restart the\nPod or trigger its recreation. If the Pod has yet to start, that change may\nhave an effect on how the Pod boots up.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 61,
+      "text": "For a [pod template](https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates)\nyou can typically change any field for an init container; the impact of making\nthat change depends on where the pod template is used.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 62,
+      "text": "Because init containers can be restarted, retried, or re-executed, init container\ncode should be idempotent. In particular, code that writes into any `emptyDir` volume\nshould be prepared for the possibility that an output file already exists.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 63,
+      "text": "Init containers have all of the fields of an app container. However, Kubernetes\nprohibits `readinessProbe` from being used because init containers cannot\ndefine readiness distinct from completion. This is enforced during validation.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 64,
+      "text": "Use `activeDeadlineSeconds` on the Pod to prevent init containers from failing forever.\nThe active deadline includes init containers.\nHowever it is recommended to use `activeDeadlineSeconds` only if teams deploy their application\nas a Job, because `activeDeadlineSeconds` has an effect even after initContainer finished.\nThe Pod which is already running correctly would be killed by `activeDeadlineSeconds` if you set.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 65,
+      "text": "The name of each app and init container in a Pod must be unique; a\nvalidation error is thrown for any container sharing a name with another.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 66,
+      "level": 3,
+      "text": "Resource sharing within containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 67,
+      "text": "Given the order of execution for init, sidecar and app containers, the following rules\nfor resource usage apply:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 68,
+      "ordered": false,
+      "text": "- The highest of any particular resource request or limit defined on all init containers is the effective init request/limit . If any resource has no resource limit specified this is considered as the highest limit.\n- The Pod's effective request/limit for a resource is the higher of:\n- the sum of all app containers request/limit for a resource\n  - the effective init request/limit for a resource\n- Scheduling is done based on effective requests/limits, which means init containers can reserve resources for initialization that are not used during the life of the Pod.\n- The QoS (quality of service) tier of the Pod's effective QoS tier is the QoS tier for init containers and app containers alike.",
+      "type": "list"
+    },
+    {
+      "block_index": 69,
+      "text": "Quota and limits are applied based on the effective Pod request and\nlimit.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 70,
+      "level": 3,
+      "text": "Init containers and Linux cgroups",
+      "type": "heading"
+    },
+    {
+      "block_index": 71,
+      "text": "On Linux, resource allocations for Pod level control groups (cgroups) are based on the effective Pod\nrequest and limit, the same as the scheduler.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 72,
+      "level": 3,
+      "text": "Pod restart reasons",
+      "type": "heading"
+    },
+    {
+      "block_index": 73,
+      "text": "A Pod can restart, causing re-execution of init containers, for the following\nreasons:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 74,
+      "ordered": false,
+      "text": "- The Pod infrastructure container is restarted. This is uncommon and would have to be done by someone with root access to nodes.\n- All containers in a Pod are terminated while restartPolicy is set to Always, forcing a restart, and the init container completion record has been lost due to garbage collection .",
+      "type": "list"
+    },
+    {
+      "block_index": 75,
+      "text": "The Pod will not be restarted when the init container image is changed, or the\ninit container completion record has been lost due to garbage collection. This\napplies for Kubernetes v1.20 and later. If you are using an earlier version of\nKubernetes, consult the documentation for the version you are using.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 76,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 77,
+      "text": "Learn more about the following:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 78,
+      "ordered": false,
+      "text": "- Creating a Pod that has an init container .\n- Debug init containers .\n- Overview of kubelet and kubectl .\n- Types of probes : liveness, readiness, startup probe.\n- Sidecar containers .",
+      "type": "list"
+    }
+  ],
+  "content": "# Init Containers\n\nThis page provides an overview of init containers: specialized containers that run\nbefore app containers in a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/).\nInit containers can contain utilities or setup scripts not present in an app image.\n\nYou can specify init containers in the Pod specification alongside the `containers`\narray (which describes app containers).\n\nIn Kubernetes, a [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) is a container that\nstarts before the main application container and *continues to run*. This document is about init containers:\ncontainers that run to completion during Pod initialization.\n\n## Understanding init containers\n\nA [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) can have multiple containers\nrunning apps within it, but it can also have one or more init containers, which are run\nbefore the app containers are started.\n\nInit containers are exactly like regular containers, except:\n\n- Init containers always run to completion.\n- Each init container must complete successfully before the next one starts.\n\nIf a Pod's init container fails, the kubelet repeatedly restarts that init container until it succeeds.\nHowever, if the Pod has a `restartPolicy` of Never, and an init container fails during startup of that Pod, Kubernetes treats the overall Pod as failed.\n\nTo specify an init container for a Pod, add the `initContainers` field into\nthe [Pod specification](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodSpec),\nas an array of `container` items (similar to the app `containers` field and its contents).\nSee [Container](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#Container) in the\nAPI reference for more details.\n\nThe status of the init containers is returned in `.status.initContainerStatuses`\nfield as an array of the container statuses (similar to the `.status.containerStatuses`\nfield).\n\n### Differences from regular containers\n\nInit containers support all the fields and features of app containers,\nincluding resource limits, [volumes](https://kubernetes.io/docs/concepts/storage/volumes/), and security settings. However, the\nresource requests and limits for an init container are handled differently,\nas documented in [Resource sharing within containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#resource-sharing-within-containers).\n\nRegular init containers (in other words: excluding sidecar containers) do not support the\n`lifecycle`, `livenessProbe`, `readinessProbe`, or `startupProbe` fields. Init containers\nmust run to completion before the Pod can be ready; sidecar containers continue running\nduring a Pod's lifetime, and *do* support some probes. See [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\nfor further details about sidecar containers.\n\nIf you specify multiple init containers for a Pod, kubelet runs each init\ncontainer sequentially. Each init container must succeed before the next can run.\nWhen all of the init containers have run to completion, kubelet initializes\nthe application containers for the Pod and runs them as usual.\n\n### Differences from sidecar containers\n\nInit containers run and complete their tasks before the main application container starts.\nUnlike [sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/),\ninit containers are not continuously running alongside the main containers.\n\nInit containers run to completion sequentially, and the main container does not start\nuntil all the init containers have successfully completed.\n\ninit containers do not support `lifecycle`, `livenessProbe`, `readinessProbe`, or\n`startupProbe` whereas sidecar containers support all these [probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe) to control their lifecycle.\n\nInit containers share the same resources (CPU, memory, network) with the main application\ncontainers but do not interact directly with them. They can, however, use shared volumes\nfor data exchange.\n\n## Using init containers\n\nBecause init containers have separate images from app containers, they\nhave some advantages for start-up related code:\n\n- Init containers can contain utilities or custom code for setup that are not present in an app image. For example, there is no need to make an image FROM another image just to use a tool like sed , awk , python , or dig during setup.\n- The application image builder and deployer roles can work independently without the need to jointly build a single app image.\n- Init containers can run with a different view of the filesystem than app containers in the same Pod. Consequently, they can be given access to Secrets that app containers cannot access.\n- Because init containers run to completion before any app containers start, init containers offer a mechanism to block or delay app container startup until a set of preconditions are met. Once preconditions are met, all of the app containers in a Pod can start in parallel.\n- Init containers can securely run utilities or custom code that would otherwise make an app container image less secure. By keeping unnecessary tools separate you can limit the attack surface of your app container image.\n\n### Examples\n\nHere are some ideas for how to use init containers:\n\n- Wait for a [Service](https://kubernetes.io/docs/concepts/services-networking/service/) to be created, using a shell one-line command like: `for i in { 1..100 } ; do sleep 1 ; if nslookup myservice ; then exit 0 ; fi ; done ; exit 1`\n- Register this Pod with a remote server from the downward API with a command like: `curl -X POST http:// $MANAGEMENT_SERVICE_HOST : $MANAGEMENT_SERVICE_PORT /register -d 'instance=$(<POD_NAME>)&ip=$(<POD_IP>)'`\n- Wait for some time before starting the app container with a command like `sleep 60`\n- Clone a Git repository into a [Volume](https://kubernetes.io/docs/concepts/storage/volumes/)\n- Place values into a configuration file and run a template tool to dynamically generate a configuration file for the main app container. For example, place the `POD_IP` value in a configuration and generate the main app configuration file using Jinja.\n\n#### Init containers in use\n\nThis example defines a simple Pod that has two init containers.\nThe first waits for `myservice`, and the second waits for `mydb`. Once both\ninit containers complete, the Pod runs the app container from its `spec` section.\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: myapp-pod\n  labels:\n    app.kubernetes.io/name: MyApp\nspec:\n  containers:\n  - name: myapp-container\n    image: busybox:1.28\n    command: ['sh', '-c', 'echo The app is running! && sleep 3600']\n  initContainers:\n  - name: init-myservice\n    image: busybox:1.28\n    command: ['sh', '-c', \"until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done\"]\n  - name: init-mydb\n    image: busybox:1.28\n    command: ['sh', '-c', \"until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done\"]\n```\n\nYou can start this Pod by running:\n\n```shell\nkubectl apply -f myapp.yaml\n```\n\nThe output is similar to this:\n\n```\npod/myapp-pod created\n```\n\nAnd check on its status with:\n\n```shell\nkubectl get -f myapp.yaml\n```\n\nThe output is similar to this:\n\n```\nNAME        READY     STATUS     RESTARTS   AGE\nmyapp-pod   0/1       Init:0/2   0          6m\n```\n\nor for more details:\n\n```shell\nkubectl describe -f myapp.yaml\n```\n\nThe output is similar to this:\n\n```\nName:          myapp-pod\nNamespace:     default\n[...]\nLabels:        app.kubernetes.io/name=MyApp\nStatus:        Pending\n[...]\nInit Containers:\n  init-myservice:\n[...]\n    State:         Running\n[...]\n  init-mydb:\n[...]\n    State:         Waiting\n      Reason:      PodInitializing\n    Ready:         False\n[...]\nContainers:\n  myapp-container:\n[...]\n    State:         Waiting\n      Reason:      PodInitializing\n    Ready:         False\n[...]\nEvents:\n  FirstSeen    LastSeen    Count    From                      SubObjectPath                           Type          Reason        Message\n  ---------    --------    -----    ----                      -------------                           --------      ------        -------\n  16s          16s         1        {default-scheduler }                                              Normal        Scheduled     Successfully assigned myapp-pod to 172.17.4.201\n  16s          16s         1        {kubelet 172.17.4.201}    spec.initContainers{init-myservice}     Normal        Pulling       pulling image \"busybox\"\n  13s          13s         1        {kubelet 172.17.4.201}    spec.initContainers{init-myservice}     Normal        Pulled        Successfully pulled image \"busybox\"\n  13s          13s         1        {kubelet 172.17.4.201}    spec.initContainers{init-myservice}     Normal        Created       Created container init-myservice\n  13s          13s         1        {kubelet 172.17.4.201}    spec.initContainers{init-myservice}     Normal        Started       Started container init-myservice\n```\n\nTo see logs for the init containers in this Pod, run:\n\n```shell\nkubectl logs myapp-pod -c init-myservice # Inspect the first init container\nkubectl logs myapp-pod -c init-mydb      # Inspect the second init container\n```\n\nAt this point, those init containers will be waiting to discover [Services](https://kubernetes.io/docs/concepts/services-networking/service/) named\n`mydb` and `myservice`.\n\nHere's a configuration you can use to make those Services appear:\n\n```yaml\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: myservice\nspec:\n  ports:\n  - protocol: TCP\n    port: 80\n    targetPort: 9376\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: mydb\nspec:\n  ports:\n  - protocol: TCP\n    port: 80\n    targetPort: 9377\n```\n\nTo create the `mydb` and `myservice` services:\n\n```shell\nkubectl apply -f services.yaml\n```\n\nThe output is similar to this:\n\n```\nservice/myservice created\nservice/mydb created\n```\n\nYou'll then see that those init containers complete, and that the `myapp-pod`\nPod moves into the Running state:\n\n```shell\nkubectl get -f myapp.yaml\n```\n\nThe output is similar to this:\n\n```\nNAME        READY     STATUS    RESTARTS   AGE\nmyapp-pod   1/1       Running   0          9m\n```\n\nThis simple example should provide some inspiration for you to create your own\ninit containers. [What's next](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#what-s-next) contains a link to a more detailed example.\n\n## Detailed behavior\n\nDuring Pod startup, the kubelet delays running init containers until the networking\nand storage are ready. Then the kubelet runs the Pod's init containers in the order\nthey appear in the Pod's spec.\n\nEach init container must exit successfully before\nthe next container starts. If a container fails to start due to the runtime or\nexits with failure, it is retried according to the Pod `restartPolicy`. However,\nif the Pod `restartPolicy` is set to Always, the init containers use\n`restartPolicy` OnFailure.\n\nA Pod cannot be `Ready` until all init containers have succeeded. The ports on an\ninit container are not aggregated under a Service. A Pod that is initializing\nis in the `Pending` state but should have a condition `Initialized` set to false.\n\nIf the Pod [restarts](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#pod-restart-reasons), or is restarted, all init containers\nmust execute again.\n\nChanges to the init container spec are limited to the container image field.\nDirectly altering the `image` field of an init container does *not* restart the\nPod or trigger its recreation. If the Pod has yet to start, that change may\nhave an effect on how the Pod boots up.\n\nFor a [pod template](https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates)\nyou can typically change any field for an init container; the impact of making\nthat change depends on where the pod template is used.\n\nBecause init containers can be restarted, retried, or re-executed, init container\ncode should be idempotent. In particular, code that writes into any `emptyDir` volume\nshould be prepared for the possibility that an output file already exists.\n\nInit containers have all of the fields of an app container. However, Kubernetes\nprohibits `readinessProbe` from being used because init containers cannot\ndefine readiness distinct from completion. This is enforced during validation.\n\nUse `activeDeadlineSeconds` on the Pod to prevent init containers from failing forever.\nThe active deadline includes init containers.\nHowever it is recommended to use `activeDeadlineSeconds` only if teams deploy their application\nas a Job, because `activeDeadlineSeconds` has an effect even after initContainer finished.\nThe Pod which is already running correctly would be killed by `activeDeadlineSeconds` if you set.\n\nThe name of each app and init container in a Pod must be unique; a\nvalidation error is thrown for any container sharing a name with another.\n\n### Resource sharing within containers\n\nGiven the order of execution for init, sidecar and app containers, the following rules\nfor resource usage apply:\n\n- The highest of any particular resource request or limit defined on all init containers is the effective init request/limit . If any resource has no resource limit specified this is considered as the highest limit.\n- The Pod's effective request/limit for a resource is the higher of:\n- the sum of all app containers request/limit for a resource\n  - the effective init request/limit for a resource\n- Scheduling is done based on effective requests/limits, which means init containers can reserve resources for initialization that are not used during the life of the Pod.\n- The QoS (quality of service) tier of the Pod's effective QoS tier is the QoS tier for init containers and app containers alike.\n\nQuota and limits are applied based on the effective Pod request and\nlimit.\n\n### Init containers and Linux cgroups\n\nOn Linux, resource allocations for Pod level control groups (cgroups) are based on the effective Pod\nrequest and limit, the same as the scheduler.\n\n### Pod restart reasons\n\nA Pod can restart, causing re-execution of init containers, for the following\nreasons:\n\n- The Pod infrastructure container is restarted. This is uncommon and would have to be done by someone with root access to nodes.\n- All containers in a Pod are terminated while restartPolicy is set to Always, forcing a restart, and the init container completion record has been lost due to garbage collection .\n\nThe Pod will not be restarted when the init container image is changed, or the\ninit container completion record has been lost due to garbage collection. This\napplies for Kubernetes v1.20 and later. If you are using an earlier version of\nKubernetes, consult the documentation for the version you are using.\n\n## What's next\n\nLearn more about the following:\n\n- Creating a Pod that has an init container .\n- Debug init containers .\n- Overview of kubelet and kubectl .\n- Types of probes : liveness, readiness, startup probe.\n- Sidecar containers .\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:e986595f90edeca84dd0e8c689a0255d02e2cf3496abb4f9e1583298ca3ff2f8",
+  "document_id": "work-004",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Init Containers"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Understanding init containers"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Differences from regular containers"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Differences from sidecar containers"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "Using init containers"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Examples"
+    },
+    {
+      "block_index": 26,
+      "level": 4,
+      "text": "Init containers in use"
+    },
+    {
+      "block_index": 55,
+      "level": 2,
+      "text": "Detailed behavior"
+    },
+    {
+      "block_index": 66,
+      "level": 3,
+      "text": "Resource sharing within containers"
+    },
+    {
+      "block_index": 70,
+      "level": 3,
+      "text": "Init containers and Linux cgroups"
+    },
+    {
+      "block_index": 72,
+      "level": 3,
+      "text": "Pod restart reasons"
+    },
+    {
+      "block_index": 76,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Pod",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "sidecar container",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/"
+    },
+    {
+      "text": "Pod specification",
+      "url": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodSpec"
+    },
+    {
+      "text": "Container",
+      "url": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#Container"
+    },
+    {
+      "text": "volumes",
+      "url": "https://kubernetes.io/docs/concepts/storage/volumes/"
+    },
+    {
+      "text": "Resource sharing within containers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#resource-sharing-within-containers"
+    },
+    {
+      "text": "sidecar containers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/"
+    },
+    {
+      "text": "probes",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe"
+    },
+    {
+      "text": "Service",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "Volume",
+      "url": "https://kubernetes.io/docs/concepts/storage/volumes/"
+    },
+    {
+      "text": "Services",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "What's next",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#what-s-next"
+    },
+    {
+      "text": "restarts",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#pod-restart-reasons"
+    },
+    {
+      "text": "pod template",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-004.html",
+  "raw_sha256": "sha256:3111a5fe8ea118cb62596aa415c1d400b726235042c9a56c7059f5f4c6b66c18",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/",
+  "statistics": {
+    "block_count": 79,
+    "character_count": 15261,
+    "code_block_count": 13,
+    "heading_count": 12,
+    "link_count": 14,
+    "list_count": 6,
+    "paragraph_count": 48,
+    "table_count": 0,
+    "word_count": 2107
+  },
+  "title": "Init Containers"
+}

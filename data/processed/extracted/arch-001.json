@@ -1,0 +1,224 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Kubernetes Components",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "This page provides a high-level overview of the essential components that make up a Kubernetes cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "The components of a Kubernetes cluster",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Core Components",
+      "type": "heading"
+    },
+    {
+      "block_index": 4,
+      "text": "A Kubernetes cluster consists of a control plane and one or more worker nodes.\nHere's a brief overview of the main components:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "level": 3,
+      "text": "Control Plane Components",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "Manage the overall state of the cluster:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "**[kube-apiserver](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver)**\n: The core component server that exposes the Kubernetes HTTP API.\n**[etcd](https://kubernetes.io/docs/concepts/architecture/#etcd)**\n: Consistent and highly-available key value store for all API server data.\n**[kube-scheduler](https://kubernetes.io/docs/concepts/architecture/#kube-scheduler)**\n: Looks for Pods not yet bound to a node, and assigns each Pod to a suitable node.\n**[kube-controller-manager](https://kubernetes.io/docs/concepts/architecture/#kube-controller-manager)**\n: Runs [controllers](https://kubernetes.io/docs/concepts/architecture/controller/) to implement Kubernetes API behavior.\n**[cloud-controller-manager](https://kubernetes.io/docs/concepts/architecture/#cloud-controller-manager) (optional)**\n: Integrates with underlying cloud provider(s).",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 8,
+      "level": 3,
+      "text": "Node Components",
+      "type": "heading"
+    },
+    {
+      "block_index": 9,
+      "text": "Run on every node, maintaining running pods and providing the Kubernetes runtime environment:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "text": "**[kubelet](https://kubernetes.io/docs/concepts/architecture/#kubelet)**\n: Ensures that Pods are running, including their containers.\n**[kube-proxy](https://kubernetes.io/docs/concepts/architecture/#kube-proxy) (optional)**\n: Maintains network rules on nodes to implement [Services](https://kubernetes.io/docs/concepts/services-networking/service/).\n**[Container runtime](https://kubernetes.io/docs/concepts/architecture/#container-runtime)**\n: Software responsible for running containers. Read\n[Container Runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) to learn more.",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 11,
+      "text": "Your cluster may require additional software on each node; for example, you might also\nrun [systemd](https://systemd.io/) on a Linux node to supervise local components.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "Addons",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "Addons extend the functionality of Kubernetes. A few important examples include:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "**[DNS](https://kubernetes.io/docs/concepts/architecture/#dns)**\n: For cluster-wide DNS resolution.\n**[Web UI](https://kubernetes.io/docs/concepts/architecture/#web-ui-dashboard) (Dashboard)**\n: For cluster management via a web interface.\n**[Container Resource Monitoring](https://kubernetes.io/docs/concepts/architecture/#container-resource-monitoring)**\n: For collecting and storing container metrics.\n**[Cluster-level Logging](https://kubernetes.io/docs/concepts/architecture/#cluster-level-logging)**\n: For saving container logs to a central log store.",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Flexibility in Architecture",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "Kubernetes allows for flexibility in how these components are deployed and managed.\nThe architecture can be adapted to various needs, from small development environments\nto large-scale production deployments.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "For more detailed information about each component and various ways to configure your\ncluster architecture, see the [Cluster Architecture](https://kubernetes.io/docs/concepts/architecture/) page.",
+      "type": "paragraph"
+    }
+  ],
+  "content": "# Kubernetes Components\n\nThis page provides a high-level overview of the essential components that make up a Kubernetes cluster.\n\nThe components of a Kubernetes cluster\n\n## Core Components\n\nA Kubernetes cluster consists of a control plane and one or more worker nodes.\nHere's a brief overview of the main components:\n\n### Control Plane Components\n\nManage the overall state of the cluster:\n\n**[kube-apiserver](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver)**\n: The core component server that exposes the Kubernetes HTTP API.\n**[etcd](https://kubernetes.io/docs/concepts/architecture/#etcd)**\n: Consistent and highly-available key value store for all API server data.\n**[kube-scheduler](https://kubernetes.io/docs/concepts/architecture/#kube-scheduler)**\n: Looks for Pods not yet bound to a node, and assigns each Pod to a suitable node.\n**[kube-controller-manager](https://kubernetes.io/docs/concepts/architecture/#kube-controller-manager)**\n: Runs [controllers](https://kubernetes.io/docs/concepts/architecture/controller/) to implement Kubernetes API behavior.\n**[cloud-controller-manager](https://kubernetes.io/docs/concepts/architecture/#cloud-controller-manager) (optional)**\n: Integrates with underlying cloud provider(s).\n\n### Node Components\n\nRun on every node, maintaining running pods and providing the Kubernetes runtime environment:\n\n**[kubelet](https://kubernetes.io/docs/concepts/architecture/#kubelet)**\n: Ensures that Pods are running, including their containers.\n**[kube-proxy](https://kubernetes.io/docs/concepts/architecture/#kube-proxy) (optional)**\n: Maintains network rules on nodes to implement [Services](https://kubernetes.io/docs/concepts/services-networking/service/).\n**[Container runtime](https://kubernetes.io/docs/concepts/architecture/#container-runtime)**\n: Software responsible for running containers. Read\n[Container Runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) to learn more.\n\nYour cluster may require additional software on each node; for example, you might also\nrun [systemd](https://systemd.io/) on a Linux node to supervise local components.\n\n## Addons\n\nAddons extend the functionality of Kubernetes. A few important examples include:\n\n**[DNS](https://kubernetes.io/docs/concepts/architecture/#dns)**\n: For cluster-wide DNS resolution.\n**[Web UI](https://kubernetes.io/docs/concepts/architecture/#web-ui-dashboard) (Dashboard)**\n: For cluster management via a web interface.\n**[Container Resource Monitoring](https://kubernetes.io/docs/concepts/architecture/#container-resource-monitoring)**\n: For collecting and storing container metrics.\n**[Cluster-level Logging](https://kubernetes.io/docs/concepts/architecture/#cluster-level-logging)**\n: For saving container logs to a central log store.\n\n## Flexibility in Architecture\n\nKubernetes allows for flexibility in how these components are deployed and managed.\nThe architecture can be adapted to various needs, from small development environments\nto large-scale production deployments.\n\nFor more detailed information about each component and various ways to configure your\ncluster architecture, see the [Cluster Architecture](https://kubernetes.io/docs/concepts/architecture/) page.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:b3d7a85725012b23e69bfadb6e176282c1c4bb5fc08e88a0e220bf7d75ba1dab",
+  "document_id": "arch-001",
+  "domain": "cluster_architecture",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Kubernetes Components"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Core Components"
+    },
+    {
+      "block_index": 5,
+      "level": 3,
+      "text": "Control Plane Components"
+    },
+    {
+      "block_index": 8,
+      "level": 3,
+      "text": "Node Components"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "Addons"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Flexibility in Architecture"
+    }
+  ],
+  "links": [
+    {
+      "text": "kube-apiserver",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kube-apiserver"
+    },
+    {
+      "text": "etcd",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#etcd"
+    },
+    {
+      "text": "kube-scheduler",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kube-scheduler"
+    },
+    {
+      "text": "kube-controller-manager",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kube-controller-manager"
+    },
+    {
+      "text": "controllers",
+      "url": "https://kubernetes.io/docs/concepts/architecture/controller/"
+    },
+    {
+      "text": "cloud-controller-manager",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#cloud-controller-manager"
+    },
+    {
+      "text": "kubelet",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kubelet"
+    },
+    {
+      "text": "kube-proxy",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kube-proxy"
+    },
+    {
+      "text": "Services",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "Container runtime",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#container-runtime"
+    },
+    {
+      "text": "Container Runtimes",
+      "url": "https://kubernetes.io/docs/setup/production-environment/container-runtimes/"
+    },
+    {
+      "text": "systemd",
+      "url": "https://systemd.io/"
+    },
+    {
+      "text": "DNS",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#dns"
+    },
+    {
+      "text": "Web UI",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#web-ui-dashboard"
+    },
+    {
+      "text": "Container Resource Monitoring",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#container-resource-monitoring"
+    },
+    {
+      "text": "Cluster-level Logging",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#cluster-level-logging"
+    },
+    {
+      "text": "Cluster Architecture",
+      "url": "https://kubernetes.io/docs/concepts/architecture/"
+    }
+  ],
+  "raw_path": "data/raw/documents/arch-001.html",
+  "raw_sha256": "sha256:12135bbed4e848a1d26a1b44a15eb2e9d87437919437b08e73f7c2718a5c061f",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/overview/components/",
+  "statistics": {
+    "block_count": 18,
+    "character_count": 3232,
+    "code_block_count": 0,
+    "heading_count": 6,
+    "link_count": 17,
+    "list_count": 0,
+    "paragraph_count": 9,
+    "table_count": 0,
+    "word_count": 382
+  },
+  "title": "Kubernetes Components"
+}

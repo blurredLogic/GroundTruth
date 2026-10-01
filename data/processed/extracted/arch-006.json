@@ -1,0 +1,407 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Garbage Collection",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Garbage collection is a collective term for the various mechanisms Kubernetes uses to clean up\ncluster resources. This\nallows the clean up of resources like the following:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "ordered": false,
+      "text": "- Terminated pods\n- Completed Jobs\n- Objects without owner references\n- Unused containers and container images\n- Dynamically provisioned PersistentVolumes with a StorageClass reclaim policy of Delete\n- Stale or expired CertificateSigningRequests (CSRs)\n- Nodes deleted in the following scenarios:\n- On a cloud when the cluster uses a cloud controller manager\n  - On-premises when the cluster uses an addon similar to a cloud controller manager\n- Node Lease objects",
+      "type": "list"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Owners and dependents",
+      "type": "heading"
+    },
+    {
+      "block_index": 4,
+      "text": "Many objects in Kubernetes link to each other through [*owner references*](https://kubernetes.io/docs/concepts/overview/working-with-objects/owners-dependents/).\nOwner references tell the control plane which objects are dependent on others.\nKubernetes uses owner references to give the control plane, and other API\nclients, the opportunity to clean up related resources before deleting an\nobject. In most cases, Kubernetes manages owner references automatically.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "text": "Ownership is different from the [labels and selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)\nmechanism that some resources also use. For example, consider a\n[Service](https://kubernetes.io/docs/concepts/services-networking/service/) that creates\n`EndpointSlice` objects. The Service uses *labels* to allow the control plane to\ndetermine which `EndpointSlice` objects are used for that Service. In addition\nto the labels, each `EndpointSlice` that is managed on behalf of a Service has\nan owner reference. Owner references help different parts of Kubernetes avoid\ninterfering with objects they don’t control.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "text": "Cross-namespace owner references are disallowed by design.\nNamespaced dependents can specify cluster-scoped or namespaced owners.\nA namespaced owner **must** exist in the same namespace as the dependent.\nIf it does not, the owner reference is treated as absent, and the dependent\nis subject to deletion once all owners are verified absent.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "Cluster-scoped dependents can only specify cluster-scoped owners.\nIn v1.20+, if a cluster-scoped dependent specifies a namespaced kind as an owner,\nit is treated as having an unresolvable owner reference, and is not able to be garbage collected.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "text": "In v1.20+, if the garbage collector detects an invalid cross-namespace `ownerReference`,\nor a cluster-scoped dependent with an `ownerReference` referencing a namespaced kind, a warning Event\nwith a reason of `OwnerRefInvalidNamespace` and an `involvedObject` of the invalid dependent is reported.\nYou can check for that kind of Event by running\n`kubectl get events -A --field-selector=reason=OwnerRefInvalidNamespace`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "level": 2,
+      "text": "Cascading deletion",
+      "type": "heading"
+    },
+    {
+      "block_index": 11,
+      "text": "Kubernetes checks for and deletes objects that no longer have owner\nreferences, like the pods left behind when you delete a ReplicaSet. When you\ndelete an object, you can control whether Kubernetes deletes the object's\ndependents automatically, in a process called *cascading deletion*. There are\ntwo types of cascading deletion, as follows:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "ordered": false,
+      "text": "- Foreground cascading deletion\n- Background cascading deletion",
+      "type": "list"
+    },
+    {
+      "block_index": 13,
+      "text": "You can also control how and when garbage collection deletes resources that have\nowner references using Kubernetes [finalizers](https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "level": 3,
+      "text": "Foreground cascading deletion",
+      "type": "heading"
+    },
+    {
+      "block_index": 15,
+      "text": "In foreground cascading deletion, the owner object you're deleting first enters\na *deletion in progress* state. In this state, the following happens to the\nowner object:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "ordered": false,
+      "text": "- The Kubernetes API server sets the object's metadata.deletionTimestamp field to the time the object was marked for deletion.\n- The Kubernetes API server also sets the metadata.finalizers field to foregroundDeletion .\n- The object remains visible through the Kubernetes API until the deletion process is complete.",
+      "type": "list"
+    },
+    {
+      "block_index": 17,
+      "text": "After the owner object enters the *deletion in progress* state, the controller\ndeletes dependents it knows about. After deleting all the dependent objects it knows about,\nthe controller deletes the owner object. At this point, the object is no longer visible in the\nKubernetes API.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "During foreground cascading deletion, the only dependents that block owner\ndeletion are those that have the `ownerReference.blockOwnerDeletion=true` field\nand are in the garbage collection controller cache. The garbage collection controller\ncache may not contain objects whose resource type cannot be listed / watched successfully,\nor objects that are created concurrent with deletion of an owner object.\nSee [Use foreground cascading deletion](https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#use-foreground-cascading-deletion)\nto learn more.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "level": 3,
+      "text": "Background cascading deletion",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "text": "In background cascading deletion, the Kubernetes API server deletes the owner\nobject immediately and the garbage collector controller (custom or default)\ncleans up the dependent objects in the background.\nIf a finalizer exists, it ensures that objects are not deleted until all necessary clean-up tasks are completed.\nBy default, Kubernetes uses background cascading deletion unless\nyou manually use foreground deletion or choose to orphan the dependent objects.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "text": "See [Use background cascading deletion](https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#use-background-cascading-deletion)\nto learn more.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "level": 3,
+      "text": "Orphaned dependents",
+      "type": "heading"
+    },
+    {
+      "block_index": 23,
+      "text": "When Kubernetes deletes an owner object, the dependents left behind are called\n*orphan* objects. By default, Kubernetes deletes dependent objects. To learn how\nto override this behaviour, see [Delete owner objects and orphan dependents](https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#set-orphan-deletion-policy).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "level": 2,
+      "text": "Garbage collection of unused containers and images",
+      "type": "heading"
+    },
+    {
+      "block_index": 25,
+      "text": "The [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) performs garbage\ncollection on unused images every five minutes and on unused containers every\nminute. You should avoid using external garbage collection tools, as these can\nbreak the kubelet behavior and remove containers that should exist.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "To configure options for unused container and image garbage collection, tune the\nkubelet using a [configuration file](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/)\nand change the parameters related to garbage collection using the\n[`KubeletConfiguration`](https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/)\nresource type.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Container image lifecycle",
+      "type": "heading"
+    },
+    {
+      "block_index": 28,
+      "text": "Kubernetes manages the lifecycle of all images through its *image manager*,\nwhich is part of the kubelet, with the cooperation of\n[cadvisor](https://github.com/google/cadvisor/). The kubelet\nconsiders the following disk usage limits when making garbage collection\ndecisions:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "ordered": false,
+      "text": "- HighThresholdPercent\n- LowThresholdPercent",
+      "type": "list"
+    },
+    {
+      "block_index": 30,
+      "text": "Disk usage above the configured `HighThresholdPercent` value triggers garbage\ncollection, which deletes images in order based on the last time they were used,\nstarting with the oldest first. The kubelet deletes images\nuntil disk usage reaches the `LowThresholdPercent` value.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "level": 4,
+      "text": "Garbage collection for unused container images",
+      "type": "heading"
+    },
+    {
+      "block_index": 32,
+      "text": "You can specify the maximum time a local image can be unused for,\nregardless of disk usage. This is a kubelet setting that you configure for each node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "text": "To configure the setting, you need to set a value for the `imageMaximumGCAge`\nfield in the kubelet configuration file.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "text": "The value is specified as a Kubernetes [duration](https://kubernetes.io/docs/reference/glossary/?all=true#term-duration).\nSee [duration](https://kubernetes.io/docs/reference/glossary/?all=true#term-duration) in the glossary\nfor more details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "For example, you can set the configuration field to `12h45m`,\nwhich means 12 hours and 45 minutes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 37,
+      "level": 3,
+      "text": "Container garbage collection",
+      "type": "heading"
+    },
+    {
+      "block_index": 38,
+      "text": "The kubelet garbage collects unused containers based on the following variables,\nwhich you can define:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "ordered": false,
+      "text": "- MinAge : the minimum age at which the kubelet can garbage collect a container. Disable by setting to 0 .\n- MaxPerPodContainer : the maximum number of dead containers each Pod can have. Disable by setting to less than 0 .\n- MaxContainers : the maximum number of dead containers the cluster can have. Disable by setting to less than 0 .",
+      "type": "list"
+    },
+    {
+      "block_index": 40,
+      "text": "In addition to these variables, the kubelet garbage collects unidentified and\ndeleted containers, typically starting with the oldest first.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 41,
+      "text": "`MaxPerPodContainer` and `MaxContainers` may potentially conflict with each other\nin situations where retaining the maximum number of containers per Pod\n(`MaxPerPodContainer`) would go outside the allowable total of global dead\ncontainers (`MaxContainers`). In this situation, the kubelet adjusts\n`MaxPerPodContainer` to address the conflict. A worst-case scenario would be to\ndowngrade `MaxPerPodContainer` to `1` and evict the oldest containers.\nAdditionally, containers owned by pods that have been deleted are removed once\nthey are older than `MinAge`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 43,
+      "level": 2,
+      "text": "Configuring garbage collection",
+      "type": "heading"
+    },
+    {
+      "block_index": 44,
+      "text": "You can tune garbage collection of resources by configuring options specific to\nthe controllers managing those resources. The following pages show you how to\nconfigure garbage collection:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 45,
+      "ordered": false,
+      "text": "- Configuring cascading deletion of Kubernetes objects\n- Configuring cleanup of finished Jobs",
+      "type": "list"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "ordered": false,
+      "text": "- Learn more about ownership of Kubernetes objects .\n- Learn more about Kubernetes finalizers .\n- Learn about the TTL controller that cleans up finished Jobs.",
+      "type": "list"
+    }
+  ],
+  "content": "# Garbage Collection\n\nGarbage collection is a collective term for the various mechanisms Kubernetes uses to clean up\ncluster resources. This\nallows the clean up of resources like the following:\n\n- Terminated pods\n- Completed Jobs\n- Objects without owner references\n- Unused containers and container images\n- Dynamically provisioned PersistentVolumes with a StorageClass reclaim policy of Delete\n- Stale or expired CertificateSigningRequests (CSRs)\n- Nodes deleted in the following scenarios:\n- On a cloud when the cluster uses a cloud controller manager\n  - On-premises when the cluster uses an addon similar to a cloud controller manager\n- Node Lease objects\n\n## Owners and dependents\n\nMany objects in Kubernetes link to each other through [*owner references*](https://kubernetes.io/docs/concepts/overview/working-with-objects/owners-dependents/).\nOwner references tell the control plane which objects are dependent on others.\nKubernetes uses owner references to give the control plane, and other API\nclients, the opportunity to clean up related resources before deleting an\nobject. In most cases, Kubernetes manages owner references automatically.\n\nOwnership is different from the [labels and selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)\nmechanism that some resources also use. For example, consider a\n[Service](https://kubernetes.io/docs/concepts/services-networking/service/) that creates\n`EndpointSlice` objects. The Service uses *labels* to allow the control plane to\ndetermine which `EndpointSlice` objects are used for that Service. In addition\nto the labels, each `EndpointSlice` that is managed on behalf of a Service has\nan owner reference. Owner references help different parts of Kubernetes avoid\ninterfering with objects they don’t control.\n\n#### Note:\n\nCross-namespace owner references are disallowed by design.\nNamespaced dependents can specify cluster-scoped or namespaced owners.\nA namespaced owner **must** exist in the same namespace as the dependent.\nIf it does not, the owner reference is treated as absent, and the dependent\nis subject to deletion once all owners are verified absent.\n\nCluster-scoped dependents can only specify cluster-scoped owners.\nIn v1.20+, if a cluster-scoped dependent specifies a namespaced kind as an owner,\nit is treated as having an unresolvable owner reference, and is not able to be garbage collected.\n\nIn v1.20+, if the garbage collector detects an invalid cross-namespace `ownerReference`,\nor a cluster-scoped dependent with an `ownerReference` referencing a namespaced kind, a warning Event\nwith a reason of `OwnerRefInvalidNamespace` and an `involvedObject` of the invalid dependent is reported.\nYou can check for that kind of Event by running\n`kubectl get events -A --field-selector=reason=OwnerRefInvalidNamespace`.\n\n## Cascading deletion\n\nKubernetes checks for and deletes objects that no longer have owner\nreferences, like the pods left behind when you delete a ReplicaSet. When you\ndelete an object, you can control whether Kubernetes deletes the object's\ndependents automatically, in a process called *cascading deletion*. There are\ntwo types of cascading deletion, as follows:\n\n- Foreground cascading deletion\n- Background cascading deletion\n\nYou can also control how and when garbage collection deletes resources that have\nowner references using Kubernetes [finalizers](https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/).\n\n### Foreground cascading deletion\n\nIn foreground cascading deletion, the owner object you're deleting first enters\na *deletion in progress* state. In this state, the following happens to the\nowner object:\n\n- The Kubernetes API server sets the object's metadata.deletionTimestamp field to the time the object was marked for deletion.\n- The Kubernetes API server also sets the metadata.finalizers field to foregroundDeletion .\n- The object remains visible through the Kubernetes API until the deletion process is complete.\n\nAfter the owner object enters the *deletion in progress* state, the controller\ndeletes dependents it knows about. After deleting all the dependent objects it knows about,\nthe controller deletes the owner object. At this point, the object is no longer visible in the\nKubernetes API.\n\nDuring foreground cascading deletion, the only dependents that block owner\ndeletion are those that have the `ownerReference.blockOwnerDeletion=true` field\nand are in the garbage collection controller cache. The garbage collection controller\ncache may not contain objects whose resource type cannot be listed / watched successfully,\nor objects that are created concurrent with deletion of an owner object.\nSee [Use foreground cascading deletion](https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#use-foreground-cascading-deletion)\nto learn more.\n\n### Background cascading deletion\n\nIn background cascading deletion, the Kubernetes API server deletes the owner\nobject immediately and the garbage collector controller (custom or default)\ncleans up the dependent objects in the background.\nIf a finalizer exists, it ensures that objects are not deleted until all necessary clean-up tasks are completed.\nBy default, Kubernetes uses background cascading deletion unless\nyou manually use foreground deletion or choose to orphan the dependent objects.\n\nSee [Use background cascading deletion](https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#use-background-cascading-deletion)\nto learn more.\n\n### Orphaned dependents\n\nWhen Kubernetes deletes an owner object, the dependents left behind are called\n*orphan* objects. By default, Kubernetes deletes dependent objects. To learn how\nto override this behaviour, see [Delete owner objects and orphan dependents](https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#set-orphan-deletion-policy).\n\n## Garbage collection of unused containers and images\n\nThe [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) performs garbage\ncollection on unused images every five minutes and on unused containers every\nminute. You should avoid using external garbage collection tools, as these can\nbreak the kubelet behavior and remove containers that should exist.\n\nTo configure options for unused container and image garbage collection, tune the\nkubelet using a [configuration file](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/)\nand change the parameters related to garbage collection using the\n[`KubeletConfiguration`](https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/)\nresource type.\n\n### Container image lifecycle\n\nKubernetes manages the lifecycle of all images through its *image manager*,\nwhich is part of the kubelet, with the cooperation of\n[cadvisor](https://github.com/google/cadvisor/). The kubelet\nconsiders the following disk usage limits when making garbage collection\ndecisions:\n\n- HighThresholdPercent\n- LowThresholdPercent\n\nDisk usage above the configured `HighThresholdPercent` value triggers garbage\ncollection, which deletes images in order based on the last time they were used,\nstarting with the oldest first. The kubelet deletes images\nuntil disk usage reaches the `LowThresholdPercent` value.\n\n#### Garbage collection for unused container images\n\nYou can specify the maximum time a local image can be unused for,\nregardless of disk usage. This is a kubelet setting that you configure for each node.\n\nTo configure the setting, you need to set a value for the `imageMaximumGCAge`\nfield in the kubelet configuration file.\n\nThe value is specified as a Kubernetes [duration](https://kubernetes.io/docs/reference/glossary/?all=true#term-duration).\nSee [duration](https://kubernetes.io/docs/reference/glossary/?all=true#term-duration) in the glossary\nfor more details.\n\nFor example, you can set the configuration field to `12h45m`,\nwhich means 12 hours and 45 minutes.\n\n#### Note:\n\n### Container garbage collection\n\nThe kubelet garbage collects unused containers based on the following variables,\nwhich you can define:\n\n- MinAge : the minimum age at which the kubelet can garbage collect a container. Disable by setting to 0 .\n- MaxPerPodContainer : the maximum number of dead containers each Pod can have. Disable by setting to less than 0 .\n- MaxContainers : the maximum number of dead containers the cluster can have. Disable by setting to less than 0 .\n\nIn addition to these variables, the kubelet garbage collects unidentified and\ndeleted containers, typically starting with the oldest first.\n\n`MaxPerPodContainer` and `MaxContainers` may potentially conflict with each other\nin situations where retaining the maximum number of containers per Pod\n(`MaxPerPodContainer`) would go outside the allowable total of global dead\ncontainers (`MaxContainers`). In this situation, the kubelet adjusts\n`MaxPerPodContainer` to address the conflict. A worst-case scenario would be to\ndowngrade `MaxPerPodContainer` to `1` and evict the oldest containers.\nAdditionally, containers owned by pods that have been deleted are removed once\nthey are older than `MinAge`.\n\n#### Note:\n\n## Configuring garbage collection\n\nYou can tune garbage collection of resources by configuring options specific to\nthe controllers managing those resources. The following pages show you how to\nconfigure garbage collection:\n\n- Configuring cascading deletion of Kubernetes objects\n- Configuring cleanup of finished Jobs\n\n## What's next\n\n- Learn more about ownership of Kubernetes objects .\n- Learn more about Kubernetes finalizers .\n- Learn about the TTL controller that cleans up finished Jobs.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:dcb7ec755b9e4509718db1aa08e60a256ebe085e77413000d6013d86edfbc0b1",
+  "document_id": "arch-006",
+  "domain": "cluster_architecture",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Garbage Collection"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Owners and dependents"
+    },
+    {
+      "block_index": 6,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 10,
+      "level": 2,
+      "text": "Cascading deletion"
+    },
+    {
+      "block_index": 14,
+      "level": 3,
+      "text": "Foreground cascading deletion"
+    },
+    {
+      "block_index": 19,
+      "level": 3,
+      "text": "Background cascading deletion"
+    },
+    {
+      "block_index": 22,
+      "level": 3,
+      "text": "Orphaned dependents"
+    },
+    {
+      "block_index": 24,
+      "level": 2,
+      "text": "Garbage collection of unused containers and images"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Container image lifecycle"
+    },
+    {
+      "block_index": 31,
+      "level": 4,
+      "text": "Garbage collection for unused container images"
+    },
+    {
+      "block_index": 36,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 37,
+      "level": 3,
+      "text": "Container garbage collection"
+    },
+    {
+      "block_index": 42,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 43,
+      "level": 2,
+      "text": "Configuring garbage collection"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "labels and selectors",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
+    },
+    {
+      "text": "Service",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "finalizers",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/"
+    },
+    {
+      "text": "Use foreground cascading deletion",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#use-foreground-cascading-deletion"
+    },
+    {
+      "text": "Use background cascading deletion",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#use-background-cascading-deletion"
+    },
+    {
+      "text": "Delete owner objects and orphan dependents",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#set-orphan-deletion-policy"
+    },
+    {
+      "text": "kubelet",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet"
+    },
+    {
+      "text": "configuration file",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/"
+    },
+    {
+      "text": "cadvisor",
+      "url": "https://github.com/google/cadvisor/"
+    },
+    {
+      "text": "duration",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-duration"
+    }
+  ],
+  "raw_path": "data/raw/documents/arch-006.html",
+  "raw_sha256": "sha256:a03ef4c636381802854e2a2e1f7bbf0cd3753ef1b87c5faaf1de3a8d8217516a",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/architecture/garbage-collection/",
+  "statistics": {
+    "block_count": 48,
+    "character_count": 9619,
+    "code_block_count": 0,
+    "heading_count": 15,
+    "link_count": 10,
+    "list_count": 7,
+    "paragraph_count": 26,
+    "table_count": 0,
+    "word_count": 1305
+  },
+  "title": "Garbage Collection"
+}

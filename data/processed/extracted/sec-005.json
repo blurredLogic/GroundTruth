@@ -1,0 +1,315 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Controlling Access to the Kubernetes API",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "This page provides an overview of controlling access to the Kubernetes API.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Users access the [Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/) using `kubectl`,\nclient libraries, or by making REST requests. Both human users and\n[Kubernetes service accounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) can be\nauthorized for API access.\nWhen a request reaches the API, it goes through several stages, illustrated in the\nfollowing diagram:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "[Image: Diagram of request handling steps for Kubernetes API request]",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Transport security",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "By default, the Kubernetes API server listens on port 6443 on the first non-localhost\nnetwork interface, protected by TLS. In a typical production Kubernetes cluster, the\nAPI serves on port 443. The port can be changed with the `--secure-port`, and the\nlistening IP address with the `--bind-address` flag.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "The API server presents a certificate. This certificate may be signed using\na private certificate authority (CA), or based on a public key infrastructure linked\nto a generally recognized CA. The certificate and corresponding private key can be set\nby using the `--tls-cert-file` and `--tls-private-key-file` flags.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "If your cluster uses a private certificate authority, you need a copy of that CA\ncertificate configured into your `~/.kube/config` on the client, so that you can\ntrust the connection and be confident it was not intercepted.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "Your client can present a TLS client certificate at this stage.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Authentication",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "Once TLS is established, the HTTP request moves to the Authentication step.\nThis is shown as step **1** in the diagram.\nThe cluster creation script or cluster admin configures the API server to run\none or more Authenticator modules.\nAuthenticators are described in more detail in\n[Authentication](https://kubernetes.io/docs/reference/access-authn-authz/authentication/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "The input to the authentication step is the entire HTTP request; however, it typically\nexamines the headers and/or client certificate.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "text": "Authentication modules include client certificates, password, and plain tokens,\nbootstrap tokens, and JSON Web Tokens (used for service accounts).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "text": "Multiple authentication modules can be specified, in which case each one is tried in sequence,\nuntil one of them succeeds.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "If the request cannot be authenticated, it is rejected with HTTP status code 401.\nOtherwise, the user is authenticated as a specific `username`, and the user name\nis available to subsequent steps to use in their decisions. Some authenticators\nalso provide the group memberships of the user, while other authenticators\ndo not.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "text": "While Kubernetes uses usernames for access control decisions and in request logging,\nit does not have a `User` object nor does it store usernames or other information about\nusers in its API.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "level": 2,
+      "text": "Authorization",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "text": "After the request is authenticated as coming from a specific user, the request must\nbe authorized. This is shown as step **2** in the diagram.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "A request must include the username of the requester, the requested action, and\nthe object affected by the action. The request is authorized if an existing policy\ndeclares that the user has permissions to complete the requested action.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "text": "For example, if Bob has the policy below, then he can read pods only in the namespace `projectCaribou`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "language": "json",
+      "text": "{\n    \"apiVersion\": \"abac.authorization.kubernetes.io/v1beta1\",\n    \"kind\": \"Policy\",\n    \"spec\": {\n        \"user\": \"bob\",\n        \"namespace\": \"projectCaribou\",\n        \"resource\": \"pods\",\n        \"readonly\": true\n    }\n}",
+      "type": "code"
+    },
+    {
+      "block_index": 21,
+      "text": "If Bob makes the following request, the request is authorized because he is\nallowed to read objects in the `projectCaribou` namespace:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "language": "json",
+      "text": "{\n  \"apiVersion\": \"authorization.k8s.io/v1beta1\",\n  \"kind\": \"SubjectAccessReview\",\n  \"spec\": {\n    \"resourceAttributes\": {\n      \"namespace\": \"projectCaribou\",\n      \"verb\": \"get\",\n      \"group\": \"unicorn.example.org\",\n      \"resource\": \"pods\"\n    }\n  }\n}",
+      "type": "code"
+    },
+    {
+      "block_index": 23,
+      "text": "If Bob makes a request to write (`create` or `update`) to the objects in the\n`projectCaribou` namespace, his authorization is denied. If Bob makes a request\nto read (`get`) objects in a different namespace such as `projectFish`, then his authorization is denied.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "text": "Kubernetes authorization requires that you use common REST attributes to interact\nwith existing organization-wide or cloud-provider-wide access control systems.\nIt is important to use REST formatting because these control systems might\ninteract with other APIs besides the Kubernetes API.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "text": "Kubernetes supports multiple authorization modules, such as ABAC mode, RBAC Mode,\nand Webhook mode. When an administrator creates a cluster, they configure the\nauthorization modules that should be used in the API server. If more than one\nauthorization modules are configured, Kubernetes checks each module, and if\nany module authorizes the request, then the request can proceed. If all of\nthe modules deny the request, then the request is denied (HTTP status code 403).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "To learn more about Kubernetes authorization, including details about creating\npolicies using the supported authorization modules, see [Authorization](https://kubernetes.io/docs/reference/access-authn-authz/authorization/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "level": 2,
+      "text": "Admission control",
+      "type": "heading"
+    },
+    {
+      "block_index": 28,
+      "text": "Admission Control modules are software modules that can modify or reject requests.\nIn addition to the attributes available to Authorization modules, Admission\nControl modules can access the contents of the object that is being created or modified.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "text": "Admission controllers act on requests that create, modify, delete, or connect to (proxy) an object.\nAdmission controllers do not act on requests that merely read objects.\nWhen multiple admission controllers are configured, they are called in order.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "text": "This is shown as step **3** in the diagram.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "Unlike Authentication and Authorization modules, if any admission controller module\nrejects, then the request is immediately rejected.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "text": "In addition to rejecting objects, admission controllers can also set complex defaults for\nfields.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "text": "The available Admission Control modules are described in [Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "text": "Once a request passes all admission controllers, it is validated using the validation routines\nfor the corresponding API object, and then written to the object store (shown as step **4**).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "level": 2,
+      "text": "Auditing",
+      "type": "heading"
+    },
+    {
+      "block_index": 36,
+      "text": "Kubernetes auditing provides a security-relevant, chronological set of records documenting the sequence of actions in a cluster.\nThe cluster audits the activities generated by users, by applications that use the Kubernetes API, and by the control plane itself.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "text": "For more information, see [Auditing](https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 39,
+      "text": "Read more documentation on authentication, authorization and API access control:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "ordered": false,
+      "text": "- Authenticating\n- Authenticating with Bootstrap Tokens\n- Admission Controllers\n- Dynamic Admission Control\n- Authorization\n- Role Based Access Control\n  - Attribute Based Access Control\n  - Node Authorization\n  - Webhook Authorization\n- Certificate Signing Requests\n- including CSR approval and certificate signing\n- Service accounts\n- Developer guide\n  - Administration",
+      "type": "list"
+    },
+    {
+      "block_index": 41,
+      "text": "You can learn about:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "ordered": false,
+      "text": "- how Pods can use Secrets to obtain API credentials.",
+      "type": "list"
+    }
+  ],
+  "content": "# Controlling Access to the Kubernetes API\n\nThis page provides an overview of controlling access to the Kubernetes API.\n\nUsers access the [Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/) using `kubectl`,\nclient libraries, or by making REST requests. Both human users and\n[Kubernetes service accounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) can be\nauthorized for API access.\nWhen a request reaches the API, it goes through several stages, illustrated in the\nfollowing diagram:\n\n[Image: Diagram of request handling steps for Kubernetes API request]\n\n## Transport security\n\nBy default, the Kubernetes API server listens on port 6443 on the first non-localhost\nnetwork interface, protected by TLS. In a typical production Kubernetes cluster, the\nAPI serves on port 443. The port can be changed with the `--secure-port`, and the\nlistening IP address with the `--bind-address` flag.\n\nThe API server presents a certificate. This certificate may be signed using\na private certificate authority (CA), or based on a public key infrastructure linked\nto a generally recognized CA. The certificate and corresponding private key can be set\nby using the `--tls-cert-file` and `--tls-private-key-file` flags.\n\nIf your cluster uses a private certificate authority, you need a copy of that CA\ncertificate configured into your `~/.kube/config` on the client, so that you can\ntrust the connection and be confident it was not intercepted.\n\nYour client can present a TLS client certificate at this stage.\n\n## Authentication\n\nOnce TLS is established, the HTTP request moves to the Authentication step.\nThis is shown as step **1** in the diagram.\nThe cluster creation script or cluster admin configures the API server to run\none or more Authenticator modules.\nAuthenticators are described in more detail in\n[Authentication](https://kubernetes.io/docs/reference/access-authn-authz/authentication/).\n\nThe input to the authentication step is the entire HTTP request; however, it typically\nexamines the headers and/or client certificate.\n\nAuthentication modules include client certificates, password, and plain tokens,\nbootstrap tokens, and JSON Web Tokens (used for service accounts).\n\nMultiple authentication modules can be specified, in which case each one is tried in sequence,\nuntil one of them succeeds.\n\nIf the request cannot be authenticated, it is rejected with HTTP status code 401.\nOtherwise, the user is authenticated as a specific `username`, and the user name\nis available to subsequent steps to use in their decisions. Some authenticators\nalso provide the group memberships of the user, while other authenticators\ndo not.\n\nWhile Kubernetes uses usernames for access control decisions and in request logging,\nit does not have a `User` object nor does it store usernames or other information about\nusers in its API.\n\n## Authorization\n\nAfter the request is authenticated as coming from a specific user, the request must\nbe authorized. This is shown as step **2** in the diagram.\n\nA request must include the username of the requester, the requested action, and\nthe object affected by the action. The request is authorized if an existing policy\ndeclares that the user has permissions to complete the requested action.\n\nFor example, if Bob has the policy below, then he can read pods only in the namespace `projectCaribou`:\n\n```json\n{\n    \"apiVersion\": \"abac.authorization.kubernetes.io/v1beta1\",\n    \"kind\": \"Policy\",\n    \"spec\": {\n        \"user\": \"bob\",\n        \"namespace\": \"projectCaribou\",\n        \"resource\": \"pods\",\n        \"readonly\": true\n    }\n}\n```\n\nIf Bob makes the following request, the request is authorized because he is\nallowed to read objects in the `projectCaribou` namespace:\n\n```json\n{\n  \"apiVersion\": \"authorization.k8s.io/v1beta1\",\n  \"kind\": \"SubjectAccessReview\",\n  \"spec\": {\n    \"resourceAttributes\": {\n      \"namespace\": \"projectCaribou\",\n      \"verb\": \"get\",\n      \"group\": \"unicorn.example.org\",\n      \"resource\": \"pods\"\n    }\n  }\n}\n```\n\nIf Bob makes a request to write (`create` or `update`) to the objects in the\n`projectCaribou` namespace, his authorization is denied. If Bob makes a request\nto read (`get`) objects in a different namespace such as `projectFish`, then his authorization is denied.\n\nKubernetes authorization requires that you use common REST attributes to interact\nwith existing organization-wide or cloud-provider-wide access control systems.\nIt is important to use REST formatting because these control systems might\ninteract with other APIs besides the Kubernetes API.\n\nKubernetes supports multiple authorization modules, such as ABAC mode, RBAC Mode,\nand Webhook mode. When an administrator creates a cluster, they configure the\nauthorization modules that should be used in the API server. If more than one\nauthorization modules are configured, Kubernetes checks each module, and if\nany module authorizes the request, then the request can proceed. If all of\nthe modules deny the request, then the request is denied (HTTP status code 403).\n\nTo learn more about Kubernetes authorization, including details about creating\npolicies using the supported authorization modules, see [Authorization](https://kubernetes.io/docs/reference/access-authn-authz/authorization/).\n\n## Admission control\n\nAdmission Control modules are software modules that can modify or reject requests.\nIn addition to the attributes available to Authorization modules, Admission\nControl modules can access the contents of the object that is being created or modified.\n\nAdmission controllers act on requests that create, modify, delete, or connect to (proxy) an object.\nAdmission controllers do not act on requests that merely read objects.\nWhen multiple admission controllers are configured, they are called in order.\n\nThis is shown as step **3** in the diagram.\n\nUnlike Authentication and Authorization modules, if any admission controller module\nrejects, then the request is immediately rejected.\n\nIn addition to rejecting objects, admission controllers can also set complex defaults for\nfields.\n\nThe available Admission Control modules are described in [Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/).\n\nOnce a request passes all admission controllers, it is validated using the validation routines\nfor the corresponding API object, and then written to the object store (shown as step **4**).\n\n## Auditing\n\nKubernetes auditing provides a security-relevant, chronological set of records documenting the sequence of actions in a cluster.\nThe cluster audits the activities generated by users, by applications that use the Kubernetes API, and by the control plane itself.\n\nFor more information, see [Auditing](https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/).\n\n## What's next\n\nRead more documentation on authentication, authorization and API access control:\n\n- Authenticating\n- Authenticating with Bootstrap Tokens\n- Admission Controllers\n- Dynamic Admission Control\n- Authorization\n- Role Based Access Control\n  - Attribute Based Access Control\n  - Node Authorization\n  - Webhook Authorization\n- Certificate Signing Requests\n- including CSR approval and certificate signing\n- Service accounts\n- Developer guide\n  - Administration\n\nYou can learn about:\n\n- how Pods can use Secrets to obtain API credentials.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:9f459599ef2e1c7db66dd98689d47367d828b1e7b885fe2628ea6d3babad0a4a",
+  "document_id": "sec-005",
+  "domain": "security_policies",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Controlling Access to the Kubernetes API"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Transport security"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Authentication"
+    },
+    {
+      "block_index": 16,
+      "level": 2,
+      "text": "Authorization"
+    },
+    {
+      "block_index": 27,
+      "level": 2,
+      "text": "Admission control"
+    },
+    {
+      "block_index": 35,
+      "level": 2,
+      "text": "Auditing"
+    },
+    {
+      "block_index": 38,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Kubernetes API",
+      "url": "https://kubernetes.io/docs/concepts/overview/kubernetes-api/"
+    },
+    {
+      "text": "Kubernetes service accounts",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/"
+    },
+    {
+      "text": "Authentication",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/authentication/"
+    },
+    {
+      "text": "Authorization",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/authorization/"
+    },
+    {
+      "text": "Admission Controllers",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/"
+    },
+    {
+      "text": "Auditing",
+      "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/"
+    }
+  ],
+  "raw_path": "data/raw/documents/sec-005.html",
+  "raw_sha256": "sha256:161ef6e7cb91e6496bdd82b794c7437d6cf2dac36d9f6dfd311f8bfe74d93a65",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/security/controlling-access/",
+  "statistics": {
+    "block_count": 43,
+    "character_count": 7349,
+    "code_block_count": 2,
+    "heading_count": 7,
+    "link_count": 6,
+    "list_count": 2,
+    "paragraph_count": 32,
+    "table_count": 0,
+    "word_count": 1015
+  },
+  "title": "Controlling Access to the Kubernetes API"
+}

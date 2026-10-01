@@ -1,0 +1,1412 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Resource Quotas",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "When several users or teams share a cluster with a fixed number of nodes,\nthere is a concern that one team could use more than its fair share of resources.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "*Resource quotas* are a tool for administrators to address this concern.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "A resource quota, defined by a ResourceQuota object, provides constraints that limit\naggregate resource consumption per [namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces). A ResourceQuota can also\nlimit the [quantity of objects that can be created in a namespace](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-on-object-count) by API kind, as well as the total\namount of [infrastructure resources](https://kubernetes.io/docs/reference/glossary/?all=true#term-infrastructure-resource) that may be consumed by\nAPI objects found in that namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "How Kubernetes ResourceQuotas work",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "ResourceQuotas work like this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "ordered": false,
+      "text": "- Different teams work in different namespaces. This separation can be enforced with [RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) or any other [authorization](https://kubernetes.io/docs/reference/access-authn-authz/authorization/) mechanism.\n- A cluster administrator creates at least one ResourceQuota for each namespace.\n- To make sure the enforcement stays enforced, the cluster administrator should also restrict access to delete or update that ResourceQuota; for example, by defining a ValidatingAdmissionPolicy .\n- Users create resources (pods, services, etc.) in the namespace, and the quota system tracks usage to ensure it does not exceed hard resource limits defined in a ResourceQuota. You can apply a [scope](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scopes) to a ResourceQuota to limit where it applies,\n- If creating or updating a resource violates a quota constraint, the control plane rejects that request with HTTP status code `403 Forbidden`. The error includes a message explaining the constraint that would have been violated.\n- If quotas are enabled in a namespace for [resource](https://kubernetes.io/docs/reference/glossary/?all=true#term-infrastructure-resource) such as `cpu` and `memory`, users must specify requests or limits for those values when they define a Pod; otherwise, the quota system may reject pod creation. The resource quota [walkthrough](https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/quota-memory-cpu-namespace/) shows an example of how to avoid this problem.",
+      "type": "list"
+    },
+    {
+      "block_index": 8,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 9,
+      "ordered": false,
+      "text": "- You can define a LimitRange to force defaults on pods that make no compute resource requirements (so that users don't have to remember to do that).",
+      "type": "list"
+    },
+    {
+      "block_index": 10,
+      "text": "You often do not create Pods directly; for example, you more usually create a [workload management](https://kubernetes.io/docs/concepts/workloads/controllers/)\nobject such as a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/). If you create a Deployment that tries to use more\nresources than are available, the creation of the Deployment (or other workload management object) **succeeds**, but\nthe Deployment may not be able to get all of the Pods it manages to exist. In that case you can check the status of\nthe Deployment, for example with `kubectl describe`, to see what has happened.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "ordered": false,
+      "text": "- For cpu and memory resources, ResourceQuotas enforce that every (new) pod in that namespace sets a limit for that resource. If you enforce a resource quota in a namespace for either cpu or memory , you and other clients, must specify either requests or limits for that resource, for every new Pod you submit. If you don't, the control plane may reject admission for that Pod.\n- For other resources: ResourceQuota works and will ignore pods in the namespace without setting a limit or request for that resource. It means that you can create a new pod without limit/request for ephemeral storage if the resource quota limits the ephemeral storage of this namespace.",
+      "type": "list"
+    },
+    {
+      "block_index": 12,
+      "text": "You can use a [LimitRange](https://kubernetes.io/docs/concepts/policy/limit-range/) to automatically set\na default request for these resources.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "text": "The name of a ResourceQuota object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "Examples of policies that could be created using namespaces and quotas are:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "ordered": false,
+      "text": "- In a cluster with a capacity of 32 GiB RAM, and 16 cores, let team A use 20 GiB and 10 cores, let B use 10GiB and 4 cores, and hold 2GiB and 2 cores in reserve for future allocation.\n- Limit the \"testing\" namespace to using 1 core and 1GiB RAM. Let the \"production\" namespace use any amount.",
+      "type": "list"
+    },
+    {
+      "block_index": 16,
+      "text": "In the case where the total capacity of the cluster is less than the sum of the quotas of the namespaces,\nthere may be contention for resources. This is handled on a first-come-first-served basis.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "level": 2,
+      "text": "Enabling Resource Quota",
+      "type": "heading"
+    },
+    {
+      "block_index": 18,
+      "text": "ResourceQuota support is enabled by default for many Kubernetes distributions. It is\nenabled when the [API server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver)\n`--enable-admission-plugins=` flag has `ResourceQuota` as\none of its arguments.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "text": "A resource quota is enforced in a particular namespace when there is a\nResourceQuota in that namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "Types of resource quota",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "The ResourceQuota mechanism lets you enforce different kinds of limits. This\nsection describes the types of limit that you can enforce.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "level": 3,
+      "text": "Quota for infrastructure resources",
+      "type": "heading"
+    },
+    {
+      "block_index": 23,
+      "text": "You can limit the total sum of\n[compute resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)\nthat can be requested in a given namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "text": "The following resource types are supported:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "rows": [
+        [
+          "Resource Name",
+          "Description"
+        ],
+        [
+          "`limits.cpu`",
+          "Across all pods in a non-terminal state, the sum of CPU limits cannot exceed this value."
+        ],
+        [
+          "`limits.memory`",
+          "Across all pods in a non-terminal state, the sum of memory limits cannot exceed this value."
+        ],
+        [
+          "`requests.cpu`",
+          "Across all pods in a non-terminal state, the sum of CPU requests cannot exceed this value."
+        ],
+        [
+          "`requests.memory`",
+          "Across all pods in a non-terminal state, the sum of memory requests cannot exceed this value."
+        ],
+        [
+          "`hugepages-<size>`",
+          "Across all pods in a non-terminal state, the number of huge page requests of the specified size cannot exceed this value."
+        ],
+        [
+          "`cpu`",
+          "Same as `requests.cpu`"
+        ],
+        [
+          "`memory`",
+          "Same as `requests.memory`"
+        ]
+      ],
+      "text": "| Resource Name | Description |\n| --- | --- |\n| `limits.cpu` | Across all pods in a non-terminal state, the sum of CPU limits cannot exceed this value. |\n| `limits.memory` | Across all pods in a non-terminal state, the sum of memory limits cannot exceed this value. |\n| `requests.cpu` | Across all pods in a non-terminal state, the sum of CPU requests cannot exceed this value. |\n| `requests.memory` | Across all pods in a non-terminal state, the sum of memory requests cannot exceed this value. |\n| `hugepages-<size>` | Across all pods in a non-terminal state, the number of huge page requests of the specified size cannot exceed this value. |\n| `cpu` | Same as `requests.cpu` |\n| `memory` | Same as `requests.memory` |",
+      "type": "table"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Quota for extended resources",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "In addition to the resources mentioned above, in release 1.10, quota support for\n[extended resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources) is added.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "text": "As overcommit is not allowed for extended resources, it makes no sense to specify both `requests`\nand `limits` for the same extended resource in a quota. So for extended resources, only quota items\nwith prefix `requests.` are allowed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "text": "Take the GPU resource as an example, if the resource name is `nvidia.com/gpu`, and you want to\nlimit the total number of GPUs requested in a namespace to 4, you can define a quota as follows:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "ordered": false,
+      "text": "- requests.nvidia.com/gpu: 4",
+      "type": "list"
+    },
+    {
+      "block_index": 31,
+      "text": "See [Viewing and Setting Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/#viewing-and-setting-quotas) for more details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "level": 3,
+      "text": "Quota for DRA resource claims",
+      "type": "heading"
+    },
+    {
+      "block_index": 33,
+      "text": "DRA (Dynamic Resource Allocation) resource claims can request DRA resources by device class. For an example\ndevice class named `examplegpu`, you want to limit the total number of GPUs requested in a namespace to 4,\nyou can define a quota as follows:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "ordered": false,
+      "text": "- examplegpu.deviceclass.resource.k8s.io/devices: 4",
+      "type": "list"
+    },
+    {
+      "block_index": 35,
+      "text": "When [Extended Resource allocation by DRA](https://kubernetes.io/docs/concepts/resource-management/dynamic-resource-allocation/dra-features/#extended-resource)\nis enabled, the same device class named `examplegpu` can be requested via extended resource either explicitly\nwhen the device class's ExtendedResourceName field is given, say, `example.com/gpu`, then you can define a quota as follows:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "ordered": false,
+      "text": "- requests.example.com/gpu: 4",
+      "type": "list"
+    },
+    {
+      "block_index": 37,
+      "text": "or implicitly using the derived extended resource name from device class name `examplegpu`, you can define\na quota as follows:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "ordered": false,
+      "text": "- requests.deviceclass.resource.kubernetes.io/examplegpu: 4",
+      "type": "list"
+    },
+    {
+      "block_index": 39,
+      "text": "All devices requested from resource claims or extended resources are counted towards all three quotas\nlisted above. The extended resource quota e.g. `requests.example.com/gpu: 4`, also counts the devices provided\nby device plugin.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "text": "See [Viewing and Setting Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/#viewing-and-setting-quotas) for more details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 41,
+      "level": 3,
+      "text": "Quota for storage",
+      "type": "heading"
+    },
+    {
+      "block_index": 42,
+      "text": "You can limit the total sum of [storage](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) for volumes\nthat can be requested in a given namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 43,
+      "text": "In addition, you can limit consumption of storage resources based on associated\n[StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "rows": [
+        [
+          "Resource Name",
+          "Description"
+        ],
+        [
+          "`requests.storage`",
+          "Across all persistent volume claims, the sum of storage requests cannot exceed this value."
+        ],
+        [
+          "`persistentvolumeclaims`",
+          "The total number of [PersistentVolumeClaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) that can exist in the namespace."
+        ],
+        [
+          "`<storage-class-name>.storageclass.storage.k8s.io/requests.storage`",
+          "Across all persistent volume claims associated with the `<storage-class-name>`, the sum of storage requests cannot exceed this value."
+        ],
+        [
+          "`<storage-class-name>.storageclass.storage.k8s.io/persistentvolumeclaims`",
+          "Across all persistent volume claims associated with the `<storage-class-name>`, the total number of [persistent volume claims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) that can exist in the namespace."
+        ]
+      ],
+      "text": "| Resource Name | Description |\n| --- | --- |\n| `requests.storage` | Across all persistent volume claims, the sum of storage requests cannot exceed this value. |\n| `persistentvolumeclaims` | The total number of [PersistentVolumeClaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) that can exist in the namespace. |\n| `<storage-class-name>.storageclass.storage.k8s.io/requests.storage` | Across all persistent volume claims associated with the `<storage-class-name>`, the sum of storage requests cannot exceed this value. |\n| `<storage-class-name>.storageclass.storage.k8s.io/persistentvolumeclaims` | Across all persistent volume claims associated with the `<storage-class-name>`, the total number of [persistent volume claims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) that can exist in the namespace. |",
+      "type": "table"
+    },
+    {
+      "block_index": 45,
+      "text": "For example, if you want to quota storage with `gold` StorageClass separate from\na `bronze` StorageClass, you can define a quota as follows:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "ordered": false,
+      "text": "- gold.storageclass.storage.k8s.io/requests.storage: 500Gi\n- bronze.storageclass.storage.k8s.io/requests.storage: 100Gi",
+      "type": "list"
+    },
+    {
+      "block_index": 47,
+      "level": 4,
+      "text": "Quota for local ephemeral storage",
+      "type": "heading"
+    },
+    {
+      "block_index": 48,
+      "rows": [
+        [
+          "Resource Name",
+          "Description"
+        ],
+        [
+          "`requests.ephemeral-storage`",
+          "Across all pods in the namespace, the sum of local ephemeral storage requests cannot exceed this value."
+        ],
+        [
+          "`limits.ephemeral-storage`",
+          "Across all pods in the namespace, the sum of local ephemeral storage limits cannot exceed this value."
+        ],
+        [
+          "`ephemeral-storage`",
+          "Same as `requests.ephemeral-storage`."
+        ]
+      ],
+      "text": "| Resource Name | Description |\n| --- | --- |\n| `requests.ephemeral-storage` | Across all pods in the namespace, the sum of local ephemeral storage requests cannot exceed this value. |\n| `limits.ephemeral-storage` | Across all pods in the namespace, the sum of local ephemeral storage limits cannot exceed this value. |\n| `ephemeral-storage` | Same as `requests.ephemeral-storage`. |",
+      "type": "table"
+    },
+    {
+      "block_index": 49,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 50,
+      "text": "When using a CRI container runtime, container logs will count against the ephemeral storage quota.\nThis can result in the unexpected eviction of pods that have exhausted their storage quotas.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "text": "Refer to [Logging Architecture](https://kubernetes.io/docs/concepts/cluster-administration/logging/) for details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 52,
+      "level": 3,
+      "text": "Quota on object count",
+      "type": "heading"
+    },
+    {
+      "block_index": 53,
+      "text": "You can set quota for *the total number of one particular [resource](https://kubernetes.io/docs/reference/using-api/api-concepts/#standard-api-terminology) kind* in the Kubernetes API,\nusing the following syntax:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 54,
+      "ordered": false,
+      "text": "- count/<resource>.<group> for resources from non-core API groups\n- count/<resource> for resources from the core API group",
+      "type": "list"
+    },
+    {
+      "block_index": 55,
+      "text": "For example, the PodTemplate API is in the core API group and so if you want to limit the number of\nPodTemplate objects in a namespace, you use `count/podtemplates`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 56,
+      "text": "These types of quotas are useful to protect against exhaustion of control plane storage. For example, you may\nwant to limit the number of Secrets in a server given their large size. Too many Secrets in a cluster can\nactually prevent servers and controllers from starting. You can set a quota for Jobs to protect against\na poorly configured CronJob. CronJobs that create too many Jobs in a namespace can lead to a denial of service.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 57,
+      "text": "If you define a quota this way, it applies to Kubernetes' APIs that are part of the API server, and\nto any custom resources backed by a CustomResourceDefinition.\nFor example, to create a quota on a `widgets` custom resource in the `example.com` API group,\nuse `count/widgets.example.com`.\nIf you use [API aggregation](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/) to\nadd additional, custom APIs that are not defined as CustomResourceDefinitions, the core Kubernetes\ncontrol plane does not enforce quota for the aggregated API. The extension API server is expected to\nprovide quota enforcement if that's appropriate for the custom API.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 58,
+      "level": 5,
+      "text": "Generic syntax",
+      "type": "heading"
+    },
+    {
+      "block_index": 59,
+      "text": "This is a list of common examples of object kinds that you may want to put under object count quota,\nlisted by the configuration string that you would use.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 60,
+      "ordered": false,
+      "text": "- count/pods\n- count/persistentvolumeclaims\n- count/services\n- count/secrets\n- count/configmaps\n- count/deployments.apps\n- count/replicasets.apps\n- count/statefulsets.apps\n- count/jobs.batch\n- count/cronjobs.batch",
+      "type": "list"
+    },
+    {
+      "block_index": 61,
+      "level": 5,
+      "text": "Specialized syntax",
+      "type": "heading"
+    },
+    {
+      "block_index": 62,
+      "text": "There is another syntax only to set the same type of quota, that only works for certain API kinds.\nThe following types are supported:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 63,
+      "rows": [
+        [
+          "Resource Name",
+          "Description"
+        ],
+        [
+          "`configmaps`",
+          "The total number of ConfigMaps that can exist in the namespace."
+        ],
+        [
+          "`persistentvolumeclaims`",
+          "The total number of [PersistentVolumeClaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) that can exist in the namespace."
+        ],
+        [
+          "`pods`",
+          "The total number of Pods in a non-terminal state that can exist in the namespace. A pod is in a terminal state if `.status.phase in (Failed, Succeeded)` is true."
+        ],
+        [
+          "`replicationcontrollers`",
+          "The total number of ReplicationControllers that can exist in the namespace."
+        ],
+        [
+          "`resourcequotas`",
+          "The total number of ResourceQuotas that can exist in the namespace."
+        ],
+        [
+          "`services`",
+          "The total number of Services that can exist in the namespace."
+        ],
+        [
+          "`services.loadbalancers`",
+          "The total number of Services of type `LoadBalancer` that can exist in the namespace."
+        ],
+        [
+          "`services.nodeports`",
+          "The total number of `NodePorts` allocated to Services of type `NodePort` or `LoadBalancer` that can exist in the namespace."
+        ],
+        [
+          "`secrets`",
+          "The total number of Secrets that can exist in the namespace."
+        ]
+      ],
+      "text": "| Resource Name | Description |\n| --- | --- |\n| `configmaps` | The total number of ConfigMaps that can exist in the namespace. |\n| `persistentvolumeclaims` | The total number of [PersistentVolumeClaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) that can exist in the namespace. |\n| `pods` | The total number of Pods in a non-terminal state that can exist in the namespace. A pod is in a terminal state if `.status.phase in (Failed, Succeeded)` is true. |\n| `replicationcontrollers` | The total number of ReplicationControllers that can exist in the namespace. |\n| `resourcequotas` | The total number of ResourceQuotas that can exist in the namespace. |\n| `services` | The total number of Services that can exist in the namespace. |\n| `services.loadbalancers` | The total number of Services of type `LoadBalancer` that can exist in the namespace. |\n| `services.nodeports` | The total number of `NodePorts` allocated to Services of type `NodePort` or `LoadBalancer` that can exist in the namespace. |\n| `secrets` | The total number of Secrets that can exist in the namespace. |",
+      "type": "table"
+    },
+    {
+      "block_index": 64,
+      "text": "For example, `pods` quota counts and enforces a maximum on the number of `pods`\ncreated in a single namespace that are not terminal. You might want to set a `pods`\nquota on a namespace to avoid the case where a user creates many small pods and\nexhausts the cluster's supply of Pod IPs.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 65,
+      "text": "You can find more examples on [Viewing and Setting Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/#viewing-and-setting-quotas).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 66,
+      "level": 2,
+      "text": "Viewing and Setting Quotas",
+      "type": "heading"
+    },
+    {
+      "block_index": 67,
+      "text": "kubectl supports creating, updating, and viewing quotas:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 68,
+      "language": "shell",
+      "text": "kubectl create namespace myspace",
+      "type": "code"
+    },
+    {
+      "block_index": 69,
+      "language": "shell",
+      "text": "cat <<EOF > compute-resources.yaml\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: compute-resources\nspec:\n  hard:\n    requests.cpu: \"1\"\n    requests.memory: \"1Gi\"\n    limits.cpu: \"2\"\n    limits.memory: \"2Gi\"\n    requests.nvidia.com/gpu: 4\nEOF",
+      "type": "code"
+    },
+    {
+      "block_index": 70,
+      "language": "shell",
+      "text": "kubectl create -f ./compute-resources.yaml --namespace=myspace",
+      "type": "code"
+    },
+    {
+      "block_index": 71,
+      "language": "shell",
+      "text": "cat <<EOF > object-counts.yaml\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: object-counts\nspec:\n  hard:\n    configmaps: \"10\"\n    persistentvolumeclaims: \"4\"\n    pods: \"4\"\n    replicationcontrollers: \"20\"\n    secrets: \"10\"\n    services: \"10\"\n    services.loadbalancers: \"2\"\nEOF",
+      "type": "code"
+    },
+    {
+      "block_index": 72,
+      "language": "shell",
+      "text": "kubectl create -f ./object-counts.yaml --namespace=myspace",
+      "type": "code"
+    },
+    {
+      "block_index": 73,
+      "language": "shell",
+      "text": "kubectl get quota --namespace=myspace",
+      "type": "code"
+    },
+    {
+      "block_index": 74,
+      "language": "none",
+      "text": "NAME                    AGE\ncompute-resources       30s\nobject-counts           32s",
+      "type": "code"
+    },
+    {
+      "block_index": 75,
+      "language": "shell",
+      "text": "kubectl describe quota compute-resources --namespace=myspace",
+      "type": "code"
+    },
+    {
+      "block_index": 76,
+      "language": "none",
+      "text": "Name:                    compute-resources\nNamespace:               myspace\nResource                 Used  Hard\n--------                 ----  ----\nlimits.cpu               0     2\nlimits.memory            0     2Gi\nrequests.cpu             0     1\nrequests.memory          0     1Gi\nrequests.nvidia.com/gpu  0     4",
+      "type": "code"
+    },
+    {
+      "block_index": 77,
+      "language": "shell",
+      "text": "kubectl describe quota object-counts --namespace=myspace",
+      "type": "code"
+    },
+    {
+      "block_index": 78,
+      "language": "none",
+      "text": "Name:                   object-counts\nNamespace:              myspace\nResource                Used    Hard\n--------                ----    ----\nconfigmaps              0       10\npersistentvolumeclaims  0       4\npods                    0       4\nreplicationcontrollers  0       20\nsecrets                 1       10\nservices                0       10\nservices.loadbalancers  0       2",
+      "type": "code"
+    },
+    {
+      "block_index": 79,
+      "text": "kubectl also supports object count quota for all standard namespaced resources\nusing the syntax `count/<resource>.<group>`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 80,
+      "language": "shell",
+      "text": "kubectl create namespace myspace",
+      "type": "code"
+    },
+    {
+      "block_index": 81,
+      "language": "shell",
+      "text": "kubectl create quota test --hard=count/deployments.apps=2,count/replicasets.apps=4,count/pods=3,count/secrets=4 --namespace=myspace",
+      "type": "code"
+    },
+    {
+      "block_index": 82,
+      "language": "shell",
+      "text": "kubectl create deployment nginx --image=nginx --namespace=myspace --replicas=2",
+      "type": "code"
+    },
+    {
+      "block_index": 83,
+      "language": "shell",
+      "text": "kubectl describe quota --namespace=myspace",
+      "type": "code"
+    },
+    {
+      "block_index": 84,
+      "language": null,
+      "text": "Name:                         test\nNamespace:                    myspace\nResource                      Used  Hard\n--------                      ----  ----\ncount/deployments.apps        1     2\ncount/pods                    2     3\ncount/replicasets.apps        1     4\ncount/secrets                 1     4",
+      "type": "code"
+    },
+    {
+      "block_index": 85,
+      "level": 2,
+      "text": "Quota and Cluster Capacity",
+      "type": "heading"
+    },
+    {
+      "block_index": 86,
+      "text": "ResourceQuotas are independent of the cluster capacity. They are\nexpressed in absolute units. So, if you add nodes to your cluster, this does *not*\nautomatically give each namespace the ability to consume more resources.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 87,
+      "text": "Sometimes more complex policies may be desired, such as:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 88,
+      "ordered": false,
+      "text": "- Proportionally divide total cluster resources among several teams.\n- Allow each tenant to grow resource usage as needed, but have a generous limit to prevent accidental resource exhaustion.\n- Detect demand from one namespace, add nodes, and increase quota.",
+      "type": "list"
+    },
+    {
+      "block_index": 89,
+      "text": "Such policies could be implemented using `ResourceQuotas` as building blocks, by\nwriting a \"controller\" that watches the quota usage and adjusts the quota\nhard limits of each namespace according to other signals.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 90,
+      "text": "Note that resource quota divides up aggregate cluster resources, but it creates no\nrestrictions around nodes: pods from several namespaces may run on the same node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 91,
+      "level": 2,
+      "text": "Quota scopes",
+      "type": "heading"
+    },
+    {
+      "block_index": 92,
+      "text": "Each quota can have an associated set of `scopes`. A quota will only measure usage for a resource if it matches\nthe intersection of enumerated scopes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 93,
+      "text": "When a scope is added to the quota, it limits the number of resources it supports to those that pertain to the scope.\nResources specified on the quota outside of the allowed set results in a validation error.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 94,
+      "text": "Kubernetes 1.37 supports the following scopes:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 95,
+      "rows": [
+        [
+          "Scope",
+          "Description"
+        ],
+        [
+          "[`BestEffort`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-best-effort)",
+          "Match pods that have best effort quality of service."
+        ],
+        [
+          "[`CrossNamespacePodAffinity`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#cross-namespace-pod-affinity-scope)",
+          "Match pods that have cross-namespace pod [(anti)affinity terms](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/)."
+        ],
+        [
+          "[`NotBestEffort`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-non-best-effort)",
+          "Match pods that do not have best effort quality of service."
+        ],
+        [
+          "[`NotTerminating`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-non-terminating)",
+          "Match pods where `.spec.activeDeadlineSeconds` is `nil`"
+        ],
+        [
+          "[`PriorityClass`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#resource-quota-per-priorityclass)",
+          "Match pods that references the specified [priority class](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/)."
+        ],
+        [
+          "[`Terminating`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-terminating)",
+          "Match pods where `.spec.activeDeadlineSeconds` >= `0`"
+        ],
+        [
+          "[`VolumeAttributesClass`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-volume-attributes-class)",
+          "Match PersistentVolumeClaims that reference the specified [volume attributes class](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/)."
+        ]
+      ],
+      "text": "| Scope | Description |\n| --- | --- |\n| [`BestEffort`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-best-effort) | Match pods that have best effort quality of service. |\n| [`CrossNamespacePodAffinity`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#cross-namespace-pod-affinity-scope) | Match pods that have cross-namespace pod [(anti)affinity terms](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/). |\n| [`NotBestEffort`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-non-best-effort) | Match pods that do not have best effort quality of service. |\n| [`NotTerminating`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-non-terminating) | Match pods where `.spec.activeDeadlineSeconds` is `nil` |\n| [`PriorityClass`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#resource-quota-per-priorityclass) | Match pods that references the specified [priority class](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/). |\n| [`Terminating`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-terminating) | Match pods where `.spec.activeDeadlineSeconds` >= `0` |\n| [`VolumeAttributesClass`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-volume-attributes-class) | Match PersistentVolumeClaims that reference the specified [volume attributes class](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/). |",
+      "type": "table"
+    },
+    {
+      "block_index": 96,
+      "text": "ResourceQuotas with a scope set can also have a optional `scopeSelector` field. You define one or more *match expressions*\nthat specify an `operators` and, if relevant, a set of `values` to match. For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 97,
+      "language": "yaml",
+      "text": "  scopeSelector:\n    matchExpressions:\n      - scopeName: BestEffort # Match pods that have best effort quality of service\n        operator: Exists # optional; \"Exists\" is implied for BestEffort scope",
+      "type": "code"
+    },
+    {
+      "block_index": 98,
+      "text": "The `scopeSelector` supports the following values in the `operator` field:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 99,
+      "ordered": false,
+      "text": "- In\n- NotIn\n- Exists\n- DoesNotExist",
+      "type": "list"
+    },
+    {
+      "block_index": 100,
+      "text": "If the `operator` is `In` or `NotIn`, the `values` field must have at least\none value. For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 101,
+      "language": "yaml",
+      "text": "  scopeSelector:\n    matchExpressions:\n      - scopeName: PriorityClass\n        operator: In\n        values:\n          - middle",
+      "type": "code"
+    },
+    {
+      "block_index": 102,
+      "text": "If the `operator` is `Exists` or `DoesNotExist`, the `values` field must *NOT* be\nspecified.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 103,
+      "level": 3,
+      "text": "Best effort Pods scope",
+      "type": "heading"
+    },
+    {
+      "block_index": 104,
+      "text": "This scope only tracks quota consumed by Pods.\nIt only matches pods that have the [best effort](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#besteffort)\n[QoS class](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 105,
+      "text": "The `operator` for a `scopeSelector` must be `Exists`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 106,
+      "level": 3,
+      "text": "Not-best-effort Pods scope",
+      "type": "heading"
+    },
+    {
+      "block_index": 107,
+      "text": "This scope only tracks quota consumed by Pods.\nIt only matches pods that have the [Guaranteed](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#guaranteed)\nor [Burstable](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#burstable)\n[QoS class](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 108,
+      "text": "The `operator` for a `scopeSelector` must be `Exists`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 109,
+      "level": 3,
+      "text": "Non-terminating Pods scope",
+      "type": "heading"
+    },
+    {
+      "block_index": 110,
+      "text": "This scope only tracks quota consumed by Pods that are not terminating. The `operator` for a `scopeSelector`\nmust be `Exists`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 111,
+      "text": "A Pod is not terminating if the `.spec.activeDeadlineSeconds` field is unset.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 112,
+      "text": "You can use a ResourceQuota with this scope to manage the following resources:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 113,
+      "ordered": false,
+      "text": "- count.pods\n- pods\n- cpu\n- memory\n- requests.cpu\n- requests.memory\n- limits.cpu\n- limits.memory",
+      "type": "list"
+    },
+    {
+      "block_index": 114,
+      "level": 3,
+      "text": "Terminating Pods scope",
+      "type": "heading"
+    },
+    {
+      "block_index": 115,
+      "text": "This scope only tracks quota consumed by Pods that are terminating. The `operator` for a `scopeSelector`\nmust be `Exists`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 116,
+      "text": "A Pod is considered as *terminating* if the `.spec.activeDeadlineSeconds` field is set to any number.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 117,
+      "text": "You can use a ResourceQuota with this scope to manage the following resources:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 118,
+      "ordered": false,
+      "text": "- count.pods\n- pods\n- cpu\n- memory\n- requests.cpu\n- requests.memory\n- limits.cpu\n- limits.memory",
+      "type": "list"
+    },
+    {
+      "block_index": 119,
+      "level": 3,
+      "text": "Cross-namespace pod affinity scope",
+      "type": "heading"
+    },
+    {
+      "block_index": 120,
+      "text": "You can use `CrossNamespacePodAffinity` [quota scope](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scopes) to limit which namespaces are allowed to\nhave pods with affinity terms that cross namespaces. Specifically, it controls which pods are allowed\nto set `namespaces` or `namespaceSelector` fields in pod [(anti)affinity terms](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 121,
+      "text": "Preventing users from using cross-namespace affinity terms might be desired since a pod\nwith anti-affinity constraints can block pods from all other namespaces\nfrom getting scheduled in a failure domain.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 122,
+      "text": "Using this scope, you (as a cluster administrator) can prevent certain namespaces - such as `foo-ns` in the example below -\nfrom having pods that use cross-namespace pod affinity. You configure this creating a ResourceQuota object in\nthat namespace with `CrossNamespacePodAffinity` scope and hard limit of 0:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 123,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: disable-cross-namespace-affinity\n  namespace: foo-ns\nspec:\n  hard:\n    pods: \"0\"\n  scopeSelector:\n    matchExpressions:\n    - scopeName: CrossNamespacePodAffinity\n      operator: Exists",
+      "type": "code"
+    },
+    {
+      "block_index": 124,
+      "text": "If you want to disallow using `namespaces` and `namespaceSelector` by default, and\nonly allow it for specific namespaces, you could configure `CrossNamespacePodAffinity`\nas a limited resource by setting the kube-apiserver flag `--admission-control-config-file`\nto the path of the following configuration file:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 125,
+      "language": "yaml",
+      "text": "apiVersion: apiserver.config.k8s.io/v1\nkind: AdmissionConfiguration\nplugins:\n- name: \"ResourceQuota\"\n  configuration:\n    apiVersion: apiserver.config.k8s.io/v1\n    kind: ResourceQuotaConfiguration\n    limitedResources:\n    - resource: pods\n      matchScopes:\n      - scopeName: CrossNamespacePodAffinity\n        operator: Exists",
+      "type": "code"
+    },
+    {
+      "block_index": 126,
+      "text": "With the above configuration, pods can use `namespaces` and `namespaceSelector` in pod affinity only\nif the namespace where they are created have a resource quota object with\n`CrossNamespacePodAffinity` scope and a hard limit greater than or equal to the number of pods using those fields.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 127,
+      "level": 3,
+      "text": "PriorityClass scope",
+      "type": "heading"
+    },
+    {
+      "block_index": 128,
+      "text": "A ResourceQuota with a PriorityClass scope only matches Pods that have a particular\n[priority class](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/), and only\nif any `scopeSelector` in the quota spec selects a particular Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 129,
+      "text": "Pods can be created at a specific [priority](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority).\nYou can control a pod's consumption of system resources based on a pod's priority, by using the `scopeSelector`\nfield in the quota spec.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 130,
+      "text": "When quota is scoped for PriorityClass using the `scopeSelector` field, the ResourceQuota\ncan only track (and limit) the following resources:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 131,
+      "ordered": false,
+      "text": "- pods\n- cpu\n- memory\n- ephemeral-storage\n- limits.cpu\n- limits.memory\n- limits.ephemeral-storage\n- requests.cpu\n- requests.memory\n- requests.ephemeral-storage",
+      "type": "list"
+    },
+    {
+      "block_index": 132,
+      "level": 4,
+      "text": "Example",
+      "type": "heading"
+    },
+    {
+      "block_index": 133,
+      "text": "This example creates a ResourceQuota matches it with pods at specific priorities. The example\nworks as follows:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 134,
+      "ordered": false,
+      "text": "- Pods in the cluster have one of the three PriorityClasses , \"low\", \"medium\", \"high\".\n- If you want to try this out, use a testing cluster and set up those three PriorityClasses before you continue.\n- One quota object is created for each priority.",
+      "type": "list"
+    },
+    {
+      "block_index": 135,
+      "text": "Inspect this set of ResourceQuotas:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 136,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: pods-high\nspec:\n  hard:\n    cpu: \"1000\"\n    memory: \"200Gi\"\n    pods: \"10\"\n  scopeSelector:\n    matchExpressions:\n    - operator: In\n      scopeName: PriorityClass\n      values: [\"high\"]\n---\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: pods-medium\nspec:\n  hard:\n    cpu: \"10\"\n    memory: \"20Gi\"\n    pods: \"10\"\n  scopeSelector:\n    matchExpressions:\n    - operator: In\n      scopeName: PriorityClass\n      values: [\"medium\"]\n---\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: pods-low\nspec:\n  hard:\n    cpu: \"5\"\n    memory: \"10Gi\"\n    pods: \"10\"\n  scopeSelector:\n    matchExpressions:\n    - operator: In\n      scopeName: PriorityClass\n      values: [\"low\"]",
+      "type": "code"
+    },
+    {
+      "block_index": 137,
+      "text": "Apply the YAML using `kubectl create`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 138,
+      "language": "shell",
+      "text": "kubectl create -f https://k8s.io/examples/policy/quota.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 139,
+      "language": null,
+      "text": "resourcequota/pods-high created\nresourcequota/pods-medium created\nresourcequota/pods-low created",
+      "type": "code"
+    },
+    {
+      "block_index": 140,
+      "text": "Verify that `Used` quota is `0` using `kubectl describe quota`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 141,
+      "language": "shell",
+      "text": "kubectl describe quota",
+      "type": "code"
+    },
+    {
+      "block_index": 142,
+      "language": null,
+      "text": "Name:       pods-high\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     1k\nmemory      0     200Gi\npods        0     10\n\n\nName:       pods-low\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     5\nmemory      0     10Gi\npods        0     10\n\n\nName:       pods-medium\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     10\nmemory      0     20Gi\npods        0     10",
+      "type": "code"
+    },
+    {
+      "block_index": 143,
+      "text": "Create a pod with priority \"high\".",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 144,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: high-priority\nspec:\n  containers:\n  - name: high-priority\n    image: ubuntu\n    command: [\"/bin/sh\"]\n    args: [\"-c\", \"while true; do echo hello; sleep 10;done\"]\n    resources:\n      requests:\n        memory: \"10Gi\"\n        cpu: \"500m\"\n      limits:\n        memory: \"10Gi\"\n        cpu: \"500m\"\n  priorityClassName: high",
+      "type": "code"
+    },
+    {
+      "block_index": 145,
+      "text": "To create the Pod:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 146,
+      "language": "shell",
+      "text": "kubectl create -f https://k8s.io/examples/policy/high-priority-pod.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 147,
+      "text": "Verify that \"Used\" stats for \"high\" priority quota, `pods-high`, has changed and that\nthe other two quotas are unchanged.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 148,
+      "language": "shell",
+      "text": "kubectl describe quota",
+      "type": "code"
+    },
+    {
+      "block_index": 149,
+      "language": null,
+      "text": "Name:       pods-high\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         500m  1k\nmemory      10Gi  200Gi\npods        1     10\n\n\nName:       pods-low\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     5\nmemory      0     10Gi\npods        0     10\n\n\nName:       pods-medium\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     10\nmemory      0     20Gi\npods        0     10",
+      "type": "code"
+    },
+    {
+      "block_index": 150,
+      "level": 4,
+      "text": "Limiting PriorityClass consumption by default",
+      "type": "heading"
+    },
+    {
+      "block_index": 151,
+      "text": "It may be desired that pods at a particular priority, such as \"cluster-services\",\nshould be allowed in a namespace, if and only if, a matching quota object exists.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 152,
+      "text": "With this mechanism, operators are able to restrict usage of certain high\npriority classes to a limited number of namespaces and not every namespace\nwill be able to consume these priority classes by default.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 153,
+      "text": "To enforce this, `kube-apiserver` flag `--admission-control-config-file` should be\nused to pass path to the following configuration file:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 154,
+      "language": "yaml",
+      "text": "apiVersion: apiserver.config.k8s.io/v1\nkind: AdmissionConfiguration\nplugins:\n- name: \"ResourceQuota\"\n  configuration:\n    apiVersion: apiserver.config.k8s.io/v1\n    kind: ResourceQuotaConfiguration\n    limitedResources:\n    - resource: pods\n      matchScopes:\n      - scopeName: PriorityClass\n        operator: In\n        values: [\"cluster-services\"]",
+      "type": "code"
+    },
+    {
+      "block_index": 155,
+      "text": "Then, create a resource quota object in the `kube-system` namespace:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 156,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: pods-cluster-services\nspec:\n  scopeSelector:\n    matchExpressions:\n      - operator : In\n        scopeName: PriorityClass\n        values: [\"cluster-services\"]",
+      "type": "code"
+    },
+    {
+      "block_index": 157,
+      "language": "shell",
+      "text": "kubectl apply -f https://k8s.io/examples/policy/priority-class-resourcequota.yaml -n kube-system",
+      "type": "code"
+    },
+    {
+      "block_index": 158,
+      "language": "none",
+      "text": "resourcequota/pods-cluster-services created",
+      "type": "code"
+    },
+    {
+      "block_index": 159,
+      "text": "In this case, a pod creation will be allowed if:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 160,
+      "ordered": true,
+      "text": "1. the Pod's priorityClassName is not specified.\n2. the Pod's priorityClassName is specified to a value other than cluster-services .\n3. the Pod's priorityClassName is set to cluster-services , it is to be created in the kube-system namespace, and it has passed the resource quota check.",
+      "type": "list"
+    },
+    {
+      "block_index": 161,
+      "text": "A Pod creation request is rejected if its `priorityClassName` is set to `cluster-services`\nand it is to be created in a namespace other than `kube-system`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 162,
+      "level": 3,
+      "text": "VolumeAttributesClass scope",
+      "type": "heading"
+    },
+    {
+      "block_index": 163,
+      "text": "This is a stable feature in Kubernetes, and has been since version v1.36. It was first available in the v1.29 release. You can no longer disable or opt out of this feature or behavior (it is locked); if you explicitly set a value for the associated feature gate VolumeAttributesClass, Kubernetes ignores it but does not report any error.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 164,
+      "text": "This scope only tracks quota consumed by PersistentVolumeClaims.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 165,
+      "text": "PersistentVolumeClaims can be created with a specific\n[VolumeAttributesClass](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/), and might be modified after creation.\nYou can control a PVC's consumption of storage resources based on the associated\nVolumeAttributesClasses, by using the `scopeSelector` field in the quota spec.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 166,
+      "text": "The PVC references the associated VolumeAttributesClass by the following fields:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 167,
+      "ordered": false,
+      "text": "- spec.volumeAttributesClassName\n- status.currentVolumeAttributesClassName\n- status.modifyVolumeStatus.targetVolumeAttributesClassName",
+      "type": "list"
+    },
+    {
+      "block_index": 168,
+      "text": "A relevant ResourceQuota is matched and consumed only if the ResourceQuota has a `scopeSelector` that selects the PVC.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 169,
+      "text": "When the quota is scoped for the volume attributes class using the `scopeSelector` field, the quota object is restricted to track only the following resources:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 170,
+      "ordered": false,
+      "text": "- persistentvolumeclaims\n- requests.storage",
+      "type": "list"
+    },
+    {
+      "block_index": 171,
+      "text": "Read [Limit Storage Consumption](https://kubernetes.io/docs/tasks/administer-cluster/limit-storage-consumption/) to learn more about this.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 172,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 173,
+      "ordered": false,
+      "text": "- See a detailed example for how to use resource quota .\n- Read the ResourceQuota API reference\n- Learn about LimitRanges\n- You can read the historical ResourceQuota design document for more information.\n- You can also read the Quota support for priority class design document .",
+      "type": "list"
+    }
+  ],
+  "content": "# Resource Quotas\n\nWhen several users or teams share a cluster with a fixed number of nodes,\nthere is a concern that one team could use more than its fair share of resources.\n\n*Resource quotas* are a tool for administrators to address this concern.\n\nA resource quota, defined by a ResourceQuota object, provides constraints that limit\naggregate resource consumption per [namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces). A ResourceQuota can also\nlimit the [quantity of objects that can be created in a namespace](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-on-object-count) by API kind, as well as the total\namount of [infrastructure resources](https://kubernetes.io/docs/reference/glossary/?all=true#term-infrastructure-resource) that may be consumed by\nAPI objects found in that namespace.\n\n#### Caution:\n\n## How Kubernetes ResourceQuotas work\n\nResourceQuotas work like this:\n\n- Different teams work in different namespaces. This separation can be enforced with [RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) or any other [authorization](https://kubernetes.io/docs/reference/access-authn-authz/authorization/) mechanism.\n- A cluster administrator creates at least one ResourceQuota for each namespace.\n- To make sure the enforcement stays enforced, the cluster administrator should also restrict access to delete or update that ResourceQuota; for example, by defining a ValidatingAdmissionPolicy .\n- Users create resources (pods, services, etc.) in the namespace, and the quota system tracks usage to ensure it does not exceed hard resource limits defined in a ResourceQuota. You can apply a [scope](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scopes) to a ResourceQuota to limit where it applies,\n- If creating or updating a resource violates a quota constraint, the control plane rejects that request with HTTP status code `403 Forbidden`. The error includes a message explaining the constraint that would have been violated.\n- If quotas are enabled in a namespace for [resource](https://kubernetes.io/docs/reference/glossary/?all=true#term-infrastructure-resource) such as `cpu` and `memory`, users must specify requests or limits for those values when they define a Pod; otherwise, the quota system may reject pod creation. The resource quota [walkthrough](https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/quota-memory-cpu-namespace/) shows an example of how to avoid this problem.\n\n#### Note:\n\n- You can define a LimitRange to force defaults on pods that make no compute resource requirements (so that users don't have to remember to do that).\n\nYou often do not create Pods directly; for example, you more usually create a [workload management](https://kubernetes.io/docs/concepts/workloads/controllers/)\nobject such as a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/). If you create a Deployment that tries to use more\nresources than are available, the creation of the Deployment (or other workload management object) **succeeds**, but\nthe Deployment may not be able to get all of the Pods it manages to exist. In that case you can check the status of\nthe Deployment, for example with `kubectl describe`, to see what has happened.\n\n- For cpu and memory resources, ResourceQuotas enforce that every (new) pod in that namespace sets a limit for that resource. If you enforce a resource quota in a namespace for either cpu or memory , you and other clients, must specify either requests or limits for that resource, for every new Pod you submit. If you don't, the control plane may reject admission for that Pod.\n- For other resources: ResourceQuota works and will ignore pods in the namespace without setting a limit or request for that resource. It means that you can create a new pod without limit/request for ephemeral storage if the resource quota limits the ephemeral storage of this namespace.\n\nYou can use a [LimitRange](https://kubernetes.io/docs/concepts/policy/limit-range/) to automatically set\na default request for these resources.\n\nThe name of a ResourceQuota object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).\n\nExamples of policies that could be created using namespaces and quotas are:\n\n- In a cluster with a capacity of 32 GiB RAM, and 16 cores, let team A use 20 GiB and 10 cores, let B use 10GiB and 4 cores, and hold 2GiB and 2 cores in reserve for future allocation.\n- Limit the \"testing\" namespace to using 1 core and 1GiB RAM. Let the \"production\" namespace use any amount.\n\nIn the case where the total capacity of the cluster is less than the sum of the quotas of the namespaces,\nthere may be contention for resources. This is handled on a first-come-first-served basis.\n\n## Enabling Resource Quota\n\nResourceQuota support is enabled by default for many Kubernetes distributions. It is\nenabled when the [API server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver)\n`--enable-admission-plugins=` flag has `ResourceQuota` as\none of its arguments.\n\nA resource quota is enforced in a particular namespace when there is a\nResourceQuota in that namespace.\n\n## Types of resource quota\n\nThe ResourceQuota mechanism lets you enforce different kinds of limits. This\nsection describes the types of limit that you can enforce.\n\n### Quota for infrastructure resources\n\nYou can limit the total sum of\n[compute resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)\nthat can be requested in a given namespace.\n\nThe following resource types are supported:\n\n| Resource Name | Description |\n| --- | --- |\n| `limits.cpu` | Across all pods in a non-terminal state, the sum of CPU limits cannot exceed this value. |\n| `limits.memory` | Across all pods in a non-terminal state, the sum of memory limits cannot exceed this value. |\n| `requests.cpu` | Across all pods in a non-terminal state, the sum of CPU requests cannot exceed this value. |\n| `requests.memory` | Across all pods in a non-terminal state, the sum of memory requests cannot exceed this value. |\n| `hugepages-<size>` | Across all pods in a non-terminal state, the number of huge page requests of the specified size cannot exceed this value. |\n| `cpu` | Same as `requests.cpu` |\n| `memory` | Same as `requests.memory` |\n\n### Quota for extended resources\n\nIn addition to the resources mentioned above, in release 1.10, quota support for\n[extended resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources) is added.\n\nAs overcommit is not allowed for extended resources, it makes no sense to specify both `requests`\nand `limits` for the same extended resource in a quota. So for extended resources, only quota items\nwith prefix `requests.` are allowed.\n\nTake the GPU resource as an example, if the resource name is `nvidia.com/gpu`, and you want to\nlimit the total number of GPUs requested in a namespace to 4, you can define a quota as follows:\n\n- requests.nvidia.com/gpu: 4\n\nSee [Viewing and Setting Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/#viewing-and-setting-quotas) for more details.\n\n### Quota for DRA resource claims\n\nDRA (Dynamic Resource Allocation) resource claims can request DRA resources by device class. For an example\ndevice class named `examplegpu`, you want to limit the total number of GPUs requested in a namespace to 4,\nyou can define a quota as follows:\n\n- examplegpu.deviceclass.resource.k8s.io/devices: 4\n\nWhen [Extended Resource allocation by DRA](https://kubernetes.io/docs/concepts/resource-management/dynamic-resource-allocation/dra-features/#extended-resource)\nis enabled, the same device class named `examplegpu` can be requested via extended resource either explicitly\nwhen the device class's ExtendedResourceName field is given, say, `example.com/gpu`, then you can define a quota as follows:\n\n- requests.example.com/gpu: 4\n\nor implicitly using the derived extended resource name from device class name `examplegpu`, you can define\na quota as follows:\n\n- requests.deviceclass.resource.kubernetes.io/examplegpu: 4\n\nAll devices requested from resource claims or extended resources are counted towards all three quotas\nlisted above. The extended resource quota e.g. `requests.example.com/gpu: 4`, also counts the devices provided\nby device plugin.\n\nSee [Viewing and Setting Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/#viewing-and-setting-quotas) for more details.\n\n### Quota for storage\n\nYou can limit the total sum of [storage](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) for volumes\nthat can be requested in a given namespace.\n\nIn addition, you can limit consumption of storage resources based on associated\n[StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/).\n\n| Resource Name | Description |\n| --- | --- |\n| `requests.storage` | Across all persistent volume claims, the sum of storage requests cannot exceed this value. |\n| `persistentvolumeclaims` | The total number of [PersistentVolumeClaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) that can exist in the namespace. |\n| `<storage-class-name>.storageclass.storage.k8s.io/requests.storage` | Across all persistent volume claims associated with the `<storage-class-name>`, the sum of storage requests cannot exceed this value. |\n| `<storage-class-name>.storageclass.storage.k8s.io/persistentvolumeclaims` | Across all persistent volume claims associated with the `<storage-class-name>`, the total number of [persistent volume claims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) that can exist in the namespace. |\n\nFor example, if you want to quota storage with `gold` StorageClass separate from\na `bronze` StorageClass, you can define a quota as follows:\n\n- gold.storageclass.storage.k8s.io/requests.storage: 500Gi\n- bronze.storageclass.storage.k8s.io/requests.storage: 100Gi\n\n#### Quota for local ephemeral storage\n\n| Resource Name | Description |\n| --- | --- |\n| `requests.ephemeral-storage` | Across all pods in the namespace, the sum of local ephemeral storage requests cannot exceed this value. |\n| `limits.ephemeral-storage` | Across all pods in the namespace, the sum of local ephemeral storage limits cannot exceed this value. |\n| `ephemeral-storage` | Same as `requests.ephemeral-storage`. |\n\n#### Note:\n\nWhen using a CRI container runtime, container logs will count against the ephemeral storage quota.\nThis can result in the unexpected eviction of pods that have exhausted their storage quotas.\n\nRefer to [Logging Architecture](https://kubernetes.io/docs/concepts/cluster-administration/logging/) for details.\n\n### Quota on object count\n\nYou can set quota for *the total number of one particular [resource](https://kubernetes.io/docs/reference/using-api/api-concepts/#standard-api-terminology) kind* in the Kubernetes API,\nusing the following syntax:\n\n- count/<resource>.<group> for resources from non-core API groups\n- count/<resource> for resources from the core API group\n\nFor example, the PodTemplate API is in the core API group and so if you want to limit the number of\nPodTemplate objects in a namespace, you use `count/podtemplates`.\n\nThese types of quotas are useful to protect against exhaustion of control plane storage. For example, you may\nwant to limit the number of Secrets in a server given their large size. Too many Secrets in a cluster can\nactually prevent servers and controllers from starting. You can set a quota for Jobs to protect against\na poorly configured CronJob. CronJobs that create too many Jobs in a namespace can lead to a denial of service.\n\nIf you define a quota this way, it applies to Kubernetes' APIs that are part of the API server, and\nto any custom resources backed by a CustomResourceDefinition.\nFor example, to create a quota on a `widgets` custom resource in the `example.com` API group,\nuse `count/widgets.example.com`.\nIf you use [API aggregation](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/) to\nadd additional, custom APIs that are not defined as CustomResourceDefinitions, the core Kubernetes\ncontrol plane does not enforce quota for the aggregated API. The extension API server is expected to\nprovide quota enforcement if that's appropriate for the custom API.\n\n##### Generic syntax\n\nThis is a list of common examples of object kinds that you may want to put under object count quota,\nlisted by the configuration string that you would use.\n\n- count/pods\n- count/persistentvolumeclaims\n- count/services\n- count/secrets\n- count/configmaps\n- count/deployments.apps\n- count/replicasets.apps\n- count/statefulsets.apps\n- count/jobs.batch\n- count/cronjobs.batch\n\n##### Specialized syntax\n\nThere is another syntax only to set the same type of quota, that only works for certain API kinds.\nThe following types are supported:\n\n| Resource Name | Description |\n| --- | --- |\n| `configmaps` | The total number of ConfigMaps that can exist in the namespace. |\n| `persistentvolumeclaims` | The total number of [PersistentVolumeClaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) that can exist in the namespace. |\n| `pods` | The total number of Pods in a non-terminal state that can exist in the namespace. A pod is in a terminal state if `.status.phase in (Failed, Succeeded)` is true. |\n| `replicationcontrollers` | The total number of ReplicationControllers that can exist in the namespace. |\n| `resourcequotas` | The total number of ResourceQuotas that can exist in the namespace. |\n| `services` | The total number of Services that can exist in the namespace. |\n| `services.loadbalancers` | The total number of Services of type `LoadBalancer` that can exist in the namespace. |\n| `services.nodeports` | The total number of `NodePorts` allocated to Services of type `NodePort` or `LoadBalancer` that can exist in the namespace. |\n| `secrets` | The total number of Secrets that can exist in the namespace. |\n\nFor example, `pods` quota counts and enforces a maximum on the number of `pods`\ncreated in a single namespace that are not terminal. You might want to set a `pods`\nquota on a namespace to avoid the case where a user creates many small pods and\nexhausts the cluster's supply of Pod IPs.\n\nYou can find more examples on [Viewing and Setting Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/#viewing-and-setting-quotas).\n\n## Viewing and Setting Quotas\n\nkubectl supports creating, updating, and viewing quotas:\n\n```shell\nkubectl create namespace myspace\n```\n\n```shell\ncat <<EOF > compute-resources.yaml\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: compute-resources\nspec:\n  hard:\n    requests.cpu: \"1\"\n    requests.memory: \"1Gi\"\n    limits.cpu: \"2\"\n    limits.memory: \"2Gi\"\n    requests.nvidia.com/gpu: 4\nEOF\n```\n\n```shell\nkubectl create -f ./compute-resources.yaml --namespace=myspace\n```\n\n```shell\ncat <<EOF > object-counts.yaml\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: object-counts\nspec:\n  hard:\n    configmaps: \"10\"\n    persistentvolumeclaims: \"4\"\n    pods: \"4\"\n    replicationcontrollers: \"20\"\n    secrets: \"10\"\n    services: \"10\"\n    services.loadbalancers: \"2\"\nEOF\n```\n\n```shell\nkubectl create -f ./object-counts.yaml --namespace=myspace\n```\n\n```shell\nkubectl get quota --namespace=myspace\n```\n\n```none\nNAME                    AGE\ncompute-resources       30s\nobject-counts           32s\n```\n\n```shell\nkubectl describe quota compute-resources --namespace=myspace\n```\n\n```none\nName:                    compute-resources\nNamespace:               myspace\nResource                 Used  Hard\n--------                 ----  ----\nlimits.cpu               0     2\nlimits.memory            0     2Gi\nrequests.cpu             0     1\nrequests.memory          0     1Gi\nrequests.nvidia.com/gpu  0     4\n```\n\n```shell\nkubectl describe quota object-counts --namespace=myspace\n```\n\n```none\nName:                   object-counts\nNamespace:              myspace\nResource                Used    Hard\n--------                ----    ----\nconfigmaps              0       10\npersistentvolumeclaims  0       4\npods                    0       4\nreplicationcontrollers  0       20\nsecrets                 1       10\nservices                0       10\nservices.loadbalancers  0       2\n```\n\nkubectl also supports object count quota for all standard namespaced resources\nusing the syntax `count/<resource>.<group>`:\n\n```shell\nkubectl create namespace myspace\n```\n\n```shell\nkubectl create quota test --hard=count/deployments.apps=2,count/replicasets.apps=4,count/pods=3,count/secrets=4 --namespace=myspace\n```\n\n```shell\nkubectl create deployment nginx --image=nginx --namespace=myspace --replicas=2\n```\n\n```shell\nkubectl describe quota --namespace=myspace\n```\n\n```\nName:                         test\nNamespace:                    myspace\nResource                      Used  Hard\n--------                      ----  ----\ncount/deployments.apps        1     2\ncount/pods                    2     3\ncount/replicasets.apps        1     4\ncount/secrets                 1     4\n```\n\n## Quota and Cluster Capacity\n\nResourceQuotas are independent of the cluster capacity. They are\nexpressed in absolute units. So, if you add nodes to your cluster, this does *not*\nautomatically give each namespace the ability to consume more resources.\n\nSometimes more complex policies may be desired, such as:\n\n- Proportionally divide total cluster resources among several teams.\n- Allow each tenant to grow resource usage as needed, but have a generous limit to prevent accidental resource exhaustion.\n- Detect demand from one namespace, add nodes, and increase quota.\n\nSuch policies could be implemented using `ResourceQuotas` as building blocks, by\nwriting a \"controller\" that watches the quota usage and adjusts the quota\nhard limits of each namespace according to other signals.\n\nNote that resource quota divides up aggregate cluster resources, but it creates no\nrestrictions around nodes: pods from several namespaces may run on the same node.\n\n## Quota scopes\n\nEach quota can have an associated set of `scopes`. A quota will only measure usage for a resource if it matches\nthe intersection of enumerated scopes.\n\nWhen a scope is added to the quota, it limits the number of resources it supports to those that pertain to the scope.\nResources specified on the quota outside of the allowed set results in a validation error.\n\nKubernetes 1.37 supports the following scopes:\n\n| Scope | Description |\n| --- | --- |\n| [`BestEffort`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-best-effort) | Match pods that have best effort quality of service. |\n| [`CrossNamespacePodAffinity`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#cross-namespace-pod-affinity-scope) | Match pods that have cross-namespace pod [(anti)affinity terms](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/). |\n| [`NotBestEffort`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-non-best-effort) | Match pods that do not have best effort quality of service. |\n| [`NotTerminating`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-non-terminating) | Match pods where `.spec.activeDeadlineSeconds` is `nil` |\n| [`PriorityClass`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#resource-quota-per-priorityclass) | Match pods that references the specified [priority class](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/). |\n| [`Terminating`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-terminating) | Match pods where `.spec.activeDeadlineSeconds` >= `0` |\n| [`VolumeAttributesClass`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scope-volume-attributes-class) | Match PersistentVolumeClaims that reference the specified [volume attributes class](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/). |\n\nResourceQuotas with a scope set can also have a optional `scopeSelector` field. You define one or more *match expressions*\nthat specify an `operators` and, if relevant, a set of `values` to match. For example:\n\n```yaml\nscopeSelector:\n    matchExpressions:\n      - scopeName: BestEffort # Match pods that have best effort quality of service\n        operator: Exists # optional; \"Exists\" is implied for BestEffort scope\n```\n\nThe `scopeSelector` supports the following values in the `operator` field:\n\n- In\n- NotIn\n- Exists\n- DoesNotExist\n\nIf the `operator` is `In` or `NotIn`, the `values` field must have at least\none value. For example:\n\n```yaml\nscopeSelector:\n    matchExpressions:\n      - scopeName: PriorityClass\n        operator: In\n        values:\n          - middle\n```\n\nIf the `operator` is `Exists` or `DoesNotExist`, the `values` field must *NOT* be\nspecified.\n\n### Best effort Pods scope\n\nThis scope only tracks quota consumed by Pods.\nIt only matches pods that have the [best effort](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#besteffort)\n[QoS class](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/).\n\nThe `operator` for a `scopeSelector` must be `Exists`.\n\n### Not-best-effort Pods scope\n\nThis scope only tracks quota consumed by Pods.\nIt only matches pods that have the [Guaranteed](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#guaranteed)\nor [Burstable](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#burstable)\n[QoS class](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/).\n\nThe `operator` for a `scopeSelector` must be `Exists`.\n\n### Non-terminating Pods scope\n\nThis scope only tracks quota consumed by Pods that are not terminating. The `operator` for a `scopeSelector`\nmust be `Exists`.\n\nA Pod is not terminating if the `.spec.activeDeadlineSeconds` field is unset.\n\nYou can use a ResourceQuota with this scope to manage the following resources:\n\n- count.pods\n- pods\n- cpu\n- memory\n- requests.cpu\n- requests.memory\n- limits.cpu\n- limits.memory\n\n### Terminating Pods scope\n\nThis scope only tracks quota consumed by Pods that are terminating. The `operator` for a `scopeSelector`\nmust be `Exists`.\n\nA Pod is considered as *terminating* if the `.spec.activeDeadlineSeconds` field is set to any number.\n\nYou can use a ResourceQuota with this scope to manage the following resources:\n\n- count.pods\n- pods\n- cpu\n- memory\n- requests.cpu\n- requests.memory\n- limits.cpu\n- limits.memory\n\n### Cross-namespace pod affinity scope\n\nYou can use `CrossNamespacePodAffinity` [quota scope](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scopes) to limit which namespaces are allowed to\nhave pods with affinity terms that cross namespaces. Specifically, it controls which pods are allowed\nto set `namespaces` or `namespaceSelector` fields in pod [(anti)affinity terms](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).\n\nPreventing users from using cross-namespace affinity terms might be desired since a pod\nwith anti-affinity constraints can block pods from all other namespaces\nfrom getting scheduled in a failure domain.\n\nUsing this scope, you (as a cluster administrator) can prevent certain namespaces - such as `foo-ns` in the example below -\nfrom having pods that use cross-namespace pod affinity. You configure this creating a ResourceQuota object in\nthat namespace with `CrossNamespacePodAffinity` scope and hard limit of 0:\n\n```yaml\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: disable-cross-namespace-affinity\n  namespace: foo-ns\nspec:\n  hard:\n    pods: \"0\"\n  scopeSelector:\n    matchExpressions:\n    - scopeName: CrossNamespacePodAffinity\n      operator: Exists\n```\n\nIf you want to disallow using `namespaces` and `namespaceSelector` by default, and\nonly allow it for specific namespaces, you could configure `CrossNamespacePodAffinity`\nas a limited resource by setting the kube-apiserver flag `--admission-control-config-file`\nto the path of the following configuration file:\n\n```yaml\napiVersion: apiserver.config.k8s.io/v1\nkind: AdmissionConfiguration\nplugins:\n- name: \"ResourceQuota\"\n  configuration:\n    apiVersion: apiserver.config.k8s.io/v1\n    kind: ResourceQuotaConfiguration\n    limitedResources:\n    - resource: pods\n      matchScopes:\n      - scopeName: CrossNamespacePodAffinity\n        operator: Exists\n```\n\nWith the above configuration, pods can use `namespaces` and `namespaceSelector` in pod affinity only\nif the namespace where they are created have a resource quota object with\n`CrossNamespacePodAffinity` scope and a hard limit greater than or equal to the number of pods using those fields.\n\n### PriorityClass scope\n\nA ResourceQuota with a PriorityClass scope only matches Pods that have a particular\n[priority class](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/), and only\nif any `scopeSelector` in the quota spec selects a particular Pod.\n\nPods can be created at a specific [priority](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority).\nYou can control a pod's consumption of system resources based on a pod's priority, by using the `scopeSelector`\nfield in the quota spec.\n\nWhen quota is scoped for PriorityClass using the `scopeSelector` field, the ResourceQuota\ncan only track (and limit) the following resources:\n\n- pods\n- cpu\n- memory\n- ephemeral-storage\n- limits.cpu\n- limits.memory\n- limits.ephemeral-storage\n- requests.cpu\n- requests.memory\n- requests.ephemeral-storage\n\n#### Example\n\nThis example creates a ResourceQuota matches it with pods at specific priorities. The example\nworks as follows:\n\n- Pods in the cluster have one of the three PriorityClasses , \"low\", \"medium\", \"high\".\n- If you want to try this out, use a testing cluster and set up those three PriorityClasses before you continue.\n- One quota object is created for each priority.\n\nInspect this set of ResourceQuotas:\n\n```yaml\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: pods-high\nspec:\n  hard:\n    cpu: \"1000\"\n    memory: \"200Gi\"\n    pods: \"10\"\n  scopeSelector:\n    matchExpressions:\n    - operator: In\n      scopeName: PriorityClass\n      values: [\"high\"]\n---\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: pods-medium\nspec:\n  hard:\n    cpu: \"10\"\n    memory: \"20Gi\"\n    pods: \"10\"\n  scopeSelector:\n    matchExpressions:\n    - operator: In\n      scopeName: PriorityClass\n      values: [\"medium\"]\n---\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: pods-low\nspec:\n  hard:\n    cpu: \"5\"\n    memory: \"10Gi\"\n    pods: \"10\"\n  scopeSelector:\n    matchExpressions:\n    - operator: In\n      scopeName: PriorityClass\n      values: [\"low\"]\n```\n\nApply the YAML using `kubectl create`.\n\n```shell\nkubectl create -f https://k8s.io/examples/policy/quota.yaml\n```\n\n```\nresourcequota/pods-high created\nresourcequota/pods-medium created\nresourcequota/pods-low created\n```\n\nVerify that `Used` quota is `0` using `kubectl describe quota`.\n\n```shell\nkubectl describe quota\n```\n\n```\nName:       pods-high\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     1k\nmemory      0     200Gi\npods        0     10\n\nName:       pods-low\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     5\nmemory      0     10Gi\npods        0     10\n\nName:       pods-medium\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     10\nmemory      0     20Gi\npods        0     10\n```\n\nCreate a pod with priority \"high\".\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: high-priority\nspec:\n  containers:\n  - name: high-priority\n    image: ubuntu\n    command: [\"/bin/sh\"]\n    args: [\"-c\", \"while true; do echo hello; sleep 10;done\"]\n    resources:\n      requests:\n        memory: \"10Gi\"\n        cpu: \"500m\"\n      limits:\n        memory: \"10Gi\"\n        cpu: \"500m\"\n  priorityClassName: high\n```\n\nTo create the Pod:\n\n```shell\nkubectl create -f https://k8s.io/examples/policy/high-priority-pod.yaml\n```\n\nVerify that \"Used\" stats for \"high\" priority quota, `pods-high`, has changed and that\nthe other two quotas are unchanged.\n\n```shell\nkubectl describe quota\n```\n\n```\nName:       pods-high\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         500m  1k\nmemory      10Gi  200Gi\npods        1     10\n\nName:       pods-low\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     5\nmemory      0     10Gi\npods        0     10\n\nName:       pods-medium\nNamespace:  default\nResource    Used  Hard\n--------    ----  ----\ncpu         0     10\nmemory      0     20Gi\npods        0     10\n```\n\n#### Limiting PriorityClass consumption by default\n\nIt may be desired that pods at a particular priority, such as \"cluster-services\",\nshould be allowed in a namespace, if and only if, a matching quota object exists.\n\nWith this mechanism, operators are able to restrict usage of certain high\npriority classes to a limited number of namespaces and not every namespace\nwill be able to consume these priority classes by default.\n\nTo enforce this, `kube-apiserver` flag `--admission-control-config-file` should be\nused to pass path to the following configuration file:\n\n```yaml\napiVersion: apiserver.config.k8s.io/v1\nkind: AdmissionConfiguration\nplugins:\n- name: \"ResourceQuota\"\n  configuration:\n    apiVersion: apiserver.config.k8s.io/v1\n    kind: ResourceQuotaConfiguration\n    limitedResources:\n    - resource: pods\n      matchScopes:\n      - scopeName: PriorityClass\n        operator: In\n        values: [\"cluster-services\"]\n```\n\nThen, create a resource quota object in the `kube-system` namespace:\n\n```yaml\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: pods-cluster-services\nspec:\n  scopeSelector:\n    matchExpressions:\n      - operator : In\n        scopeName: PriorityClass\n        values: [\"cluster-services\"]\n```\n\n```shell\nkubectl apply -f https://k8s.io/examples/policy/priority-class-resourcequota.yaml -n kube-system\n```\n\n```none\nresourcequota/pods-cluster-services created\n```\n\nIn this case, a pod creation will be allowed if:\n\n1. the Pod's priorityClassName is not specified.\n2. the Pod's priorityClassName is specified to a value other than cluster-services .\n3. the Pod's priorityClassName is set to cluster-services , it is to be created in the kube-system namespace, and it has passed the resource quota check.\n\nA Pod creation request is rejected if its `priorityClassName` is set to `cluster-services`\nand it is to be created in a namespace other than `kube-system`.\n\n### VolumeAttributesClass scope\n\nThis is a stable feature in Kubernetes, and has been since version v1.36. It was first available in the v1.29 release. You can no longer disable or opt out of this feature or behavior (it is locked); if you explicitly set a value for the associated feature gate VolumeAttributesClass, Kubernetes ignores it but does not report any error.\n\nThis scope only tracks quota consumed by PersistentVolumeClaims.\n\nPersistentVolumeClaims can be created with a specific\n[VolumeAttributesClass](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/), and might be modified after creation.\nYou can control a PVC's consumption of storage resources based on the associated\nVolumeAttributesClasses, by using the `scopeSelector` field in the quota spec.\n\nThe PVC references the associated VolumeAttributesClass by the following fields:\n\n- spec.volumeAttributesClassName\n- status.currentVolumeAttributesClassName\n- status.modifyVolumeStatus.targetVolumeAttributesClassName\n\nA relevant ResourceQuota is matched and consumed only if the ResourceQuota has a `scopeSelector` that selects the PVC.\n\nWhen the quota is scoped for the volume attributes class using the `scopeSelector` field, the quota object is restricted to track only the following resources:\n\n- persistentvolumeclaims\n- requests.storage\n\nRead [Limit Storage Consumption](https://kubernetes.io/docs/tasks/administer-cluster/limit-storage-consumption/) to learn more about this.\n\n## What's next\n\n- See a detailed example for how to use resource quota .\n- Read the ResourceQuota API reference\n- Learn about LimitRanges\n- You can read the historical ResourceQuota design document for more information.\n- You can also read the Quota support for priority class design document .\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:8c888efcd0cea5f3c5484d2bb8691638530d196f1315094eb98979eeaf247374",
+  "document_id": "sec-009",
+  "domain": "security_policies",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Resource Quotas"
+    },
+    {
+      "block_index": 4,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "How Kubernetes ResourceQuotas work"
+    },
+    {
+      "block_index": 8,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 17,
+      "level": 2,
+      "text": "Enabling Resource Quota"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "Types of resource quota"
+    },
+    {
+      "block_index": 22,
+      "level": 3,
+      "text": "Quota for infrastructure resources"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Quota for extended resources"
+    },
+    {
+      "block_index": 32,
+      "level": 3,
+      "text": "Quota for DRA resource claims"
+    },
+    {
+      "block_index": 41,
+      "level": 3,
+      "text": "Quota for storage"
+    },
+    {
+      "block_index": 47,
+      "level": 4,
+      "text": "Quota for local ephemeral storage"
+    },
+    {
+      "block_index": 49,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 52,
+      "level": 3,
+      "text": "Quota on object count"
+    },
+    {
+      "block_index": 58,
+      "level": 5,
+      "text": "Generic syntax"
+    },
+    {
+      "block_index": 61,
+      "level": 5,
+      "text": "Specialized syntax"
+    },
+    {
+      "block_index": 66,
+      "level": 2,
+      "text": "Viewing and Setting Quotas"
+    },
+    {
+      "block_index": 85,
+      "level": 2,
+      "text": "Quota and Cluster Capacity"
+    },
+    {
+      "block_index": 91,
+      "level": 2,
+      "text": "Quota scopes"
+    },
+    {
+      "block_index": 103,
+      "level": 3,
+      "text": "Best effort Pods scope"
+    },
+    {
+      "block_index": 106,
+      "level": 3,
+      "text": "Not-best-effort Pods scope"
+    },
+    {
+      "block_index": 109,
+      "level": 3,
+      "text": "Non-terminating Pods scope"
+    },
+    {
+      "block_index": 114,
+      "level": 3,
+      "text": "Terminating Pods scope"
+    },
+    {
+      "block_index": 119,
+      "level": 3,
+      "text": "Cross-namespace pod affinity scope"
+    },
+    {
+      "block_index": 127,
+      "level": 3,
+      "text": "PriorityClass scope"
+    },
+    {
+      "block_index": 132,
+      "level": 4,
+      "text": "Example"
+    },
+    {
+      "block_index": 150,
+      "level": 4,
+      "text": "Limiting PriorityClass consumption by default"
+    },
+    {
+      "block_index": 162,
+      "level": 3,
+      "text": "VolumeAttributesClass scope"
+    },
+    {
+      "block_index": 172,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "namespace",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces"
+    },
+    {
+      "text": "quantity of objects that can be created in a namespace",
+      "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-on-object-count"
+    },
+    {
+      "text": "infrastructure resources",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-infrastructure-resource"
+    },
+    {
+      "text": "RBAC",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+    },
+    {
+      "text": "authorization",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/authorization/"
+    },
+    {
+      "text": "scope",
+      "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scopes"
+    },
+    {
+      "text": "resource",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-infrastructure-resource"
+    },
+    {
+      "text": "walkthrough",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/quota-memory-cpu-namespace/"
+    },
+    {
+      "text": "LimitRange",
+      "url": "https://kubernetes.io/docs/concepts/policy/limit-range/"
+    },
+    {
+      "text": "workload management",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/"
+    },
+    {
+      "text": "Deployment",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/"
+    },
+    {
+      "text": "DNS subdomain name",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names"
+    },
+    {
+      "text": "API server",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kube-apiserver"
+    },
+    {
+      "text": "compute resources",
+      "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+    },
+    {
+      "text": "extended resources",
+      "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources"
+    },
+    {
+      "text": "Viewing and Setting Quotas",
+      "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/#viewing-and-setting-quotas"
+    },
+    {
+      "text": "Extended Resource allocation by DRA",
+      "url": "https://kubernetes.io/docs/concepts/resource-management/dynamic-resource-allocation/dra-features/#extended-resource"
+    },
+    {
+      "text": "storage",
+      "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/"
+    },
+    {
+      "text": "StorageClass",
+      "url": "https://kubernetes.io/docs/concepts/storage/storage-classes/"
+    },
+    {
+      "text": "PersistentVolumeClaims",
+      "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims"
+    },
+    {
+      "text": "persistent volume claims",
+      "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims"
+    },
+    {
+      "text": "Logging Architecture",
+      "url": "https://kubernetes.io/docs/concepts/cluster-administration/logging/"
+    },
+    {
+      "text": "resource",
+      "url": "https://kubernetes.io/docs/reference/using-api/api-concepts/#standard-api-terminology"
+    },
+    {
+      "text": "API aggregation",
+      "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/"
+    },
+    {
+      "text": "(anti)affinity terms",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/"
+    },
+    {
+      "text": "priority class",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/"
+    },
+    {
+      "text": "volume attributes class",
+      "url": "https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/"
+    },
+    {
+      "text": "best effort",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#besteffort"
+    },
+    {
+      "text": "QoS class",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/"
+    },
+    {
+      "text": "Guaranteed",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#guaranteed"
+    },
+    {
+      "text": "Burstable",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#burstable"
+    },
+    {
+      "text": "quota scope",
+      "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-scopes"
+    },
+    {
+      "text": "priority",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority"
+    },
+    {
+      "text": "VolumeAttributesClass",
+      "url": "https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/"
+    },
+    {
+      "text": "Limit Storage Consumption",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/limit-storage-consumption/"
+    }
+  ],
+  "raw_path": "data/raw/documents/sec-009.html",
+  "raw_sha256": "sha256:9821771b44494ea98c2b70097a51fac4de21ecf1d8c3346099f4a1381eef8f56",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+  "statistics": {
+    "block_count": 174,
+    "character_count": 32389,
+    "code_block_count": 33,
+    "heading_count": 28,
+    "link_count": 35,
+    "list_count": 21,
+    "paragraph_count": 87,
+    "table_count": 5,
+    "word_count": 4136
+  },
+  "title": "Resource Quotas"
+}

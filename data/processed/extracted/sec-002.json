@@ -1,0 +1,499 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Security Standards",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "The Pod Security Standards define three different *policies* to broadly cover the security\nspectrum. These policies are *cumulative* and range from highly-permissive to highly-restrictive.\nThis guide outlines the requirements of each policy.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "rows": [
+        [
+          "Profile",
+          "Description"
+        ],
+        [
+          "**Privileged**",
+          "Unrestricted policy, providing the widest possible level of permissions. This policy allows for known privilege escalations."
+        ],
+        [
+          "**Baseline**",
+          "Minimally restrictive policy which prevents known privilege escalations. Allows the default (minimally specified) Pod configuration."
+        ],
+        [
+          "**Restricted**",
+          "Heavily restricted policy, following current Pod hardening best practices."
+        ]
+      ],
+      "text": "| Profile | Description |\n| --- | --- |\n| **Privileged** | Unrestricted policy, providing the widest possible level of permissions. This policy allows for known privilege escalations. |\n| **Baseline** | Minimally restrictive policy which prevents known privilege escalations. Allows the default (minimally specified) Pod configuration. |\n| **Restricted** | Heavily restricted policy, following current Pod hardening best practices. |",
+      "type": "table"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Profile Details",
+      "type": "heading"
+    },
+    {
+      "block_index": 4,
+      "level": 3,
+      "text": "Privileged",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "**The *Privileged* policy is purposely-open, and entirely unrestricted.** This type of policy is\ntypically aimed at system- and infrastructure-level workloads managed by privileged, trusted users.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "The Privileged policy is defined by an absence of restrictions. If you define a Pod where the Privileged\nsecurity policy applies, the Pod you define is able to bypass typical container isolation mechanisms.\nFor example, you can define a Pod that has access to the node's host network.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Baseline",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "text": "**The *Baseline* policy is aimed at ease of adoption for common containerized workloads while preventing known privilege escalations.** This policy is targeted at application operators and\ndevelopers of non-critical applications. The following listed controls should be\nenforced/disallowed:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "rows": [
+        [
+          "Control",
+          "Policy"
+        ],
+        [
+          "HostProcess",
+          "Windows Pods offer the ability to run [HostProcess containers](https://kubernetes.io/docs/tasks/configure-pod-container/create-hostprocess-pod) which enables privileged access to the Windows host machine. Privileged access to the host is disallowed in the Baseline policy.Feature state:\nStable since Kubernetes v1.26**Restricted Fields**`spec.securityContext.windowsOptions.hostProcess``spec.containers[*].securityContext.windowsOptions.hostProcess``spec.initContainers[*].securityContext.windowsOptions.hostProcess``spec.ephemeralContainers[*].securityContext.windowsOptions.hostProcess`**Allowed Values**Undefined/nil`false`"
+        ],
+        [
+          "Host Namespaces",
+          "Sharing the host namespaces must be disallowed.**Restricted Fields**`spec.hostNetwork``spec.hostPID``spec.hostIPC`**Allowed Values**Undefined/nil`false`"
+        ],
+        [
+          "Privileged Containers",
+          "Privileged Pods disable most security mechanisms and must be disallowed.**Restricted Fields**`spec.containers[*].securityContext.privileged``spec.initContainers[*].securityContext.privileged``spec.ephemeralContainers[*].securityContext.privileged`**Allowed Values**Undefined/nil`false`"
+        ],
+        [
+          "Capabilities",
+          "Adding additional capabilities beyond those listed below must be disallowed.**Restricted Fields**`spec.containers[*].securityContext.capabilities.add``spec.initContainers[*].securityContext.capabilities.add``spec.ephemeralContainers[*].securityContext.capabilities.add`**Allowed Values**Undefined/nil`AUDIT_WRITE``CHOWN``DAC_OVERRIDE``FOWNER``FSETID``KILL``MKNOD``NET_BIND_SERVICE``SETFCAP``SETGID``SETPCAP``SETUID``SYS_CHROOT`"
+        ],
+        [
+          "HostPath Volumes",
+          "HostPath volumes must be forbidden.**Restricted Fields**`spec.volumes[*].hostPath`**Allowed Values**Undefined/nil"
+        ],
+        [
+          "Host Ports",
+          "HostPorts should be disallowed entirely (recommended) or restricted to a known list**Restricted Fields**`spec.containers[*].ports[*].hostPort``spec.initContainers[*].ports[*].hostPort``spec.ephemeralContainers[*].ports[*].hostPort`**Allowed Values**Undefined/nilKnown list (not supported by the built-in [Pod Security Admission controller](https://kubernetes.io/docs/concepts/security/pod-security-admission/))`0`"
+        ],
+        [
+          "Host Probes / Lifecycle Hooks (v1.34+)",
+          "The Host field in probes and lifecycle hooks must be disallowed.**Restricted Fields**`spec.containers[*].livenessProbe.httpGet.host``spec.containers[*].readinessProbe.httpGet.host``spec.containers[*].startupProbe.httpGet.host``spec.containers[*].livenessProbe.tcpSocket.host``spec.containers[*].readinessProbe.tcpSocket.host``spec.containers[*].startupProbe.tcpSocket.host``spec.containers[*].lifecycle.postStart.tcpSocket.host``spec.containers[*].lifecycle.preStop.tcpSocket.host``spec.containers[*].lifecycle.postStart.httpGet.host``spec.containers[*].lifecycle.preStop.httpGet.host``spec.initContainers[*].livenessProbe.httpGet.host``spec.initContainers[*].readinessProbe.httpGet.host``spec.initContainers[*].startupProbe.httpGet.host``spec.initContainers[*].livenessProbe.tcpSocket.host``spec.initContainers[*].readinessProbe.tcpSocket.host``spec.initContainers[*].startupProbe.tcpSocket.host``spec.initContainers[*].lifecycle.postStart.tcpSocket.host``spec.initContainers[*].lifecycle.preStop.tcpSocket.host``spec.initContainers[*].lifecycle.postStart.httpGet.host``spec.initContainers[*].lifecycle.preStop.httpGet.host`**Allowed Values**Undefined/nil\"\""
+        ],
+        [
+          "AppArmor",
+          "On supported hosts, the `RuntimeDefault` AppArmor profile is applied by default. The baseline policy should prevent overriding or disabling the default AppArmor profile, or restrict overrides to an allowed set of profiles.**Restricted Fields**`spec.securityContext.appArmorProfile.type``spec.containers[*].securityContext.appArmorProfile.type``spec.initContainers[*].securityContext.appArmorProfile.type``spec.ephemeralContainers[*].securityContext.appArmorProfile.type`**Allowed Values**Undefined/nil`RuntimeDefault``Localhost``metadata.annotations[\"container.apparmor.security.beta.kubernetes.io/*\"]`**Allowed Values**Undefined/nil`runtime/default``localhost/*`"
+        ],
+        [
+          "SELinux",
+          "Setting the SELinux type is restricted, and setting a custom SELinux user or role option is forbidden.**Restricted Fields**`spec.securityContext.seLinuxOptions.type``spec.containers[*].securityContext.seLinuxOptions.type``spec.initContainers[*].securityContext.seLinuxOptions.type``spec.ephemeralContainers[*].securityContext.seLinuxOptions.type`**Allowed Values**Undefined/\"\"`container_t``container_init_t``container_kvm_t``container_engine_t` (since Kubernetes 1.31)**Restricted Fields**`spec.securityContext.seLinuxOptions.user``spec.containers[*].securityContext.seLinuxOptions.user``spec.initContainers[*].securityContext.seLinuxOptions.user``spec.ephemeralContainers[*].securityContext.seLinuxOptions.user``spec.securityContext.seLinuxOptions.role``spec.containers[*].securityContext.seLinuxOptions.role``spec.initContainers[*].securityContext.seLinuxOptions.role``spec.ephemeralContainers[*].securityContext.seLinuxOptions.role`**Allowed Values**Undefined/\"\""
+        ],
+        [
+          "`/proc` Mount Type",
+          "The default `/proc` masks are set up to reduce attack surface, and should be required.**Restricted Fields**`spec.containers[*].securityContext.procMount``spec.initContainers[*].securityContext.procMount``spec.ephemeralContainers[*].securityContext.procMount`**Allowed Values**Undefined/nil`Default`"
+        ],
+        [
+          "Seccomp",
+          "Seccomp profile must not be explicitly set to `Unconfined`.**Restricted Fields**`spec.securityContext.seccompProfile.type``spec.containers[*].securityContext.seccompProfile.type``spec.initContainers[*].securityContext.seccompProfile.type``spec.ephemeralContainers[*].securityContext.seccompProfile.type`**Allowed Values**Undefined/nil`RuntimeDefault``Localhost`"
+        ],
+        [
+          "Sysctls",
+          "Sysctls can disable security mechanisms or affect all containers on a host, and should be disallowed except for an allowed \"safe\" subset. A sysctl is considered safe if it is namespaced in the container or the Pod, and it is isolated from other Pods or processes on the same Node.**Restricted Fields**`spec.securityContext.sysctls[*].name`**Allowed Values**Undefined/nil`kernel.shm_rmid_forced``net.ipv4.ip_local_port_range``net.ipv4.ip_unprivileged_port_start``net.ipv4.tcp_syncookies``net.ipv4.ping_group_range``net.ipv4.ip_local_reserved_ports` (since Kubernetes 1.27)`net.ipv4.tcp_keepalive_time` (since Kubernetes 1.29)`net.ipv4.tcp_fin_timeout` (since Kubernetes 1.29)`net.ipv4.tcp_keepalive_intvl` (since Kubernetes 1.29)`net.ipv4.tcp_keepalive_probes` (since Kubernetes 1.29)"
+        ]
+      ],
+      "text": "| Control | Policy |\n| --- | --- |\n| HostProcess | Windows Pods offer the ability to run [HostProcess containers](https://kubernetes.io/docs/tasks/configure-pod-container/create-hostprocess-pod) which enables privileged access to the Windows host machine. Privileged access to the host is disallowed in the Baseline policy.Feature state: Stable since Kubernetes v1.26**Restricted Fields**`spec.securityContext.windowsOptions.hostProcess``spec.containers[*].securityContext.windowsOptions.hostProcess``spec.initContainers[*].securityContext.windowsOptions.hostProcess``spec.ephemeralContainers[*].securityContext.windowsOptions.hostProcess`**Allowed Values**Undefined/nil`false` |\n| Host Namespaces | Sharing the host namespaces must be disallowed.**Restricted Fields**`spec.hostNetwork``spec.hostPID``spec.hostIPC`**Allowed Values**Undefined/nil`false` |\n| Privileged Containers | Privileged Pods disable most security mechanisms and must be disallowed.**Restricted Fields**`spec.containers[*].securityContext.privileged``spec.initContainers[*].securityContext.privileged``spec.ephemeralContainers[*].securityContext.privileged`**Allowed Values**Undefined/nil`false` |\n| Capabilities | Adding additional capabilities beyond those listed below must be disallowed.**Restricted Fields**`spec.containers[*].securityContext.capabilities.add``spec.initContainers[*].securityContext.capabilities.add``spec.ephemeralContainers[*].securityContext.capabilities.add`**Allowed Values**Undefined/nil`AUDIT_WRITE``CHOWN``DAC_OVERRIDE``FOWNER``FSETID``KILL``MKNOD``NET_BIND_SERVICE``SETFCAP``SETGID``SETPCAP``SETUID``SYS_CHROOT` |\n| HostPath Volumes | HostPath volumes must be forbidden.**Restricted Fields**`spec.volumes[*].hostPath`**Allowed Values**Undefined/nil |\n| Host Ports | HostPorts should be disallowed entirely (recommended) or restricted to a known list**Restricted Fields**`spec.containers[*].ports[*].hostPort``spec.initContainers[*].ports[*].hostPort``spec.ephemeralContainers[*].ports[*].hostPort`**Allowed Values**Undefined/nilKnown list (not supported by the built-in [Pod Security Admission controller](https://kubernetes.io/docs/concepts/security/pod-security-admission/))`0` |\n| Host Probes / Lifecycle Hooks (v1.34+) | The Host field in probes and lifecycle hooks must be disallowed.**Restricted Fields**`spec.containers[*].livenessProbe.httpGet.host``spec.containers[*].readinessProbe.httpGet.host``spec.containers[*].startupProbe.httpGet.host``spec.containers[*].livenessProbe.tcpSocket.host``spec.containers[*].readinessProbe.tcpSocket.host``spec.containers[*].startupProbe.tcpSocket.host``spec.containers[*].lifecycle.postStart.tcpSocket.host``spec.containers[*].lifecycle.preStop.tcpSocket.host``spec.containers[*].lifecycle.postStart.httpGet.host``spec.containers[*].lifecycle.preStop.httpGet.host``spec.initContainers[*].livenessProbe.httpGet.host``spec.initContainers[*].readinessProbe.httpGet.host``spec.initContainers[*].startupProbe.httpGet.host``spec.initContainers[*].livenessProbe.tcpSocket.host``spec.initContainers[*].readinessProbe.tcpSocket.host``spec.initContainers[*].startupProbe.tcpSocket.host``spec.initContainers[*].lifecycle.postStart.tcpSocket.host``spec.initContainers[*].lifecycle.preStop.tcpSocket.host``spec.initContainers[*].lifecycle.postStart.httpGet.host``spec.initContainers[*].lifecycle.preStop.httpGet.host`**Allowed Values**Undefined/nil\"\" |\n| AppArmor | On supported hosts, the `RuntimeDefault` AppArmor profile is applied by default. The baseline policy should prevent overriding or disabling the default AppArmor profile, or restrict overrides to an allowed set of profiles.**Restricted Fields**`spec.securityContext.appArmorProfile.type``spec.containers[*].securityContext.appArmorProfile.type``spec.initContainers[*].securityContext.appArmorProfile.type``spec.ephemeralContainers[*].securityContext.appArmorProfile.type`**Allowed Values**Undefined/nil`RuntimeDefault``Localhost``metadata.annotations[\"container.apparmor.security.beta.kubernetes.io/*\"]`**Allowed Values**Undefined/nil`runtime/default``localhost/*` |\n| SELinux | Setting the SELinux type is restricted, and setting a custom SELinux user or role option is forbidden.**Restricted Fields**`spec.securityContext.seLinuxOptions.type``spec.containers[*].securityContext.seLinuxOptions.type``spec.initContainers[*].securityContext.seLinuxOptions.type``spec.ephemeralContainers[*].securityContext.seLinuxOptions.type`**Allowed Values**Undefined/\"\"`container_t``container_init_t``container_kvm_t``container_engine_t` (since Kubernetes 1.31)**Restricted Fields**`spec.securityContext.seLinuxOptions.user``spec.containers[*].securityContext.seLinuxOptions.user``spec.initContainers[*].securityContext.seLinuxOptions.user``spec.ephemeralContainers[*].securityContext.seLinuxOptions.user``spec.securityContext.seLinuxOptions.role``spec.containers[*].securityContext.seLinuxOptions.role``spec.initContainers[*].securityContext.seLinuxOptions.role``spec.ephemeralContainers[*].securityContext.seLinuxOptions.role`**Allowed Values**Undefined/\"\" |\n| `/proc` Mount Type | The default `/proc` masks are set up to reduce attack surface, and should be required.**Restricted Fields**`spec.containers[*].securityContext.procMount``spec.initContainers[*].securityContext.procMount``spec.ephemeralContainers[*].securityContext.procMount`**Allowed Values**Undefined/nil`Default` |\n| Seccomp | Seccomp profile must not be explicitly set to `Unconfined`.**Restricted Fields**`spec.securityContext.seccompProfile.type``spec.containers[*].securityContext.seccompProfile.type``spec.initContainers[*].securityContext.seccompProfile.type``spec.ephemeralContainers[*].securityContext.seccompProfile.type`**Allowed Values**Undefined/nil`RuntimeDefault``Localhost` |\n| Sysctls | Sysctls can disable security mechanisms or affect all containers on a host, and should be disallowed except for an allowed \"safe\" subset. A sysctl is considered safe if it is namespaced in the container or the Pod, and it is isolated from other Pods or processes on the same Node.**Restricted Fields**`spec.securityContext.sysctls[*].name`**Allowed Values**Undefined/nil`kernel.shm_rmid_forced``net.ipv4.ip_local_port_range``net.ipv4.ip_unprivileged_port_start``net.ipv4.tcp_syncookies``net.ipv4.ping_group_range``net.ipv4.ip_local_reserved_ports` (since Kubernetes 1.27)`net.ipv4.tcp_keepalive_time` (since Kubernetes 1.29)`net.ipv4.tcp_fin_timeout` (since Kubernetes 1.29)`net.ipv4.tcp_keepalive_intvl` (since Kubernetes 1.29)`net.ipv4.tcp_keepalive_probes` (since Kubernetes 1.29) |",
+      "type": "table"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Restricted",
+      "type": "heading"
+    },
+    {
+      "block_index": 12,
+      "text": "**The *Restricted* policy is aimed at enforcing current Pod hardening best practices, at the expense of some compatibility.** It is targeted at operators and developers of security-critical\napplications, as well as lower-trust users. The following listed controls should be\nenforced/disallowed:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 14,
+      "rows": [
+        [
+          "**Control**",
+          "**Policy**"
+        ],
+        [
+          "*Everything from the Baseline policy*",
+          ""
+        ],
+        [
+          "Volume Types",
+          "The Restricted policy only permits the following volume types.**Restricted Fields**`spec.volumes[*]`**Allowed Values**Every item in the `spec.volumes[*]` list must set one of the following fields to a non-null value:`spec.volumes[*].configMap``spec.volumes[*].csi``spec.volumes[*].downwardAPI``spec.volumes[*].emptyDir``spec.volumes[*].ephemeral``spec.volumes[*].persistentVolumeClaim``spec.volumes[*].projected``spec.volumes[*].secret`"
+        ],
+        [
+          "Privilege Escalation (v1.8+)",
+          "Privilege escalation (such as via set-user-ID or set-group-ID file mode) should not be allowed. *[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(spec.os.name != windows)`***Restricted Fields**`spec.containers[*].securityContext.allowPrivilegeEscalation``spec.initContainers[*].securityContext.allowPrivilegeEscalation``spec.ephemeralContainers[*].securityContext.allowPrivilegeEscalation`**Allowed Values**`false`"
+        ],
+        [
+          "Running as Non-root",
+          "Containers must be required to run as non-root users.**Restricted Fields**`spec.securityContext.runAsNonRoot``spec.containers[*].securityContext.runAsNonRoot``spec.initContainers[*].securityContext.runAsNonRoot``spec.ephemeralContainers[*].securityContext.runAsNonRoot`**Allowed Values**`true`The container fields may be undefined/`nil` if the pod-level\n`spec.securityContext.runAsNonRoot` is set to `true`."
+        ],
+        [
+          "Running as Non-root user (v1.23+)",
+          "Containers must not set runAsUser to 0**Restricted Fields**`spec.securityContext.runAsUser``spec.containers[*].securityContext.runAsUser``spec.initContainers[*].securityContext.runAsUser``spec.ephemeralContainers[*].securityContext.runAsUser`**Allowed Values**any non-zero value`undefined/null`"
+        ],
+        [
+          "Seccomp (v1.19+)",
+          "Seccomp profile must be explicitly set to one of the allowed values. Both the `Unconfined` profile and the *absence* of a profile are prohibited. *[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(spec.os.name != windows)`***Restricted Fields**`spec.securityContext.seccompProfile.type``spec.containers[*].securityContext.seccompProfile.type``spec.initContainers[*].securityContext.seccompProfile.type``spec.ephemeralContainers[*].securityContext.seccompProfile.type`**Allowed Values**`RuntimeDefault``Localhost`The container fields may be undefined/`nil` if the pod-level\n`spec.securityContext.seccompProfile.type` field is set appropriately.\nConversely, the pod-level field may be undefined/`nil` if _all_ container-\nlevel fields are set."
+        ],
+        [
+          "Capabilities (v1.22+)",
+          "Containers must drop `ALL` capabilities, and are only permitted to add back\nthe `NET_BIND_SERVICE` capability. *[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(.spec.os.name != \"windows\")`***Restricted Fields**`spec.containers[*].securityContext.capabilities.drop``spec.initContainers[*].securityContext.capabilities.drop``spec.ephemeralContainers[*].securityContext.capabilities.drop`**Allowed Values**Any list of capabilities that includes `ALL`**Restricted Fields**`spec.containers[*].securityContext.capabilities.add``spec.initContainers[*].securityContext.capabilities.add``spec.ephemeralContainers[*].securityContext.capabilities.add`**Allowed Values**Undefined/nil`NET_BIND_SERVICE`"
+        ]
+      ],
+      "text": "| **Control** | **Policy** |\n| --- | --- |\n| *Everything from the Baseline policy* |  |\n| Volume Types | The Restricted policy only permits the following volume types.**Restricted Fields**`spec.volumes[*]`**Allowed Values**Every item in the `spec.volumes[*]` list must set one of the following fields to a non-null value:`spec.volumes[*].configMap``spec.volumes[*].csi``spec.volumes[*].downwardAPI``spec.volumes[*].emptyDir``spec.volumes[*].ephemeral``spec.volumes[*].persistentVolumeClaim``spec.volumes[*].projected``spec.volumes[*].secret` |\n| Privilege Escalation (v1.8+) | Privilege escalation (such as via set-user-ID or set-group-ID file mode) should not be allowed. *[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(spec.os.name != windows)`***Restricted Fields**`spec.containers[*].securityContext.allowPrivilegeEscalation``spec.initContainers[*].securityContext.allowPrivilegeEscalation``spec.ephemeralContainers[*].securityContext.allowPrivilegeEscalation`**Allowed Values**`false` |\n| Running as Non-root | Containers must be required to run as non-root users.**Restricted Fields**`spec.securityContext.runAsNonRoot``spec.containers[*].securityContext.runAsNonRoot``spec.initContainers[*].securityContext.runAsNonRoot``spec.ephemeralContainers[*].securityContext.runAsNonRoot`**Allowed Values**`true`The container fields may be undefined/`nil` if the pod-level `spec.securityContext.runAsNonRoot` is set to `true`. |\n| Running as Non-root user (v1.23+) | Containers must not set runAsUser to 0**Restricted Fields**`spec.securityContext.runAsUser``spec.containers[*].securityContext.runAsUser``spec.initContainers[*].securityContext.runAsUser``spec.ephemeralContainers[*].securityContext.runAsUser`**Allowed Values**any non-zero value`undefined/null` |\n| Seccomp (v1.19+) | Seccomp profile must be explicitly set to one of the allowed values. Both the `Unconfined` profile and the *absence* of a profile are prohibited. *[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(spec.os.name != windows)`***Restricted Fields**`spec.securityContext.seccompProfile.type``spec.containers[*].securityContext.seccompProfile.type``spec.initContainers[*].securityContext.seccompProfile.type``spec.ephemeralContainers[*].securityContext.seccompProfile.type`**Allowed Values**`RuntimeDefault``Localhost`The container fields may be undefined/`nil` if the pod-level `spec.securityContext.seccompProfile.type` field is set appropriately. Conversely, the pod-level field may be undefined/`nil` if _all_ container- level fields are set. |\n| Capabilities (v1.22+) | Containers must drop `ALL` capabilities, and are only permitted to add back the `NET_BIND_SERVICE` capability. *[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(.spec.os.name != \"windows\")`***Restricted Fields**`spec.containers[*].securityContext.capabilities.drop``spec.initContainers[*].securityContext.capabilities.drop``spec.ephemeralContainers[*].securityContext.capabilities.drop`**Allowed Values**Any list of capabilities that includes `ALL`**Restricted Fields**`spec.containers[*].securityContext.capabilities.add``spec.initContainers[*].securityContext.capabilities.add``spec.ephemeralContainers[*].securityContext.capabilities.add`**Allowed Values**Undefined/nil`NET_BIND_SERVICE` |",
+      "type": "table"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Policy Instantiation",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "Decoupling policy definition from policy instantiation allows for a common understanding and\nconsistent language of policies across clusters, independent of the underlying enforcement\nmechanism.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "As mechanisms mature, they will be defined below on a per-policy basis. The methods of enforcement\nof individual policies are not defined here.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "[**Pod Security Admission Controller**](https://kubernetes.io/docs/concepts/security/pod-security-admission/)",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "ordered": false,
+      "text": "- Privileged namespace\n- Baseline namespace\n- Restricted namespace",
+      "type": "list"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Alternatives",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "Other alternatives for enforcing policies are being developed in the Kubernetes ecosystem, such as:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "ordered": false,
+      "text": "- Kubewarden\n- Kyverno\n- OPA Gatekeeper",
+      "type": "list"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "Pod OS field",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "Kubernetes lets you use nodes that run either Linux or Windows. You can mix both kinds of\nnode in one cluster.\nWindows in Kubernetes has some limitations and differentiators from Linux-based\nworkloads. Specifically, many of the Pod `securityContext` fields\n[have no effect on Windows](https://kubernetes.io/docs/concepts/windows/intro/#compatibility-v1-pod-spec-containers-securitycontext).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Restricted Pod Security Standard changes",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "Another important change, made in Kubernetes v1.25 is that the *Restricted* policy\nhas been updated to use the `pod.spec.os.name` field. Based on the OS name, certain policies that are specific\nto a particular OS can be relaxed for the other OS.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "level": 4,
+      "text": "OS-specific policy controls",
+      "type": "heading"
+    },
+    {
+      "block_index": 29,
+      "text": "Restrictions on the following controls are only required if `.spec.os.name` is not `windows`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "ordered": false,
+      "text": "- Privilege Escalation\n- Seccomp\n- Linux Capabilities",
+      "type": "list"
+    },
+    {
+      "block_index": 31,
+      "level": 2,
+      "text": "User namespaces",
+      "type": "heading"
+    },
+    {
+      "block_index": 32,
+      "text": "User Namespaces are a Linux-only feature to run workloads with increased\nisolation. How they work together with Pod Security Standards is described in\nthe [documentation](https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/#integration-with-pod-security-admission-checks) for Pods that use user namespaces.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "level": 2,
+      "text": "FAQ",
+      "type": "heading"
+    },
+    {
+      "block_index": 34,
+      "level": 3,
+      "text": "Why isn't there a profile between Privileged and Baseline?",
+      "type": "heading"
+    },
+    {
+      "block_index": 35,
+      "text": "The three profiles defined here have a clear linear progression from most secure (Restricted) to least\nsecure (Privileged), and cover a broad set of workloads. Privileges required above the Baseline\npolicy are typically very application specific, so we do not offer a standard profile in this\nniche. This is not to say that the privileged profile should always be used in this case, but that\npolicies in this space need to be defined on a case-by-case basis.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "text": "SIG Auth may reconsider this position in the future, should a clear need for other profiles arise.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "level": 3,
+      "text": "What's the difference between a security profile and a security context?",
+      "type": "heading"
+    },
+    {
+      "block_index": 38,
+      "text": "[Security Contexts](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) configure Pods and\nContainers at runtime. Security contexts are defined as part of the Pod and container specifications\nin the Pod manifest, and represent parameters to the container runtime.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "text": "Security profiles are control plane mechanisms to enforce specific settings in the Security Context,\nas well as other related parameters outside the Security Context. As of July 2021,\n[Pod Security Policies](https://kubernetes.io/docs/concepts/security/pod-security-policy/) are deprecated in favor of the\nbuilt-in [Pod Security Admission Controller](https://kubernetes.io/docs/concepts/security/pod-security-admission/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "level": 3,
+      "text": "What about sandboxed Pods?",
+      "type": "heading"
+    },
+    {
+      "block_index": 41,
+      "text": "There is currently no API standard that controls whether a Pod is considered sandboxed or\nnot. Sandbox Pods may be identified by the use of a sandboxed runtime (such as gVisor or Kata\nContainers), but there is no standard definition of what a sandboxed runtime is.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "text": "The protections necessary for sandboxed workloads can differ from others. For example, the need to\nrestrict privileged permissions is lessened when the workload is isolated from the underlying\nkernel. This allows for workloads requiring heightened permissions to still be isolated.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 43,
+      "text": "Additionally, the protection of sandboxed workloads is highly dependent on the method of\nsandboxing. As such, no single recommended profile is recommended for all sandboxed workloads.",
+      "type": "paragraph"
+    }
+  ],
+  "content": "# Pod Security Standards\n\nThe Pod Security Standards define three different *policies* to broadly cover the security\nspectrum. These policies are *cumulative* and range from highly-permissive to highly-restrictive.\nThis guide outlines the requirements of each policy.\n\n| Profile | Description |\n| --- | --- |\n| **Privileged** | Unrestricted policy, providing the widest possible level of permissions. This policy allows for known privilege escalations. |\n| **Baseline** | Minimally restrictive policy which prevents known privilege escalations. Allows the default (minimally specified) Pod configuration. |\n| **Restricted** | Heavily restricted policy, following current Pod hardening best practices. |\n\n## Profile Details\n\n### Privileged\n\n**The *Privileged* policy is purposely-open, and entirely unrestricted.** This type of policy is\ntypically aimed at system- and infrastructure-level workloads managed by privileged, trusted users.\n\nThe Privileged policy is defined by an absence of restrictions. If you define a Pod where the Privileged\nsecurity policy applies, the Pod you define is able to bypass typical container isolation mechanisms.\nFor example, you can define a Pod that has access to the node's host network.\n\n### Baseline\n\n**The *Baseline* policy is aimed at ease of adoption for common containerized workloads while preventing known privilege escalations.** This policy is targeted at application operators and\ndevelopers of non-critical applications. The following listed controls should be\nenforced/disallowed:\n\n#### Note:\n\n| Control | Policy |\n| --- | --- |\n| HostProcess | Windows Pods offer the ability to run [HostProcess containers](https://kubernetes.io/docs/tasks/configure-pod-container/create-hostprocess-pod) which enables privileged access to the Windows host machine. Privileged access to the host is disallowed in the Baseline policy.Feature state: Stable since Kubernetes v1.26**Restricted Fields**`spec.securityContext.windowsOptions.hostProcess``spec.containers[*].securityContext.windowsOptions.hostProcess``spec.initContainers[*].securityContext.windowsOptions.hostProcess``spec.ephemeralContainers[*].securityContext.windowsOptions.hostProcess`**Allowed Values**Undefined/nil`false` |\n| Host Namespaces | Sharing the host namespaces must be disallowed.**Restricted Fields**`spec.hostNetwork``spec.hostPID``spec.hostIPC`**Allowed Values**Undefined/nil`false` |\n| Privileged Containers | Privileged Pods disable most security mechanisms and must be disallowed.**Restricted Fields**`spec.containers[*].securityContext.privileged``spec.initContainers[*].securityContext.privileged``spec.ephemeralContainers[*].securityContext.privileged`**Allowed Values**Undefined/nil`false` |\n| Capabilities | Adding additional capabilities beyond those listed below must be disallowed.**Restricted Fields**`spec.containers[*].securityContext.capabilities.add``spec.initContainers[*].securityContext.capabilities.add``spec.ephemeralContainers[*].securityContext.capabilities.add`**Allowed Values**Undefined/nil`AUDIT_WRITE``CHOWN``DAC_OVERRIDE``FOWNER``FSETID``KILL``MKNOD``NET_BIND_SERVICE``SETFCAP``SETGID``SETPCAP``SETUID``SYS_CHROOT` |\n| HostPath Volumes | HostPath volumes must be forbidden.**Restricted Fields**`spec.volumes[*].hostPath`**Allowed Values**Undefined/nil |\n| Host Ports | HostPorts should be disallowed entirely (recommended) or restricted to a known list**Restricted Fields**`spec.containers[*].ports[*].hostPort``spec.initContainers[*].ports[*].hostPort``spec.ephemeralContainers[*].ports[*].hostPort`**Allowed Values**Undefined/nilKnown list (not supported by the built-in [Pod Security Admission controller](https://kubernetes.io/docs/concepts/security/pod-security-admission/))`0` |\n| Host Probes / Lifecycle Hooks (v1.34+) | The Host field in probes and lifecycle hooks must be disallowed.**Restricted Fields**`spec.containers[*].livenessProbe.httpGet.host``spec.containers[*].readinessProbe.httpGet.host``spec.containers[*].startupProbe.httpGet.host``spec.containers[*].livenessProbe.tcpSocket.host``spec.containers[*].readinessProbe.tcpSocket.host``spec.containers[*].startupProbe.tcpSocket.host``spec.containers[*].lifecycle.postStart.tcpSocket.host``spec.containers[*].lifecycle.preStop.tcpSocket.host``spec.containers[*].lifecycle.postStart.httpGet.host``spec.containers[*].lifecycle.preStop.httpGet.host``spec.initContainers[*].livenessProbe.httpGet.host``spec.initContainers[*].readinessProbe.httpGet.host``spec.initContainers[*].startupProbe.httpGet.host``spec.initContainers[*].livenessProbe.tcpSocket.host``spec.initContainers[*].readinessProbe.tcpSocket.host``spec.initContainers[*].startupProbe.tcpSocket.host``spec.initContainers[*].lifecycle.postStart.tcpSocket.host``spec.initContainers[*].lifecycle.preStop.tcpSocket.host``spec.initContainers[*].lifecycle.postStart.httpGet.host``spec.initContainers[*].lifecycle.preStop.httpGet.host`**Allowed Values**Undefined/nil\"\" |\n| AppArmor | On supported hosts, the `RuntimeDefault` AppArmor profile is applied by default. The baseline policy should prevent overriding or disabling the default AppArmor profile, or restrict overrides to an allowed set of profiles.**Restricted Fields**`spec.securityContext.appArmorProfile.type``spec.containers[*].securityContext.appArmorProfile.type``spec.initContainers[*].securityContext.appArmorProfile.type``spec.ephemeralContainers[*].securityContext.appArmorProfile.type`**Allowed Values**Undefined/nil`RuntimeDefault``Localhost``metadata.annotations[\"container.apparmor.security.beta.kubernetes.io/*\"]`**Allowed Values**Undefined/nil`runtime/default``localhost/*` |\n| SELinux | Setting the SELinux type is restricted, and setting a custom SELinux user or role option is forbidden.**Restricted Fields**`spec.securityContext.seLinuxOptions.type``spec.containers[*].securityContext.seLinuxOptions.type``spec.initContainers[*].securityContext.seLinuxOptions.type``spec.ephemeralContainers[*].securityContext.seLinuxOptions.type`**Allowed Values**Undefined/\"\"`container_t``container_init_t``container_kvm_t``container_engine_t` (since Kubernetes 1.31)**Restricted Fields**`spec.securityContext.seLinuxOptions.user``spec.containers[*].securityContext.seLinuxOptions.user``spec.initContainers[*].securityContext.seLinuxOptions.user``spec.ephemeralContainers[*].securityContext.seLinuxOptions.user``spec.securityContext.seLinuxOptions.role``spec.containers[*].securityContext.seLinuxOptions.role``spec.initContainers[*].securityContext.seLinuxOptions.role``spec.ephemeralContainers[*].securityContext.seLinuxOptions.role`**Allowed Values**Undefined/\"\" |\n| `/proc` Mount Type | The default `/proc` masks are set up to reduce attack surface, and should be required.**Restricted Fields**`spec.containers[*].securityContext.procMount``spec.initContainers[*].securityContext.procMount``spec.ephemeralContainers[*].securityContext.procMount`**Allowed Values**Undefined/nil`Default` |\n| Seccomp | Seccomp profile must not be explicitly set to `Unconfined`.**Restricted Fields**`spec.securityContext.seccompProfile.type``spec.containers[*].securityContext.seccompProfile.type``spec.initContainers[*].securityContext.seccompProfile.type``spec.ephemeralContainers[*].securityContext.seccompProfile.type`**Allowed Values**Undefined/nil`RuntimeDefault``Localhost` |\n| Sysctls | Sysctls can disable security mechanisms or affect all containers on a host, and should be disallowed except for an allowed \"safe\" subset. A sysctl is considered safe if it is namespaced in the container or the Pod, and it is isolated from other Pods or processes on the same Node.**Restricted Fields**`spec.securityContext.sysctls[*].name`**Allowed Values**Undefined/nil`kernel.shm_rmid_forced``net.ipv4.ip_local_port_range``net.ipv4.ip_unprivileged_port_start``net.ipv4.tcp_syncookies``net.ipv4.ping_group_range``net.ipv4.ip_local_reserved_ports` (since Kubernetes 1.27)`net.ipv4.tcp_keepalive_time` (since Kubernetes 1.29)`net.ipv4.tcp_fin_timeout` (since Kubernetes 1.29)`net.ipv4.tcp_keepalive_intvl` (since Kubernetes 1.29)`net.ipv4.tcp_keepalive_probes` (since Kubernetes 1.29) |\n\n### Restricted\n\n**The *Restricted* policy is aimed at enforcing current Pod hardening best practices, at the expense of some compatibility.** It is targeted at operators and developers of security-critical\napplications, as well as lower-trust users. The following listed controls should be\nenforced/disallowed:\n\n#### Note:\n\n| **Control** | **Policy** |\n| --- | --- |\n| *Everything from the Baseline policy* |  |\n| Volume Types | The Restricted policy only permits the following volume types.**Restricted Fields**`spec.volumes[*]`**Allowed Values**Every item in the `spec.volumes[*]` list must set one of the following fields to a non-null value:`spec.volumes[*].configMap``spec.volumes[*].csi``spec.volumes[*].downwardAPI``spec.volumes[*].emptyDir``spec.volumes[*].ephemeral``spec.volumes[*].persistentVolumeClaim``spec.volumes[*].projected``spec.volumes[*].secret` |\n| Privilege Escalation (v1.8+) | Privilege escalation (such as via set-user-ID or set-group-ID file mode) should not be allowed. *[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(spec.os.name != windows)`***Restricted Fields**`spec.containers[*].securityContext.allowPrivilegeEscalation``spec.initContainers[*].securityContext.allowPrivilegeEscalation``spec.ephemeralContainers[*].securityContext.allowPrivilegeEscalation`**Allowed Values**`false` |\n| Running as Non-root | Containers must be required to run as non-root users.**Restricted Fields**`spec.securityContext.runAsNonRoot``spec.containers[*].securityContext.runAsNonRoot``spec.initContainers[*].securityContext.runAsNonRoot``spec.ephemeralContainers[*].securityContext.runAsNonRoot`**Allowed Values**`true`The container fields may be undefined/`nil` if the pod-level `spec.securityContext.runAsNonRoot` is set to `true`. |\n| Running as Non-root user (v1.23+) | Containers must not set runAsUser to 0**Restricted Fields**`spec.securityContext.runAsUser``spec.containers[*].securityContext.runAsUser``spec.initContainers[*].securityContext.runAsUser``spec.ephemeralContainers[*].securityContext.runAsUser`**Allowed Values**any non-zero value`undefined/null` |\n| Seccomp (v1.19+) | Seccomp profile must be explicitly set to one of the allowed values. Both the `Unconfined` profile and the *absence* of a profile are prohibited. *[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(spec.os.name != windows)`***Restricted Fields**`spec.securityContext.seccompProfile.type``spec.containers[*].securityContext.seccompProfile.type``spec.initContainers[*].securityContext.seccompProfile.type``spec.ephemeralContainers[*].securityContext.seccompProfile.type`**Allowed Values**`RuntimeDefault``Localhost`The container fields may be undefined/`nil` if the pod-level `spec.securityContext.seccompProfile.type` field is set appropriately. Conversely, the pod-level field may be undefined/`nil` if _all_ container- level fields are set. |\n| Capabilities (v1.22+) | Containers must drop `ALL` capabilities, and are only permitted to add back the `NET_BIND_SERVICE` capability. *[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(.spec.os.name != \"windows\")`***Restricted Fields**`spec.containers[*].securityContext.capabilities.drop``spec.initContainers[*].securityContext.capabilities.drop``spec.ephemeralContainers[*].securityContext.capabilities.drop`**Allowed Values**Any list of capabilities that includes `ALL`**Restricted Fields**`spec.containers[*].securityContext.capabilities.add``spec.initContainers[*].securityContext.capabilities.add``spec.ephemeralContainers[*].securityContext.capabilities.add`**Allowed Values**Undefined/nil`NET_BIND_SERVICE` |\n\n## Policy Instantiation\n\nDecoupling policy definition from policy instantiation allows for a common understanding and\nconsistent language of policies across clusters, independent of the underlying enforcement\nmechanism.\n\nAs mechanisms mature, they will be defined below on a per-policy basis. The methods of enforcement\nof individual policies are not defined here.\n\n[**Pod Security Admission Controller**](https://kubernetes.io/docs/concepts/security/pod-security-admission/)\n\n- Privileged namespace\n- Baseline namespace\n- Restricted namespace\n\n### Alternatives\n\nOther alternatives for enforcing policies are being developed in the Kubernetes ecosystem, such as:\n\n- Kubewarden\n- Kyverno\n- OPA Gatekeeper\n\n## Pod OS field\n\nKubernetes lets you use nodes that run either Linux or Windows. You can mix both kinds of\nnode in one cluster.\nWindows in Kubernetes has some limitations and differentiators from Linux-based\nworkloads. Specifically, many of the Pod `securityContext` fields\n[have no effect on Windows](https://kubernetes.io/docs/concepts/windows/intro/#compatibility-v1-pod-spec-containers-securitycontext).\n\n#### Note:\n\n### Restricted Pod Security Standard changes\n\nAnother important change, made in Kubernetes v1.25 is that the *Restricted* policy\nhas been updated to use the `pod.spec.os.name` field. Based on the OS name, certain policies that are specific\nto a particular OS can be relaxed for the other OS.\n\n#### OS-specific policy controls\n\nRestrictions on the following controls are only required if `.spec.os.name` is not `windows`:\n\n- Privilege Escalation\n- Seccomp\n- Linux Capabilities\n\n## User namespaces\n\nUser Namespaces are a Linux-only feature to run workloads with increased\nisolation. How they work together with Pod Security Standards is described in\nthe [documentation](https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/#integration-with-pod-security-admission-checks) for Pods that use user namespaces.\n\n## FAQ\n\n### Why isn't there a profile between Privileged and Baseline?\n\nThe three profiles defined here have a clear linear progression from most secure (Restricted) to least\nsecure (Privileged), and cover a broad set of workloads. Privileges required above the Baseline\npolicy are typically very application specific, so we do not offer a standard profile in this\nniche. This is not to say that the privileged profile should always be used in this case, but that\npolicies in this space need to be defined on a case-by-case basis.\n\nSIG Auth may reconsider this position in the future, should a clear need for other profiles arise.\n\n### What's the difference between a security profile and a security context?\n\n[Security Contexts](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) configure Pods and\nContainers at runtime. Security contexts are defined as part of the Pod and container specifications\nin the Pod manifest, and represent parameters to the container runtime.\n\nSecurity profiles are control plane mechanisms to enforce specific settings in the Security Context,\nas well as other related parameters outside the Security Context. As of July 2021,\n[Pod Security Policies](https://kubernetes.io/docs/concepts/security/pod-security-policy/) are deprecated in favor of the\nbuilt-in [Pod Security Admission Controller](https://kubernetes.io/docs/concepts/security/pod-security-admission/).\n\n### What about sandboxed Pods?\n\nThere is currently no API standard that controls whether a Pod is considered sandboxed or\nnot. Sandbox Pods may be identified by the use of a sandboxed runtime (such as gVisor or Kata\nContainers), but there is no standard definition of what a sandboxed runtime is.\n\nThe protections necessary for sandboxed workloads can differ from others. For example, the need to\nrestrict privileged permissions is lessened when the workload is isolated from the underlying\nkernel. This allows for workloads requiring heightened permissions to still be isolated.\n\nAdditionally, the protection of sandboxed workloads is highly dependent on the method of\nsandboxing. As such, no single recommended profile is recommended for all sandboxed workloads.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:42ff457b9656c071549e5d02fa76727bff868e63b4abe1e7736d29a90253f619",
+  "document_id": "sec-002",
+  "domain": "security_policies",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Security Standards"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Profile Details"
+    },
+    {
+      "block_index": 4,
+      "level": 3,
+      "text": "Privileged"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Baseline"
+    },
+    {
+      "block_index": 9,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Restricted"
+    },
+    {
+      "block_index": 13,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Policy Instantiation"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Alternatives"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "Pod OS field"
+    },
+    {
+      "block_index": 25,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Restricted Pod Security Standard changes"
+    },
+    {
+      "block_index": 28,
+      "level": 4,
+      "text": "OS-specific policy controls"
+    },
+    {
+      "block_index": 31,
+      "level": 2,
+      "text": "User namespaces"
+    },
+    {
+      "block_index": 33,
+      "level": 2,
+      "text": "FAQ"
+    },
+    {
+      "block_index": 34,
+      "level": 3,
+      "text": "Why isn't there a profile between Privileged and Baseline?"
+    },
+    {
+      "block_index": 37,
+      "level": 3,
+      "text": "What's the difference between a security profile and a security context?"
+    },
+    {
+      "block_index": 40,
+      "level": 3,
+      "text": "What about sandboxed Pods?"
+    }
+  ],
+  "links": [
+    {
+      "text": "HostProcess containers",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/create-hostprocess-pod"
+    },
+    {
+      "text": "Pod Security Admission controller",
+      "url": "https://kubernetes.io/docs/concepts/security/pod-security-admission/"
+    },
+    {
+      "text": "This is Linux only policy",
+      "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls"
+    },
+    {
+      "text": "Pod Security Admission Controller",
+      "url": "https://kubernetes.io/docs/concepts/security/pod-security-admission/"
+    },
+    {
+      "text": "have no effect on Windows",
+      "url": "https://kubernetes.io/docs/concepts/windows/intro/#compatibility-v1-pod-spec-containers-securitycontext"
+    },
+    {
+      "text": "documentation",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/#integration-with-pod-security-admission-checks"
+    },
+    {
+      "text": "Security Contexts",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
+    },
+    {
+      "text": "Pod Security Policies",
+      "url": "https://kubernetes.io/docs/concepts/security/pod-security-policy/"
+    }
+  ],
+  "raw_path": "data/raw/documents/sec-002.html",
+  "raw_sha256": "sha256:545e0970b001b15f522711bace7a5fc4fe52cc59faf4983c66486b252a766732",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+  "statistics": {
+    "block_count": 44,
+    "character_count": 16058,
+    "code_block_count": 0,
+    "heading_count": 18,
+    "link_count": 8,
+    "list_count": 3,
+    "paragraph_count": 20,
+    "table_count": 3,
+    "word_count": 1639
+  },
+  "title": "Pod Security Standards"
+}

@@ -1,0 +1,128 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Kubernetes Self-Healing",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Kubernetes is designed with self-healing capabilities that help maintain the health and availability of workloads.\nIt automatically replaces failed containers, reschedules workloads when nodes become unavailable, and ensures that the desired state of the system is maintained.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Self-Healing capabilities",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "ordered": false,
+      "text": "- **Container-level restarts:** If a container inside a Pod fails, Kubernetes restarts it based on the [`restartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).\n- **Replica replacement:** If a Pod in a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) or [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) fails, Kubernetes creates a replacement Pod to maintain the specified number of replicas. If a Pod that is part of a [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) fails, the control plane creates a replacement Pod to run on the same node.\n- **Persistent storage recovery:** If a node is running a Pod with a PersistentVolume (PV) attached, and the node fails, Kubernetes can reattach the volume to a new Pod on a different node.\n- **Load balancing for Services:** If a Pod behind a [Service](https://kubernetes.io/docs/concepts/services-networking/service/) fails, Kubernetes automatically removes it from the Service's endpoints to route traffic only to healthy Pods.",
+      "type": "list"
+    },
+    {
+      "block_index": 4,
+      "text": "Here are some of the key components that provide Kubernetes self-healing:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "ordered": false,
+      "text": "- **[kubelet](https://kubernetes.io/docs/concepts/architecture/#kubelet):** Ensures that containers are running, and restarts those that fail.\n- **Deployment (via ReplicaSet), ReplicaSet, StatefulSet and DaemonSet controllers:** Maintain the desired number of Pod replicas.\n- **PersistentVolume controller:** Manages volume attachment and detachment for stateful workloads.",
+      "type": "list"
+    },
+    {
+      "block_index": 6,
+      "level": 2,
+      "text": "Considerations",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "ordered": false,
+      "text": "- **Storage Failures:** If a persistent volume becomes unavailable, recovery steps may be required.\n- **Application Errors:** Kubernetes can restart containers, but underlying application issues must be addressed separately.",
+      "type": "list"
+    },
+    {
+      "block_index": 8,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 9,
+      "ordered": false,
+      "text": "- Read more about Pods\n- Learn about Kubernetes Controllers\n- Explore PersistentVolumes\n- Read about node autoscaling . Node autoscaling also provides automatic healing if or when nodes fail in your cluster.",
+      "type": "list"
+    }
+  ],
+  "content": "# Kubernetes Self-Healing\n\nKubernetes is designed with self-healing capabilities that help maintain the health and availability of workloads.\nIt automatically replaces failed containers, reschedules workloads when nodes become unavailable, and ensures that the desired state of the system is maintained.\n\n## Self-Healing capabilities\n\n- **Container-level restarts:** If a container inside a Pod fails, Kubernetes restarts it based on the [`restartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).\n- **Replica replacement:** If a Pod in a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) or [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) fails, Kubernetes creates a replacement Pod to maintain the specified number of replicas. If a Pod that is part of a [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) fails, the control plane creates a replacement Pod to run on the same node.\n- **Persistent storage recovery:** If a node is running a Pod with a PersistentVolume (PV) attached, and the node fails, Kubernetes can reattach the volume to a new Pod on a different node.\n- **Load balancing for Services:** If a Pod behind a [Service](https://kubernetes.io/docs/concepts/services-networking/service/) fails, Kubernetes automatically removes it from the Service's endpoints to route traffic only to healthy Pods.\n\nHere are some of the key components that provide Kubernetes self-healing:\n\n- **[kubelet](https://kubernetes.io/docs/concepts/architecture/#kubelet):** Ensures that containers are running, and restarts those that fail.\n- **Deployment (via ReplicaSet), ReplicaSet, StatefulSet and DaemonSet controllers:** Maintain the desired number of Pod replicas.\n- **PersistentVolume controller:** Manages volume attachment and detachment for stateful workloads.\n\n## Considerations\n\n- **Storage Failures:** If a persistent volume becomes unavailable, recovery steps may be required.\n- **Application Errors:** Kubernetes can restart containers, but underlying application issues must be addressed separately.\n\n## What's next\n\n- Read more about Pods\n- Learn about Kubernetes Controllers\n- Explore PersistentVolumes\n- Read about node autoscaling . Node autoscaling also provides automatic healing if or when nodes fail in your cluster.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:c3d5cd39136ec2f62866ca7b1703743e196287453252651096c70e4f253d4381",
+  "document_id": "arch-005",
+  "domain": "cluster_architecture",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Kubernetes Self-Healing"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Self-Healing capabilities"
+    },
+    {
+      "block_index": 6,
+      "level": 2,
+      "text": "Considerations"
+    },
+    {
+      "block_index": 8,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Deployment",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/"
+    },
+    {
+      "text": "StatefulSet",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/"
+    },
+    {
+      "text": "DaemonSet",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+    },
+    {
+      "text": "Service",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "kubelet",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kubelet"
+    }
+  ],
+  "raw_path": "data/raw/documents/arch-005.html",
+  "raw_sha256": "sha256:b803874d861ab60dc9939c4e2e6a8c3a484afb44ec2cf9e3ab4916effbf5bf4e",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/architecture/self-healing/",
+  "statistics": {
+    "block_count": 10,
+    "character_count": 2378,
+    "code_block_count": 0,
+    "heading_count": 4,
+    "link_count": 5,
+    "list_count": 4,
+    "paragraph_count": 2,
+    "table_count": 0,
+    "word_count": 309
+  },
+  "title": "Kubernetes Self-Healing"
+}

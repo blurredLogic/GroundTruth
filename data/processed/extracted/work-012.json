@@ -1,0 +1,567 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "DaemonSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "A *DaemonSet* ensures that all (or some) Nodes run a copy of a Pod. As nodes are added to the\ncluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage\ncollected. Deleting a DaemonSet will clean up the Pods it created.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Some typical uses of a DaemonSet are:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "ordered": false,
+      "text": "- running a cluster storage daemon on every node\n- running a logs collection daemon on every node\n- running a node monitoring daemon on every node",
+      "type": "list"
+    },
+    {
+      "block_index": 4,
+      "text": "In a simple case, one DaemonSet, covering all nodes, would be used for each type of daemon.\nA more complex setup might use multiple DaemonSets for a single type of daemon, but with\ndifferent flags and/or different memory and cpu requests for different hardware types.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Writing a DaemonSet Spec",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "level": 3,
+      "text": "Create a DaemonSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "text": "You can describe a DaemonSet in a YAML file. For example, the `daemonset.yaml` file below\ndescribes a DaemonSet that runs the fluentd-elasticsearch Docker image:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "language": "yaml",
+      "text": "apiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: fluentd-elasticsearch\n  namespace: kube-system\n  labels:\n    k8s-app: fluentd-logging\nspec:\n  selector:\n    matchLabels:\n      name: fluentd-elasticsearch\n  template:\n    metadata:\n      labels:\n        name: fluentd-elasticsearch\n    spec:\n      tolerations:\n      # these tolerations are to have the daemonset runnable on control plane nodes\n      # remove them if your control plane nodes should not run pods\n      - key: node-role.kubernetes.io/control-plane\n        operator: Exists\n        effect: NoSchedule\n      - key: node-role.kubernetes.io/master\n        operator: Exists\n        effect: NoSchedule\n      containers:\n      - name: fluentd-elasticsearch\n        image: quay.io/fluentd_elasticsearch/fluentd:v5.0.1\n        resources:\n          limits:\n            memory: 200Mi\n          requests:\n            cpu: 100m\n            memory: 200Mi\n        volumeMounts:\n        - name: varlog\n          mountPath: /var/log\n      # it may be desirable to set a high priority class to ensure that a DaemonSet Pod\n      # preempts running Pods\n      # priorityClassName: important\n      terminationGracePeriodSeconds: 30\n      volumes:\n      - name: varlog\n        hostPath:\n          path: /var/log",
+      "type": "code"
+    },
+    {
+      "block_index": 9,
+      "text": "Create a DaemonSet based on the YAML file:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "language": null,
+      "text": "kubectl apply -f https://k8s.io/examples/controllers/daemonset.yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Required Fields",
+      "type": "heading"
+    },
+    {
+      "block_index": 12,
+      "text": "As with all other Kubernetes config, a DaemonSet needs `apiVersion`, `kind`, and `metadata` fields. For\ngeneral information about working with config files, see\n[running stateless applications](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/)\nand [object management using kubectl](https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "text": "The name of a DaemonSet object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "A DaemonSet also needs a\n[`.spec`](https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status)\nsection.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Pod Template",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "The `.spec.template` is one of the required fields in `.spec`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "The `.spec.template` is a [pod template](https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates).\nIt has exactly the same schema as a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/),\nexcept it is nested and does not have an `apiVersion` or `kind`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "In addition to required fields for a Pod, a Pod template in a DaemonSet has to specify appropriate\nlabels (see [pod selector](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/#pod-selector)).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "text": "A Pod Template in a DaemonSet must have a [`RestartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy)\nequal to `Always`, or be unspecified, which defaults to `Always`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Pod Selector",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "The `.spec.selector` field is a pod selector. It works the same as the `.spec.selector` of\na [Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "text": "You must specify a pod selector that matches the labels of the\n`.spec.template`.\nAlso, once a DaemonSet is created,\nits `.spec.selector` can not be mutated. Mutating the pod selector can lead to the\nunintentional orphaning of Pods, and it was found to be confusing to users.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "The `.spec.selector` is an object consisting of two fields:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "ordered": false,
+      "text": "- matchLabels - works the same as the .spec.selector of a ReplicationController .\n- matchExpressions - allows to build more sophisticated selectors by specifying key, list of values and an operator that relates the key and values.",
+      "type": "list"
+    },
+    {
+      "block_index": 25,
+      "text": "When the two are specified the result is ANDed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "The `.spec.selector` must match the `.spec.template.metadata.labels`.\nConfig with these two not matching will be rejected by the API.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Running Pods on select Nodes",
+      "type": "heading"
+    },
+    {
+      "block_index": 28,
+      "text": "If you specify a `.spec.template.spec.nodeSelector`, then the DaemonSet controller will\ncreate Pods on nodes which match that [node selector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).\nLikewise if you specify a `.spec.template.spec.affinity`,\nthen DaemonSet controller will create Pods on nodes which match that\n[node affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).\nIf you do not specify either, then the DaemonSet controller will create Pods on all nodes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "level": 2,
+      "text": "How Daemon Pods are scheduled",
+      "type": "heading"
+    },
+    {
+      "block_index": 30,
+      "text": "A DaemonSet can be used to ensure that all eligible nodes run a copy of a Pod.\nThe DaemonSet controller creates a Pod for each eligible node and adds the\n`spec.affinity.nodeAffinity` field of the Pod to match the target host. After\nthe Pod is created, the default scheduler typically takes over and then binds\nthe Pod to the target host by setting the `.spec.nodeName` field. If the new\nPod cannot fit on the node, the default scheduler may preempt (evict) some of\nthe existing Pods based on the\n[priority](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority)\nof the new Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 32,
+      "text": "The user can specify a different scheduler for the Pods of the DaemonSet, by\nsetting the `.spec.template.spec.schedulerName` field of the DaemonSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "text": "The original node affinity specified at the\n`.spec.template.spec.affinity.nodeAffinity` field (if specified) is taken into\nconsideration by the DaemonSet controller when evaluating the eligible nodes,\nbut is replaced on the created Pod with the node affinity that matches the name\nof the eligible node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "language": "yaml",
+      "text": "nodeAffinity:\n  requiredDuringSchedulingIgnoredDuringExecution:\n    nodeSelectorTerms:\n    - matchFields:\n      - key: metadata.name\n        operator: In\n        values:\n        - target-host-name",
+      "type": "code"
+    },
+    {
+      "block_index": 35,
+      "level": 3,
+      "text": "Taints and tolerations",
+      "type": "heading"
+    },
+    {
+      "block_index": 36,
+      "text": "The DaemonSet controller automatically adds a set of [tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) to DaemonSet Pods:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "rows": [
+        [
+          "Toleration key",
+          "Effect",
+          "Details"
+        ],
+        [
+          "[`node.kubernetes.io/not-ready`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-not-ready)",
+          "`NoExecute`",
+          "DaemonSet Pods can be scheduled onto nodes that are not healthy or ready to accept Pods. Any DaemonSet Pods running on such nodes will not be evicted."
+        ],
+        [
+          "[`node.kubernetes.io/unreachable`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-unreachable)",
+          "`NoExecute`",
+          "DaemonSet Pods can be scheduled onto nodes that are unreachable from the node controller. Any DaemonSet Pods running on such nodes will not be evicted."
+        ],
+        [
+          "[`node.kubernetes.io/disk-pressure`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-disk-pressure)",
+          "`NoSchedule`",
+          "DaemonSet Pods can be scheduled onto nodes with disk pressure issues."
+        ],
+        [
+          "[`node.kubernetes.io/memory-pressure`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-memory-pressure)",
+          "`NoSchedule`",
+          "DaemonSet Pods can be scheduled onto nodes with memory pressure issues."
+        ],
+        [
+          "[`node.kubernetes.io/pid-pressure`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-pid-pressure)",
+          "`NoSchedule`",
+          "DaemonSet Pods can be scheduled onto nodes with process pressure issues."
+        ],
+        [
+          "[`node.kubernetes.io/unschedulable`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-unschedulable)",
+          "`NoSchedule`",
+          "DaemonSet Pods can be scheduled onto nodes that are unschedulable."
+        ],
+        [
+          "[`node.kubernetes.io/network-unavailable`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-network-unavailable)",
+          "`NoSchedule`",
+          "**Only added for DaemonSet Pods that request host networking**, i.e., Pods having `spec.hostNetwork: true`. Such DaemonSet Pods can be scheduled onto nodes with unavailable network."
+        ]
+      ],
+      "text": "| Toleration key | Effect | Details |\n| --- | --- | --- |\n| [`node.kubernetes.io/not-ready`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-not-ready) | `NoExecute` | DaemonSet Pods can be scheduled onto nodes that are not healthy or ready to accept Pods. Any DaemonSet Pods running on such nodes will not be evicted. |\n| [`node.kubernetes.io/unreachable`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-unreachable) | `NoExecute` | DaemonSet Pods can be scheduled onto nodes that are unreachable from the node controller. Any DaemonSet Pods running on such nodes will not be evicted. |\n| [`node.kubernetes.io/disk-pressure`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-disk-pressure) | `NoSchedule` | DaemonSet Pods can be scheduled onto nodes with disk pressure issues. |\n| [`node.kubernetes.io/memory-pressure`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-memory-pressure) | `NoSchedule` | DaemonSet Pods can be scheduled onto nodes with memory pressure issues. |\n| [`node.kubernetes.io/pid-pressure`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-pid-pressure) | `NoSchedule` | DaemonSet Pods can be scheduled onto nodes with process pressure issues. |\n| [`node.kubernetes.io/unschedulable`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-unschedulable) | `NoSchedule` | DaemonSet Pods can be scheduled onto nodes that are unschedulable. |\n| [`node.kubernetes.io/network-unavailable`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-network-unavailable) | `NoSchedule` | **Only added for DaemonSet Pods that request host networking**, i.e., Pods having `spec.hostNetwork: true`. Such DaemonSet Pods can be scheduled onto nodes with unavailable network. |",
+      "type": "table"
+    },
+    {
+      "block_index": 38,
+      "text": "You can add your own tolerations to the Pods of a DaemonSet as well, by\ndefining these in the Pod template of the DaemonSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "text": "Because the DaemonSet controller sets the\n`node.kubernetes.io/unschedulable:NoSchedule` toleration automatically,\nKubernetes can run DaemonSet Pods on nodes that are marked as *unschedulable*.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "text": "If you use a DaemonSet to provide an important node-level function, such as\n[cluster networking](https://kubernetes.io/docs/concepts/cluster-administration/networking/), it is\nhelpful that Kubernetes places DaemonSet Pods on nodes before they are ready.\nFor example, without that special toleration, you could end up in a deadlock\nsituation where the node is not marked as ready because the network plugin is\nnot running there, and at the same time the network plugin is not running on\nthat node because the node is not yet ready.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 41,
+      "level": 2,
+      "text": "Communicating with Daemon Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 42,
+      "text": "Some possible patterns for communicating with Pods in a DaemonSet are:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 43,
+      "ordered": false,
+      "text": "- Push : Pods in the DaemonSet are configured to send updates to another service, such as a stats database. They do not have clients.\n- NodeIP and Known Port : Pods in the DaemonSet can use a hostPort , so that the pods are reachable via the node IPs. Clients know the list of node IPs somehow, and know the port by convention.\n- DNS : Create a headless service with the same pod selector, and then discover DaemonSets using the endpoints resource or retrieve multiple A records from DNS.\n- Service : Create a service with the same Pod selector, and use the service to reach a daemon on a random node. Use Service Internal Traffic Policy to limit to pods on the same node.",
+      "type": "list"
+    },
+    {
+      "block_index": 44,
+      "level": 2,
+      "text": "Updating a DaemonSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 45,
+      "text": "If node labels are changed, the DaemonSet will promptly add Pods to newly matching nodes and delete\nPods from newly not-matching nodes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "text": "You can modify the Pods that a DaemonSet creates. However, Pods do not allow all\nfields to be updated. Also, the DaemonSet controller will use the original template the next\ntime a node (even with the same name) is created.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 47,
+      "text": "You can delete a DaemonSet. If you specify `--cascade=orphan` with `kubectl`, then the Pods\nwill be left on the nodes. If you subsequently create a new DaemonSet with the same selector,\nthe new DaemonSet adopts the existing Pods. If any Pods need replacing the DaemonSet replaces\nthem according to its `updateStrategy`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "text": "You can [perform a rolling update](https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/) on a DaemonSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 49,
+      "level": 2,
+      "text": "Alternatives to DaemonSet",
+      "type": "heading"
+    },
+    {
+      "block_index": 50,
+      "level": 3,
+      "text": "Init scripts",
+      "type": "heading"
+    },
+    {
+      "block_index": 51,
+      "text": "It is certainly possible to run daemon processes by directly starting them on a node (e.g. using\n`init`, `upstartd`, or `systemd`). This is perfectly fine. However, there are several advantages to\nrunning such processes via a DaemonSet:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 52,
+      "ordered": false,
+      "text": "- Ability to monitor and manage logs for daemons in the same way as applications.\n- Same config language and tools (e.g. Pod templates, kubectl ) for daemons and applications.\n- Running daemons in containers with resource limits increases isolation between daemons from app containers. However, this can also be accomplished by running the daemons in a container but not in a Pod.",
+      "type": "list"
+    },
+    {
+      "block_index": 53,
+      "level": 3,
+      "text": "Bare Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 54,
+      "text": "It is possible to create Pods directly which specify a particular node to run on. However,\na DaemonSet replaces Pods that are deleted or terminated for any reason, such as in the case of\nnode failure or disruptive node maintenance, such as a kernel upgrade. For this reason, you should\nuse a DaemonSet rather than creating individual Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 55,
+      "level": 3,
+      "text": "Static Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 56,
+      "text": "It is possible to create Pods by writing a file to a certain directory watched by Kubelet. These\nare called [static pods](https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/).\nUnlike DaemonSet, static Pods cannot be managed with kubectl\nor other Kubernetes API clients. Static Pods do not depend on the apiserver, making them useful\nin cluster bootstrapping cases. Also, static Pods may be deprecated in the future.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 57,
+      "level": 3,
+      "text": "Deployments",
+      "type": "heading"
+    },
+    {
+      "block_index": 58,
+      "text": "DaemonSets are similar to [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) in that\nthey both create Pods, and those Pods have processes which are not expected to terminate (e.g. web servers,\nstorage servers).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "text": "Use a Deployment for stateless services, like frontends, where scaling up and down the\nnumber of replicas and rolling out updates are more important than controlling exactly which host\nthe Pod runs on. Use a DaemonSet when it is important that a copy of a Pod always run on\nall or certain hosts, if the DaemonSet provides node-level functionality that allows other Pods to run correctly on that particular node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 60,
+      "text": "For example, [network plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/) often include a component that runs as a DaemonSet. The DaemonSet component makes sure that the node where it's running has working cluster networking.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 61,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 62,
+      "ordered": false,
+      "text": "- Learn about Pods :\n- Learn about static Pods , which are useful for running Kubernetes control plane components.\n- Find out how to use DaemonSets:\n- Perform a rolling update on a DaemonSet .\n  - Perform a rollback on a DaemonSet (for example, if a roll out didn't work how you expected).\n- Understand how Kubernetes assigns Pods to Nodes .\n- Learn about device plugins and add ons , which often run as DaemonSets.\n- DaemonSet is a top-level resource in the Kubernetes REST API. Read the DaemonSet object definition to understand the API for daemon sets.",
+      "type": "list"
+    }
+  ],
+  "content": "# DaemonSet\n\nA *DaemonSet* ensures that all (or some) Nodes run a copy of a Pod. As nodes are added to the\ncluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage\ncollected. Deleting a DaemonSet will clean up the Pods it created.\n\nSome typical uses of a DaemonSet are:\n\n- running a cluster storage daemon on every node\n- running a logs collection daemon on every node\n- running a node monitoring daemon on every node\n\nIn a simple case, one DaemonSet, covering all nodes, would be used for each type of daemon.\nA more complex setup might use multiple DaemonSets for a single type of daemon, but with\ndifferent flags and/or different memory and cpu requests for different hardware types.\n\n## Writing a DaemonSet Spec\n\n### Create a DaemonSet\n\nYou can describe a DaemonSet in a YAML file. For example, the `daemonset.yaml` file below\ndescribes a DaemonSet that runs the fluentd-elasticsearch Docker image:\n\n```yaml\napiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: fluentd-elasticsearch\n  namespace: kube-system\n  labels:\n    k8s-app: fluentd-logging\nspec:\n  selector:\n    matchLabels:\n      name: fluentd-elasticsearch\n  template:\n    metadata:\n      labels:\n        name: fluentd-elasticsearch\n    spec:\n      tolerations:\n      # these tolerations are to have the daemonset runnable on control plane nodes\n      # remove them if your control plane nodes should not run pods\n      - key: node-role.kubernetes.io/control-plane\n        operator: Exists\n        effect: NoSchedule\n      - key: node-role.kubernetes.io/master\n        operator: Exists\n        effect: NoSchedule\n      containers:\n      - name: fluentd-elasticsearch\n        image: quay.io/fluentd_elasticsearch/fluentd:v5.0.1\n        resources:\n          limits:\n            memory: 200Mi\n          requests:\n            cpu: 100m\n            memory: 200Mi\n        volumeMounts:\n        - name: varlog\n          mountPath: /var/log\n      # it may be desirable to set a high priority class to ensure that a DaemonSet Pod\n      # preempts running Pods\n      # priorityClassName: important\n      terminationGracePeriodSeconds: 30\n      volumes:\n      - name: varlog\n        hostPath:\n          path: /var/log\n```\n\nCreate a DaemonSet based on the YAML file:\n\n```\nkubectl apply -f https://k8s.io/examples/controllers/daemonset.yaml\n```\n\n### Required Fields\n\nAs with all other Kubernetes config, a DaemonSet needs `apiVersion`, `kind`, and `metadata` fields. For\ngeneral information about working with config files, see\n[running stateless applications](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/)\nand [object management using kubectl](https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/).\n\nThe name of a DaemonSet object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).\n\nA DaemonSet also needs a\n[`.spec`](https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status)\nsection.\n\n### Pod Template\n\nThe `.spec.template` is one of the required fields in `.spec`.\n\nThe `.spec.template` is a [pod template](https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates).\nIt has exactly the same schema as a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/),\nexcept it is nested and does not have an `apiVersion` or `kind`.\n\nIn addition to required fields for a Pod, a Pod template in a DaemonSet has to specify appropriate\nlabels (see [pod selector](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/#pod-selector)).\n\nA Pod Template in a DaemonSet must have a [`RestartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy)\nequal to `Always`, or be unspecified, which defaults to `Always`.\n\n### Pod Selector\n\nThe `.spec.selector` field is a pod selector. It works the same as the `.spec.selector` of\na [Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/).\n\nYou must specify a pod selector that matches the labels of the\n`.spec.template`.\nAlso, once a DaemonSet is created,\nits `.spec.selector` can not be mutated. Mutating the pod selector can lead to the\nunintentional orphaning of Pods, and it was found to be confusing to users.\n\nThe `.spec.selector` is an object consisting of two fields:\n\n- matchLabels - works the same as the .spec.selector of a ReplicationController .\n- matchExpressions - allows to build more sophisticated selectors by specifying key, list of values and an operator that relates the key and values.\n\nWhen the two are specified the result is ANDed.\n\nThe `.spec.selector` must match the `.spec.template.metadata.labels`.\nConfig with these two not matching will be rejected by the API.\n\n### Running Pods on select Nodes\n\nIf you specify a `.spec.template.spec.nodeSelector`, then the DaemonSet controller will\ncreate Pods on nodes which match that [node selector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).\nLikewise if you specify a `.spec.template.spec.affinity`,\nthen DaemonSet controller will create Pods on nodes which match that\n[node affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).\nIf you do not specify either, then the DaemonSet controller will create Pods on all nodes.\n\n## How Daemon Pods are scheduled\n\nA DaemonSet can be used to ensure that all eligible nodes run a copy of a Pod.\nThe DaemonSet controller creates a Pod for each eligible node and adds the\n`spec.affinity.nodeAffinity` field of the Pod to match the target host. After\nthe Pod is created, the default scheduler typically takes over and then binds\nthe Pod to the target host by setting the `.spec.nodeName` field. If the new\nPod cannot fit on the node, the default scheduler may preempt (evict) some of\nthe existing Pods based on the\n[priority](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority)\nof the new Pod.\n\n#### Note:\n\nThe user can specify a different scheduler for the Pods of the DaemonSet, by\nsetting the `.spec.template.spec.schedulerName` field of the DaemonSet.\n\nThe original node affinity specified at the\n`.spec.template.spec.affinity.nodeAffinity` field (if specified) is taken into\nconsideration by the DaemonSet controller when evaluating the eligible nodes,\nbut is replaced on the created Pod with the node affinity that matches the name\nof the eligible node.\n\n```yaml\nnodeAffinity:\n  requiredDuringSchedulingIgnoredDuringExecution:\n    nodeSelectorTerms:\n    - matchFields:\n      - key: metadata.name\n        operator: In\n        values:\n        - target-host-name\n```\n\n### Taints and tolerations\n\nThe DaemonSet controller automatically adds a set of [tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) to DaemonSet Pods:\n\n| Toleration key | Effect | Details |\n| --- | --- | --- |\n| [`node.kubernetes.io/not-ready`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-not-ready) | `NoExecute` | DaemonSet Pods can be scheduled onto nodes that are not healthy or ready to accept Pods. Any DaemonSet Pods running on such nodes will not be evicted. |\n| [`node.kubernetes.io/unreachable`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-unreachable) | `NoExecute` | DaemonSet Pods can be scheduled onto nodes that are unreachable from the node controller. Any DaemonSet Pods running on such nodes will not be evicted. |\n| [`node.kubernetes.io/disk-pressure`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-disk-pressure) | `NoSchedule` | DaemonSet Pods can be scheduled onto nodes with disk pressure issues. |\n| [`node.kubernetes.io/memory-pressure`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-memory-pressure) | `NoSchedule` | DaemonSet Pods can be scheduled onto nodes with memory pressure issues. |\n| [`node.kubernetes.io/pid-pressure`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-pid-pressure) | `NoSchedule` | DaemonSet Pods can be scheduled onto nodes with process pressure issues. |\n| [`node.kubernetes.io/unschedulable`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-unschedulable) | `NoSchedule` | DaemonSet Pods can be scheduled onto nodes that are unschedulable. |\n| [`node.kubernetes.io/network-unavailable`](https://kubernetes.io/docs/reference/labels-annotations-taints/#node-kubernetes-io-network-unavailable) | `NoSchedule` | **Only added for DaemonSet Pods that request host networking**, i.e., Pods having `spec.hostNetwork: true`. Such DaemonSet Pods can be scheduled onto nodes with unavailable network. |\n\nYou can add your own tolerations to the Pods of a DaemonSet as well, by\ndefining these in the Pod template of the DaemonSet.\n\nBecause the DaemonSet controller sets the\n`node.kubernetes.io/unschedulable:NoSchedule` toleration automatically,\nKubernetes can run DaemonSet Pods on nodes that are marked as *unschedulable*.\n\nIf you use a DaemonSet to provide an important node-level function, such as\n[cluster networking](https://kubernetes.io/docs/concepts/cluster-administration/networking/), it is\nhelpful that Kubernetes places DaemonSet Pods on nodes before they are ready.\nFor example, without that special toleration, you could end up in a deadlock\nsituation where the node is not marked as ready because the network plugin is\nnot running there, and at the same time the network plugin is not running on\nthat node because the node is not yet ready.\n\n## Communicating with Daemon Pods\n\nSome possible patterns for communicating with Pods in a DaemonSet are:\n\n- Push : Pods in the DaemonSet are configured to send updates to another service, such as a stats database. They do not have clients.\n- NodeIP and Known Port : Pods in the DaemonSet can use a hostPort , so that the pods are reachable via the node IPs. Clients know the list of node IPs somehow, and know the port by convention.\n- DNS : Create a headless service with the same pod selector, and then discover DaemonSets using the endpoints resource or retrieve multiple A records from DNS.\n- Service : Create a service with the same Pod selector, and use the service to reach a daemon on a random node. Use Service Internal Traffic Policy to limit to pods on the same node.\n\n## Updating a DaemonSet\n\nIf node labels are changed, the DaemonSet will promptly add Pods to newly matching nodes and delete\nPods from newly not-matching nodes.\n\nYou can modify the Pods that a DaemonSet creates. However, Pods do not allow all\nfields to be updated. Also, the DaemonSet controller will use the original template the next\ntime a node (even with the same name) is created.\n\nYou can delete a DaemonSet. If you specify `--cascade=orphan` with `kubectl`, then the Pods\nwill be left on the nodes. If you subsequently create a new DaemonSet with the same selector,\nthe new DaemonSet adopts the existing Pods. If any Pods need replacing the DaemonSet replaces\nthem according to its `updateStrategy`.\n\nYou can [perform a rolling update](https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/) on a DaemonSet.\n\n## Alternatives to DaemonSet\n\n### Init scripts\n\nIt is certainly possible to run daemon processes by directly starting them on a node (e.g. using\n`init`, `upstartd`, or `systemd`). This is perfectly fine. However, there are several advantages to\nrunning such processes via a DaemonSet:\n\n- Ability to monitor and manage logs for daemons in the same way as applications.\n- Same config language and tools (e.g. Pod templates, kubectl ) for daemons and applications.\n- Running daemons in containers with resource limits increases isolation between daemons from app containers. However, this can also be accomplished by running the daemons in a container but not in a Pod.\n\n### Bare Pods\n\nIt is possible to create Pods directly which specify a particular node to run on. However,\na DaemonSet replaces Pods that are deleted or terminated for any reason, such as in the case of\nnode failure or disruptive node maintenance, such as a kernel upgrade. For this reason, you should\nuse a DaemonSet rather than creating individual Pods.\n\n### Static Pods\n\nIt is possible to create Pods by writing a file to a certain directory watched by Kubelet. These\nare called [static pods](https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/).\nUnlike DaemonSet, static Pods cannot be managed with kubectl\nor other Kubernetes API clients. Static Pods do not depend on the apiserver, making them useful\nin cluster bootstrapping cases. Also, static Pods may be deprecated in the future.\n\n### Deployments\n\nDaemonSets are similar to [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) in that\nthey both create Pods, and those Pods have processes which are not expected to terminate (e.g. web servers,\nstorage servers).\n\nUse a Deployment for stateless services, like frontends, where scaling up and down the\nnumber of replicas and rolling out updates are more important than controlling exactly which host\nthe Pod runs on. Use a DaemonSet when it is important that a copy of a Pod always run on\nall or certain hosts, if the DaemonSet provides node-level functionality that allows other Pods to run correctly on that particular node.\n\nFor example, [network plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/) often include a component that runs as a DaemonSet. The DaemonSet component makes sure that the node where it's running has working cluster networking.\n\n## What's next\n\n- Learn about Pods :\n- Learn about static Pods , which are useful for running Kubernetes control plane components.\n- Find out how to use DaemonSets:\n- Perform a rolling update on a DaemonSet .\n  - Perform a rollback on a DaemonSet (for example, if a roll out didn't work how you expected).\n- Understand how Kubernetes assigns Pods to Nodes .\n- Learn about device plugins and add ons , which often run as DaemonSets.\n- DaemonSet is a top-level resource in the Kubernetes REST API. Read the DaemonSet object definition to understand the API for daemon sets.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:3c035911d82fe7f1819864ff1b6cebc2b3a046225238bb390b6c23ff71dfbb82",
+  "document_id": "work-012",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "DaemonSet"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Writing a DaemonSet Spec"
+    },
+    {
+      "block_index": 6,
+      "level": 3,
+      "text": "Create a DaemonSet"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Required Fields"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Pod Template"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Pod Selector"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Running Pods on select Nodes"
+    },
+    {
+      "block_index": 29,
+      "level": 2,
+      "text": "How Daemon Pods are scheduled"
+    },
+    {
+      "block_index": 31,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 35,
+      "level": 3,
+      "text": "Taints and tolerations"
+    },
+    {
+      "block_index": 41,
+      "level": 2,
+      "text": "Communicating with Daemon Pods"
+    },
+    {
+      "block_index": 44,
+      "level": 2,
+      "text": "Updating a DaemonSet"
+    },
+    {
+      "block_index": 49,
+      "level": 2,
+      "text": "Alternatives to DaemonSet"
+    },
+    {
+      "block_index": 50,
+      "level": 3,
+      "text": "Init scripts"
+    },
+    {
+      "block_index": 53,
+      "level": 3,
+      "text": "Bare Pods"
+    },
+    {
+      "block_index": 55,
+      "level": 3,
+      "text": "Static Pods"
+    },
+    {
+      "block_index": 57,
+      "level": 3,
+      "text": "Deployments"
+    },
+    {
+      "block_index": 61,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "running stateless applications",
+      "url": "https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/"
+    },
+    {
+      "text": "object management using kubectl",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/"
+    },
+    {
+      "text": "DNS subdomain name",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names"
+    },
+    {
+      "text": "pod template",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates"
+    },
+    {
+      "text": "Pod",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "pod selector",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/#pod-selector"
+    },
+    {
+      "text": "Job",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/"
+    },
+    {
+      "text": "node selector",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/"
+    },
+    {
+      "text": "node affinity",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/"
+    },
+    {
+      "text": "priority",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority"
+    },
+    {
+      "text": "tolerations",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/"
+    },
+    {
+      "text": "cluster networking",
+      "url": "https://kubernetes.io/docs/concepts/cluster-administration/networking/"
+    },
+    {
+      "text": "perform a rolling update",
+      "url": "https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/"
+    },
+    {
+      "text": "static pods",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/"
+    },
+    {
+      "text": "Deployments",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/"
+    },
+    {
+      "text": "network plugins",
+      "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-012.html",
+  "raw_sha256": "sha256:4b6967bed10008f3fb854d3a031a6068d5af5a08e03eed231f20ecc319ca513d",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+  "statistics": {
+    "block_count": 63,
+    "character_count": 14245,
+    "code_block_count": 3,
+    "heading_count": 18,
+    "link_count": 16,
+    "list_count": 5,
+    "paragraph_count": 36,
+    "table_count": 1,
+    "word_count": 1940
+  },
+  "title": "DaemonSets"
+}

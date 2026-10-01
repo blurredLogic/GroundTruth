@@ -1,0 +1,1101 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "StatefulSets",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "StatefulSet is the workload API object used to manage stateful applications.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Manages the deployment and scaling of a set of [Pods](https://kubernetes.io/docs/concepts/workloads/pods/), *and provides guarantees about the ordering and uniqueness* of these Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "Like a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of its Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Using StatefulSets",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "StatefulSets are valuable for applications that require one or more of the\nfollowing:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "ordered": false,
+      "text": "- Stable, unique network identifiers.\n- Stable, persistent storage.\n- Ordered, graceful deployment and scaling.\n- Ordered, automated rolling updates.",
+      "type": "list"
+    },
+    {
+      "block_index": 8,
+      "text": "In the above, stable is synonymous with persistence across Pod (re)scheduling.\nIf an application doesn't require any stable identifiers or ordered deployment,\ndeletion, or scaling, you should deploy your application using a workload object\nthat provides a set of stateless replicas.\n[Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) or\n[ReplicaSet](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/) may be better suited to your stateless needs.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Limitations",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "ordered": false,
+      "text": "- The storage for a given Pod must either be provisioned by a PersistentVolume Provisioner based on the requested storage class , or pre-provisioned by an admin.\n- Deleting and/or scaling a StatefulSet down will not delete the volumes associated with the StatefulSet. This is done to ensure data safety, which is generally more valuable than an automatic purge of all related StatefulSet resources.\n- StatefulSets currently require a Headless Service to be responsible for the network identity of the Pods. You are responsible for creating this Service.\n- StatefulSets do not provide any guarantees on the termination of pods when a StatefulSet is deleted. To achieve ordered and graceful termination of the pods in the StatefulSet, it is possible to scale the StatefulSet down to 0 prior to deletion.\n- When using Rolling Updates with the default Pod Management Policy ( OrderedReady ), it's possible to get into a broken state that requires manual intervention to repair .",
+      "type": "list"
+    },
+    {
+      "block_index": 11,
+      "level": 2,
+      "text": "Components",
+      "type": "heading"
+    },
+    {
+      "block_index": 12,
+      "text": "The example below demonstrates the components of a StatefulSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Service\nmetadata:\n  name: nginx\n  labels:\n    app: nginx\nspec:\n  ports:\n  - port: 80\n    name: web\n  clusterIP: None\n  selector:\n    app: nginx\n---\napiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: web\nspec:\n  selector:\n    matchLabels:\n      app: nginx # has to match .spec.template.metadata.labels\n  serviceName: \"nginx\"\n  replicas: 3 # by default is 1\n  minReadySeconds: 10 # by default is 0\n  template:\n    metadata:\n      labels:\n        app: nginx # has to match .spec.selector.matchLabels\n    spec:\n      terminationGracePeriodSeconds: 10\n      containers:\n      - name: nginx\n        image: registry.k8s.io/nginx-slim:0.24\n        ports:\n        - containerPort: 80\n          name: web\n        volumeMounts:\n        - name: www\n          mountPath: /usr/share/nginx/html\n  volumeClaimTemplates:\n  - metadata:\n      name: www\n    spec:\n      accessModes: [ \"ReadWriteOnce\" ]\n      storageClassName: \"my-storage-class\"\n      resources:\n        requests:\n          storage: 1Gi",
+      "type": "code"
+    },
+    {
+      "block_index": 14,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 15,
+      "text": "In the above example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "ordered": false,
+      "text": "- A Headless Service, named nginx , is used to control the network domain.\n- The StatefulSet, named web , has a Spec that indicates that 3 replicas of the nginx container will be launched in unique Pods.\n- The volumeClaimTemplates will provide stable storage using PersistentVolumes provisioned by a PersistentVolume Provisioner.",
+      "type": "list"
+    },
+    {
+      "block_index": 17,
+      "text": "The name of a StatefulSet object must be a valid\n[DNS label](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "level": 3,
+      "text": "Pod Selector",
+      "type": "heading"
+    },
+    {
+      "block_index": 19,
+      "text": "You must set the `.spec.selector` field of a StatefulSet to match the labels of its\n`.spec.template.metadata.labels`. Failing to specify a matching Pod Selector will result in a\nvalidation error during StatefulSet creation.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Volume Claim Templates",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "You can set the `.spec.volumeClaimTemplates` field to create a\n[PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims).\nThis will provide stable storage to the StatefulSet if either:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "ordered": false,
+      "text": "- The StorageClass specified for the volume claim is set up to use dynamic provisioning .\n- The cluster already contains a PersistentVolume with the correct StorageClass and sufficient available storage space.",
+      "type": "list"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Minimum ready seconds",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "`.spec.minReadySeconds` is an optional field that specifies the minimum number of seconds for which a newly\ncreated Pod should be running and ready without any of its containers crashing, for it to be considered available.\nThis is used to check progression of a rollout when using a [Rolling Update](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#rolling-updates) strategy.\nThis field defaults to 0 (the Pod will be considered available as soon as it is ready). To learn more about when\na Pod is considered ready, see [Container Probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "level": 2,
+      "text": "Pod Identity",
+      "type": "heading"
+    },
+    {
+      "block_index": 26,
+      "text": "StatefulSet Pods have a unique identity that consists of an ordinal, a\nstable network identity, and stable storage. The identity sticks to the Pod,\nregardless of which node it's (re)scheduled on.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Ordinal Index",
+      "type": "heading"
+    },
+    {
+      "block_index": 28,
+      "text": "For a StatefulSet with N [replicas](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#replicas), each Pod in the StatefulSet\nwill be assigned an integer ordinal, that is unique over the Set. By default,\npods will be assigned ordinals from 0 up through N-1. The StatefulSet controller\nwill also add a pod label with this index: `apps.kubernetes.io/pod-index`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "level": 3,
+      "text": "Start ordinal",
+      "type": "heading"
+    },
+    {
+      "block_index": 30,
+      "text": "*This is a stable feature in Kubernetes, and has been since version 1.31. It was first available in the v1.26 release.*",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "`.spec.ordinals` is an optional field that allows you to configure the integer\nordinals assigned to each Pod. It defaults to nil. Within the field, you can\nconfigure the following options:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "ordered": false,
+      "text": "- .spec.ordinals.start : If the .spec.ordinals.start field is set, Pods will be assigned ordinals from .spec.ordinals.start up through .spec.ordinals.start + .spec.replicas - 1 .",
+      "type": "list"
+    },
+    {
+      "block_index": 33,
+      "level": 3,
+      "text": "Stable Network ID",
+      "type": "heading"
+    },
+    {
+      "block_index": 34,
+      "text": "Each Pod in a StatefulSet derives its hostname from the name of the StatefulSet\nand the ordinal of the Pod. The pattern for the constructed hostname\nis `$(statefulset name)-$(ordinal)`. The example above will create three Pods\nnamed `web-0,web-1,web-2`.\nA StatefulSet can use a [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services)\nto control the domain of its Pods. The domain managed by this Service takes the form:\n`$(service name).$(namespace).svc.cluster.local`, where \"cluster.local\" is the\ncluster domain.\nAs each Pod is created, it gets a matching DNS subdomain, taking the form:\n`$(podname).$(governing service domain)`, where the governing service is defined\nby the `serviceName` field on the StatefulSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "Depending on how DNS is configured in your cluster, you may not be able to look up the DNS\nname for a newly-run Pod immediately. This behavior can occur when other clients in the\ncluster have already sent queries for the hostname of the Pod before it was created.\nNegative caching (normal in DNS) means that the results of previous failed lookups are\nremembered and reused, even after the Pod is running, for at least a few seconds.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "text": "If you need to discover Pods promptly after they are created, you have a few options:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "ordered": false,
+      "text": "- Query the Kubernetes API directly (for example, using a watch) rather than relying on DNS lookups.\n- Decrease the time of caching in your Kubernetes DNS provider (typically this means editing the config map for CoreDNS, which currently caches for 30 seconds).",
+      "type": "list"
+    },
+    {
+      "block_index": 38,
+      "text": "As mentioned in the [limitations](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations) section, you are responsible for\ncreating the [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services)\nresponsible for the network identity of the pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "text": "Here are some examples of choices for Cluster Domain, Service name,\nStatefulSet name, and how that affects the DNS names for the StatefulSet's Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "rows": [
+        [
+          "Cluster Domain",
+          "Service (ns/name)",
+          "StatefulSet (ns/name)",
+          "StatefulSet Domain",
+          "Pod DNS",
+          "Pod Hostname"
+        ],
+        [
+          "cluster.local",
+          "default/nginx",
+          "default/web",
+          "nginx.default.svc.cluster.local",
+          "web-{0..N-1}.nginx.default.svc.cluster.local",
+          "web-{0..N-1}"
+        ],
+        [
+          "cluster.local",
+          "foo/nginx",
+          "foo/web",
+          "nginx.foo.svc.cluster.local",
+          "web-{0..N-1}.nginx.foo.svc.cluster.local",
+          "web-{0..N-1}"
+        ],
+        [
+          "kube.local",
+          "foo/nginx",
+          "foo/web",
+          "nginx.foo.svc.kube.local",
+          "web-{0..N-1}.nginx.foo.svc.kube.local",
+          "web-{0..N-1}"
+        ]
+      ],
+      "text": "| Cluster Domain | Service (ns/name) | StatefulSet (ns/name) | StatefulSet Domain | Pod DNS | Pod Hostname |\n| --- | --- | --- | --- | --- | --- |\n| cluster.local | default/nginx | default/web | nginx.default.svc.cluster.local | web-{0..N-1}.nginx.default.svc.cluster.local | web-{0..N-1} |\n| cluster.local | foo/nginx | foo/web | nginx.foo.svc.cluster.local | web-{0..N-1}.nginx.foo.svc.cluster.local | web-{0..N-1} |\n| kube.local | foo/nginx | foo/web | nginx.foo.svc.kube.local | web-{0..N-1}.nginx.foo.svc.kube.local | web-{0..N-1} |",
+      "type": "table"
+    },
+    {
+      "block_index": 41,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 42,
+      "level": 3,
+      "text": "Stable Storage",
+      "type": "heading"
+    },
+    {
+      "block_index": 43,
+      "text": "For each VolumeClaimTemplate entry defined in a StatefulSet, each Pod receives one\nPersistentVolumeClaim. In the nginx example above, each Pod receives a single PersistentVolume\nwith a StorageClass of `my-storage-class` and 1 GiB of provisioned storage. If no StorageClass\nis specified, then the default StorageClass will be used. When a Pod is (re)scheduled\nonto a node, its `volumeMounts` mount the PersistentVolumes associated with its\nPersistentVolume Claims. Note that, the PersistentVolumes associated with the\nPods' PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted.\nThis must be done manually.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "level": 3,
+      "text": "Pod Name Label",
+      "type": "heading"
+    },
+    {
+      "block_index": 45,
+      "text": "When the StatefulSet [controller](https://kubernetes.io/docs/concepts/architecture/controller/) creates a Pod,\nit adds a label, `statefulset.kubernetes.io/pod-name`, that is set to the name of\nthe Pod. This label allows you to attach a Service to a specific Pod in\nthe StatefulSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "level": 3,
+      "text": "Pod index label",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "text": "*This is a stable feature in Kubernetes, and has been since version 1.32. It was first available in the v1.28 release.*",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "text": "When the StatefulSet [controller](https://kubernetes.io/docs/concepts/architecture/controller/) creates a Pod,\nthe new Pod is labelled with `apps.kubernetes.io/pod-index`. The value of this label is the ordinal index of\nthe Pod. This label allows you to route traffic to a particular pod index, filter logs/metrics\nusing the pod index label, and more. Note the feature gate `PodIndexLabel` is enabled and locked by default for this\nfeature, in order to disable it, users will have to use server emulated version v1.31.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 49,
+      "level": 2,
+      "text": "Deployment and Scaling Guarantees",
+      "type": "heading"
+    },
+    {
+      "block_index": 50,
+      "ordered": false,
+      "text": "- For a StatefulSet with N replicas, when Pods are being deployed, they are created sequentially, in order from {0..N-1}.\n- When Pods are being deleted, they are terminated in reverse order, from {N-1..0}.\n- Before a scaling operation is applied to a Pod, all of its predecessors must be Running and Ready. If `.spec.minReadySeconds` is set, predecessors must be available (Ready for at least minReadySeconds ).\n- Before a Pod is terminated, all of its successors must be completely shutdown.",
+      "type": "list"
+    },
+    {
+      "block_index": 51,
+      "text": "The StatefulSet should not specify a `pod.Spec.TerminationGracePeriodSeconds` of 0. This practice\nis unsafe and strongly discouraged. For further explanation, please refer to\n[force deleting StatefulSet Pods](https://kubernetes.io/docs/tasks/run-application/force-delete-stateful-set-pod/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 52,
+      "text": "When the nginx example above is created, three Pods will be deployed in the order\nweb-0, web-1, web-2. web-1 will not be deployed before web-0 is\n[Running and Ready](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/), and web-2 will not be deployed until\nweb-1 is Running and Ready. If web-0 should fail, after web-1 is Running and Ready, but before\nweb-2 is launched, web-2 will not be launched until web-0 is successfully relaunched and\nbecomes Running and Ready.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 53,
+      "text": "If a user were to scale the deployed example by patching the StatefulSet such that\n`replicas=1`, web-2 would be terminated first. web-1 would not be terminated until web-2\nis fully shutdown and deleted. If web-0 were to fail after web-2 has been terminated and\nis completely shutdown, but prior to web-1's termination, web-1 would not be terminated\nuntil web-0 is Running and Ready.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 54,
+      "level": 3,
+      "text": "Pod Management Policies",
+      "type": "heading"
+    },
+    {
+      "block_index": 55,
+      "text": "StatefulSet allows you to relax its ordering guarantees while\npreserving its uniqueness and identity guarantees via its `.spec.podManagementPolicy` field.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 56,
+      "level": 4,
+      "text": "OrderedReady Pod Management",
+      "type": "heading"
+    },
+    {
+      "block_index": 57,
+      "text": "`OrderedReady` pod management is the default for StatefulSets. It implements the behavior\ndescribed in [Deployment and Scaling Guarantees](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#deployment-and-scaling-guarantees).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 58,
+      "level": 4,
+      "text": "Parallel Pod Management",
+      "type": "heading"
+    },
+    {
+      "block_index": 59,
+      "text": "`Parallel` pod management tells the StatefulSet controller to launch or\nterminate all Pods in parallel, and to not wait for Pods to become Running\nand Ready or completely terminated prior to launching or terminating another\nPod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 60,
+      "text": "For scaling operations, this means all Pods are created or terminated simultaneously.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 61,
+      "text": "For rolling updates when [`.spec.updateStrategy.rollingUpdate.maxUnavailable`](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#maximum-unavailable-pods)\nis greater than 1, the StatefulSet controller terminates and creates up to `maxUnavailable` Pods\nsimultaneously (also known as \"bursting\"). This can speed up updates but may result in Pods becoming ready out of order, which might not be suitable for applications requiring strict ordering.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 62,
+      "level": 2,
+      "text": "Update strategies",
+      "type": "heading"
+    },
+    {
+      "block_index": 63,
+      "text": "A StatefulSet's `.spec.updateStrategy` field allows you to configure\nand disable automated rolling updates for containers, labels, resource request/limits, and\nannotations for the Pods in a StatefulSet. There are three possible values:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 64,
+      "text": "**`OnDelete`**\n: When a StatefulSet's `.spec.updateStrategy.type` is set to `OnDelete`,\nthe StatefulSet controller will not automatically update the Pods in a\nStatefulSet. Users must manually delete Pods to cause the controller to\ncreate new Pods that reflect modifications made to a StatefulSet's `.spec.template`.\n**`RollingUpdate`**\n: The `RollingUpdate` update strategy implements automated, rolling updates for the Pods in a\nStatefulSet. This is the default update strategy.\n**`Recreate`**\n: Feature state:\nAlpha since Kubernetes v1.37; disabled by defaultMore information about this featureTo use this feature, you (or a cluster administrator) will need to enable the [StatefulSetRecreateStrategy](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy) feature gate for all relevant components in your cluster.See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.The `Recreate` update strategy deletes all of the StatefulSet's Pods before creating new\nPods that reflect modifications made to a StatefulSet's `.spec.template`. Using this\nstrategy requires the `StatefulSetRecreateStrategy`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy)\nto be enabled. See [Recreate](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#recreate) for details.",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 65,
+      "level": 2,
+      "text": "Rolling Updates",
+      "type": "heading"
+    },
+    {
+      "block_index": 66,
+      "text": "When a StatefulSet's `.spec.updateStrategy.type` is set to `RollingUpdate`, the\nStatefulSet controller will delete and recreate each Pod in the StatefulSet. It will proceed\nin the same order as Pod termination (from the largest ordinal to the smallest), updating\neach Pod one at a time.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 67,
+      "text": "The Kubernetes control plane waits until an updated Pod is Running and Ready prior\nto updating its predecessor. If you have set `.spec.minReadySeconds` (see\n[Minimum Ready Seconds](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#minimum-ready-seconds)), the control plane additionally waits that\namount of time after the Pod turns ready, before moving on.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 68,
+      "level": 3,
+      "text": "Partitioned rolling updates",
+      "type": "heading"
+    },
+    {
+      "block_index": 69,
+      "text": "The `RollingUpdate` update strategy can be partitioned, by specifying a\n`.spec.updateStrategy.rollingUpdate.partition`. If a partition is specified, all Pods with an\nordinal that is greater than or equal to the partition will be updated when the StatefulSet's\n`.spec.template` is updated. All Pods with an ordinal that is less than the partition will not\nbe updated, and, even if they are deleted, they will be recreated at the previous version. If a\nStatefulSet's `.spec.updateStrategy.rollingUpdate.partition` is greater than its `.spec.replicas`,\nupdates to its `.spec.template` will not be propagated to its Pods.\nIn most cases you will not need to use a partition, but they are useful if you want to stage an\nupdate, roll out a canary, or perform a phased roll out.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 70,
+      "level": 3,
+      "text": "Maximum unavailable Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 71,
+      "text": "You can control the maximum number of Pods that can be unavailable during an update\nby specifying the `.spec.updateStrategy.rollingUpdate.maxUnavailable` field.\nThe value can be an absolute number (for example, `5`) or a percentage of desired\nPods (for example, `10%`). Absolute number is calculated from the percentage value\nby rounding it up. This field cannot be 0. The default setting is 1.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 72,
+      "text": "This field applies to all Pods in the range `0` to `replicas - 1`. If there is any\nunavailable Pod in the range `0` to `replicas - 1`, it will be counted towards\n`maxUnavailable`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 73,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 74,
+      "level": 3,
+      "text": "Forced rollback",
+      "type": "heading"
+    },
+    {
+      "block_index": 75,
+      "text": "When using [Rolling Updates](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#rolling-updates) with the default\n[Pod Management Policy](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies) (`OrderedReady`),\nit's possible to get into a broken state that requires manual intervention to repair.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 76,
+      "text": "If you update the Pod template to a configuration that never becomes Running and\nReady (for example, due to a bad binary or application-level configuration error),\nStatefulSet will stop the rollout and wait.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 77,
+      "text": "In this state, it's not enough to revert the Pod template to a good configuration.\nDue to a [known issue](https://github.com/kubernetes/kubernetes/issues/67250),\nStatefulSet will continue to wait for the broken Pod to become Ready\n(which never happens) before it will attempt to revert it back to the working\nconfiguration.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 78,
+      "text": "After reverting the template, you must also delete any Pods that StatefulSet had\nalready attempted to run with the bad configuration.\nStatefulSet will then begin to recreate the Pods using the reverted template.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 79,
+      "level": 2,
+      "text": "Recreate",
+      "type": "heading"
+    },
+    {
+      "block_index": 80,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [StatefulSetRecreateStrategy](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 81,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 82,
+      "text": "When a StatefulSet's `.spec.updateStrategy.type` is set to `Recreate`, the StatefulSet\ncontroller deletes all of the StatefulSet's Pods at once and waits for them to terminate\ncompletely before creating any new Pods from the updated `.spec.template`. Unlike\n[`RollingUpdate`](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#rolling-updates), the old and new revisions of a Pod are never running at\nthe same time, so this strategy incurs downtime for the duration of the update. This mirrors\nthe `Recreate` strategy of Deployments and is useful for applications that cannot run two\nversions concurrently, such as workloads that require exclusive access to a shared resource\nor that use an on-disk format that is incompatible between versions.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 83,
+      "text": "The deletion always removes every Pod together, regardless of the\n[Pod Management Policy](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies). Once all Pods have terminated, the new\nPods are created according to that policy: with `OrderedReady` (the default) the Pods are\nrecreated one at a time, in ascending ordinal order, waiting for each to become Running and\nReady before creating the next; with `Parallel` all of the Pods are recreated at once.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 84,
+      "text": "Because this is an alpha feature, you must enable the `StatefulSetRecreateStrategy`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy)\non the kube-controller-manager and the kube-apiserver to use this strategy.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 85,
+      "level": 2,
+      "text": "Revision history",
+      "type": "heading"
+    },
+    {
+      "block_index": 86,
+      "text": "ControllerRevision is a Kubernetes API resource used by controllers, such as the StatefulSet controller, to track historical configuration changes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 87,
+      "text": "StatefulSets use ControllerRevisions to maintain a revision history, enabling rollbacks and version tracking.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 88,
+      "level": 3,
+      "text": "How StatefulSets track changes using ControllerRevisions",
+      "type": "heading"
+    },
+    {
+      "block_index": 89,
+      "text": "When you update a StatefulSet's Pod template (`spec.template`), the StatefulSet controller:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 90,
+      "ordered": true,
+      "text": "1. Prepares a new ControllerRevision object\n2. Stores a snapshot of the Pod template and metadata\n3. Assigns an incremental revision number",
+      "type": "list"
+    },
+    {
+      "block_index": 91,
+      "level": 4,
+      "text": "Key Properties",
+      "type": "heading"
+    },
+    {
+      "block_index": 92,
+      "text": "See [ControllerRevision](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/controller-revision-v1/) to learn more about key properties and other details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 93,
+      "text": "---",
+      "type": "separator"
+    },
+    {
+      "block_index": 94,
+      "level": 3,
+      "text": "Managing Revision History",
+      "type": "heading"
+    },
+    {
+      "block_index": 95,
+      "text": "Control retained revisions with `.spec.revisionHistoryLimit`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 96,
+      "language": "yaml",
+      "text": "apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: webapp\nspec:\n  revisionHistoryLimit: 5  # Keep last 5 revisions\n  # ... other spec fields ...",
+      "type": "code"
+    },
+    {
+      "block_index": 97,
+      "ordered": false,
+      "text": "- Default : 10 revisions retained if unspecified\n- Cleanup : Oldest revisions are garbage-collected when exceeding the limit",
+      "type": "list"
+    },
+    {
+      "block_index": 98,
+      "level": 4,
+      "text": "Performing Rollbacks",
+      "type": "heading"
+    },
+    {
+      "block_index": 99,
+      "text": "You can revert to a previous configuration using:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 100,
+      "language": "bash",
+      "text": "# View revision history\nkubectl rollout history statefulset/webapp\n\n# Rollback to a specific revision\nkubectl rollout undo statefulset/webapp --to-revision=3",
+      "type": "code"
+    },
+    {
+      "block_index": 101,
+      "text": "This will:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 102,
+      "ordered": false,
+      "text": "- Apply the Pod template from revision 3\n- Create a new ControllerRevision with an updated revision number",
+      "type": "list"
+    },
+    {
+      "block_index": 103,
+      "level": 4,
+      "text": "Inspecting ControllerRevisions",
+      "type": "heading"
+    },
+    {
+      "block_index": 104,
+      "text": "To view associated ControllerRevisions:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 105,
+      "language": "bash",
+      "text": "# List all revisions for the StatefulSet\nkubectl get controllerrevisions -l app.kubernetes.io/name=webapp\n\n# View detailed configuration of a specific revision\nkubectl get controllerrevision/webapp-3 -o yaml",
+      "type": "code"
+    },
+    {
+      "block_index": 106,
+      "level": 4,
+      "text": "Best Practices",
+      "type": "heading"
+    },
+    {
+      "block_index": 107,
+      "level": 5,
+      "text": "Retention Policy",
+      "type": "heading"
+    },
+    {
+      "block_index": 108,
+      "ordered": false,
+      "text": "- Set revisionHistoryLimit between 5–10 for most workloads.\n- Increase only if deep rollback history is required.",
+      "type": "list"
+    },
+    {
+      "block_index": 109,
+      "level": 5,
+      "text": "Monitoring",
+      "type": "heading"
+    },
+    {
+      "block_index": 110,
+      "ordered": false,
+      "text": "- Regularly check revisions with: `kubectl get controllerrevisions`",
+      "type": "list"
+    },
+    {
+      "block_index": 111,
+      "ordered": false,
+      "text": "- Alert on rapid revision count growth .",
+      "type": "list"
+    },
+    {
+      "block_index": 112,
+      "level": 5,
+      "text": "Avoid",
+      "type": "heading"
+    },
+    {
+      "block_index": 113,
+      "ordered": false,
+      "text": "- Manual edits to ControllerRevision objects.\n- Using revisions as a backup mechanism (use actual backup tools).\n- Setting revisionHistoryLimit: 0 (disables rollback capability).",
+      "type": "list"
+    },
+    {
+      "block_index": 114,
+      "level": 2,
+      "text": "PersistentVolumeClaim retention",
+      "type": "heading"
+    },
+    {
+      "block_index": 115,
+      "text": "*This is a stable feature in Kubernetes, and has been since version 1.32. It was first available in the v1.23 release.*",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 116,
+      "text": "The optional `.spec.persistentVolumeClaimRetentionPolicy` field controls if\nand how PVCs are deleted during the lifecycle of a StatefulSet. You must enable the\n`StatefulSetAutoDeletePVC` [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)\non the API server and the controller manager to use this field.\nOnce enabled, there are two policies you can configure for each StatefulSet:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 117,
+      "text": "**`whenDeleted`**\n: Configures the volume retention behavior that applies when the StatefulSet is deleted.\n**`whenScaled`**\n: Configures the volume retention behavior that applies when the replica count of\nthe StatefulSet is reduced; for example, when scaling down the set.",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 118,
+      "text": "For each policy that you can configure, you can set the value to either `Delete` or `Retain`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 119,
+      "text": "**`Delete`**\n: The PVCs created from the StatefulSet `volumeClaimTemplate` are deleted for each Pod\naffected by the policy. With the `whenDeleted` policy all PVCs from the\n`volumeClaimTemplate` are deleted after their Pods have been deleted. With the\n`whenScaled` policy, only PVCs corresponding to Pod replicas being scaled down are\ndeleted, after their Pods have been deleted.\n**`Retain` (default)**\n: PVCs from the `volumeClaimTemplate` are not affected when their Pod is\ndeleted. This is the behavior before this new feature.",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 120,
+      "text": "Bear in mind that these policies **only** apply when Pods are being removed due to the\nStatefulSet being deleted or scaled down. For example, if a Pod associated with a StatefulSet\nfails due to node failure, and the control plane creates a replacement Pod, the StatefulSet\nretains the existing PVC. The existing volume is unaffected, and the cluster will attach it to\nthe node where the new Pod is about to launch.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 121,
+      "text": "The default for policies is `Retain`, matching the StatefulSet behavior before this new feature.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 122,
+      "text": "Here is an example policy:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 123,
+      "language": "yaml",
+      "text": "apiVersion: apps/v1\nkind: StatefulSet\n...\nspec:\n  persistentVolumeClaimRetentionPolicy:\n    whenDeleted: Retain\n    whenScaled: Delete\n...",
+      "type": "code"
+    },
+    {
+      "block_index": 124,
+      "text": "The StatefulSet [controller](https://kubernetes.io/docs/concepts/architecture/controller/) adds\n[owner references](https://kubernetes.io/docs/concepts/overview/working-with-objects/owners-dependents/#owner-references-in-object-specifications)\nto its PVCs, which are then deleted by the [garbage collector](https://kubernetes.io/docs/concepts/architecture/garbage-collection/) after the Pod is terminated. This enables the Pod to\ncleanly unmount all volumes before the PVCs are deleted (and before the backing PV and\nvolume are deleted, depending on the retain policy). When you set the `whenDeleted`\npolicy to `Delete`, an owner reference to the StatefulSet instance is placed on all PVCs\nassociated with that StatefulSet.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 125,
+      "text": "The `whenScaled` policy must delete PVCs only when a Pod is scaled down, and not when a\nPod is deleted for another reason. When reconciling, the StatefulSet controller compares\nits desired replica count to the actual Pods present on the cluster. Any StatefulSet Pod\nwhose id greater than the replica count is condemned and marked for deletion. If the\n`whenScaled` policy is `Delete`, the condemned Pods are first set as owners to the\nassociated StatefulSet template PVCs, before the Pod is deleted. This causes the PVCs\nto be garbage collected after only the condemned Pods have terminated.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 126,
+      "text": "This means that if the controller crashes and restarts, no Pod will be deleted before its\nowner reference has been updated appropriate to the policy. If a condemned Pod is\nforce-deleted while the controller is down, the owner reference may or may not have been\nset up, depending on when the controller crashed. It may take several reconcile loops to\nupdate the owner references, so some condemned Pods may have set up owner references and\nothers may not. For this reason we recommend waiting for the controller to come back up,\nwhich will verify owner references before terminating Pods. If that is not possible, the\noperator should verify the owner references on PVCs to ensure the expected objects are\ndeleted when Pods are force-deleted.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 127,
+      "level": 3,
+      "text": "Replicas",
+      "type": "heading"
+    },
+    {
+      "block_index": 128,
+      "text": "`.spec.replicas` is an optional field that specifies the number of desired Pods. It defaults to 1.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 129,
+      "text": "Should you manually scale a StatefulSet, via `kubectl scale statefulset statefulset --replicas=X`, and then you update that StatefulSet\nbased on a manifest (for example: by running `kubectl apply -f statefulset.yaml`), then applying that manifest overwrites the manual scaling\nthat you previously did.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 130,
+      "text": "If a [HorizontalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/)\n(or any similar API for horizontal scaling) is managing scaling for a\nStatefulset, don't set `.spec.replicas`. Instead, allow the Kubernetes\n[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane) to manage\nthe `.spec.replicas` field automatically.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 131,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 132,
+      "ordered": false,
+      "text": "- Learn about Pods .\n- Find out how to use StatefulSets\n- Follow an example of deploying a stateful application .\n  - Follow an example of deploying Cassandra with Stateful Sets .\n  - Follow an example of running a replicated stateful application .\n  - Learn how to scale a StatefulSet .\n  - Learn what's involved when you delete a StatefulSet .\n  - Learn how to configure a Pod to use a volume for storage .\n  - Learn how to configure a Pod to use a PersistentVolume for storage .\n- StatefulSet is a top-level resource in the Kubernetes REST API. Read the StatefulSet object definition to understand the API for stateful sets.\n- Read about PodDisruptionBudget and how you can use it to manage application availability during disruptions.",
+      "type": "list"
+    }
+  ],
+  "content": "# StatefulSets\n\nStatefulSet is the workload API object used to manage stateful applications.\n\nManages the deployment and scaling of a set of [Pods](https://kubernetes.io/docs/concepts/workloads/pods/), *and provides guarantees about the ordering and uniqueness* of these Pods.\n\nLike a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of its Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.\n\nIf you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.\n\n## Using StatefulSets\n\nStatefulSets are valuable for applications that require one or more of the\nfollowing:\n\n- Stable, unique network identifiers.\n- Stable, persistent storage.\n- Ordered, graceful deployment and scaling.\n- Ordered, automated rolling updates.\n\nIn the above, stable is synonymous with persistence across Pod (re)scheduling.\nIf an application doesn't require any stable identifiers or ordered deployment,\ndeletion, or scaling, you should deploy your application using a workload object\nthat provides a set of stateless replicas.\n[Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) or\n[ReplicaSet](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/) may be better suited to your stateless needs.\n\n## Limitations\n\n- The storage for a given Pod must either be provisioned by a PersistentVolume Provisioner based on the requested storage class , or pre-provisioned by an admin.\n- Deleting and/or scaling a StatefulSet down will not delete the volumes associated with the StatefulSet. This is done to ensure data safety, which is generally more valuable than an automatic purge of all related StatefulSet resources.\n- StatefulSets currently require a Headless Service to be responsible for the network identity of the Pods. You are responsible for creating this Service.\n- StatefulSets do not provide any guarantees on the termination of pods when a StatefulSet is deleted. To achieve ordered and graceful termination of the pods in the StatefulSet, it is possible to scale the StatefulSet down to 0 prior to deletion.\n- When using Rolling Updates with the default Pod Management Policy ( OrderedReady ), it's possible to get into a broken state that requires manual intervention to repair .\n\n## Components\n\nThe example below demonstrates the components of a StatefulSet.\n\n```yaml\napiVersion: v1\nkind: Service\nmetadata:\n  name: nginx\n  labels:\n    app: nginx\nspec:\n  ports:\n  - port: 80\n    name: web\n  clusterIP: None\n  selector:\n    app: nginx\n---\napiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: web\nspec:\n  selector:\n    matchLabels:\n      app: nginx # has to match .spec.template.metadata.labels\n  serviceName: \"nginx\"\n  replicas: 3 # by default is 1\n  minReadySeconds: 10 # by default is 0\n  template:\n    metadata:\n      labels:\n        app: nginx # has to match .spec.selector.matchLabels\n    spec:\n      terminationGracePeriodSeconds: 10\n      containers:\n      - name: nginx\n        image: registry.k8s.io/nginx-slim:0.24\n        ports:\n        - containerPort: 80\n          name: web\n        volumeMounts:\n        - name: www\n          mountPath: /usr/share/nginx/html\n  volumeClaimTemplates:\n  - metadata:\n      name: www\n    spec:\n      accessModes: [ \"ReadWriteOnce\" ]\n      storageClassName: \"my-storage-class\"\n      resources:\n        requests:\n          storage: 1Gi\n```\n\n#### Note:\n\nIn the above example:\n\n- A Headless Service, named nginx , is used to control the network domain.\n- The StatefulSet, named web , has a Spec that indicates that 3 replicas of the nginx container will be launched in unique Pods.\n- The volumeClaimTemplates will provide stable storage using PersistentVolumes provisioned by a PersistentVolume Provisioner.\n\nThe name of a StatefulSet object must be a valid\n[DNS label](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names).\n\n### Pod Selector\n\nYou must set the `.spec.selector` field of a StatefulSet to match the labels of its\n`.spec.template.metadata.labels`. Failing to specify a matching Pod Selector will result in a\nvalidation error during StatefulSet creation.\n\n### Volume Claim Templates\n\nYou can set the `.spec.volumeClaimTemplates` field to create a\n[PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims).\nThis will provide stable storage to the StatefulSet if either:\n\n- The StorageClass specified for the volume claim is set up to use dynamic provisioning .\n- The cluster already contains a PersistentVolume with the correct StorageClass and sufficient available storage space.\n\n### Minimum ready seconds\n\n`.spec.minReadySeconds` is an optional field that specifies the minimum number of seconds for which a newly\ncreated Pod should be running and ready without any of its containers crashing, for it to be considered available.\nThis is used to check progression of a rollout when using a [Rolling Update](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#rolling-updates) strategy.\nThis field defaults to 0 (the Pod will be considered available as soon as it is ready). To learn more about when\na Pod is considered ready, see [Container Probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes).\n\n## Pod Identity\n\nStatefulSet Pods have a unique identity that consists of an ordinal, a\nstable network identity, and stable storage. The identity sticks to the Pod,\nregardless of which node it's (re)scheduled on.\n\n### Ordinal Index\n\nFor a StatefulSet with N [replicas](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#replicas), each Pod in the StatefulSet\nwill be assigned an integer ordinal, that is unique over the Set. By default,\npods will be assigned ordinals from 0 up through N-1. The StatefulSet controller\nwill also add a pod label with this index: `apps.kubernetes.io/pod-index`.\n\n### Start ordinal\n\n*This is a stable feature in Kubernetes, and has been since version 1.31. It was first available in the v1.26 release.*\n\n`.spec.ordinals` is an optional field that allows you to configure the integer\nordinals assigned to each Pod. It defaults to nil. Within the field, you can\nconfigure the following options:\n\n- .spec.ordinals.start : If the .spec.ordinals.start field is set, Pods will be assigned ordinals from .spec.ordinals.start up through .spec.ordinals.start + .spec.replicas - 1 .\n\n### Stable Network ID\n\nEach Pod in a StatefulSet derives its hostname from the name of the StatefulSet\nand the ordinal of the Pod. The pattern for the constructed hostname\nis `$(statefulset name)-$(ordinal)`. The example above will create three Pods\nnamed `web-0,web-1,web-2`.\nA StatefulSet can use a [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services)\nto control the domain of its Pods. The domain managed by this Service takes the form:\n`$(service name).$(namespace).svc.cluster.local`, where \"cluster.local\" is the\ncluster domain.\nAs each Pod is created, it gets a matching DNS subdomain, taking the form:\n`$(podname).$(governing service domain)`, where the governing service is defined\nby the `serviceName` field on the StatefulSet.\n\nDepending on how DNS is configured in your cluster, you may not be able to look up the DNS\nname for a newly-run Pod immediately. This behavior can occur when other clients in the\ncluster have already sent queries for the hostname of the Pod before it was created.\nNegative caching (normal in DNS) means that the results of previous failed lookups are\nremembered and reused, even after the Pod is running, for at least a few seconds.\n\nIf you need to discover Pods promptly after they are created, you have a few options:\n\n- Query the Kubernetes API directly (for example, using a watch) rather than relying on DNS lookups.\n- Decrease the time of caching in your Kubernetes DNS provider (typically this means editing the config map for CoreDNS, which currently caches for 30 seconds).\n\nAs mentioned in the [limitations](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations) section, you are responsible for\ncreating the [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services)\nresponsible for the network identity of the pods.\n\nHere are some examples of choices for Cluster Domain, Service name,\nStatefulSet name, and how that affects the DNS names for the StatefulSet's Pods.\n\n| Cluster Domain | Service (ns/name) | StatefulSet (ns/name) | StatefulSet Domain | Pod DNS | Pod Hostname |\n| --- | --- | --- | --- | --- | --- |\n| cluster.local | default/nginx | default/web | nginx.default.svc.cluster.local | web-{0..N-1}.nginx.default.svc.cluster.local | web-{0..N-1} |\n| cluster.local | foo/nginx | foo/web | nginx.foo.svc.cluster.local | web-{0..N-1}.nginx.foo.svc.cluster.local | web-{0..N-1} |\n| kube.local | foo/nginx | foo/web | nginx.foo.svc.kube.local | web-{0..N-1}.nginx.foo.svc.kube.local | web-{0..N-1} |\n\n#### Note:\n\n### Stable Storage\n\nFor each VolumeClaimTemplate entry defined in a StatefulSet, each Pod receives one\nPersistentVolumeClaim. In the nginx example above, each Pod receives a single PersistentVolume\nwith a StorageClass of `my-storage-class` and 1 GiB of provisioned storage. If no StorageClass\nis specified, then the default StorageClass will be used. When a Pod is (re)scheduled\nonto a node, its `volumeMounts` mount the PersistentVolumes associated with its\nPersistentVolume Claims. Note that, the PersistentVolumes associated with the\nPods' PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted.\nThis must be done manually.\n\n### Pod Name Label\n\nWhen the StatefulSet [controller](https://kubernetes.io/docs/concepts/architecture/controller/) creates a Pod,\nit adds a label, `statefulset.kubernetes.io/pod-name`, that is set to the name of\nthe Pod. This label allows you to attach a Service to a specific Pod in\nthe StatefulSet.\n\n### Pod index label\n\n*This is a stable feature in Kubernetes, and has been since version 1.32. It was first available in the v1.28 release.*\n\nWhen the StatefulSet [controller](https://kubernetes.io/docs/concepts/architecture/controller/) creates a Pod,\nthe new Pod is labelled with `apps.kubernetes.io/pod-index`. The value of this label is the ordinal index of\nthe Pod. This label allows you to route traffic to a particular pod index, filter logs/metrics\nusing the pod index label, and more. Note the feature gate `PodIndexLabel` is enabled and locked by default for this\nfeature, in order to disable it, users will have to use server emulated version v1.31.\n\n## Deployment and Scaling Guarantees\n\n- For a StatefulSet with N replicas, when Pods are being deployed, they are created sequentially, in order from {0..N-1}.\n- When Pods are being deleted, they are terminated in reverse order, from {N-1..0}.\n- Before a scaling operation is applied to a Pod, all of its predecessors must be Running and Ready. If `.spec.minReadySeconds` is set, predecessors must be available (Ready for at least minReadySeconds ).\n- Before a Pod is terminated, all of its successors must be completely shutdown.\n\nThe StatefulSet should not specify a `pod.Spec.TerminationGracePeriodSeconds` of 0. This practice\nis unsafe and strongly discouraged. For further explanation, please refer to\n[force deleting StatefulSet Pods](https://kubernetes.io/docs/tasks/run-application/force-delete-stateful-set-pod/).\n\nWhen the nginx example above is created, three Pods will be deployed in the order\nweb-0, web-1, web-2. web-1 will not be deployed before web-0 is\n[Running and Ready](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/), and web-2 will not be deployed until\nweb-1 is Running and Ready. If web-0 should fail, after web-1 is Running and Ready, but before\nweb-2 is launched, web-2 will not be launched until web-0 is successfully relaunched and\nbecomes Running and Ready.\n\nIf a user were to scale the deployed example by patching the StatefulSet such that\n`replicas=1`, web-2 would be terminated first. web-1 would not be terminated until web-2\nis fully shutdown and deleted. If web-0 were to fail after web-2 has been terminated and\nis completely shutdown, but prior to web-1's termination, web-1 would not be terminated\nuntil web-0 is Running and Ready.\n\n### Pod Management Policies\n\nStatefulSet allows you to relax its ordering guarantees while\npreserving its uniqueness and identity guarantees via its `.spec.podManagementPolicy` field.\n\n#### OrderedReady Pod Management\n\n`OrderedReady` pod management is the default for StatefulSets. It implements the behavior\ndescribed in [Deployment and Scaling Guarantees](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#deployment-and-scaling-guarantees).\n\n#### Parallel Pod Management\n\n`Parallel` pod management tells the StatefulSet controller to launch or\nterminate all Pods in parallel, and to not wait for Pods to become Running\nand Ready or completely terminated prior to launching or terminating another\nPod.\n\nFor scaling operations, this means all Pods are created or terminated simultaneously.\n\nFor rolling updates when [`.spec.updateStrategy.rollingUpdate.maxUnavailable`](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#maximum-unavailable-pods)\nis greater than 1, the StatefulSet controller terminates and creates up to `maxUnavailable` Pods\nsimultaneously (also known as \"bursting\"). This can speed up updates but may result in Pods becoming ready out of order, which might not be suitable for applications requiring strict ordering.\n\n## Update strategies\n\nA StatefulSet's `.spec.updateStrategy` field allows you to configure\nand disable automated rolling updates for containers, labels, resource request/limits, and\nannotations for the Pods in a StatefulSet. There are three possible values:\n\n**`OnDelete`**\n: When a StatefulSet's `.spec.updateStrategy.type` is set to `OnDelete`,\nthe StatefulSet controller will not automatically update the Pods in a\nStatefulSet. Users must manually delete Pods to cause the controller to\ncreate new Pods that reflect modifications made to a StatefulSet's `.spec.template`.\n**`RollingUpdate`**\n: The `RollingUpdate` update strategy implements automated, rolling updates for the Pods in a\nStatefulSet. This is the default update strategy.\n**`Recreate`**\n: Feature state:\nAlpha since Kubernetes v1.37; disabled by defaultMore information about this featureTo use this feature, you (or a cluster administrator) will need to enable the [StatefulSetRecreateStrategy](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy) feature gate for all relevant components in your cluster.See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.The `Recreate` update strategy deletes all of the StatefulSet's Pods before creating new\nPods that reflect modifications made to a StatefulSet's `.spec.template`. Using this\nstrategy requires the `StatefulSetRecreateStrategy`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy)\nto be enabled. See [Recreate](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#recreate) for details.\n\n## Rolling Updates\n\nWhen a StatefulSet's `.spec.updateStrategy.type` is set to `RollingUpdate`, the\nStatefulSet controller will delete and recreate each Pod in the StatefulSet. It will proceed\nin the same order as Pod termination (from the largest ordinal to the smallest), updating\neach Pod one at a time.\n\nThe Kubernetes control plane waits until an updated Pod is Running and Ready prior\nto updating its predecessor. If you have set `.spec.minReadySeconds` (see\n[Minimum Ready Seconds](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#minimum-ready-seconds)), the control plane additionally waits that\namount of time after the Pod turns ready, before moving on.\n\n### Partitioned rolling updates\n\nThe `RollingUpdate` update strategy can be partitioned, by specifying a\n`.spec.updateStrategy.rollingUpdate.partition`. If a partition is specified, all Pods with an\nordinal that is greater than or equal to the partition will be updated when the StatefulSet's\n`.spec.template` is updated. All Pods with an ordinal that is less than the partition will not\nbe updated, and, even if they are deleted, they will be recreated at the previous version. If a\nStatefulSet's `.spec.updateStrategy.rollingUpdate.partition` is greater than its `.spec.replicas`,\nupdates to its `.spec.template` will not be propagated to its Pods.\nIn most cases you will not need to use a partition, but they are useful if you want to stage an\nupdate, roll out a canary, or perform a phased roll out.\n\n### Maximum unavailable Pods\n\nYou can control the maximum number of Pods that can be unavailable during an update\nby specifying the `.spec.updateStrategy.rollingUpdate.maxUnavailable` field.\nThe value can be an absolute number (for example, `5`) or a percentage of desired\nPods (for example, `10%`). Absolute number is calculated from the percentage value\nby rounding it up. This field cannot be 0. The default setting is 1.\n\nThis field applies to all Pods in the range `0` to `replicas - 1`. If there is any\nunavailable Pod in the range `0` to `replicas - 1`, it will be counted towards\n`maxUnavailable`.\n\n#### Note:\n\n### Forced rollback\n\nWhen using [Rolling Updates](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#rolling-updates) with the default\n[Pod Management Policy](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies) (`OrderedReady`),\nit's possible to get into a broken state that requires manual intervention to repair.\n\nIf you update the Pod template to a configuration that never becomes Running and\nReady (for example, due to a bad binary or application-level configuration error),\nStatefulSet will stop the rollout and wait.\n\nIn this state, it's not enough to revert the Pod template to a good configuration.\nDue to a [known issue](https://github.com/kubernetes/kubernetes/issues/67250),\nStatefulSet will continue to wait for the broken Pod to become Ready\n(which never happens) before it will attempt to revert it back to the working\nconfiguration.\n\nAfter reverting the template, you must also delete any Pods that StatefulSet had\nalready attempted to run with the bad configuration.\nStatefulSet will then begin to recreate the Pods using the reverted template.\n\n## Recreate\n\nTo use this feature, you (or a cluster administrator) will need to enable the [StatefulSetRecreateStrategy](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nWhen a StatefulSet's `.spec.updateStrategy.type` is set to `Recreate`, the StatefulSet\ncontroller deletes all of the StatefulSet's Pods at once and waits for them to terminate\ncompletely before creating any new Pods from the updated `.spec.template`. Unlike\n[`RollingUpdate`](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#rolling-updates), the old and new revisions of a Pod are never running at\nthe same time, so this strategy incurs downtime for the duration of the update. This mirrors\nthe `Recreate` strategy of Deployments and is useful for applications that cannot run two\nversions concurrently, such as workloads that require exclusive access to a shared resource\nor that use an on-disk format that is incompatible between versions.\n\nThe deletion always removes every Pod together, regardless of the\n[Pod Management Policy](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies). Once all Pods have terminated, the new\nPods are created according to that policy: with `OrderedReady` (the default) the Pods are\nrecreated one at a time, in ascending ordinal order, waiting for each to become Running and\nReady before creating the next; with `Parallel` all of the Pods are recreated at once.\n\nBecause this is an alpha feature, you must enable the `StatefulSetRecreateStrategy`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy)\non the kube-controller-manager and the kube-apiserver to use this strategy.\n\n## Revision history\n\nControllerRevision is a Kubernetes API resource used by controllers, such as the StatefulSet controller, to track historical configuration changes.\n\nStatefulSets use ControllerRevisions to maintain a revision history, enabling rollbacks and version tracking.\n\n### How StatefulSets track changes using ControllerRevisions\n\nWhen you update a StatefulSet's Pod template (`spec.template`), the StatefulSet controller:\n\n1. Prepares a new ControllerRevision object\n2. Stores a snapshot of the Pod template and metadata\n3. Assigns an incremental revision number\n\n#### Key Properties\n\nSee [ControllerRevision](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/controller-revision-v1/) to learn more about key properties and other details.\n\n---\n\n### Managing Revision History\n\nControl retained revisions with `.spec.revisionHistoryLimit`:\n\n```yaml\napiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: webapp\nspec:\n  revisionHistoryLimit: 5  # Keep last 5 revisions\n  # ... other spec fields ...\n```\n\n- Default : 10 revisions retained if unspecified\n- Cleanup : Oldest revisions are garbage-collected when exceeding the limit\n\n#### Performing Rollbacks\n\nYou can revert to a previous configuration using:\n\n```bash\n# View revision history\nkubectl rollout history statefulset/webapp\n\n# Rollback to a specific revision\nkubectl rollout undo statefulset/webapp --to-revision=3\n```\n\nThis will:\n\n- Apply the Pod template from revision 3\n- Create a new ControllerRevision with an updated revision number\n\n#### Inspecting ControllerRevisions\n\nTo view associated ControllerRevisions:\n\n```bash\n# List all revisions for the StatefulSet\nkubectl get controllerrevisions -l app.kubernetes.io/name=webapp\n\n# View detailed configuration of a specific revision\nkubectl get controllerrevision/webapp-3 -o yaml\n```\n\n#### Best Practices\n\n##### Retention Policy\n\n- Set revisionHistoryLimit between 5–10 for most workloads.\n- Increase only if deep rollback history is required.\n\n##### Monitoring\n\n- Regularly check revisions with: `kubectl get controllerrevisions`\n\n- Alert on rapid revision count growth .\n\n##### Avoid\n\n- Manual edits to ControllerRevision objects.\n- Using revisions as a backup mechanism (use actual backup tools).\n- Setting revisionHistoryLimit: 0 (disables rollback capability).\n\n## PersistentVolumeClaim retention\n\n*This is a stable feature in Kubernetes, and has been since version 1.32. It was first available in the v1.23 release.*\n\nThe optional `.spec.persistentVolumeClaimRetentionPolicy` field controls if\nand how PVCs are deleted during the lifecycle of a StatefulSet. You must enable the\n`StatefulSetAutoDeletePVC` [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)\non the API server and the controller manager to use this field.\nOnce enabled, there are two policies you can configure for each StatefulSet:\n\n**`whenDeleted`**\n: Configures the volume retention behavior that applies when the StatefulSet is deleted.\n**`whenScaled`**\n: Configures the volume retention behavior that applies when the replica count of\nthe StatefulSet is reduced; for example, when scaling down the set.\n\nFor each policy that you can configure, you can set the value to either `Delete` or `Retain`.\n\n**`Delete`**\n: The PVCs created from the StatefulSet `volumeClaimTemplate` are deleted for each Pod\naffected by the policy. With the `whenDeleted` policy all PVCs from the\n`volumeClaimTemplate` are deleted after their Pods have been deleted. With the\n`whenScaled` policy, only PVCs corresponding to Pod replicas being scaled down are\ndeleted, after their Pods have been deleted.\n**`Retain` (default)**\n: PVCs from the `volumeClaimTemplate` are not affected when their Pod is\ndeleted. This is the behavior before this new feature.\n\nBear in mind that these policies **only** apply when Pods are being removed due to the\nStatefulSet being deleted or scaled down. For example, if a Pod associated with a StatefulSet\nfails due to node failure, and the control plane creates a replacement Pod, the StatefulSet\nretains the existing PVC. The existing volume is unaffected, and the cluster will attach it to\nthe node where the new Pod is about to launch.\n\nThe default for policies is `Retain`, matching the StatefulSet behavior before this new feature.\n\nHere is an example policy:\n\n```yaml\napiVersion: apps/v1\nkind: StatefulSet\n...\nspec:\n  persistentVolumeClaimRetentionPolicy:\n    whenDeleted: Retain\n    whenScaled: Delete\n...\n```\n\nThe StatefulSet [controller](https://kubernetes.io/docs/concepts/architecture/controller/) adds\n[owner references](https://kubernetes.io/docs/concepts/overview/working-with-objects/owners-dependents/#owner-references-in-object-specifications)\nto its PVCs, which are then deleted by the [garbage collector](https://kubernetes.io/docs/concepts/architecture/garbage-collection/) after the Pod is terminated. This enables the Pod to\ncleanly unmount all volumes before the PVCs are deleted (and before the backing PV and\nvolume are deleted, depending on the retain policy). When you set the `whenDeleted`\npolicy to `Delete`, an owner reference to the StatefulSet instance is placed on all PVCs\nassociated with that StatefulSet.\n\nThe `whenScaled` policy must delete PVCs only when a Pod is scaled down, and not when a\nPod is deleted for another reason. When reconciling, the StatefulSet controller compares\nits desired replica count to the actual Pods present on the cluster. Any StatefulSet Pod\nwhose id greater than the replica count is condemned and marked for deletion. If the\n`whenScaled` policy is `Delete`, the condemned Pods are first set as owners to the\nassociated StatefulSet template PVCs, before the Pod is deleted. This causes the PVCs\nto be garbage collected after only the condemned Pods have terminated.\n\nThis means that if the controller crashes and restarts, no Pod will be deleted before its\nowner reference has been updated appropriate to the policy. If a condemned Pod is\nforce-deleted while the controller is down, the owner reference may or may not have been\nset up, depending on when the controller crashed. It may take several reconcile loops to\nupdate the owner references, so some condemned Pods may have set up owner references and\nothers may not. For this reason we recommend waiting for the controller to come back up,\nwhich will verify owner references before terminating Pods. If that is not possible, the\noperator should verify the owner references on PVCs to ensure the expected objects are\ndeleted when Pods are force-deleted.\n\n### Replicas\n\n`.spec.replicas` is an optional field that specifies the number of desired Pods. It defaults to 1.\n\nShould you manually scale a StatefulSet, via `kubectl scale statefulset statefulset --replicas=X`, and then you update that StatefulSet\nbased on a manifest (for example: by running `kubectl apply -f statefulset.yaml`), then applying that manifest overwrites the manual scaling\nthat you previously did.\n\nIf a [HorizontalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/)\n(or any similar API for horizontal scaling) is managing scaling for a\nStatefulset, don't set `.spec.replicas`. Instead, allow the Kubernetes\n[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane) to manage\nthe `.spec.replicas` field automatically.\n\n## What's next\n\n- Learn about Pods .\n- Find out how to use StatefulSets\n- Follow an example of deploying a stateful application .\n  - Follow an example of deploying Cassandra with Stateful Sets .\n  - Follow an example of running a replicated stateful application .\n  - Learn how to scale a StatefulSet .\n  - Learn what's involved when you delete a StatefulSet .\n  - Learn how to configure a Pod to use a volume for storage .\n  - Learn how to configure a Pod to use a PersistentVolume for storage .\n- StatefulSet is a top-level resource in the Kubernetes REST API. Read the StatefulSet object definition to understand the API for stateful sets.\n- Read about PodDisruptionBudget and how you can use it to manage application availability during disruptions.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:78c2c3f04e8e7cbe58e6b916304d19e98ad303b084450faa0fcf5f7ebe5dd94c",
+  "document_id": "work-011",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "StatefulSets"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Using StatefulSets"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Limitations"
+    },
+    {
+      "block_index": 11,
+      "level": 2,
+      "text": "Components"
+    },
+    {
+      "block_index": 14,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 18,
+      "level": 3,
+      "text": "Pod Selector"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Volume Claim Templates"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Minimum ready seconds"
+    },
+    {
+      "block_index": 25,
+      "level": 2,
+      "text": "Pod Identity"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Ordinal Index"
+    },
+    {
+      "block_index": 29,
+      "level": 3,
+      "text": "Start ordinal"
+    },
+    {
+      "block_index": 33,
+      "level": 3,
+      "text": "Stable Network ID"
+    },
+    {
+      "block_index": 41,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 42,
+      "level": 3,
+      "text": "Stable Storage"
+    },
+    {
+      "block_index": 44,
+      "level": 3,
+      "text": "Pod Name Label"
+    },
+    {
+      "block_index": 46,
+      "level": 3,
+      "text": "Pod index label"
+    },
+    {
+      "block_index": 49,
+      "level": 2,
+      "text": "Deployment and Scaling Guarantees"
+    },
+    {
+      "block_index": 54,
+      "level": 3,
+      "text": "Pod Management Policies"
+    },
+    {
+      "block_index": 56,
+      "level": 4,
+      "text": "OrderedReady Pod Management"
+    },
+    {
+      "block_index": 58,
+      "level": 4,
+      "text": "Parallel Pod Management"
+    },
+    {
+      "block_index": 62,
+      "level": 2,
+      "text": "Update strategies"
+    },
+    {
+      "block_index": 65,
+      "level": 2,
+      "text": "Rolling Updates"
+    },
+    {
+      "block_index": 68,
+      "level": 3,
+      "text": "Partitioned rolling updates"
+    },
+    {
+      "block_index": 70,
+      "level": 3,
+      "text": "Maximum unavailable Pods"
+    },
+    {
+      "block_index": 73,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 74,
+      "level": 3,
+      "text": "Forced rollback"
+    },
+    {
+      "block_index": 79,
+      "level": 2,
+      "text": "Recreate"
+    },
+    {
+      "block_index": 85,
+      "level": 2,
+      "text": "Revision history"
+    },
+    {
+      "block_index": 88,
+      "level": 3,
+      "text": "How StatefulSets track changes using ControllerRevisions"
+    },
+    {
+      "block_index": 91,
+      "level": 4,
+      "text": "Key Properties"
+    },
+    {
+      "block_index": 94,
+      "level": 3,
+      "text": "Managing Revision History"
+    },
+    {
+      "block_index": 98,
+      "level": 4,
+      "text": "Performing Rollbacks"
+    },
+    {
+      "block_index": 103,
+      "level": 4,
+      "text": "Inspecting ControllerRevisions"
+    },
+    {
+      "block_index": 106,
+      "level": 4,
+      "text": "Best Practices"
+    },
+    {
+      "block_index": 107,
+      "level": 5,
+      "text": "Retention Policy"
+    },
+    {
+      "block_index": 109,
+      "level": 5,
+      "text": "Monitoring"
+    },
+    {
+      "block_index": 112,
+      "level": 5,
+      "text": "Avoid"
+    },
+    {
+      "block_index": 114,
+      "level": 2,
+      "text": "PersistentVolumeClaim retention"
+    },
+    {
+      "block_index": 127,
+      "level": 3,
+      "text": "Replicas"
+    },
+    {
+      "block_index": 131,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Pods",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "Deployment",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/"
+    },
+    {
+      "text": "ReplicaSet",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/"
+    },
+    {
+      "text": "Headless Service",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/#headless-services"
+    },
+    {
+      "text": "Rolling Updates",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#rolling-updates"
+    },
+    {
+      "text": "Pod Management Policy",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies"
+    },
+    {
+      "text": "DNS label",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names"
+    },
+    {
+      "text": "PersistentVolumeClaim",
+      "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims"
+    },
+    {
+      "text": "Rolling Update",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#rolling-updates"
+    },
+    {
+      "text": "Container Probes",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes"
+    },
+    {
+      "text": "replicas",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#replicas"
+    },
+    {
+      "text": "limitations",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations"
+    },
+    {
+      "text": "controller",
+      "url": "https://kubernetes.io/docs/concepts/architecture/controller/"
+    },
+    {
+      "text": "force deleting StatefulSet Pods",
+      "url": "https://kubernetes.io/docs/tasks/run-application/force-delete-stateful-set-pod/"
+    },
+    {
+      "text": "Running and Ready",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/"
+    },
+    {
+      "text": "Deployment and Scaling Guarantees",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#deployment-and-scaling-guarantees"
+    },
+    {
+      "text": "StatefulSetRecreateStrategy",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy"
+    },
+    {
+      "text": "Enable Or Disable Feature Gates",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/"
+    },
+    {
+      "text": "feature gate",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#StatefulSetRecreateStrategy"
+    },
+    {
+      "text": "Recreate",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#recreate"
+    },
+    {
+      "text": "Minimum Ready Seconds",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#minimum-ready-seconds"
+    },
+    {
+      "text": "known issue",
+      "url": "https://github.com/kubernetes/kubernetes/issues/67250"
+    },
+    {
+      "text": "ControllerRevision",
+      "url": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/controller-revision-v1/"
+    },
+    {
+      "text": "feature gate",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/"
+    },
+    {
+      "text": "owner references",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/owners-dependents/#owner-references-in-object-specifications"
+    },
+    {
+      "text": "garbage collector",
+      "url": "https://kubernetes.io/docs/concepts/architecture/garbage-collection/"
+    },
+    {
+      "text": "HorizontalPodAutoscaler",
+      "url": "https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/"
+    },
+    {
+      "text": "control plane",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-011.html",
+  "raw_sha256": "sha256:221267cda6ab8500669c127b34d72d07684bdf9349b5987cdae1c93a94263707",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+  "statistics": {
+    "block_count": 133,
+    "character_count": 29160,
+    "code_block_count": 5,
+    "heading_count": 40,
+    "link_count": 28,
+    "list_count": 15,
+    "paragraph_count": 68,
+    "table_count": 1,
+    "word_count": 4042
+  },
+  "title": "StatefulSets"
+}

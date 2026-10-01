@@ -1,0 +1,390 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "EndpointSlices",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "level": 2,
+      "text": "EndpointSlice API",
+      "type": "heading"
+    },
+    {
+      "block_index": 2,
+      "text": "In Kubernetes, an EndpointSlice contains references to a set of network\nendpoints. The control plane automatically creates EndpointSlices\nfor any Kubernetes Service that has a [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) specified. These EndpointSlices include\nreferences to all the Pods that match the Service selector. EndpointSlices group\nnetwork endpoints together by unique combinations of IP family, protocol,\nport number, and Service name.\nThe name of a EndpointSlice object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "As an example, here's a sample EndpointSlice object, that's owned by the `example`\nKubernetes Service.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "language": "yaml",
+      "text": "apiVersion: discovery.k8s.io/v1\nkind: EndpointSlice\nmetadata:\n  name: example-abc\n  labels:\n    kubernetes.io/service-name: example\naddressType: IPv4\nports:\n  - name: http\n    protocol: TCP\n    port: 80\nendpoints:\n  - addresses:\n      - \"10.1.2.3\"\n    conditions:\n      ready: true\n    hostname: pod-1\n    nodeName: node-1\n    zone: us-west2-a",
+      "type": "code"
+    },
+    {
+      "block_index": 5,
+      "text": "By default, the control plane creates and manages EndpointSlices to have no\nmore than 100 endpoints each. You can configure this with the\n`--max-endpoints-per-slice`\n[kube-controller-manager](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/)\nflag, up to a maximum of 1000.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "EndpointSlices act as the source of truth for\n[kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) when it comes to\nhow to route internal traffic.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Address types",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "text": "EndpointSlices support two address types:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "ordered": false,
+      "text": "- IPv4\n- IPv6",
+      "type": "list"
+    },
+    {
+      "block_index": 10,
+      "text": "Each `EndpointSlice` object represents a specific IP address type. If you have\na Service that is available via IPv4 and IPv6, there will be at least two\n`EndpointSlice` objects (one for IPv4, and one for IPv6).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Conditions",
+      "type": "heading"
+    },
+    {
+      "block_index": 12,
+      "text": "The EndpointSlice API stores conditions about endpoints that may be useful for consumers.\nThe three conditions are `serving`, `terminating`, and `ready`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "level": 4,
+      "text": "Serving",
+      "type": "heading"
+    },
+    {
+      "block_index": 14,
+      "text": "The `serving` condition indicates that the endpoint is currently serving responses, and\nso it should be used as a target for Service traffic. For endpoints backed by a Pod, this\nmaps to the Pod's `Ready` condition.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "level": 4,
+      "text": "Terminating",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "The `terminating` condition indicates that the endpoint is\nterminating. For endpoints backed by a Pod, this condition is set when\nthe Pod is first deleted (that is, when it receives a deletion\ntimestamp, but most likely before the Pod's containers exit).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "Service proxies will normally ignore endpoints that are `terminating`,\nbut they may route traffic to endpoints that are both `serving` and\n`terminating` if all available endpoints are `terminating`. (This\nhelps to ensure that no Service traffic is lost during rolling updates\nof the underlying Pods.)",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "level": 4,
+      "text": "Ready",
+      "type": "heading"
+    },
+    {
+      "block_index": 19,
+      "text": "The `ready` condition is essentially a shortcut for checking\n\"`serving` and not `terminating`\" (though it will also always be\n`true` for Services with `spec.publishNotReadyAddresses` set to\n`true`).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Topology information",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "Each endpoint within an EndpointSlice can contain relevant topology information.\nThe topology information includes the location of the endpoint and information\nabout the corresponding Node and zone. These are available in the following\nper endpoint fields on EndpointSlices:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "ordered": false,
+      "text": "- nodeName - The name of the Node this endpoint is on.\n- zone - The zone this endpoint is in.",
+      "type": "list"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Management",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "Most often, the control plane (specifically, the endpoint slice\n[controller](https://kubernetes.io/docs/concepts/architecture/controller/)) creates and\nmanages EndpointSlice objects. There are a variety of other use cases for\nEndpointSlices, such as service mesh implementations, that could result in other\nentities or controllers managing additional sets of EndpointSlices.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "text": "To ensure that multiple entities can manage EndpointSlices without interfering\nwith each other, Kubernetes defines the\n[label](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels)\n`endpointslice.kubernetes.io/managed-by`, which indicates the entity managing\nan EndpointSlice.\nThe endpoint slice controller sets `endpointslice-controller.k8s.io` as the value\nfor this label on all EndpointSlices it manages. Other entities managing\nEndpointSlices should also set a unique value for this label.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Ownership",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "In most use cases, EndpointSlices are owned by the Service that the endpoint\nslice object tracks endpoints for. This ownership is indicated by an owner\nreference on each EndpointSlice as well as a `kubernetes.io/service-name`\nlabel that enables simple lookups of all EndpointSlices belonging to a Service.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "level": 3,
+      "text": "Distribution of EndpointSlices",
+      "type": "heading"
+    },
+    {
+      "block_index": 29,
+      "text": "Each EndpointSlice has a set of ports that applies to all endpoints within the\nresource. When named ports are used for a Service, Pods may end up with\ndifferent target port numbers for the same named port, requiring different\nEndpointSlices.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "text": "The control plane tries to fill EndpointSlices as full as possible, but does not\nactively rebalance them. The logic is fairly straightforward:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "ordered": true,
+      "text": "1. Iterate through existing EndpointSlices, remove endpoints that are no longer desired and update matching endpoints that have changed.\n2. Iterate through EndpointSlices that have been modified in the first step and fill them up with any new endpoints needed.\n3. If there's still new endpoints left to add, try to fit them into a previously unchanged slice and/or create new ones.",
+      "type": "list"
+    },
+    {
+      "block_index": 32,
+      "text": "Importantly, the third step prioritizes limiting EndpointSlice updates over a\nperfectly full distribution of EndpointSlices. As an example, if there are 10\nnew endpoints to add and 2 EndpointSlices with room for 5 more endpoints each,\nthis approach will create a new EndpointSlice instead of filling up the 2\nexisting EndpointSlices. In other words, a single EndpointSlice creation is\npreferable to multiple EndpointSlice updates.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "text": "With kube-proxy running on each Node and watching EndpointSlices, every change\nto an EndpointSlice becomes relatively expensive since it will be transmitted to\nevery Node in the cluster. This approach is intended to limit the number of\nchanges that need to be sent to every Node, even if it may result with multiple\nEndpointSlices that are not full.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "text": "In practice, this less than ideal distribution should be rare. Most changes\nprocessed by the EndpointSlice controller will be small enough to fit in an\nexisting EndpointSlice, and if not, a new EndpointSlice is likely going to be\nnecessary soon anyway. Rolling updates of Deployments also provide a natural\nrepacking of EndpointSlices with all Pods and their corresponding endpoints\ngetting replaced.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "level": 3,
+      "text": "Duplicate endpoints",
+      "type": "heading"
+    },
+    {
+      "block_index": 36,
+      "text": "Due to the nature of EndpointSlice changes, endpoints may be represented in more\nthan one EndpointSlice at the same time. This naturally occurs as changes to\ndifferent EndpointSlice objects can arrive at the Kubernetes client watch / cache\nat different times.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 38,
+      "text": "Clients of the EndpointSlice API must iterate through all the existing EndpointSlices\nassociated to a Service and build a complete list of unique network endpoints. It is\nimportant to mention that endpoints may be duplicated in different EndpointSlices.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "text": "You can find a reference implementation for how to perform this endpoint aggregation\nand deduplication as part of the `EndpointSliceCache` code within `kube-proxy`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "level": 3,
+      "text": "EndpointSlice mirroring",
+      "type": "heading"
+    },
+    {
+      "block_index": 41,
+      "text": "The EndpointSlice API is a replacement for the older Endpoints API. To\npreserve compatibility with older controllers and user workloads that\nexpect [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/)\nto route traffic based on Endpoints resources, the cluster's control\nplane mirrors most user-created Endpoints resources to corresponding\nEndpointSlices.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "text": "(However, this feature, like the rest of the Endpoints API, is\ndeprecated. Users who manually specify endpoints for selectorless\nServices should do so by creating EndpointSlice resources directly,\nrather than by creating Endpoints resources and allowing them to be\nmirrored.)",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 43,
+      "text": "The control plane mirrors Endpoints resources unless:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "ordered": false,
+      "text": "- the Endpoints resource has a endpointslice.kubernetes.io/skip-mirror label set to true .\n- the Endpoints resource has a control-plane.alpha.kubernetes.io/leader annotation.\n- the corresponding Service resource does not exist.\n- the corresponding Service resource has a non-nil selector.",
+      "type": "list"
+    },
+    {
+      "block_index": 45,
+      "text": "Individual Endpoints resources may translate into multiple EndpointSlices. This\nwill occur if an Endpoints resource has multiple subsets or includes endpoints\nwith multiple IP families (IPv4 and IPv6). A maximum of 1000 addresses per\nsubset will be mirrored to EndpointSlices.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "ordered": false,
+      "text": "- Follow the Connecting Applications with Services tutorial\n- Read the API reference for the EndpointSlice API\n- Read the API reference for the Endpoints API",
+      "type": "list"
+    }
+  ],
+  "content": "# EndpointSlices\n\n## EndpointSlice API\n\nIn Kubernetes, an EndpointSlice contains references to a set of network\nendpoints. The control plane automatically creates EndpointSlices\nfor any Kubernetes Service that has a [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) specified. These EndpointSlices include\nreferences to all the Pods that match the Service selector. EndpointSlices group\nnetwork endpoints together by unique combinations of IP family, protocol,\nport number, and Service name.\nThe name of a EndpointSlice object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).\n\nAs an example, here's a sample EndpointSlice object, that's owned by the `example`\nKubernetes Service.\n\n```yaml\napiVersion: discovery.k8s.io/v1\nkind: EndpointSlice\nmetadata:\n  name: example-abc\n  labels:\n    kubernetes.io/service-name: example\naddressType: IPv4\nports:\n  - name: http\n    protocol: TCP\n    port: 80\nendpoints:\n  - addresses:\n      - \"10.1.2.3\"\n    conditions:\n      ready: true\n    hostname: pod-1\n    nodeName: node-1\n    zone: us-west2-a\n```\n\nBy default, the control plane creates and manages EndpointSlices to have no\nmore than 100 endpoints each. You can configure this with the\n`--max-endpoints-per-slice`\n[kube-controller-manager](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/)\nflag, up to a maximum of 1000.\n\nEndpointSlices act as the source of truth for\n[kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) when it comes to\nhow to route internal traffic.\n\n### Address types\n\nEndpointSlices support two address types:\n\n- IPv4\n- IPv6\n\nEach `EndpointSlice` object represents a specific IP address type. If you have\na Service that is available via IPv4 and IPv6, there will be at least two\n`EndpointSlice` objects (one for IPv4, and one for IPv6).\n\n### Conditions\n\nThe EndpointSlice API stores conditions about endpoints that may be useful for consumers.\nThe three conditions are `serving`, `terminating`, and `ready`.\n\n#### Serving\n\nThe `serving` condition indicates that the endpoint is currently serving responses, and\nso it should be used as a target for Service traffic. For endpoints backed by a Pod, this\nmaps to the Pod's `Ready` condition.\n\n#### Terminating\n\nThe `terminating` condition indicates that the endpoint is\nterminating. For endpoints backed by a Pod, this condition is set when\nthe Pod is first deleted (that is, when it receives a deletion\ntimestamp, but most likely before the Pod's containers exit).\n\nService proxies will normally ignore endpoints that are `terminating`,\nbut they may route traffic to endpoints that are both `serving` and\n`terminating` if all available endpoints are `terminating`. (This\nhelps to ensure that no Service traffic is lost during rolling updates\nof the underlying Pods.)\n\n#### Ready\n\nThe `ready` condition is essentially a shortcut for checking\n\"`serving` and not `terminating`\" (though it will also always be\n`true` for Services with `spec.publishNotReadyAddresses` set to\n`true`).\n\n### Topology information\n\nEach endpoint within an EndpointSlice can contain relevant topology information.\nThe topology information includes the location of the endpoint and information\nabout the corresponding Node and zone. These are available in the following\nper endpoint fields on EndpointSlices:\n\n- nodeName - The name of the Node this endpoint is on.\n- zone - The zone this endpoint is in.\n\n### Management\n\nMost often, the control plane (specifically, the endpoint slice\n[controller](https://kubernetes.io/docs/concepts/architecture/controller/)) creates and\nmanages EndpointSlice objects. There are a variety of other use cases for\nEndpointSlices, such as service mesh implementations, that could result in other\nentities or controllers managing additional sets of EndpointSlices.\n\nTo ensure that multiple entities can manage EndpointSlices without interfering\nwith each other, Kubernetes defines the\n[label](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels)\n`endpointslice.kubernetes.io/managed-by`, which indicates the entity managing\nan EndpointSlice.\nThe endpoint slice controller sets `endpointslice-controller.k8s.io` as the value\nfor this label on all EndpointSlices it manages. Other entities managing\nEndpointSlices should also set a unique value for this label.\n\n### Ownership\n\nIn most use cases, EndpointSlices are owned by the Service that the endpoint\nslice object tracks endpoints for. This ownership is indicated by an owner\nreference on each EndpointSlice as well as a `kubernetes.io/service-name`\nlabel that enables simple lookups of all EndpointSlices belonging to a Service.\n\n### Distribution of EndpointSlices\n\nEach EndpointSlice has a set of ports that applies to all endpoints within the\nresource. When named ports are used for a Service, Pods may end up with\ndifferent target port numbers for the same named port, requiring different\nEndpointSlices.\n\nThe control plane tries to fill EndpointSlices as full as possible, but does not\nactively rebalance them. The logic is fairly straightforward:\n\n1. Iterate through existing EndpointSlices, remove endpoints that are no longer desired and update matching endpoints that have changed.\n2. Iterate through EndpointSlices that have been modified in the first step and fill them up with any new endpoints needed.\n3. If there's still new endpoints left to add, try to fit them into a previously unchanged slice and/or create new ones.\n\nImportantly, the third step prioritizes limiting EndpointSlice updates over a\nperfectly full distribution of EndpointSlices. As an example, if there are 10\nnew endpoints to add and 2 EndpointSlices with room for 5 more endpoints each,\nthis approach will create a new EndpointSlice instead of filling up the 2\nexisting EndpointSlices. In other words, a single EndpointSlice creation is\npreferable to multiple EndpointSlice updates.\n\nWith kube-proxy running on each Node and watching EndpointSlices, every change\nto an EndpointSlice becomes relatively expensive since it will be transmitted to\nevery Node in the cluster. This approach is intended to limit the number of\nchanges that need to be sent to every Node, even if it may result with multiple\nEndpointSlices that are not full.\n\nIn practice, this less than ideal distribution should be rare. Most changes\nprocessed by the EndpointSlice controller will be small enough to fit in an\nexisting EndpointSlice, and if not, a new EndpointSlice is likely going to be\nnecessary soon anyway. Rolling updates of Deployments also provide a natural\nrepacking of EndpointSlices with all Pods and their corresponding endpoints\ngetting replaced.\n\n### Duplicate endpoints\n\nDue to the nature of EndpointSlice changes, endpoints may be represented in more\nthan one EndpointSlice at the same time. This naturally occurs as changes to\ndifferent EndpointSlice objects can arrive at the Kubernetes client watch / cache\nat different times.\n\n#### Note:\n\nClients of the EndpointSlice API must iterate through all the existing EndpointSlices\nassociated to a Service and build a complete list of unique network endpoints. It is\nimportant to mention that endpoints may be duplicated in different EndpointSlices.\n\nYou can find a reference implementation for how to perform this endpoint aggregation\nand deduplication as part of the `EndpointSliceCache` code within `kube-proxy`.\n\n### EndpointSlice mirroring\n\nThe EndpointSlice API is a replacement for the older Endpoints API. To\npreserve compatibility with older controllers and user workloads that\nexpect [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/)\nto route traffic based on Endpoints resources, the cluster's control\nplane mirrors most user-created Endpoints resources to corresponding\nEndpointSlices.\n\n(However, this feature, like the rest of the Endpoints API, is\ndeprecated. Users who manually specify endpoints for selectorless\nServices should do so by creating EndpointSlice resources directly,\nrather than by creating Endpoints resources and allowing them to be\nmirrored.)\n\nThe control plane mirrors Endpoints resources unless:\n\n- the Endpoints resource has a endpointslice.kubernetes.io/skip-mirror label set to true .\n- the Endpoints resource has a control-plane.alpha.kubernetes.io/leader annotation.\n- the corresponding Service resource does not exist.\n- the corresponding Service resource has a non-nil selector.\n\nIndividual Endpoints resources may translate into multiple EndpointSlices. This\nwill occur if an Endpoints resource has multiple subsets or includes endpoints\nwith multiple IP families (IPv4 and IPv6). A maximum of 1000 addresses per\nsubset will be mirrored to EndpointSlices.\n\n## What's next\n\n- Follow the Connecting Applications with Services tutorial\n- Read the API reference for the EndpointSlice API\n- Read the API reference for the Endpoints API\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:64bc03e779a8b5125d71062d2325f622c8d4e20b9f9d234a2bb5f0abb042f30e",
+  "document_id": "net-005",
+  "domain": "services_networking",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "EndpointSlices"
+    },
+    {
+      "block_index": 1,
+      "level": 2,
+      "text": "EndpointSlice API"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Address types"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Conditions"
+    },
+    {
+      "block_index": 13,
+      "level": 4,
+      "text": "Serving"
+    },
+    {
+      "block_index": 15,
+      "level": 4,
+      "text": "Terminating"
+    },
+    {
+      "block_index": 18,
+      "level": 4,
+      "text": "Ready"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Topology information"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Management"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Ownership"
+    },
+    {
+      "block_index": 28,
+      "level": 3,
+      "text": "Distribution of EndpointSlices"
+    },
+    {
+      "block_index": 35,
+      "level": 3,
+      "text": "Duplicate endpoints"
+    },
+    {
+      "block_index": 37,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 40,
+      "level": 3,
+      "text": "EndpointSlice mirroring"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "selector",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
+    },
+    {
+      "text": "DNS subdomain name",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names"
+    },
+    {
+      "text": "kube-controller-manager",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/"
+    },
+    {
+      "text": "kube-proxy",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/"
+    },
+    {
+      "text": "controller",
+      "url": "https://kubernetes.io/docs/concepts/architecture/controller/"
+    },
+    {
+      "text": "label",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+    }
+  ],
+  "raw_path": "data/raw/documents/net-005.html",
+  "raw_sha256": "sha256:5c7e8dfdf8dd40f144c1cf395b7ff9d03573ff914142adfbbdc01f274addcc6a",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/",
+  "statistics": {
+    "block_count": 48,
+    "character_count": 8972,
+    "code_block_count": 1,
+    "heading_count": 15,
+    "link_count": 6,
+    "list_count": 5,
+    "paragraph_count": 27,
+    "table_count": 0,
+    "word_count": 1254
+  },
+  "title": "EndpointSlices"
+}

@@ -1,0 +1,414 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Projected Volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "This document describes *projected volumes* in Kubernetes. Familiarity with [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) is suggested.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Introduction",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "text": "A `projected` volume maps several existing volume sources into the same directory.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "Currently, the following types of volume sources can be projected:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "ordered": false,
+      "text": "- `secret`\n- `downwardAPI`\n- `configMap`\n- `serviceAccountToken`\n- `clusterTrustBundle`\n- `podCertificate`",
+      "type": "list"
+    },
+    {
+      "block_index": 6,
+      "text": "All sources are required to be in the same namespace as the Pod. For more details,\nsee the [all-in-one volume](https://git.k8s.io/design-proposals-archive/node/all-in-one-volume.md) design document.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Example configuration with a secret, a downwardAPI, and a configMap",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: volume-test\nspec:\n  containers:\n  - name: container-test\n    image: busybox:1.28\n    command: [\"sleep\", \"3600\"]\n    volumeMounts:\n    - name: all-in-one\n      mountPath: \"/projected-volume\"\n      readOnly: true\n  volumes:\n  - name: all-in-one\n    projected:\n      sources:\n      - secret:\n          name: mysecret\n          items:\n          - key: username\n            path: my-group/my-username\n      - downwardAPI:\n          items:\n          - path: \"labels\"\n            fieldRef:\n              fieldPath: metadata.labels\n          - path: \"cpu_limit\"\n            resourceFieldRef:\n              containerName: container-test\n              resource: limits.cpu\n      - configMap:\n          name: myconfigmap\n          items:\n          - key: config\n            path: my-group/my-config",
+      "type": "code"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "Example configuration: secrets with a non-default permission mode set",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: volume-test\nspec:\n  containers:\n  - name: container-test\n    image: busybox:1.28\n    command: [\"sleep\", \"3600\"]\n    volumeMounts:\n    - name: all-in-one\n      mountPath: \"/projected-volume\"\n      readOnly: true\n  volumes:\n  - name: all-in-one\n    projected:\n      sources:\n      - secret:\n          name: mysecret\n          items:\n          - key: username\n            path: my-group/my-username\n      - secret:\n          name: mysecret2\n          items:\n          - key: password\n            path: my-group/my-password\n            mode: 0777",
+      "type": "code"
+    },
+    {
+      "block_index": 11,
+      "text": "Each projected volume source is listed in the spec under `sources`. The\nparameters are nearly the same with two exceptions:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "ordered": false,
+      "text": "- For secrets, the secretName field has been changed to name to be consistent with ConfigMap naming.\n- The defaultMode can only be specified at the projected level and not for each volume source. However, as illustrated above, you can explicitly set the mode for each individual projection.",
+      "type": "list"
+    },
+    {
+      "block_index": 13,
+      "level": 2,
+      "text": "serviceAccountToken projected volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 14,
+      "text": "You can inject the token for the current [service account](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#service-account-tokens)\ninto a Pod at a specified path. For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: sa-token-test\nspec:\n  containers:\n  - name: container-test\n    image: busybox:1.28\n    command: [\"sleep\", \"3600\"]\n    volumeMounts:\n    - name: token-vol\n      mountPath: \"/service-account\"\n      readOnly: true\n  serviceAccountName: default\n  volumes:\n  - name: token-vol\n    projected:\n      sources:\n      - serviceAccountToken:\n          audience: api\n          expirationSeconds: 3600\n          path: token",
+      "type": "code"
+    },
+    {
+      "block_index": 16,
+      "text": "The example Pod has a projected volume containing the injected service account\ntoken. Containers in this Pod can use that token to access the Kubernetes API\nserver, authenticating with the identity of [the pod's ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/).\nThe `audience` field contains the intended audience of the\ntoken. A recipient of the token must identify itself with an identifier specified\nin the audience of the token, and otherwise should reject the token. This field\nis optional and it defaults to the identifier of the API server.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "The `expirationSeconds` is the expected duration of validity of the service account\ntoken. It defaults to 1 hour and must be at least 10 minutes (600 seconds). An administrator\ncan also limit its maximum value by specifying the `--service-account-max-token-expiration`\noption for the API server. The `path` field specifies a relative path to the mount point\nof the projected volume.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "clusterTrustBundle projected volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "text": "*This is a stable feature in Kubernetes, and has been since version 1.37. It was first available in the v1.29 release.*",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "text": "The `clusterTrustBundle` projected volume source injects the contents of one or more\n[ClusterTrustBundle](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#cluster-trust-bundles)\nobjects as an automatically-updating file in the container filesystem.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "text": "ClusterTrustBundles can be selected either by [name](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#ctb-signer-unlinked)\nor by [signer name](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#ctb-signer-linked).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "To select by name, use the `name` field to designate a single ClusterTrustBundle object.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "text": "To select by signer name, use the `signerName` field (and optionally the\n`labelSelector` field) to designate a set of ClusterTrustBundle objects that use\nthe given signer name. If `labelSelector` is not present, then all\nClusterTrustBundles for that signer are selected.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "text": "The kubelet deduplicates the certificates in the selected ClusterTrustBundle objects,\nnormalizes the PEM representations (discarding comments and headers), reorders the certificates,\nand writes them into the file named by `path`.\nAs the set of selected ClusterTrustBundles or their content changes, kubelet keeps the file up-to-date.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "By default, the kubelet will prevent the pod from starting if the named ClusterTrustBundle is not found,\nor if `signerName` / `labelSelector` do not match any ClusterTrustBundles.\nIf this behavior is not what you want, then set the `optional` field to `true`,\nand the pod will start up with an empty file at `path`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: sa-ctb-name-test\nspec:\n  containers:\n  - name: container-test\n    image: busybox\n    command: [\"sleep\", \"3600\"]\n    volumeMounts:\n    - name: token-vol\n      mountPath: \"/root-certificates\"\n      readOnly: true\n  serviceAccountName: default\n  volumes:\n  - name: token-vol\n    projected:\n      sources:\n      - clusterTrustBundle:\n          name: example\n          path: example-roots.pem\n      - clusterTrustBundle:\n          signerName: \"example.com/mysigner\"\n          labelSelector:\n            matchLabels:\n              version: live\n          path: mysigner-roots.pem\n          optional: true",
+      "type": "code"
+    },
+    {
+      "block_index": 28,
+      "level": 2,
+      "text": "podCertificate projected volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 29,
+      "text": "*This is a stable feature in Kubernetes, and has been since version 1.37. It was first available in the v1.34 release.*",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "text": "The `podCertificate` projected volumes source securely provisions a private key\nand X.509 certificate chain for pod to use as client or server credentials.\nKubelet will then handle refreshing the private key and certificate chain when\nthey get close to expiration. The application just has to make sure that it\nreloads the file promptly when it changes, with a mechanism like `inotify` or\npolling.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "Each `podCertificate` projection supports the following configuration fields:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "ordered": false,
+      "text": "- signerName : The signer you want to issue the certificate. Note that signers may have their own access requirements, and may refuse to issue certificates to your pod.\n- keyType : The type of private key that should be generated. Valid values are ED25519 , ECDSAP256 , ECDSAP384 , ECDSAP521 , RSA3072 , and RSA4096 .\n- maxExpirationSeconds : The maximum lifetime you will accept for the certificate issued to the pod. If not set, will be defaulted to 86400 (24 hours). Must be at least 3600 (1 hour), and at most 7862400 (91 days). Kubernetes built-in signers are restricted to a max lifetime of 86400 (1 day). The signer is allowed to issue a certificate with a lifetime shorter than what you've specified.\n- credentialBundlePath : Relative path within the projection where the credential bundle should be written. The credential bundle is a PEM-formatted file, where the first block is a \"PRIVATE KEY\" block that contains a PKCS#8-serialized private key, and the remaining blocks are \"CERTIFICATE\" blocks that comprise the certificate chain (leaf certificate and any intermediates).\n- keyPath and certificateChainPath : Separate paths where Kubelet should write just the private key or certificate chain.\n- userAnnotations : a map that allows you to pass additional information to the signer implementation. It is copied verbatim into the spec.unverifiedUserAnnotations field of the PodCertificateRequest objects that Kubelet creates. Entries are subject to the same validation as object metadata annotations, with the addition that all keys must be domain-prefixed. No restrictions are placed on values, except an overall size limitation on the entire field. Other than these basic validations, the API server does not conduct any extra validations. The signer implementations should be very careful when consuming this data. Signers must not inherently trust this data without first performing the appropriate verification steps. Signers should document the keys and values they support. Signers should deny requests that contain keys they do not recognize.",
+      "type": "list"
+    },
+    {
+      "block_index": 33,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 34,
+      "language": "yaml",
+      "text": "# Sample Pod spec that uses a podCertificate projection to request an ED25519\n# private key, a certificate from the `coolcert.example.com/foo` signer, and\n# write the results to `/var/run/my-x509-credentials/credentialbundle.pem`.\napiVersion: v1\nkind: Pod\nmetadata:\n  namespace: default\n  name: podcertificate-pod\nspec:\n  serviceAccountName: default\n  containers:\n  - image: debian\n    name: main\n    command: [\"sleep\", \"infinity\"]\n    volumeMounts:\n    - name: my-x509-credentials\n      mountPath: /var/run/my-x509-credentials\n  volumes:\n  - name: my-x509-credentials\n    projected:\n      defaultMode: 0644\n      sources:\n      - podCertificate:\n          keyType: ED25519\n          signerName: coolcert.example.com/foo\n          credentialBundlePath: credentialbundle.pem\n          userAnnotations:\n            example.com/annotation1: \"value1\"\n            example.com/annotation2: \"value2\"",
+      "type": "code"
+    },
+    {
+      "block_index": 35,
+      "level": 2,
+      "text": "SecurityContext interactions",
+      "type": "heading"
+    },
+    {
+      "block_index": 36,
+      "text": "The [proposal](https://git.k8s.io/enhancements/keps/sig-storage/2451-service-account-token-volumes#proposal)\nfor file permission handling in projected service account volume enhancement\nintroduced the projected files having the correct owner permissions set.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "level": 3,
+      "text": "Linux",
+      "type": "heading"
+    },
+    {
+      "block_index": 38,
+      "text": "In Linux pods that have a projected volume and `RunAsUser` set in the Pod\n[`SecurityContext`](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context),\nthe projected files have the correct ownership set including container user\nownership.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "text": "When all containers in a pod have the same `runAsUser` set in their\n[`PodSecurityContext`](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context)\nor container\n[`SecurityContext`](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1),\nthen the kubelet ensures that the contents of the `serviceAccountToken` volume are owned by that user,\nand the token file has its permission mode set to `0600`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 41,
+      "text": "[Ephemeral containers](https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/)\nadded to a Pod after it is created do *not* change volume permissions that were\nset when the pod was created.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "text": "If a Pod's `serviceAccountToken` volume permissions were set to `0600` because\nall other containers in the Pod have the same `runAsUser`, ephemeral\ncontainers must use the same `runAsUser` to be able to read the token.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 43,
+      "level": 3,
+      "text": "Windows",
+      "type": "heading"
+    },
+    {
+      "block_index": 44,
+      "text": "In Windows pods that have a projected volume and `RunAsUsername` set in the\nPod `SecurityContext`, the ownership is not enforced due to the way user\naccounts are managed in Windows. Windows stores and manages local user and group\naccounts in a database file called Security Account Manager (SAM). Each\ncontainer maintains its own instance of the SAM database, to which the host has\nno visibility into while the container is running. Windows containers are\ndesigned to run the user mode portion of the OS in isolation from the host,\nhence the maintenance of a virtual SAM database. As a result, the kubelet running\non the host does not have the ability to dynamically configure host file\nownership for virtualized container accounts. It is recommended that if files on\nthe host machine are to be shared with the container then they should be placed\ninto their own volume mount outside of `C:\\`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 45,
+      "text": "By default, the projected files will have the following ownership as shown for\nan example projected volume file:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "language": "powershell",
+      "text": "PS C:\\> Get-Acl C:\\var\\run\\secrets\\kubernetes.io\\serviceaccount\\..2021_08_31_22_22_18.318230061\\ca.crt | Format-List\n\nPath   : Microsoft.PowerShell.Core\\FileSystem::C:\\var\\run\\secrets\\kubernetes.io\\serviceaccount\\..2021_08_31_22_22_18.318230061\\ca.crt\nOwner  : BUILTIN\\Administrators\nGroup  : NT AUTHORITY\\SYSTEM\nAccess : NT AUTHORITY\\SYSTEM Allow  FullControl\n         BUILTIN\\Administrators Allow  FullControl\n         BUILTIN\\Users Allow  ReadAndExecute, Synchronize\nAudit  :\nSddl   : O:BAG:SYD:AI(A;ID;FA;;;SY)(A;ID;FA;;;BA)(A;ID;0x1200a9;;;BU)",
+      "type": "code"
+    },
+    {
+      "block_index": 47,
+      "text": "This implies all administrator users like `ContainerAdministrator` will have\nread, write and execute access while, non-administrator users will have read and\nexecute access.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 49,
+      "text": "In general, granting the container access to the host is discouraged as it can\nopen the door for potential security exploits.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 50,
+      "text": "Creating a Windows Pod with `RunAsUser` in it's `SecurityContext` will result in\nthe Pod being stuck at `ContainerCreating` forever. So it is advised to not use\nthe Linux only `RunAsUser` option with Windows Pods.",
+      "type": "paragraph"
+    }
+  ],
+  "content": "# Projected Volumes\n\nThis document describes *projected volumes* in Kubernetes. Familiarity with [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) is suggested.\n\n## Introduction\n\nA `projected` volume maps several existing volume sources into the same directory.\n\nCurrently, the following types of volume sources can be projected:\n\n- `secret`\n- `downwardAPI`\n- `configMap`\n- `serviceAccountToken`\n- `clusterTrustBundle`\n- `podCertificate`\n\nAll sources are required to be in the same namespace as the Pod. For more details,\nsee the [all-in-one volume](https://git.k8s.io/design-proposals-archive/node/all-in-one-volume.md) design document.\n\n### Example configuration with a secret, a downwardAPI, and a configMap\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: volume-test\nspec:\n  containers:\n  - name: container-test\n    image: busybox:1.28\n    command: [\"sleep\", \"3600\"]\n    volumeMounts:\n    - name: all-in-one\n      mountPath: \"/projected-volume\"\n      readOnly: true\n  volumes:\n  - name: all-in-one\n    projected:\n      sources:\n      - secret:\n          name: mysecret\n          items:\n          - key: username\n            path: my-group/my-username\n      - downwardAPI:\n          items:\n          - path: \"labels\"\n            fieldRef:\n              fieldPath: metadata.labels\n          - path: \"cpu_limit\"\n            resourceFieldRef:\n              containerName: container-test\n              resource: limits.cpu\n      - configMap:\n          name: myconfigmap\n          items:\n          - key: config\n            path: my-group/my-config\n```\n\n### Example configuration: secrets with a non-default permission mode set\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: volume-test\nspec:\n  containers:\n  - name: container-test\n    image: busybox:1.28\n    command: [\"sleep\", \"3600\"]\n    volumeMounts:\n    - name: all-in-one\n      mountPath: \"/projected-volume\"\n      readOnly: true\n  volumes:\n  - name: all-in-one\n    projected:\n      sources:\n      - secret:\n          name: mysecret\n          items:\n          - key: username\n            path: my-group/my-username\n      - secret:\n          name: mysecret2\n          items:\n          - key: password\n            path: my-group/my-password\n            mode: 0777\n```\n\nEach projected volume source is listed in the spec under `sources`. The\nparameters are nearly the same with two exceptions:\n\n- For secrets, the secretName field has been changed to name to be consistent with ConfigMap naming.\n- The defaultMode can only be specified at the projected level and not for each volume source. However, as illustrated above, you can explicitly set the mode for each individual projection.\n\n## serviceAccountToken projected volumes\n\nYou can inject the token for the current [service account](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#service-account-tokens)\ninto a Pod at a specified path. For example:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: sa-token-test\nspec:\n  containers:\n  - name: container-test\n    image: busybox:1.28\n    command: [\"sleep\", \"3600\"]\n    volumeMounts:\n    - name: token-vol\n      mountPath: \"/service-account\"\n      readOnly: true\n  serviceAccountName: default\n  volumes:\n  - name: token-vol\n    projected:\n      sources:\n      - serviceAccountToken:\n          audience: api\n          expirationSeconds: 3600\n          path: token\n```\n\nThe example Pod has a projected volume containing the injected service account\ntoken. Containers in this Pod can use that token to access the Kubernetes API\nserver, authenticating with the identity of [the pod's ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/).\nThe `audience` field contains the intended audience of the\ntoken. A recipient of the token must identify itself with an identifier specified\nin the audience of the token, and otherwise should reject the token. This field\nis optional and it defaults to the identifier of the API server.\n\nThe `expirationSeconds` is the expected duration of validity of the service account\ntoken. It defaults to 1 hour and must be at least 10 minutes (600 seconds). An administrator\ncan also limit its maximum value by specifying the `--service-account-max-token-expiration`\noption for the API server. The `path` field specifies a relative path to the mount point\nof the projected volume.\n\n#### Note:\n\n## clusterTrustBundle projected volumes\n\n*This is a stable feature in Kubernetes, and has been since version 1.37. It was first available in the v1.29 release.*\n\nThe `clusterTrustBundle` projected volume source injects the contents of one or more\n[ClusterTrustBundle](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#cluster-trust-bundles)\nobjects as an automatically-updating file in the container filesystem.\n\nClusterTrustBundles can be selected either by [name](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#ctb-signer-unlinked)\nor by [signer name](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#ctb-signer-linked).\n\nTo select by name, use the `name` field to designate a single ClusterTrustBundle object.\n\nTo select by signer name, use the `signerName` field (and optionally the\n`labelSelector` field) to designate a set of ClusterTrustBundle objects that use\nthe given signer name. If `labelSelector` is not present, then all\nClusterTrustBundles for that signer are selected.\n\nThe kubelet deduplicates the certificates in the selected ClusterTrustBundle objects,\nnormalizes the PEM representations (discarding comments and headers), reorders the certificates,\nand writes them into the file named by `path`.\nAs the set of selected ClusterTrustBundles or their content changes, kubelet keeps the file up-to-date.\n\nBy default, the kubelet will prevent the pod from starting if the named ClusterTrustBundle is not found,\nor if `signerName` / `labelSelector` do not match any ClusterTrustBundles.\nIf this behavior is not what you want, then set the `optional` field to `true`,\nand the pod will start up with an empty file at `path`.\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: sa-ctb-name-test\nspec:\n  containers:\n  - name: container-test\n    image: busybox\n    command: [\"sleep\", \"3600\"]\n    volumeMounts:\n    - name: token-vol\n      mountPath: \"/root-certificates\"\n      readOnly: true\n  serviceAccountName: default\n  volumes:\n  - name: token-vol\n    projected:\n      sources:\n      - clusterTrustBundle:\n          name: example\n          path: example-roots.pem\n      - clusterTrustBundle:\n          signerName: \"example.com/mysigner\"\n          labelSelector:\n            matchLabels:\n              version: live\n          path: mysigner-roots.pem\n          optional: true\n```\n\n## podCertificate projected volumes\n\n*This is a stable feature in Kubernetes, and has been since version 1.37. It was first available in the v1.34 release.*\n\nThe `podCertificate` projected volumes source securely provisions a private key\nand X.509 certificate chain for pod to use as client or server credentials.\nKubelet will then handle refreshing the private key and certificate chain when\nthey get close to expiration. The application just has to make sure that it\nreloads the file promptly when it changes, with a mechanism like `inotify` or\npolling.\n\nEach `podCertificate` projection supports the following configuration fields:\n\n- signerName : The signer you want to issue the certificate. Note that signers may have their own access requirements, and may refuse to issue certificates to your pod.\n- keyType : The type of private key that should be generated. Valid values are ED25519 , ECDSAP256 , ECDSAP384 , ECDSAP521 , RSA3072 , and RSA4096 .\n- maxExpirationSeconds : The maximum lifetime you will accept for the certificate issued to the pod. If not set, will be defaulted to 86400 (24 hours). Must be at least 3600 (1 hour), and at most 7862400 (91 days). Kubernetes built-in signers are restricted to a max lifetime of 86400 (1 day). The signer is allowed to issue a certificate with a lifetime shorter than what you've specified.\n- credentialBundlePath : Relative path within the projection where the credential bundle should be written. The credential bundle is a PEM-formatted file, where the first block is a \"PRIVATE KEY\" block that contains a PKCS#8-serialized private key, and the remaining blocks are \"CERTIFICATE\" blocks that comprise the certificate chain (leaf certificate and any intermediates).\n- keyPath and certificateChainPath : Separate paths where Kubelet should write just the private key or certificate chain.\n- userAnnotations : a map that allows you to pass additional information to the signer implementation. It is copied verbatim into the spec.unverifiedUserAnnotations field of the PodCertificateRequest objects that Kubelet creates. Entries are subject to the same validation as object metadata annotations, with the addition that all keys must be domain-prefixed. No restrictions are placed on values, except an overall size limitation on the entire field. Other than these basic validations, the API server does not conduct any extra validations. The signer implementations should be very careful when consuming this data. Signers must not inherently trust this data without first performing the appropriate verification steps. Signers should document the keys and values they support. Signers should deny requests that contain keys they do not recognize.\n\n#### Note:\n\n```yaml\n# Sample Pod spec that uses a podCertificate projection to request an ED25519\n# private key, a certificate from the `coolcert.example.com/foo` signer, and\n# write the results to `/var/run/my-x509-credentials/credentialbundle.pem`.\napiVersion: v1\nkind: Pod\nmetadata:\n  namespace: default\n  name: podcertificate-pod\nspec:\n  serviceAccountName: default\n  containers:\n  - image: debian\n    name: main\n    command: [\"sleep\", \"infinity\"]\n    volumeMounts:\n    - name: my-x509-credentials\n      mountPath: /var/run/my-x509-credentials\n  volumes:\n  - name: my-x509-credentials\n    projected:\n      defaultMode: 0644\n      sources:\n      - podCertificate:\n          keyType: ED25519\n          signerName: coolcert.example.com/foo\n          credentialBundlePath: credentialbundle.pem\n          userAnnotations:\n            example.com/annotation1: \"value1\"\n            example.com/annotation2: \"value2\"\n```\n\n## SecurityContext interactions\n\nThe [proposal](https://git.k8s.io/enhancements/keps/sig-storage/2451-service-account-token-volumes#proposal)\nfor file permission handling in projected service account volume enhancement\nintroduced the projected files having the correct owner permissions set.\n\n### Linux\n\nIn Linux pods that have a projected volume and `RunAsUser` set in the Pod\n[`SecurityContext`](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context),\nthe projected files have the correct ownership set including container user\nownership.\n\nWhen all containers in a pod have the same `runAsUser` set in their\n[`PodSecurityContext`](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context)\nor container\n[`SecurityContext`](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1),\nthen the kubelet ensures that the contents of the `serviceAccountToken` volume are owned by that user,\nand the token file has its permission mode set to `0600`.\n\n#### Note:\n\n[Ephemeral containers](https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/)\nadded to a Pod after it is created do *not* change volume permissions that were\nset when the pod was created.\n\nIf a Pod's `serviceAccountToken` volume permissions were set to `0600` because\nall other containers in the Pod have the same `runAsUser`, ephemeral\ncontainers must use the same `runAsUser` to be able to read the token.\n\n### Windows\n\nIn Windows pods that have a projected volume and `RunAsUsername` set in the\nPod `SecurityContext`, the ownership is not enforced due to the way user\naccounts are managed in Windows. Windows stores and manages local user and group\naccounts in a database file called Security Account Manager (SAM). Each\ncontainer maintains its own instance of the SAM database, to which the host has\nno visibility into while the container is running. Windows containers are\ndesigned to run the user mode portion of the OS in isolation from the host,\nhence the maintenance of a virtual SAM database. As a result, the kubelet running\non the host does not have the ability to dynamically configure host file\nownership for virtualized container accounts. It is recommended that if files on\nthe host machine are to be shared with the container then they should be placed\ninto their own volume mount outside of `C:\\`.\n\nBy default, the projected files will have the following ownership as shown for\nan example projected volume file:\n\n```powershell\nPS C:\\> Get-Acl C:\\var\\run\\secrets\\kubernetes.io\\serviceaccount\\..2021_08_31_22_22_18.318230061\\ca.crt | Format-List\n\nPath   : Microsoft.PowerShell.Core\\FileSystem::C:\\var\\run\\secrets\\kubernetes.io\\serviceaccount\\..2021_08_31_22_22_18.318230061\\ca.crt\nOwner  : BUILTIN\\Administrators\nGroup  : NT AUTHORITY\\SYSTEM\nAccess : NT AUTHORITY\\SYSTEM Allow  FullControl\n         BUILTIN\\Administrators Allow  FullControl\n         BUILTIN\\Users Allow  ReadAndExecute, Synchronize\nAudit  :\nSddl   : O:BAG:SYD:AI(A;ID;FA;;;SY)(A;ID;FA;;;BA)(A;ID;0x1200a9;;;BU)\n```\n\nThis implies all administrator users like `ContainerAdministrator` will have\nread, write and execute access while, non-administrator users will have read and\nexecute access.\n\n#### Note:\n\nIn general, granting the container access to the host is discouraged as it can\nopen the door for potential security exploits.\n\nCreating a Windows Pod with `RunAsUser` in it's `SecurityContext` will result in\nthe Pod being stuck at `ContainerCreating` forever. So it is advised to not use\nthe Linux only `RunAsUser` option with Windows Pods.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:b1ce4358498644c6aebda9065ed0bd6ebdbbe56cc1a3bd1511fa622643266243",
+  "document_id": "stor-004",
+  "domain": "storage",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Projected Volumes"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Introduction"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Example configuration with a secret, a downwardAPI, and a configMap"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "Example configuration: secrets with a non-default permission mode set"
+    },
+    {
+      "block_index": 13,
+      "level": 2,
+      "text": "serviceAccountToken projected volumes"
+    },
+    {
+      "block_index": 18,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "clusterTrustBundle projected volumes"
+    },
+    {
+      "block_index": 28,
+      "level": 2,
+      "text": "podCertificate projected volumes"
+    },
+    {
+      "block_index": 33,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 35,
+      "level": 2,
+      "text": "SecurityContext interactions"
+    },
+    {
+      "block_index": 37,
+      "level": 3,
+      "text": "Linux"
+    },
+    {
+      "block_index": 40,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 43,
+      "level": 3,
+      "text": "Windows"
+    },
+    {
+      "block_index": 48,
+      "level": 4,
+      "text": "Note:"
+    }
+  ],
+  "links": [
+    {
+      "text": "volumes",
+      "url": "https://kubernetes.io/docs/concepts/storage/volumes/"
+    },
+    {
+      "text": "all-in-one volume",
+      "url": "https://git.k8s.io/design-proposals-archive/node/all-in-one-volume.md"
+    },
+    {
+      "text": "service account",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/authentication/#service-account-tokens"
+    },
+    {
+      "text": "the pod's ServiceAccount",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/"
+    },
+    {
+      "text": "ClusterTrustBundle",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#cluster-trust-bundles"
+    },
+    {
+      "text": "name",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#ctb-signer-unlinked"
+    },
+    {
+      "text": "signer name",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#ctb-signer-linked"
+    },
+    {
+      "text": "proposal",
+      "url": "https://git.k8s.io/enhancements/keps/sig-storage/2451-service-account-token-volumes#proposal"
+    },
+    {
+      "text": "Ephemeral containers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/"
+    }
+  ],
+  "raw_path": "data/raw/documents/stor-004.html",
+  "raw_sha256": "sha256:296ee02d595bd2587ddfce44fa3c5b1c15759de44a800f4925d3a521d99dbdaf",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/storage/projected-volumes/",
+  "statistics": {
+    "block_count": 51,
+    "character_count": 14016,
+    "code_block_count": 6,
+    "heading_count": 14,
+    "link_count": 9,
+    "list_count": 3,
+    "paragraph_count": 28,
+    "table_count": 0,
+    "word_count": 1759
+  },
+  "title": "Projected Volumes"
+}

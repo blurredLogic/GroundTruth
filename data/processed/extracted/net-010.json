@@ -1,0 +1,121 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Service Internal Traffic Policy",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "*Service Internal Traffic Policy* enables internal traffic restrictions to only route\ninternal traffic to endpoints within the node the traffic originated from. The\n\"internal\" traffic here refers to traffic originated from Pods in the current\ncluster. This can help to reduce costs and improve performance.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Using Service Internal Traffic Policy",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "text": "You can enable the internal-only traffic policy for a\n[Service](https://kubernetes.io/docs/concepts/services-networking/service/), by setting its\n`.spec.internalTrafficPolicy` to `Local`. This tells kube-proxy to only use node local\nendpoints for cluster internal traffic.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "The following example shows what a Service looks like when you set\n`.spec.internalTrafficPolicy` to `Local`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Service\nmetadata:\n  name: my-service\nspec:\n  selector:\n    app.kubernetes.io/name: MyApp\n  ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 9376\n  internalTrafficPolicy: Local",
+      "type": "code"
+    },
+    {
+      "block_index": 7,
+      "level": 2,
+      "text": "How it works",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "text": "The kube-proxy filters the endpoints it routes to based on the\n`spec.internalTrafficPolicy` setting. When it's set to `Local`, only node local\nendpoints are considered. When it's `Cluster` (the default), or is not set,\nKubernetes considers all endpoints.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "ordered": false,
+      "text": "- Read about Topology Aware Routing\n- Read about Service External Traffic Policy\n- Follow the Connecting Applications with Services tutorial",
+      "type": "list"
+    }
+  ],
+  "content": "# Service Internal Traffic Policy\n\n*Service Internal Traffic Policy* enables internal traffic restrictions to only route\ninternal traffic to endpoints within the node the traffic originated from. The\n\"internal\" traffic here refers to traffic originated from Pods in the current\ncluster. This can help to reduce costs and improve performance.\n\n## Using Service Internal Traffic Policy\n\nYou can enable the internal-only traffic policy for a\n[Service](https://kubernetes.io/docs/concepts/services-networking/service/), by setting its\n`.spec.internalTrafficPolicy` to `Local`. This tells kube-proxy to only use node local\nendpoints for cluster internal traffic.\n\n#### Note:\n\nThe following example shows what a Service looks like when you set\n`.spec.internalTrafficPolicy` to `Local`:\n\n```yaml\napiVersion: v1\nkind: Service\nmetadata:\n  name: my-service\nspec:\n  selector:\n    app.kubernetes.io/name: MyApp\n  ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 9376\n  internalTrafficPolicy: Local\n```\n\n## How it works\n\nThe kube-proxy filters the endpoints it routes to based on the\n`spec.internalTrafficPolicy` setting. When it's set to `Local`, only node local\nendpoints are considered. When it's `Cluster` (the default), or is not set,\nKubernetes considers all endpoints.\n\n## What's next\n\n- Read about Topology Aware Routing\n- Read about Service External Traffic Policy\n- Follow the Connecting Applications with Services tutorial\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:a71d57b7a830f21004ff2d7ae62c48a278f45042c55cb43e2233f6910ea9e241",
+  "document_id": "net-010",
+  "domain": "services_networking",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Service Internal Traffic Policy"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Using Service Internal Traffic Policy"
+    },
+    {
+      "block_index": 4,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 7,
+      "level": 2,
+      "text": "How it works"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Service",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    }
+  ],
+  "raw_path": "data/raw/documents/net-010.html",
+  "raw_sha256": "sha256:78213b01936291ad5670ad0b2812a89c1143a450e291751216c2f18e5d6417ac",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/services-networking/service-traffic-policy/",
+  "statistics": {
+    "block_count": 11,
+    "character_count": 1432,
+    "code_block_count": 1,
+    "heading_count": 5,
+    "link_count": 1,
+    "list_count": 1,
+    "paragraph_count": 4,
+    "table_count": 0,
+    "word_count": 190
+  },
+  "title": "Service Internal Traffic Policy"
+}

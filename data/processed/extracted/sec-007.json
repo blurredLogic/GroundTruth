@@ -1,0 +1,334 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Good practices for Kubernetes Secrets",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "In Kubernetes, a Secret is an object that stores sensitive information, such as passwords, OAuth tokens, and SSH keys.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Secrets give you more control over how sensitive information is used and reduces\nthe risk of accidental exposure. Secret values are encoded as base64 strings and\nare stored unencrypted by default, but can be configured to be\n[encrypted at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#ensure-all-secrets-are-encrypted).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "A [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) can reference the Secret in\na variety of ways, such as in a volume mount or as an environment variable.\nSecrets are designed for confidential data and\n[ConfigMaps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) are\ndesigned for non-confidential data.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "The following good practices are intended for both cluster administrators and\napplication developers. Use these guidelines to improve the security of your\nsensitive information in Secret objects, as well as to more effectively manage\nyour Secrets.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Cluster administrators",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "This section provides good practices that cluster administrators can use to\nimprove the security of confidential information in the cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Configure encryption at rest",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "text": "By default, Secret objects are stored unencrypted in [etcd](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/). You should configure encryption of your Secret\ndata in `etcd`. For instructions, refer to\n[Encrypt Secret Data at Rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "Configure least-privilege access to Secrets",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "When planning your access control mechanism, such as Kubernetes\n[Role-based Access Control](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) [(RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/),\nconsider the following guidelines for access to `Secret` objects. You should\nalso follow the other guidelines in\n[RBAC good practices](https://kubernetes.io/docs/concepts/security/rbac-good-practices/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "ordered": false,
+      "text": "- Components : Restrict watch or list access to only the most privileged, system-level components. Only grant get access for Secrets if the component's normal behavior requires it.\n- Humans : Restrict get , watch , or list access to Secrets. Only allow cluster administrators to access etcd . This includes read-only access. For more complex access control, such as restricting access to Secrets with specific annotations, consider using third-party authorization mechanisms.",
+      "type": "list"
+    },
+    {
+      "block_index": 12,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "A user who can create a Pod that uses a Secret can also see the value of that\nSecret. Even if cluster policies do not allow a user to read the Secret\ndirectly, the same user could have access to run a Pod that then exposes the\nSecret. You can detect or limit the impact caused by Secret data being exposed,\neither intentionally or unintentionally, by a user with this access. Some\nrecommendations include:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "ordered": false,
+      "text": "- Use short-lived Secrets\n- Implement audit rules that alert on specific events, such as concurrent reading of multiple Secrets by a single user",
+      "type": "list"
+    },
+    {
+      "block_index": 15,
+      "level": 4,
+      "text": "Restrict Access for Secrets",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "Use separate namespaces to isolate access to mounted secrets.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "level": 3,
+      "text": "Improve etcd management policies",
+      "type": "heading"
+    },
+    {
+      "block_index": 18,
+      "text": "Consider wiping or shredding the durable storage used by `etcd` once it is\nno longer in use.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "text": "If there are multiple `etcd` instances, configure encrypted SSL/TLS\ncommunication between the instances to protect the Secret data in transit.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Configure access to external Secrets",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "You can use third-party Secrets store providers to keep your confidential data\noutside your cluster and then configure Pods to access that information.\nThe [Kubernetes Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/)\nis a DaemonSet that lets the kubelet retrieve Secrets from external stores, and\nmount the Secrets as a volume into specific Pods that you authorize to access\nthe data.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "text": "For a list of supported providers, refer to\n[Providers for the Secret Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/concepts.html#provider-for-the-secrets-store-csi-driver).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "Good practices for using swap memory",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "For best practices for setting swap memory for Linux nodes, please refer to\n[swap memory management](https://kubernetes.io/docs/concepts/cluster-administration/swap-memory-management/#good-practice-for-using-swap-in-a-kubernetes-cluster).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "level": 2,
+      "text": "Developers",
+      "type": "heading"
+    },
+    {
+      "block_index": 26,
+      "text": "This section provides good practices for developers to use to improve the\nsecurity of confidential data when building and deploying Kubernetes resources.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Restrict Secret access to specific containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 28,
+      "text": "If you are defining multiple containers in a Pod, and only one of those\ncontainers needs access to a Secret, define the volume mount or environment\nvariable configuration so that the other containers do not have access to that\nSecret.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "level": 3,
+      "text": "Protect Secret data after reading",
+      "type": "heading"
+    },
+    {
+      "block_index": 30,
+      "text": "Applications still need to protect the value of confidential information after\nreading it from an environment variable or volume. For example, your\napplication must avoid logging the secret data in the clear or transmitting it\nto an untrusted party.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "level": 3,
+      "text": "Avoid sharing Secret manifests",
+      "type": "heading"
+    },
+    {
+      "block_index": 32,
+      "text": "If you configure a Secret through a\n[manifest](https://kubernetes.io/docs/reference/glossary/?all=true#term-manifest), with the secret\ndata encoded as base64, sharing this file or checking it in to a source\nrepository means the secret is available to everyone who can read the manifest.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    }
+  ],
+  "content": "# Good practices for Kubernetes Secrets\n\nIn Kubernetes, a Secret is an object that stores sensitive information, such as passwords, OAuth tokens, and SSH keys.\n\nSecrets give you more control over how sensitive information is used and reduces\nthe risk of accidental exposure. Secret values are encoded as base64 strings and\nare stored unencrypted by default, but can be configured to be\n[encrypted at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#ensure-all-secrets-are-encrypted).\n\nA [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) can reference the Secret in\na variety of ways, such as in a volume mount or as an environment variable.\nSecrets are designed for confidential data and\n[ConfigMaps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) are\ndesigned for non-confidential data.\n\nThe following good practices are intended for both cluster administrators and\napplication developers. Use these guidelines to improve the security of your\nsensitive information in Secret objects, as well as to more effectively manage\nyour Secrets.\n\n## Cluster administrators\n\nThis section provides good practices that cluster administrators can use to\nimprove the security of confidential information in the cluster.\n\n### Configure encryption at rest\n\nBy default, Secret objects are stored unencrypted in [etcd](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/). You should configure encryption of your Secret\ndata in `etcd`. For instructions, refer to\n[Encrypt Secret Data at Rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/).\n\n### Configure least-privilege access to Secrets\n\nWhen planning your access control mechanism, such as Kubernetes\n[Role-based Access Control](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) [(RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/),\nconsider the following guidelines for access to `Secret` objects. You should\nalso follow the other guidelines in\n[RBAC good practices](https://kubernetes.io/docs/concepts/security/rbac-good-practices/).\n\n- Components : Restrict watch or list access to only the most privileged, system-level components. Only grant get access for Secrets if the component's normal behavior requires it.\n- Humans : Restrict get , watch , or list access to Secrets. Only allow cluster administrators to access etcd . This includes read-only access. For more complex access control, such as restricting access to Secrets with specific annotations, consider using third-party authorization mechanisms.\n\n#### Caution:\n\nA user who can create a Pod that uses a Secret can also see the value of that\nSecret. Even if cluster policies do not allow a user to read the Secret\ndirectly, the same user could have access to run a Pod that then exposes the\nSecret. You can detect or limit the impact caused by Secret data being exposed,\neither intentionally or unintentionally, by a user with this access. Some\nrecommendations include:\n\n- Use short-lived Secrets\n- Implement audit rules that alert on specific events, such as concurrent reading of multiple Secrets by a single user\n\n#### Restrict Access for Secrets\n\nUse separate namespaces to isolate access to mounted secrets.\n\n### Improve etcd management policies\n\nConsider wiping or shredding the durable storage used by `etcd` once it is\nno longer in use.\n\nIf there are multiple `etcd` instances, configure encrypted SSL/TLS\ncommunication between the instances to protect the Secret data in transit.\n\n### Configure access to external Secrets\n\nYou can use third-party Secrets store providers to keep your confidential data\noutside your cluster and then configure Pods to access that information.\nThe [Kubernetes Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/)\nis a DaemonSet that lets the kubelet retrieve Secrets from external stores, and\nmount the Secrets as a volume into specific Pods that you authorize to access\nthe data.\n\nFor a list of supported providers, refer to\n[Providers for the Secret Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/concepts.html#provider-for-the-secrets-store-csi-driver).\n\n## Good practices for using swap memory\n\nFor best practices for setting swap memory for Linux nodes, please refer to\n[swap memory management](https://kubernetes.io/docs/concepts/cluster-administration/swap-memory-management/#good-practice-for-using-swap-in-a-kubernetes-cluster).\n\n## Developers\n\nThis section provides good practices for developers to use to improve the\nsecurity of confidential data when building and deploying Kubernetes resources.\n\n### Restrict Secret access to specific containers\n\nIf you are defining multiple containers in a Pod, and only one of those\ncontainers needs access to a Secret, define the volume mount or environment\nvariable configuration so that the other containers do not have access to that\nSecret.\n\n### Protect Secret data after reading\n\nApplications still need to protect the value of confidential information after\nreading it from an environment variable or volume. For example, your\napplication must avoid logging the secret data in the clear or transmitting it\nto an untrusted party.\n\n### Avoid sharing Secret manifests\n\nIf you configure a Secret through a\n[manifest](https://kubernetes.io/docs/reference/glossary/?all=true#term-manifest), with the secret\ndata encoded as base64, sharing this file or checking it in to a source\nrepository means the secret is available to everyone who can read the manifest.\n\n#### Caution:\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:a76d193cea51f69d1aa5c9069b52f01ab5bc1f8ca86351c80e6da49275faf740",
+  "document_id": "sec-007",
+  "domain": "security_policies",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Good practices for Kubernetes Secrets"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Cluster administrators"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Configure encryption at rest"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "Configure least-privilege access to Secrets"
+    },
+    {
+      "block_index": 12,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 15,
+      "level": 4,
+      "text": "Restrict Access for Secrets"
+    },
+    {
+      "block_index": 17,
+      "level": 3,
+      "text": "Improve etcd management policies"
+    },
+    {
+      "block_index": 20,
+      "level": 3,
+      "text": "Configure access to external Secrets"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "Good practices for using swap memory"
+    },
+    {
+      "block_index": 25,
+      "level": 2,
+      "text": "Developers"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Restrict Secret access to specific containers"
+    },
+    {
+      "block_index": 29,
+      "level": 3,
+      "text": "Protect Secret data after reading"
+    },
+    {
+      "block_index": 31,
+      "level": 3,
+      "text": "Avoid sharing Secret manifests"
+    },
+    {
+      "block_index": 33,
+      "level": 4,
+      "text": "Caution:"
+    }
+  ],
+  "links": [
+    {
+      "text": "encrypted at rest",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#ensure-all-secrets-are-encrypted"
+    },
+    {
+      "text": "Pod",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "ConfigMaps",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/"
+    },
+    {
+      "text": "etcd",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/"
+    },
+    {
+      "text": "Encrypt Secret Data at Rest",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/"
+    },
+    {
+      "text": "Role-based Access Control",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+    },
+    {
+      "text": "(RBAC)",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+    },
+    {
+      "text": "RBAC good practices",
+      "url": "https://kubernetes.io/docs/concepts/security/rbac-good-practices/"
+    },
+    {
+      "text": "Kubernetes Secrets Store CSI Driver",
+      "url": "https://secrets-store-csi-driver.sigs.k8s.io/"
+    },
+    {
+      "text": "Providers for the Secret Store CSI Driver",
+      "url": "https://secrets-store-csi-driver.sigs.k8s.io/concepts.html#provider-for-the-secrets-store-csi-driver"
+    },
+    {
+      "text": "swap memory management",
+      "url": "https://kubernetes.io/docs/concepts/cluster-administration/swap-memory-management/#good-practice-for-using-swap-in-a-kubernetes-cluster"
+    },
+    {
+      "text": "manifest",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-manifest"
+    }
+  ],
+  "raw_path": "data/raw/documents/sec-007.html",
+  "raw_sha256": "sha256:b6c6ac8dd11abc97dabeb542428ce69b20cf688a9bef9328673787ad8bbe61c3",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/security/secrets-good-practices/",
+  "statistics": {
+    "block_count": 34,
+    "character_count": 5545,
+    "code_block_count": 0,
+    "heading_count": 14,
+    "link_count": 12,
+    "list_count": 2,
+    "paragraph_count": 18,
+    "table_count": 0,
+    "word_count": 771
+  },
+  "title": "Secrets Good Practices"
+}

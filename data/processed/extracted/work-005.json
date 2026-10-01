@@ -1,0 +1,325 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Sidecar Containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "This is a stable feature in Kubernetes, and has been since version v1.33. It was first available in the v1.28 release. You can no longer disable or opt out of this feature or behavior (it is locked); if you explicitly set a value for the associated feature gate SidecarContainers, Kubernetes ignores it but does not report any error.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Sidecar containers are the secondary containers that run along with the main\napplication container within the same [Pod](https://kubernetes.io/docs/concepts/workloads/pods/).\nThese containers are used to enhance or to extend the functionality of the primary *app container* by providing additional services, or functionality such as logging, monitoring,\nsecurity, or data synchronization, without directly altering the primary application code.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "Typically, you only have one app container in a Pod. For example, if you have a web\napplication that requires a local webserver, the local webserver is a sidecar and the\nweb application itself is the app container.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Sidecar containers in Kubernetes",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "Kubernetes implements sidecar containers as a special case of\n[init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/); sidecar containers remain\nrunning after Pod startup. This document uses the term *regular init containers* to clearly\nrefer to containers that only run during Pod startup.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "Provided that your cluster has the `SidecarContainers`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) enabled\n(the feature is active by default since Kubernetes v1.29), you can specify a `restartPolicy`\nfor containers listed in a Pod's `initContainers` field.\nThese restartable *sidecar* containers are independent from other init containers and from\nthe main application container(s) within the same pod.\nThese can be started, stopped, or restarted without affecting the main application container\nand other init containers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "You can also run a Pod with multiple containers that are not marked as init or sidecar\ncontainers. This is appropriate if the containers within the Pod are required for the\nPod to work overall, but you don't need to control which containers start or stop first.\nYou could also do this if you need to support older versions of Kubernetes that don't\nsupport a container-level `restartPolicy` field.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "level": 3,
+      "text": "Example application",
+      "type": "heading"
+    },
+    {
+      "block_index": 9,
+      "text": "Here's an example of a Deployment with two containers, one of which is a sidecar:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 11,
+      "language": "yaml",
+      "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: myapp\n  labels:\n    app: myapp\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: myapp\n  template:\n    metadata:\n      labels:\n        app: myapp\n    spec:\n      containers:\n        - name: myapp\n          image: alpine:latest\n          command: ['sh', '-c', 'while true; do echo \"logging\" >> /opt/logs.txt; sleep 1; done']\n          volumeMounts:\n            - name: data\n              mountPath: /opt\n      initContainers:\n        - name: logshipper\n          image: alpine:latest\n          # Setting restartPolicy: Always makes this a sidecar container.\n          restartPolicy: Always\n          command: ['sh', '-c', 'tail -F /opt/logs.txt']\n          volumeMounts:\n            - name: data\n              mountPath: /opt\n      volumes:\n        - name: data\n          emptyDir: {}",
+      "type": "code"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "Sidecar containers and Pod lifecycle",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "If an init container is created with its `restartPolicy` set to `Always`, it will\nstart and remain running during the entire life of the Pod. This can be helpful for\nrunning supporting services separated from the main application containers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "If a `readinessProbe` is specified for this init container, its result will be used\nto determine the `ready` state of the Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "text": "Since these containers are defined as init containers, they benefit from the same\nordering and sequential guarantees as regular init containers, allowing you to mix\nsidecar containers with regular init containers for complex Pod initialization flows.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "text": "Compared to regular init containers, sidecars defined within `initContainers` continue to\nrun after they have started. This is important when there is more than one entry inside\n`.spec.initContainers` for a Pod. After a sidecar-style init container is running (the kubelet\nhas set the `started` status for that init container to true), the kubelet then starts the\nnext init container from the ordered `.spec.initContainers` list.\nThat status either becomes true because there is a process running in the\ncontainer and no startup probe defined, or as a result of its `startupProbe` succeeding.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "Upon Pod [termination](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#termination-with-sidecars),\nthe kubelet postpones terminating sidecar containers until the main application container has fully stopped.\nThe sidecar containers are then shut down in the opposite order of their appearance in the Pod specification.\nThis approach ensures that the sidecars remain operational, supporting other containers within the Pod,\nuntil their service is no longer required.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "level": 3,
+      "text": "Jobs with sidecar containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 19,
+      "text": "If you define a Job that uses sidecar using Kubernetes-style init containers,\nthe sidecar container in each Pod does not prevent the Job from completing after the\nmain container has finished.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "text": "Here's an example of a Job with two containers, one of which is a sidecar:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "language": "yaml",
+      "text": "apiVersion: batch/v1\nkind: Job\nmetadata:\n  name: myjob\nspec:\n  template:\n    spec:\n      containers:\n        - name: myjob\n          image: alpine:latest\n          command: ['sh', '-c', 'echo \"logging\" > /opt/logs.txt']\n          volumeMounts:\n            - name: data\n              mountPath: /opt\n      initContainers:\n        - name: logshipper\n          image: alpine:latest\n          # Setting restartPolicy: Always makes this a sidecar container.\n          restartPolicy: Always\n          command: ['sh', '-c', 'tail -F /opt/logs.txt']\n          volumeMounts:\n            - name: data\n              mountPath: /opt\n      restartPolicy: Never\n      volumes:\n        - name: data\n          emptyDir: {}",
+      "type": "code"
+    },
+    {
+      "block_index": 22,
+      "level": 2,
+      "text": "Differences from application containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 23,
+      "text": "Sidecar containers run alongside *app containers* in the same pod. However, they do not\nexecute the primary application logic; instead, they provide supporting functionality to\nthe main application.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "text": "Sidecar containers have their own independent lifecycles. They can be started, stopped,\nand restarted independently of app containers. This means you can update, scale, or\nmaintain sidecar containers without affecting the primary application.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "text": "Sidecar containers share the same network and storage namespaces with the primary\ncontainer. This co-location allows them to interact closely and share resources.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "From a Kubernetes perspective, the sidecar container's graceful termination is less important.\nWhen other containers take all allotted graceful termination time, the sidecar containers\nwill receive the `SIGTERM` signal, followed by the `SIGKILL` signal, before they have time to terminate gracefully.\nSo exit codes different from `0` (`0` indicates successful exit), for sidecar containers are normal\non Pod termination and should be generally ignored by the external tooling.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "level": 2,
+      "text": "Differences from init containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 28,
+      "text": "Sidecar containers work alongside the main container, extending its functionality and\nproviding additional services.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "text": "Sidecar containers run concurrently with the main application container. They are active\nthroughout the lifecycle of the pod and can be started and stopped independently of the\nmain container. Unlike [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/),\nsidecar containers support [probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe) to control their lifecycle.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "text": "Sidecar containers can interact directly with the main application containers, because\nlike init containers they always share the same network, and can optionally also share\nvolumes (filesystems).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "Init containers stop before the main containers start up, so init containers cannot\nexchange messages with the app container in a Pod. Any data passing is one-way\n(for example, an init container can put information inside an `emptyDir` volume).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "text": "Changing the image of a sidecar container will not cause the Pod to restart, but will\ntrigger a container restart.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "level": 2,
+      "text": "Resource sharing within containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 34,
+      "text": "Given the order of execution for init, sidecar and app containers, the following rules\nfor resource usage apply:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "ordered": false,
+      "text": "- The highest of any particular resource request or limit defined on all init containers is the effective init request/limit . If any resource has no resource limit specified this is considered as the highest limit.\n- The Pod's effective request/limit for a resource is the sum of pod overhead and the higher of:\n- the sum of all non-init containers(app and sidecar containers) request/limit for a resource\n  - the effective init request/limit for a resource\n- Scheduling is done based on effective requests/limits, which means init containers can reserve resources for initialization that are not used during the life of the Pod.\n- The QoS (quality of service) tier of the Pod's effective QoS tier is the QoS tier for all init, sidecar and app containers alike.",
+      "type": "list"
+    },
+    {
+      "block_index": 36,
+      "text": "Quota and limits are applied based on the effective Pod request and\nlimit.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "level": 3,
+      "text": "Sidecar containers and Linux cgroups",
+      "type": "heading"
+    },
+    {
+      "block_index": 38,
+      "text": "On Linux, resource allocations for Pod level control groups (cgroups) are based on the effective Pod\nrequest and limit, the same as the scheduler.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 40,
+      "ordered": false,
+      "text": "- Learn how to Adopt Sidecar Containers\n- Read a blog post on native sidecar containers .\n- Read about creating a Pod that has an init container .\n- Learn about the types of probes : liveness, readiness, startup probe.\n- Learn about pod overhead .",
+      "type": "list"
+    }
+  ],
+  "content": "# Sidecar Containers\n\nThis is a stable feature in Kubernetes, and has been since version v1.33. It was first available in the v1.28 release. You can no longer disable or opt out of this feature or behavior (it is locked); if you explicitly set a value for the associated feature gate SidecarContainers, Kubernetes ignores it but does not report any error.\n\nSidecar containers are the secondary containers that run along with the main\napplication container within the same [Pod](https://kubernetes.io/docs/concepts/workloads/pods/).\nThese containers are used to enhance or to extend the functionality of the primary *app container* by providing additional services, or functionality such as logging, monitoring,\nsecurity, or data synchronization, without directly altering the primary application code.\n\nTypically, you only have one app container in a Pod. For example, if you have a web\napplication that requires a local webserver, the local webserver is a sidecar and the\nweb application itself is the app container.\n\n## Sidecar containers in Kubernetes\n\nKubernetes implements sidecar containers as a special case of\n[init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/); sidecar containers remain\nrunning after Pod startup. This document uses the term *regular init containers* to clearly\nrefer to containers that only run during Pod startup.\n\nProvided that your cluster has the `SidecarContainers`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) enabled\n(the feature is active by default since Kubernetes v1.29), you can specify a `restartPolicy`\nfor containers listed in a Pod's `initContainers` field.\nThese restartable *sidecar* containers are independent from other init containers and from\nthe main application container(s) within the same pod.\nThese can be started, stopped, or restarted without affecting the main application container\nand other init containers.\n\nYou can also run a Pod with multiple containers that are not marked as init or sidecar\ncontainers. This is appropriate if the containers within the Pod are required for the\nPod to work overall, but you don't need to control which containers start or stop first.\nYou could also do this if you need to support older versions of Kubernetes that don't\nsupport a container-level `restartPolicy` field.\n\n### Example application\n\nHere's an example of a Deployment with two containers, one of which is a sidecar:\n\n#### Note:\n\n```yaml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: myapp\n  labels:\n    app: myapp\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: myapp\n  template:\n    metadata:\n      labels:\n        app: myapp\n    spec:\n      containers:\n        - name: myapp\n          image: alpine:latest\n          command: ['sh', '-c', 'while true; do echo \"logging\" >> /opt/logs.txt; sleep 1; done']\n          volumeMounts:\n            - name: data\n              mountPath: /opt\n      initContainers:\n        - name: logshipper\n          image: alpine:latest\n          # Setting restartPolicy: Always makes this a sidecar container.\n          restartPolicy: Always\n          command: ['sh', '-c', 'tail -F /opt/logs.txt']\n          volumeMounts:\n            - name: data\n              mountPath: /opt\n      volumes:\n        - name: data\n          emptyDir: {}\n```\n\n## Sidecar containers and Pod lifecycle\n\nIf an init container is created with its `restartPolicy` set to `Always`, it will\nstart and remain running during the entire life of the Pod. This can be helpful for\nrunning supporting services separated from the main application containers.\n\nIf a `readinessProbe` is specified for this init container, its result will be used\nto determine the `ready` state of the Pod.\n\nSince these containers are defined as init containers, they benefit from the same\nordering and sequential guarantees as regular init containers, allowing you to mix\nsidecar containers with regular init containers for complex Pod initialization flows.\n\nCompared to regular init containers, sidecars defined within `initContainers` continue to\nrun after they have started. This is important when there is more than one entry inside\n`.spec.initContainers` for a Pod. After a sidecar-style init container is running (the kubelet\nhas set the `started` status for that init container to true), the kubelet then starts the\nnext init container from the ordered `.spec.initContainers` list.\nThat status either becomes true because there is a process running in the\ncontainer and no startup probe defined, or as a result of its `startupProbe` succeeding.\n\nUpon Pod [termination](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#termination-with-sidecars),\nthe kubelet postpones terminating sidecar containers until the main application container has fully stopped.\nThe sidecar containers are then shut down in the opposite order of their appearance in the Pod specification.\nThis approach ensures that the sidecars remain operational, supporting other containers within the Pod,\nuntil their service is no longer required.\n\n### Jobs with sidecar containers\n\nIf you define a Job that uses sidecar using Kubernetes-style init containers,\nthe sidecar container in each Pod does not prevent the Job from completing after the\nmain container has finished.\n\nHere's an example of a Job with two containers, one of which is a sidecar:\n\n```yaml\napiVersion: batch/v1\nkind: Job\nmetadata:\n  name: myjob\nspec:\n  template:\n    spec:\n      containers:\n        - name: myjob\n          image: alpine:latest\n          command: ['sh', '-c', 'echo \"logging\" > /opt/logs.txt']\n          volumeMounts:\n            - name: data\n              mountPath: /opt\n      initContainers:\n        - name: logshipper\n          image: alpine:latest\n          # Setting restartPolicy: Always makes this a sidecar container.\n          restartPolicy: Always\n          command: ['sh', '-c', 'tail -F /opt/logs.txt']\n          volumeMounts:\n            - name: data\n              mountPath: /opt\n      restartPolicy: Never\n      volumes:\n        - name: data\n          emptyDir: {}\n```\n\n## Differences from application containers\n\nSidecar containers run alongside *app containers* in the same pod. However, they do not\nexecute the primary application logic; instead, they provide supporting functionality to\nthe main application.\n\nSidecar containers have their own independent lifecycles. They can be started, stopped,\nand restarted independently of app containers. This means you can update, scale, or\nmaintain sidecar containers without affecting the primary application.\n\nSidecar containers share the same network and storage namespaces with the primary\ncontainer. This co-location allows them to interact closely and share resources.\n\nFrom a Kubernetes perspective, the sidecar container's graceful termination is less important.\nWhen other containers take all allotted graceful termination time, the sidecar containers\nwill receive the `SIGTERM` signal, followed by the `SIGKILL` signal, before they have time to terminate gracefully.\nSo exit codes different from `0` (`0` indicates successful exit), for sidecar containers are normal\non Pod termination and should be generally ignored by the external tooling.\n\n## Differences from init containers\n\nSidecar containers work alongside the main container, extending its functionality and\nproviding additional services.\n\nSidecar containers run concurrently with the main application container. They are active\nthroughout the lifecycle of the pod and can be started and stopped independently of the\nmain container. Unlike [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/),\nsidecar containers support [probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe) to control their lifecycle.\n\nSidecar containers can interact directly with the main application containers, because\nlike init containers they always share the same network, and can optionally also share\nvolumes (filesystems).\n\nInit containers stop before the main containers start up, so init containers cannot\nexchange messages with the app container in a Pod. Any data passing is one-way\n(for example, an init container can put information inside an `emptyDir` volume).\n\nChanging the image of a sidecar container will not cause the Pod to restart, but will\ntrigger a container restart.\n\n## Resource sharing within containers\n\nGiven the order of execution for init, sidecar and app containers, the following rules\nfor resource usage apply:\n\n- The highest of any particular resource request or limit defined on all init containers is the effective init request/limit . If any resource has no resource limit specified this is considered as the highest limit.\n- The Pod's effective request/limit for a resource is the sum of pod overhead and the higher of:\n- the sum of all non-init containers(app and sidecar containers) request/limit for a resource\n  - the effective init request/limit for a resource\n- Scheduling is done based on effective requests/limits, which means init containers can reserve resources for initialization that are not used during the life of the Pod.\n- The QoS (quality of service) tier of the Pod's effective QoS tier is the QoS tier for all init, sidecar and app containers alike.\n\nQuota and limits are applied based on the effective Pod request and\nlimit.\n\n### Sidecar containers and Linux cgroups\n\nOn Linux, resource allocations for Pod level control groups (cgroups) are based on the effective Pod\nrequest and limit, the same as the scheduler.\n\n## What's next\n\n- Learn how to Adopt Sidecar Containers\n- Read a blog post on native sidecar containers .\n- Read about creating a Pod that has an init container .\n- Learn about the types of probes : liveness, readiness, startup probe.\n- Learn about pod overhead .\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:cfc2e5c72e051cd21c54fb15ad98eaea36945f1320a464adf5bf37925684d595",
+  "document_id": "work-005",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Sidecar Containers"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Sidecar containers in Kubernetes"
+    },
+    {
+      "block_index": 8,
+      "level": 3,
+      "text": "Example application"
+    },
+    {
+      "block_index": 10,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "Sidecar containers and Pod lifecycle"
+    },
+    {
+      "block_index": 18,
+      "level": 3,
+      "text": "Jobs with sidecar containers"
+    },
+    {
+      "block_index": 22,
+      "level": 2,
+      "text": "Differences from application containers"
+    },
+    {
+      "block_index": 27,
+      "level": 2,
+      "text": "Differences from init containers"
+    },
+    {
+      "block_index": 33,
+      "level": 2,
+      "text": "Resource sharing within containers"
+    },
+    {
+      "block_index": 37,
+      "level": 3,
+      "text": "Sidecar containers and Linux cgroups"
+    },
+    {
+      "block_index": 39,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Pod",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "init containers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/"
+    },
+    {
+      "text": "feature gate",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/"
+    },
+    {
+      "text": "termination",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#termination-with-sidecars"
+    },
+    {
+      "text": "probes",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-005.html",
+  "raw_sha256": "sha256:26fdc534e39e6f0f46205f7e1b786f5975e5eda379d0ce2b23a405d54ad0a64c",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/",
+  "statistics": {
+    "block_count": 41,
+    "character_count": 9828,
+    "code_block_count": 2,
+    "heading_count": 11,
+    "link_count": 5,
+    "list_count": 2,
+    "paragraph_count": 26,
+    "table_count": 0,
+    "word_count": 1376
+  },
+  "title": "Sidecar Containers"
+}

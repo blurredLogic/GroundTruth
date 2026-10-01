@@ -1,0 +1,606 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Nodes",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Kubernetes runs your [workload](https://kubernetes.io/docs/concepts/workloads/)\nby placing [containers](https://kubernetes.io/docs/concepts/containers/) into Pods to run on *Nodes*.\nA node may be a virtual or physical machine, depending on the cluster. Each node\nis managed by the\n[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane)\nand contains the services necessary to run\n[Pods](https://kubernetes.io/docs/concepts/workloads/pods/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Typically you have several nodes in a cluster; in a learning or resource-limited\nenvironment, you might have only one node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "The [components](https://kubernetes.io/docs/concepts/architecture/#node-components) on a node include the\n[kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet), a\n[container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes), and the\n[kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Management",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "There are two main ways to have Nodes added to the\n[API server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver):",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "ordered": true,
+      "text": "1. The kubelet on a node self-registers to the control plane\n2. You (or another human user) manually add a Node object",
+      "type": "list"
+    },
+    {
+      "block_index": 7,
+      "text": "After you create a Node [object](https://kubernetes.io/docs/concepts/overview/working-with-objects/#kubernetes-objects),\nor the kubelet on a node self-registers, the control plane checks whether the new Node object\nis valid. For example, if you try to create a Node from the following JSON manifest:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "language": "json",
+      "text": "{\n  \"kind\": \"Node\",\n  \"apiVersion\": \"v1\",\n  \"metadata\": {\n    \"name\": \"10.240.79.157\",\n    \"labels\": {\n      \"name\": \"my-first-k8s-node\"\n    }\n  }\n}",
+      "type": "code"
+    },
+    {
+      "block_index": 9,
+      "text": "Kubernetes creates a Node object internally (the representation). Kubernetes checks\nthat a kubelet has registered to the API server that matches the `metadata.name`\nfield of the Node. If the node is healthy (i.e. all necessary services are running),\nthen it is eligible to run a Pod. Otherwise, that node is ignored for any cluster activity\nuntil it becomes healthy.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 11,
+      "text": "Kubernetes keeps the object for the invalid Node and continues checking to see whether\nit becomes healthy.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "text": "You, or a [controller](https://kubernetes.io/docs/concepts/architecture/controller/), must explicitly\ndelete the Node object to stop that health checking.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "text": "The name of a Node object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "level": 3,
+      "text": "Node name uniqueness",
+      "type": "heading"
+    },
+    {
+      "block_index": 15,
+      "text": "The [name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names) identifies a Node. Two Nodes\ncannot have the same name at the same time. Kubernetes also assumes that a resource with the same\nname is the same object. In the case of a Node, it is implicitly assumed that an instance using the\nsame name will have the same state (e.g. network settings, root disk contents) and attributes like\nnode labels. This may lead to inconsistencies if an instance was modified without changing its name.\nIf the Node needs to be replaced or updated significantly, the existing Node object needs to be\nremoved from API server first and re-added after the update.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "level": 3,
+      "text": "Self-registration of Nodes",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "text": "When the kubelet flag `--register-node` is true (the default), the kubelet will attempt to\nregister itself with the API server. This is the preferred pattern, used by most distros.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "For self-registration, the kubelet is started with the following options:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "ordered": false,
+      "text": "- `--kubeconfig` - Path to credentials to authenticate itself to the API server.\n- `--cloud-provider` - How to talk to a [cloud provider](https://kubernetes.io/docs/reference/glossary/?all=true#term-cloud-provider) to read metadata about itself.\n- `--register-node` - Automatically register with the API server.\n- `--register-with-taints` - Register the node with the given list of [taints](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) (comma separated `<key>=<value>:<effect>`). No-op if `register-node` is false.\n- `--node-ip` - Optional comma-separated list of the IP addresses for the node. You can only specify a single address for each address family. For example, in a single-stack IPv4 cluster, you set this value to be the IPv4 address that the kubelet should use for the node. See [configure IPv4/IPv6 dual stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#configure-ipv4-ipv6-dual-stack) for details of running a dual-stack cluster. If you don't provide this argument, the kubelet uses the node's default IPv4 address, if any; if the node has no IPv4 addresses then the kubelet uses the node's default IPv6 address.\n- `--node-labels` - [Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels) to add when registering the node in the cluster (see label restrictions enforced by the [NodeRestriction admission plugin](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction)).\n- `--node-status-update-frequency` - Specifies how often kubelet posts its node status to the API server.",
+      "type": "list"
+    },
+    {
+      "block_index": 20,
+      "text": "When the [Node authorization mode](https://kubernetes.io/docs/reference/access-authn-authz/node/) and\n[NodeRestriction admission plugin](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction)\nare enabled, kubelets are only authorized to create/modify their own Node resource.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 22,
+      "text": "As mentioned in the [Node name uniqueness](https://kubernetes.io/docs/concepts/architecture/nodes/#node-name-uniqueness) section,\nwhen Node configuration needs to be updated, it is a good practice to re-register\nthe node with the API server. For example, if the kubelet is being restarted with\na new set of `--node-labels`, but the same Node name is used, the change will\nnot take effect, as labels are only set (or modified) upon Node registration with the API server.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "Pods already scheduled on the Node may misbehave or cause issues if the Node\nconfiguration will be changed on kubelet restart. For example, an already running\nPod may be tainted against the new labels assigned to the Node, while other\nPods, that are incompatible with that Pod will be scheduled based on this new\nlabel. Node re-registration ensures all Pods will be drained and properly\nre-scheduled.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "Manual Node administration",
+      "type": "heading"
+    },
+    {
+      "block_index": 25,
+      "text": "You can create and modify Node objects using\n[kubectl](https://kubernetes.io/docs/reference/kubectl/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "When you want to create Node objects manually, set the kubelet flag `--register-node=false`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "text": "You can modify Node objects regardless of the setting of `--register-node`.\nFor example, you can set labels on an existing Node or mark it unschedulable.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "text": "You can set optional node role(s) for nodes by adding one or more `node-role.kubernetes.io/<role>: <role>` labels to the node where characters of `<role>`\nare limited by the [syntax](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set) rules for labels.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "text": "Kubernetes ignores the label value for node roles; by convention, you can set it to the same string you used for the node role in the label key.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "text": "You can use labels on Nodes in conjunction with node selectors on Pods to control\nscheduling. For example, you can constrain a Pod to only be eligible to run on\na subset of the available nodes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "Marking a node as unschedulable prevents the scheduler from placing new pods onto\nthat Node but does not affect existing Pods on the Node. This is useful as a\npreparatory step before a node reboot or other maintenance.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "text": "To mark a Node unschedulable, run:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "language": "shell",
+      "text": "kubectl cordon $NODENAME",
+      "type": "code"
+    },
+    {
+      "block_index": 34,
+      "text": "See [Safely Drain a Node](https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/)\nfor more details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 36,
+      "level": 2,
+      "text": "Node status",
+      "type": "heading"
+    },
+    {
+      "block_index": 37,
+      "text": "A Node's status contains the following information:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "ordered": false,
+      "text": "- Addresses\n- Conditions\n- Capacity and Allocatable\n- Info",
+      "type": "list"
+    },
+    {
+      "block_index": 39,
+      "text": "You can use `kubectl` to view a Node's status and other details:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "language": "shell",
+      "text": "kubectl describe node <insert-node-name-here>",
+      "type": "code"
+    },
+    {
+      "block_index": 41,
+      "text": "See [Node Status](https://kubernetes.io/docs/reference/node/node-status/) for more details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "level": 2,
+      "text": "Node heartbeats",
+      "type": "heading"
+    },
+    {
+      "block_index": 43,
+      "text": "Heartbeats, sent by Kubernetes nodes, help your cluster determine the\navailability of each node, and to take action when failures are detected.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "text": "For nodes there are two forms of heartbeats:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 45,
+      "ordered": false,
+      "text": "- Updates to the `.status` of a Node.\n- Lease objects within the kube-node-lease namespace . Each Node has an associated Lease object.",
+      "type": "list"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "Node controller",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "text": "The node [controller](https://kubernetes.io/docs/concepts/architecture/controller/) is a\nKubernetes control plane component that manages various aspects of nodes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "text": "The node controller has multiple roles in a node's life. The first is assigning a\nCIDR block to the node when it is registered (if CIDR assignment is turned on).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 49,
+      "text": "The second is keeping the node controller's internal list of nodes up to date with\nthe cloud provider's list of available machines. When running in a cloud\nenvironment and whenever a node is unhealthy, the node controller asks the cloud\nprovider if the VM for that node is still available. If not, the node\ncontroller deletes the node from its list of nodes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 50,
+      "text": "The third is monitoring the nodes' health. The node controller is\nresponsible for:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "ordered": false,
+      "text": "- In the case that a node becomes unreachable, updating the Ready condition in the Node's .status field. In this case the node controller sets the Ready condition to Unknown .\n- If a node remains unreachable: triggering API-initiated eviction for all of the Pods on the unreachable node. By default, the node controller waits 5 minutes between marking the node as Unknown and submitting the first eviction request.",
+      "type": "list"
+    },
+    {
+      "block_index": 52,
+      "text": "By default, the node controller checks the state of each node every 5 seconds.\nThis period can be configured using the `--node-monitor-period` flag on the\n`kube-controller-manager` component.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 53,
+      "level": 3,
+      "text": "Rate limits on eviction",
+      "type": "heading"
+    },
+    {
+      "block_index": 54,
+      "text": "In most cases, the node controller limits the eviction rate to\n`--node-eviction-rate` (default 0.1) per second, meaning it won't evict pods\nfrom more than 1 node per 10 seconds.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 55,
+      "text": "The node eviction behavior changes when a node in a given availability zone\nbecomes unhealthy. The node controller checks what percentage of nodes in the zone\nare unhealthy (the `Ready` condition is `Unknown` or `False`) at the same time:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 56,
+      "ordered": false,
+      "text": "- If the fraction of unhealthy nodes is at least --unhealthy-zone-threshold (default 0.55), then the eviction rate is reduced.\n- If the cluster is small (i.e. has less than or equal to --large-cluster-size-threshold nodes - default 50), then evictions are stopped.\n- Otherwise, the eviction rate is reduced to --secondary-node-eviction-rate (default 0.01) per second.",
+      "type": "list"
+    },
+    {
+      "block_index": 57,
+      "text": "The reason these policies are implemented per availability zone is because one\navailability zone might become partitioned from the control plane while the others remain\nconnected. If your cluster does not span multiple cloud provider availability zones,\nthen the eviction mechanism does not take per-zone unavailability into account.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 58,
+      "text": "A key reason for spreading your nodes across availability zones is so that the\nworkload can be shifted to healthy zones when one entire zone goes down.\nTherefore, if all nodes in a zone are unhealthy, then the node controller evicts at\nthe normal rate of `--node-eviction-rate`. The corner case is when all zones are\ncompletely unhealthy (none of the nodes in the cluster are healthy). In such a\ncase, the node controller assumes that there is some problem with connectivity\nbetween the control plane and the nodes, and doesn't perform any evictions.\n(If there has been an outage and some nodes reappear, the node controller does\nevict pods from the remaining nodes that are unhealthy or unreachable).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "text": "The node controller is also responsible for evicting pods running on nodes with\n`NoExecute` taints, unless those pods tolerate that taint.\nThe node controller also adds [taints](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)\ncorresponding to node problems like node unreachable or not ready. This means\nthat the scheduler won't place Pods onto unhealthy nodes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 60,
+      "level": 2,
+      "text": "Resource capacity tracking",
+      "type": "heading"
+    },
+    {
+      "block_index": 61,
+      "text": "Node objects track information about the Node's resource capacity: for example, the amount\nof memory available and the number of CPUs.\nNodes that [self register](https://kubernetes.io/docs/concepts/architecture/nodes/#self-registration-of-nodes) report their capacity during\nregistration. If you [manually](https://kubernetes.io/docs/concepts/architecture/nodes/#manual-node-administration) add a Node, then\nyou need to set the node's capacity information when you add it.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 62,
+      "text": "The Kubernetes [scheduler](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/) ensures that\nthere are enough resources for all the Pods on a Node. The scheduler checks that the sum\nof the requests of containers on the node is no greater than the node's capacity.\nThat sum of requests includes all containers managed by the kubelet, but excludes any\ncontainers started directly by the container runtime, and also excludes any\nprocesses running outside of the kubelet's control.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 63,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 64,
+      "level": 2,
+      "text": "Node topology",
+      "type": "heading"
+    },
+    {
+      "block_index": 65,
+      "text": "*This is a stable feature in Kubernetes, and has been since the 1.27 release. You can no longer toggle this feature (the associated [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates-removed/) has been removed).*",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 66,
+      "text": "If you have enabled the `TopologyManager`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/), then\nthe kubelet can use topology hints when making resource assignment decisions.\nSee [Control Topology Management Policies on a Node](https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/)\nfor more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 67,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 68,
+      "text": "Learn more about the following:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 69,
+      "ordered": false,
+      "text": "- Components that make up a node.\n- API definition for Node .\n- Node section of the architecture design document.\n- Graceful/non-graceful node shutdown .\n- Node autoscaling to manage the number and size of nodes in your cluster.\n- Taints and Tolerations .\n- Node Resource Managers .\n- Resource Management for Windows nodes .",
+      "type": "list"
+    }
+  ],
+  "content": "# Nodes\n\nKubernetes runs your [workload](https://kubernetes.io/docs/concepts/workloads/)\nby placing [containers](https://kubernetes.io/docs/concepts/containers/) into Pods to run on *Nodes*.\nA node may be a virtual or physical machine, depending on the cluster. Each node\nis managed by the\n[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane)\nand contains the services necessary to run\n[Pods](https://kubernetes.io/docs/concepts/workloads/pods/).\n\nTypically you have several nodes in a cluster; in a learning or resource-limited\nenvironment, you might have only one node.\n\nThe [components](https://kubernetes.io/docs/concepts/architecture/#node-components) on a node include the\n[kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet), a\n[container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes), and the\n[kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/).\n\n## Management\n\nThere are two main ways to have Nodes added to the\n[API server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver):\n\n1. The kubelet on a node self-registers to the control plane\n2. You (or another human user) manually add a Node object\n\nAfter you create a Node [object](https://kubernetes.io/docs/concepts/overview/working-with-objects/#kubernetes-objects),\nor the kubelet on a node self-registers, the control plane checks whether the new Node object\nis valid. For example, if you try to create a Node from the following JSON manifest:\n\n```json\n{\n  \"kind\": \"Node\",\n  \"apiVersion\": \"v1\",\n  \"metadata\": {\n    \"name\": \"10.240.79.157\",\n    \"labels\": {\n      \"name\": \"my-first-k8s-node\"\n    }\n  }\n}\n```\n\nKubernetes creates a Node object internally (the representation). Kubernetes checks\nthat a kubelet has registered to the API server that matches the `metadata.name`\nfield of the Node. If the node is healthy (i.e. all necessary services are running),\nthen it is eligible to run a Pod. Otherwise, that node is ignored for any cluster activity\nuntil it becomes healthy.\n\n#### Note:\n\nKubernetes keeps the object for the invalid Node and continues checking to see whether\nit becomes healthy.\n\nYou, or a [controller](https://kubernetes.io/docs/concepts/architecture/controller/), must explicitly\ndelete the Node object to stop that health checking.\n\nThe name of a Node object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).\n\n### Node name uniqueness\n\nThe [name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names) identifies a Node. Two Nodes\ncannot have the same name at the same time. Kubernetes also assumes that a resource with the same\nname is the same object. In the case of a Node, it is implicitly assumed that an instance using the\nsame name will have the same state (e.g. network settings, root disk contents) and attributes like\nnode labels. This may lead to inconsistencies if an instance was modified without changing its name.\nIf the Node needs to be replaced or updated significantly, the existing Node object needs to be\nremoved from API server first and re-added after the update.\n\n### Self-registration of Nodes\n\nWhen the kubelet flag `--register-node` is true (the default), the kubelet will attempt to\nregister itself with the API server. This is the preferred pattern, used by most distros.\n\nFor self-registration, the kubelet is started with the following options:\n\n- `--kubeconfig` - Path to credentials to authenticate itself to the API server.\n- `--cloud-provider` - How to talk to a [cloud provider](https://kubernetes.io/docs/reference/glossary/?all=true#term-cloud-provider) to read metadata about itself.\n- `--register-node` - Automatically register with the API server.\n- `--register-with-taints` - Register the node with the given list of [taints](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) (comma separated `<key>=<value>:<effect>`). No-op if `register-node` is false.\n- `--node-ip` - Optional comma-separated list of the IP addresses for the node. You can only specify a single address for each address family. For example, in a single-stack IPv4 cluster, you set this value to be the IPv4 address that the kubelet should use for the node. See [configure IPv4/IPv6 dual stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#configure-ipv4-ipv6-dual-stack) for details of running a dual-stack cluster. If you don't provide this argument, the kubelet uses the node's default IPv4 address, if any; if the node has no IPv4 addresses then the kubelet uses the node's default IPv6 address.\n- `--node-labels` - [Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels) to add when registering the node in the cluster (see label restrictions enforced by the [NodeRestriction admission plugin](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction)).\n- `--node-status-update-frequency` - Specifies how often kubelet posts its node status to the API server.\n\nWhen the [Node authorization mode](https://kubernetes.io/docs/reference/access-authn-authz/node/) and\n[NodeRestriction admission plugin](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction)\nare enabled, kubelets are only authorized to create/modify their own Node resource.\n\n#### Note:\n\nAs mentioned in the [Node name uniqueness](https://kubernetes.io/docs/concepts/architecture/nodes/#node-name-uniqueness) section,\nwhen Node configuration needs to be updated, it is a good practice to re-register\nthe node with the API server. For example, if the kubelet is being restarted with\na new set of `--node-labels`, but the same Node name is used, the change will\nnot take effect, as labels are only set (or modified) upon Node registration with the API server.\n\nPods already scheduled on the Node may misbehave or cause issues if the Node\nconfiguration will be changed on kubelet restart. For example, an already running\nPod may be tainted against the new labels assigned to the Node, while other\nPods, that are incompatible with that Pod will be scheduled based on this new\nlabel. Node re-registration ensures all Pods will be drained and properly\nre-scheduled.\n\n### Manual Node administration\n\nYou can create and modify Node objects using\n[kubectl](https://kubernetes.io/docs/reference/kubectl/).\n\nWhen you want to create Node objects manually, set the kubelet flag `--register-node=false`.\n\nYou can modify Node objects regardless of the setting of `--register-node`.\nFor example, you can set labels on an existing Node or mark it unschedulable.\n\nYou can set optional node role(s) for nodes by adding one or more `node-role.kubernetes.io/<role>: <role>` labels to the node where characters of `<role>`\nare limited by the [syntax](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set) rules for labels.\n\nKubernetes ignores the label value for node roles; by convention, you can set it to the same string you used for the node role in the label key.\n\nYou can use labels on Nodes in conjunction with node selectors on Pods to control\nscheduling. For example, you can constrain a Pod to only be eligible to run on\na subset of the available nodes.\n\nMarking a node as unschedulable prevents the scheduler from placing new pods onto\nthat Node but does not affect existing Pods on the Node. This is useful as a\npreparatory step before a node reboot or other maintenance.\n\nTo mark a Node unschedulable, run:\n\n```shell\nkubectl cordon $NODENAME\n```\n\nSee [Safely Drain a Node](https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/)\nfor more details.\n\n#### Note:\n\n## Node status\n\nA Node's status contains the following information:\n\n- Addresses\n- Conditions\n- Capacity and Allocatable\n- Info\n\nYou can use `kubectl` to view a Node's status and other details:\n\n```shell\nkubectl describe node <insert-node-name-here>\n```\n\nSee [Node Status](https://kubernetes.io/docs/reference/node/node-status/) for more details.\n\n## Node heartbeats\n\nHeartbeats, sent by Kubernetes nodes, help your cluster determine the\navailability of each node, and to take action when failures are detected.\n\nFor nodes there are two forms of heartbeats:\n\n- Updates to the `.status` of a Node.\n- Lease objects within the kube-node-lease namespace . Each Node has an associated Lease object.\n\n## Node controller\n\nThe node [controller](https://kubernetes.io/docs/concepts/architecture/controller/) is a\nKubernetes control plane component that manages various aspects of nodes.\n\nThe node controller has multiple roles in a node's life. The first is assigning a\nCIDR block to the node when it is registered (if CIDR assignment is turned on).\n\nThe second is keeping the node controller's internal list of nodes up to date with\nthe cloud provider's list of available machines. When running in a cloud\nenvironment and whenever a node is unhealthy, the node controller asks the cloud\nprovider if the VM for that node is still available. If not, the node\ncontroller deletes the node from its list of nodes.\n\nThe third is monitoring the nodes' health. The node controller is\nresponsible for:\n\n- In the case that a node becomes unreachable, updating the Ready condition in the Node's .status field. In this case the node controller sets the Ready condition to Unknown .\n- If a node remains unreachable: triggering API-initiated eviction for all of the Pods on the unreachable node. By default, the node controller waits 5 minutes between marking the node as Unknown and submitting the first eviction request.\n\nBy default, the node controller checks the state of each node every 5 seconds.\nThis period can be configured using the `--node-monitor-period` flag on the\n`kube-controller-manager` component.\n\n### Rate limits on eviction\n\nIn most cases, the node controller limits the eviction rate to\n`--node-eviction-rate` (default 0.1) per second, meaning it won't evict pods\nfrom more than 1 node per 10 seconds.\n\nThe node eviction behavior changes when a node in a given availability zone\nbecomes unhealthy. The node controller checks what percentage of nodes in the zone\nare unhealthy (the `Ready` condition is `Unknown` or `False`) at the same time:\n\n- If the fraction of unhealthy nodes is at least --unhealthy-zone-threshold (default 0.55), then the eviction rate is reduced.\n- If the cluster is small (i.e. has less than or equal to --large-cluster-size-threshold nodes - default 50), then evictions are stopped.\n- Otherwise, the eviction rate is reduced to --secondary-node-eviction-rate (default 0.01) per second.\n\nThe reason these policies are implemented per availability zone is because one\navailability zone might become partitioned from the control plane while the others remain\nconnected. If your cluster does not span multiple cloud provider availability zones,\nthen the eviction mechanism does not take per-zone unavailability into account.\n\nA key reason for spreading your nodes across availability zones is so that the\nworkload can be shifted to healthy zones when one entire zone goes down.\nTherefore, if all nodes in a zone are unhealthy, then the node controller evicts at\nthe normal rate of `--node-eviction-rate`. The corner case is when all zones are\ncompletely unhealthy (none of the nodes in the cluster are healthy). In such a\ncase, the node controller assumes that there is some problem with connectivity\nbetween the control plane and the nodes, and doesn't perform any evictions.\n(If there has been an outage and some nodes reappear, the node controller does\nevict pods from the remaining nodes that are unhealthy or unreachable).\n\nThe node controller is also responsible for evicting pods running on nodes with\n`NoExecute` taints, unless those pods tolerate that taint.\nThe node controller also adds [taints](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)\ncorresponding to node problems like node unreachable or not ready. This means\nthat the scheduler won't place Pods onto unhealthy nodes.\n\n## Resource capacity tracking\n\nNode objects track information about the Node's resource capacity: for example, the amount\nof memory available and the number of CPUs.\nNodes that [self register](https://kubernetes.io/docs/concepts/architecture/nodes/#self-registration-of-nodes) report their capacity during\nregistration. If you [manually](https://kubernetes.io/docs/concepts/architecture/nodes/#manual-node-administration) add a Node, then\nyou need to set the node's capacity information when you add it.\n\nThe Kubernetes [scheduler](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/) ensures that\nthere are enough resources for all the Pods on a Node. The scheduler checks that the sum\nof the requests of containers on the node is no greater than the node's capacity.\nThat sum of requests includes all containers managed by the kubelet, but excludes any\ncontainers started directly by the container runtime, and also excludes any\nprocesses running outside of the kubelet's control.\n\n#### Note:\n\n## Node topology\n\n*This is a stable feature in Kubernetes, and has been since the 1.27 release. You can no longer toggle this feature (the associated [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates-removed/) has been removed).*\n\nIf you have enabled the `TopologyManager`\n[feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/), then\nthe kubelet can use topology hints when making resource assignment decisions.\nSee [Control Topology Management Policies on a Node](https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/)\nfor more information.\n\n## What's next\n\nLearn more about the following:\n\n- Components that make up a node.\n- API definition for Node .\n- Node section of the architecture design document.\n- Graceful/non-graceful node shutdown .\n- Node autoscaling to manage the number and size of nodes in your cluster.\n- Taints and Tolerations .\n- Node Resource Managers .\n- Resource Management for Windows nodes .\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:bcc616d141cdb91da5c408444f73a51eaeb5713b04397e13f2b42976f3618f73",
+  "document_id": "arch-002",
+  "domain": "cluster_architecture",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Nodes"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Management"
+    },
+    {
+      "block_index": 10,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 14,
+      "level": 3,
+      "text": "Node name uniqueness"
+    },
+    {
+      "block_index": 16,
+      "level": 3,
+      "text": "Self-registration of Nodes"
+    },
+    {
+      "block_index": 21,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "Manual Node administration"
+    },
+    {
+      "block_index": 35,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 36,
+      "level": 2,
+      "text": "Node status"
+    },
+    {
+      "block_index": 42,
+      "level": 2,
+      "text": "Node heartbeats"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "Node controller"
+    },
+    {
+      "block_index": 53,
+      "level": 3,
+      "text": "Rate limits on eviction"
+    },
+    {
+      "block_index": 60,
+      "level": 2,
+      "text": "Resource capacity tracking"
+    },
+    {
+      "block_index": 63,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 64,
+      "level": 2,
+      "text": "Node topology"
+    },
+    {
+      "block_index": 67,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "workload",
+      "url": "https://kubernetes.io/docs/concepts/workloads/"
+    },
+    {
+      "text": "containers",
+      "url": "https://kubernetes.io/docs/concepts/containers/"
+    },
+    {
+      "text": "control plane",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane"
+    },
+    {
+      "text": "Pods",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "components",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#node-components"
+    },
+    {
+      "text": "kubelet",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet"
+    },
+    {
+      "text": "container runtime",
+      "url": "https://kubernetes.io/docs/setup/production-environment/container-runtimes"
+    },
+    {
+      "text": "kube-proxy",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/"
+    },
+    {
+      "text": "API server",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kube-apiserver"
+    },
+    {
+      "text": "object",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/#kubernetes-objects"
+    },
+    {
+      "text": "controller",
+      "url": "https://kubernetes.io/docs/concepts/architecture/controller/"
+    },
+    {
+      "text": "DNS subdomain name",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names"
+    },
+    {
+      "text": "name",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+    },
+    {
+      "text": "cloud provider",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-cloud-provider"
+    },
+    {
+      "text": "taints",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/"
+    },
+    {
+      "text": "configure IPv4/IPv6 dual stack",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/dual-stack/#configure-ipv4-ipv6-dual-stack"
+    },
+    {
+      "text": "Labels",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+    },
+    {
+      "text": "NodeRestriction admission plugin",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction"
+    },
+    {
+      "text": "Node authorization mode",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/node/"
+    },
+    {
+      "text": "Node name uniqueness",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/#node-name-uniqueness"
+    },
+    {
+      "text": "kubectl",
+      "url": "https://kubernetes.io/docs/reference/kubectl/"
+    },
+    {
+      "text": "syntax",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set"
+    },
+    {
+      "text": "Safely Drain a Node",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/"
+    },
+    {
+      "text": "Node Status",
+      "url": "https://kubernetes.io/docs/reference/node/node-status/"
+    },
+    {
+      "text": "self register",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/#self-registration-of-nodes"
+    },
+    {
+      "text": "manually",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/#manual-node-administration"
+    },
+    {
+      "text": "scheduler",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/"
+    },
+    {
+      "text": "feature gate",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates-removed/"
+    },
+    {
+      "text": "feature gate",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/"
+    },
+    {
+      "text": "Control Topology Management Policies on a Node",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/"
+    }
+  ],
+  "raw_path": "data/raw/documents/arch-002.html",
+  "raw_sha256": "sha256:04e699f293df70f5ad716bae39c5874b3f699553de42f9774e2194c866be2d4a",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/architecture/nodes/",
+  "statistics": {
+    "block_count": 70,
+    "character_count": 14191,
+    "code_block_count": 3,
+    "heading_count": 16,
+    "link_count": 30,
+    "list_count": 7,
+    "paragraph_count": 44,
+    "table_count": 0,
+    "word_count": 2061
+  },
+  "title": "Nodes"
+}

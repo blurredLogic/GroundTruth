@@ -1,0 +1,319 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Controllers",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "In robotics and automation, a *control loop* is\na non-terminating loop that regulates the state of a system.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Here is one example of a control loop: a thermostat in a room.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "When you set the temperature, that's telling the thermostat\nabout your *desired state*. The actual room temperature is the\n*current state*. The thermostat acts to bring the current state\ncloser to the desired state, by turning equipment on or off.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Controller pattern",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "A controller tracks at least one Kubernetes resource type.\nThese [objects](https://kubernetes.io/docs/concepts/overview/working-with-objects/#kubernetes-objects)\nhave a spec field that represents the desired state. The\ncontroller(s) for that resource are responsible for making the current\nstate come closer to that desired state.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "The controller might carry the action out itself; more commonly, in Kubernetes,\na controller will send messages to the\n[API server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver) that have\nuseful side effects. You'll see examples of this below.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Control via API server",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "text": "The [Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) controller is an example of a\nKubernetes built-in controller. Built-in controllers manage state by\ninteracting with the cluster API server.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "text": "Job is a Kubernetes resource that runs a\n[Pod](https://kubernetes.io/docs/concepts/workloads/pods/), or perhaps several Pods, to carry out\na task and then stop.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "text": "(Once [scheduled](https://kubernetes.io/docs/concepts/scheduling-eviction/), Pod objects become part of the\ndesired state for a kubelet).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "When the Job controller sees a new task it makes sure that, somewhere\nin your cluster, the kubelets on a set of Nodes are running the right\nnumber of Pods to get the work done.\nThe Job controller does not run any Pods or containers\nitself. Instead, the Job controller tells the API server to create or remove\nPods.\nOther components in the\n[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane)\nact on the new information (there are new Pods to schedule and run),\nand eventually the work is done.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "text": "After you create a new Job, the desired state is for that Job to be completed.\nThe Job controller makes the current state for that Job be nearer to your\ndesired state: creating Pods that do the work you wanted for that Job, so that\nthe Job is closer to completion.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "text": "Controllers also update the objects that configure them.\nFor example: once the work is done for a Job, the Job controller\nupdates that Job object to mark it `Finished`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "(This is a bit like how some thermostats turn a light off to\nindicate that your room is now at the temperature you set).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Direct control",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "In contrast with Job, some controllers need to make changes to\nthings outside of your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "For example, if you use a control loop to make sure there\nare enough [Nodes](https://kubernetes.io/docs/concepts/architecture/nodes/)\nin your cluster, then that controller needs something outside the\ncurrent cluster to set up new Nodes when needed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "Controllers that interact with external state find their desired state from\nthe API server, then communicate directly with an external system to bring\nthe current state closer in line.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "text": "(There actually is a [controller](https://github.com/kubernetes/autoscaler/)\nthat horizontally scales the nodes in your cluster.)",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "text": "The important point here is that the controller makes some changes to bring about\nyour desired state, and then reports the current state back to your cluster's API server.\nOther control loops can observe that reported data and take their own actions.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "text": "In the thermostat example, if the room is very cold then a different controller\nmight also turn on a frost protection heater. With Kubernetes clusters, the control\nplane indirectly works with IP address management tools, storage services,\ncloud provider APIs, and other services by\n[extending Kubernetes](https://kubernetes.io/docs/concepts/extend-kubernetes/) to implement that.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "level": 2,
+      "text": "Desired versus current state",
+      "type": "heading"
+    },
+    {
+      "block_index": 23,
+      "text": "Kubernetes takes a cloud-native view of systems, and is able to handle\nconstant change.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "text": "Your cluster could be changing at any point as work happens and\ncontrol loops automatically fix failures. This means that,\npotentially, your cluster never reaches a stable state.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "text": "As long as the controllers for your cluster are running and able to make\nuseful changes, it doesn't matter if the overall state is stable or not.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "level": 2,
+      "text": "Design",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "As a tenet of its design, Kubernetes uses lots of controllers that each manage\na particular aspect of cluster state. Most commonly, a particular control loop\n(controller) uses one kind of resource as its desired state, and has a different\nkind of resource that it manages to make that desired state happen. For example,\na controller for Jobs tracks Job objects (to discover new work) and Pod objects\n(to run the Jobs, and then to see when the work is finished). In this case\nsomething else creates the Jobs, whereas the Job controller creates Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "text": "It's useful to have simple controllers rather than one, monolithic set of control\nloops that are interlinked. Controllers can fail, so Kubernetes is designed to\nallow for that.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 30,
+      "text": "There can be several controllers that create or update the same kind of object.\nBehind the scenes, Kubernetes controllers make sure that they only pay attention\nto the resources linked to their controlling resource.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "For example, you can have Deployments and Jobs; these both create Pods.\nThe Job controller does not delete the Pods that your Deployment created,\nbecause there is information ([labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels))\nthe controllers can use to tell those Pods apart.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "level": 2,
+      "text": "Ways of running controllers",
+      "type": "heading"
+    },
+    {
+      "block_index": 33,
+      "text": "Kubernetes comes with a set of built-in controllers that run inside\nthe [kube-controller-manager](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/). These\nbuilt-in controllers provide important core behaviors.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "text": "The Deployment controller and Job controller are examples of controllers that\ncome as part of Kubernetes itself (\"built-in\" controllers).\nKubernetes lets you run a resilient control plane, so that if any of the built-in\ncontrollers were to fail, another part of the control plane will take over the work.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "You can find controllers that run outside the control plane, to extend Kubernetes.\nOr, if you want, you can write a new controller yourself.\nYou can run your own controller as a set of Pods,\nor externally to Kubernetes. What fits best will depend on what that particular\ncontroller does.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 37,
+      "ordered": false,
+      "text": "- Read about the Kubernetes control plane\n- Discover some of the basic Kubernetes objects\n- Learn more about the Kubernetes API\n- If you want to write your own controller, see Kubernetes extension patterns and the sample-controller repository.",
+      "type": "list"
+    }
+  ],
+  "content": "# Controllers\n\nIn robotics and automation, a *control loop* is\na non-terminating loop that regulates the state of a system.\n\nHere is one example of a control loop: a thermostat in a room.\n\nWhen you set the temperature, that's telling the thermostat\nabout your *desired state*. The actual room temperature is the\n*current state*. The thermostat acts to bring the current state\ncloser to the desired state, by turning equipment on or off.\n\n## Controller pattern\n\nA controller tracks at least one Kubernetes resource type.\nThese [objects](https://kubernetes.io/docs/concepts/overview/working-with-objects/#kubernetes-objects)\nhave a spec field that represents the desired state. The\ncontroller(s) for that resource are responsible for making the current\nstate come closer to that desired state.\n\nThe controller might carry the action out itself; more commonly, in Kubernetes,\na controller will send messages to the\n[API server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver) that have\nuseful side effects. You'll see examples of this below.\n\n### Control via API server\n\nThe [Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) controller is an example of a\nKubernetes built-in controller. Built-in controllers manage state by\ninteracting with the cluster API server.\n\nJob is a Kubernetes resource that runs a\n[Pod](https://kubernetes.io/docs/concepts/workloads/pods/), or perhaps several Pods, to carry out\na task and then stop.\n\n(Once [scheduled](https://kubernetes.io/docs/concepts/scheduling-eviction/), Pod objects become part of the\ndesired state for a kubelet).\n\nWhen the Job controller sees a new task it makes sure that, somewhere\nin your cluster, the kubelets on a set of Nodes are running the right\nnumber of Pods to get the work done.\nThe Job controller does not run any Pods or containers\nitself. Instead, the Job controller tells the API server to create or remove\nPods.\nOther components in the\n[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane)\nact on the new information (there are new Pods to schedule and run),\nand eventually the work is done.\n\nAfter you create a new Job, the desired state is for that Job to be completed.\nThe Job controller makes the current state for that Job be nearer to your\ndesired state: creating Pods that do the work you wanted for that Job, so that\nthe Job is closer to completion.\n\nControllers also update the objects that configure them.\nFor example: once the work is done for a Job, the Job controller\nupdates that Job object to mark it `Finished`.\n\n(This is a bit like how some thermostats turn a light off to\nindicate that your room is now at the temperature you set).\n\n### Direct control\n\nIn contrast with Job, some controllers need to make changes to\nthings outside of your cluster.\n\nFor example, if you use a control loop to make sure there\nare enough [Nodes](https://kubernetes.io/docs/concepts/architecture/nodes/)\nin your cluster, then that controller needs something outside the\ncurrent cluster to set up new Nodes when needed.\n\nControllers that interact with external state find their desired state from\nthe API server, then communicate directly with an external system to bring\nthe current state closer in line.\n\n(There actually is a [controller](https://github.com/kubernetes/autoscaler/)\nthat horizontally scales the nodes in your cluster.)\n\nThe important point here is that the controller makes some changes to bring about\nyour desired state, and then reports the current state back to your cluster's API server.\nOther control loops can observe that reported data and take their own actions.\n\nIn the thermostat example, if the room is very cold then a different controller\nmight also turn on a frost protection heater. With Kubernetes clusters, the control\nplane indirectly works with IP address management tools, storage services,\ncloud provider APIs, and other services by\n[extending Kubernetes](https://kubernetes.io/docs/concepts/extend-kubernetes/) to implement that.\n\n## Desired versus current state\n\nKubernetes takes a cloud-native view of systems, and is able to handle\nconstant change.\n\nYour cluster could be changing at any point as work happens and\ncontrol loops automatically fix failures. This means that,\npotentially, your cluster never reaches a stable state.\n\nAs long as the controllers for your cluster are running and able to make\nuseful changes, it doesn't matter if the overall state is stable or not.\n\n## Design\n\nAs a tenet of its design, Kubernetes uses lots of controllers that each manage\na particular aspect of cluster state. Most commonly, a particular control loop\n(controller) uses one kind of resource as its desired state, and has a different\nkind of resource that it manages to make that desired state happen. For example,\na controller for Jobs tracks Job objects (to discover new work) and Pod objects\n(to run the Jobs, and then to see when the work is finished). In this case\nsomething else creates the Jobs, whereas the Job controller creates Pods.\n\nIt's useful to have simple controllers rather than one, monolithic set of control\nloops that are interlinked. Controllers can fail, so Kubernetes is designed to\nallow for that.\n\n#### Note:\n\nThere can be several controllers that create or update the same kind of object.\nBehind the scenes, Kubernetes controllers make sure that they only pay attention\nto the resources linked to their controlling resource.\n\nFor example, you can have Deployments and Jobs; these both create Pods.\nThe Job controller does not delete the Pods that your Deployment created,\nbecause there is information ([labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels))\nthe controllers can use to tell those Pods apart.\n\n## Ways of running controllers\n\nKubernetes comes with a set of built-in controllers that run inside\nthe [kube-controller-manager](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/). These\nbuilt-in controllers provide important core behaviors.\n\nThe Deployment controller and Job controller are examples of controllers that\ncome as part of Kubernetes itself (\"built-in\" controllers).\nKubernetes lets you run a resilient control plane, so that if any of the built-in\ncontrollers were to fail, another part of the control plane will take over the work.\n\nYou can find controllers that run outside the control plane, to extend Kubernetes.\nOr, if you want, you can write a new controller yourself.\nYou can run your own controller as a set of Pods,\nor externally to Kubernetes. What fits best will depend on what that particular\ncontroller does.\n\n## What's next\n\n- Read about the Kubernetes control plane\n- Discover some of the basic Kubernetes objects\n- Learn more about the Kubernetes API\n- If you want to write your own controller, see Kubernetes extension patterns and the sample-controller repository.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:9925bc90786a900593fd1127ea6d7dfd5a8a1f2fd1e6b76bc6ae74ffc2308ed9",
+  "document_id": "arch-004",
+  "domain": "cluster_architecture",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Controllers"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Controller pattern"
+    },
+    {
+      "block_index": 7,
+      "level": 3,
+      "text": "Control via API server"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Direct control"
+    },
+    {
+      "block_index": 22,
+      "level": 2,
+      "text": "Desired versus current state"
+    },
+    {
+      "block_index": 26,
+      "level": 2,
+      "text": "Design"
+    },
+    {
+      "block_index": 29,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 32,
+      "level": 2,
+      "text": "Ways of running controllers"
+    },
+    {
+      "block_index": 36,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "objects",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/#kubernetes-objects"
+    },
+    {
+      "text": "API server",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kube-apiserver"
+    },
+    {
+      "text": "Job",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/"
+    },
+    {
+      "text": "Pod",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "scheduled",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/"
+    },
+    {
+      "text": "control plane",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane"
+    },
+    {
+      "text": "Nodes",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/"
+    },
+    {
+      "text": "controller",
+      "url": "https://github.com/kubernetes/autoscaler/"
+    },
+    {
+      "text": "extending Kubernetes",
+      "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/"
+    },
+    {
+      "text": "labels",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+    },
+    {
+      "text": "kube-controller-manager",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/"
+    }
+  ],
+  "raw_path": "data/raw/documents/arch-004.html",
+  "raw_sha256": "sha256:d20a246871f9f47e0abda525074300317923c88a8a9c5a4f229a3eaceded6836",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/architecture/controller/",
+  "statistics": {
+    "block_count": 38,
+    "character_count": 6878,
+    "code_block_count": 0,
+    "heading_count": 9,
+    "link_count": 11,
+    "list_count": 1,
+    "paragraph_count": 28,
+    "table_count": 0,
+    "word_count": 1081
+  },
+  "title": "Controllers"
+}

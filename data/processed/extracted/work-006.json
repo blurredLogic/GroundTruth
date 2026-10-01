@@ -1,0 +1,651 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Disruptions",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "This guide is for application owners who want to build\nhighly available applications, and thus need to understand\nwhat types of disruptions can happen to Pods.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "It is also for cluster administrators who want to perform automated\ncluster actions, like upgrading and autoscaling clusters.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Voluntary and involuntary disruptions",
+      "type": "heading"
+    },
+    {
+      "block_index": 4,
+      "text": "Pods do not disappear until someone (a person or a controller) destroys them, or\nthere is an unavoidable hardware or system software error.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "text": "We call these unavoidable cases *involuntary disruptions* to\nan application. Examples are:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "ordered": false,
+      "text": "- a hardware failure of the physical machine backing the node\n- cluster administrator deletes VM (instance) by mistake\n- cloud provider or hypervisor failure makes VM disappear\n- a kernel panic\n- the node disappears from the cluster due to cluster network partition\n- eviction of a pod due to the node being out-of-resources .",
+      "type": "list"
+    },
+    {
+      "block_index": 7,
+      "text": "Except for the out-of-resources condition, all these conditions\nshould be familiar to most users; they are not specific\nto Kubernetes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "We call other cases *voluntary disruptions*. These include both\nactions initiated by the application owner and those initiated by a Cluster\nAdministrator. Typical application owner actions include:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "ordered": false,
+      "text": "- deleting the deployment or other controller that manages the pod\n- updating a deployment's pod template causing a restart\n- directly deleting a pod (e.g. by accident)",
+      "type": "list"
+    },
+    {
+      "block_index": 10,
+      "text": "Cluster administrator actions include:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "ordered": false,
+      "text": "- Draining a node for repair or upgrade.\n- Draining a node from a cluster to scale the cluster down (learn about Node Autoscaling ).\n- Removing a pod from a node to permit something else to fit on that node.",
+      "type": "list"
+    },
+    {
+      "block_index": 12,
+      "text": "These actions might be taken directly by the cluster administrator, or by automation\nrun by the cluster administrator, or by your cluster hosting provider.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "text": "Ask your cluster administrator or consult your cloud provider or distribution documentation\nto determine if any sources of voluntary disruptions are enabled for your cluster.\nIf none are enabled, you can skip creating Pod Disruption Budgets.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Dealing with disruptions",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "Here are some ways to mitigate involuntary disruptions:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "ordered": false,
+      "text": "- Ensure your pod requests the resources it needs.\n- Replicate your application if you need higher availability. (Learn about running replicated stateless and stateful applications.)\n- For even higher availability when running replicated applications, spread applications across racks (using anti-affinity ) or across zones (if using a multi-zone cluster .)",
+      "type": "list"
+    },
+    {
+      "block_index": 18,
+      "text": "The frequency of voluntary disruptions varies. On a basic Kubernetes cluster, there are\nno automated voluntary disruptions (only user-triggered ones). However, your cluster administrator or hosting provider\nmay run some additional services which cause voluntary disruptions. For example,\nrolling out node software updates can cause voluntary disruptions. Also, some implementations\nof cluster (node) autoscaling may cause voluntary disruptions to defragment and compact nodes.\nYour cluster administrator or hosting provider should have documented what level of voluntary\ndisruptions, if any, to expect. Certain configuration options, such as\n[using PriorityClasses](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/)\nin your pod spec can also cause voluntary (and involuntary) disruptions.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "Pod disruption budgets",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "text": "Kubernetes offers features to help you run highly available applications even when you\nintroduce frequent voluntary disruptions.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "text": "As an application owner, you can create a PodDisruptionBudget (PDB) for each application.\nA PDB limits the number of Pods of a replicated application that are down simultaneously from\nvoluntary disruptions. For example, a quorum-based application would\nlike to ensure that the number of replicas running is never brought below the\nnumber needed for a quorum. A web front end might want to\nensure that the number of replicas serving load never falls below a certain\npercentage of the total.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "text": "Cluster managers and hosting providers should use tools which\nrespect PodDisruptionBudgets by calling the [Eviction API](https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/#eviction-api)\ninstead of directly deleting pods or deployments.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "For example, the `kubectl drain` subcommand lets you mark a node as going out of\nservice. When you run `kubectl drain`, the tool tries to evict all of the Pods on\nthe Node you're taking out of service. The eviction request that `kubectl` submits on\nyour behalf may be temporarily rejected, so the tool periodically retries all failed\nrequests until all Pods on the target node are terminated, or until a configurable timeout\nis reached.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "text": "A PDB specifies the number of replicas that an application can tolerate having, relative to how\nmany it is intended to have. For example, a Deployment which has a `.spec.replicas: 5` is\nsupposed to have 5 pods at any given time. If its PDB allows for there to be 4 at a time,\nthen the Eviction API will allow voluntary disruption of one (but not two) pods at a time.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "text": "The group of pods that comprise the application is specified using a label selector, the same\nas the one used by the application's controller (deployment, stateful-set, etc).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "The \"intended\" number of pods is computed from the `.spec.replicas` of the workload resource\nthat is managing those pods. The control plane discovers the owning workload resource by\nexamining the `.metadata.ownerReferences` of the Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "text": "[Involuntary disruptions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/#voluntary-and-involuntary-disruptions) cannot be prevented by PDBs; however they\ndo count against the budget.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "text": "Pods which are deleted or unavailable due to a rolling upgrade to an application do count\nagainst the disruption budget, but workload resources (such as Deployment and StatefulSet)\nare not limited by PDBs when doing rolling upgrades. Instead, the handling of failures\nduring application updates is configured in the spec for the specific workload resource.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "text": "It is recommended to set `AlwaysAllow` [Unhealthy Pod Eviction Policy](https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy)\nto your PodDisruptionBudgets to support eviction of misbehaving applications during a node drain.\nThe default behavior is to wait for the application pods to become [healthy](https://kubernetes.io/docs/tasks/run-application/configure-pdb/#healthiness-of-a-pod)\nbefore the drain can proceed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "text": "When a pod is evicted using the eviction API, it is gracefully\n[terminated](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination), honoring the\n`terminationGracePeriodSeconds` setting in its [PodSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#podspec-v1-core).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "level": 2,
+      "text": "PodDisruptionBudget example",
+      "type": "heading"
+    },
+    {
+      "block_index": 32,
+      "text": "Consider a cluster with 3 nodes, `node-1` through `node-3`.\nThe cluster is running several applications. One of them has 3 replicas initially called\n`pod-a`, `pod-b`, and `pod-c`. Another, unrelated pod without a PDB, called `pod-x`, is also shown.\nInitially, the pods are laid out as follows:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "rows": [
+        [
+          "node-1",
+          "node-2",
+          "node-3"
+        ],
+        [
+          "pod-a *available*",
+          "pod-b *available*",
+          "pod-c *available*"
+        ],
+        [
+          "pod-x *available*",
+          "",
+          ""
+        ]
+      ],
+      "text": "| node-1 | node-2 | node-3 |\n| --- | --- | --- |\n| pod-a *available* | pod-b *available* | pod-c *available* |\n| pod-x *available* |  |  |",
+      "type": "table"
+    },
+    {
+      "block_index": 34,
+      "text": "All 3 pods are part of a deployment, and they collectively have a PDB which requires\nthere be at least 2 of the 3 pods to be available at all times.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "For example, assume the cluster administrator wants to reboot into a new kernel version to fix a bug in the kernel.\nThe cluster administrator first tries to drain `node-1` using the `kubectl drain` command.\nThat tool tries to evict `pod-a` and `pod-x`. This succeeds immediately.\nBoth pods go into the `terminating` state at the same time.\nThis puts the cluster in this state:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "rows": [
+        [
+          "node-1 *draining*",
+          "node-2",
+          "node-3"
+        ],
+        [
+          "pod-a *terminating*",
+          "pod-b *available*",
+          "pod-c *available*"
+        ],
+        [
+          "pod-x *terminating*",
+          "",
+          ""
+        ]
+      ],
+      "text": "| node-1 *draining* | node-2 | node-3 |\n| --- | --- | --- |\n| pod-a *terminating* | pod-b *available* | pod-c *available* |\n| pod-x *terminating* |  |  |",
+      "type": "table"
+    },
+    {
+      "block_index": 37,
+      "text": "The deployment notices that one of the pods is terminating, so it creates a replacement\ncalled `pod-d`. Since `node-1` is cordoned, it lands on another node. Something has\nalso created `pod-y` as a replacement for `pod-x`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "text": "(Note: for a StatefulSet, `pod-a`, which would be called something like `pod-0`, would need\nto terminate completely before its replacement, which is also called `pod-0` but has a\ndifferent UID, could be created. Otherwise, the example applies to a StatefulSet as well.)",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "text": "Now the cluster is in this state:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "rows": [
+        [
+          "node-1 *draining*",
+          "node-2",
+          "node-3"
+        ],
+        [
+          "pod-a *terminating*",
+          "pod-b *available*",
+          "pod-c *available*"
+        ],
+        [
+          "pod-x *terminating*",
+          "pod-d *starting*",
+          "pod-y"
+        ]
+      ],
+      "text": "| node-1 *draining* | node-2 | node-3 |\n| --- | --- | --- |\n| pod-a *terminating* | pod-b *available* | pod-c *available* |\n| pod-x *terminating* | pod-d *starting* | pod-y |",
+      "type": "table"
+    },
+    {
+      "block_index": 41,
+      "text": "At some point, the pods terminate, and the cluster looks like this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "rows": [
+        [
+          "node-1 *drained*",
+          "node-2",
+          "node-3"
+        ],
+        [
+          "",
+          "pod-b *available*",
+          "pod-c *available*"
+        ],
+        [
+          "",
+          "pod-d *starting*",
+          "pod-y"
+        ]
+      ],
+      "text": "| node-1 *drained* | node-2 | node-3 |\n| --- | --- | --- |\n|  | pod-b *available* | pod-c *available* |\n|  | pod-d *starting* | pod-y |",
+      "type": "table"
+    },
+    {
+      "block_index": 43,
+      "text": "At this point, if an impatient cluster administrator tries to drain `node-2` or\n`node-3`, the drain command will block, because there are only 2 available\npods for the deployment, and its PDB requires at least 2. After some time passes, `pod-d` becomes available.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "text": "The cluster state now looks like this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 45,
+      "rows": [
+        [
+          "node-1 *drained*",
+          "node-2",
+          "node-3"
+        ],
+        [
+          "",
+          "pod-b *available*",
+          "pod-c *available*"
+        ],
+        [
+          "",
+          "pod-d *available*",
+          "pod-y"
+        ]
+      ],
+      "text": "| node-1 *drained* | node-2 | node-3 |\n| --- | --- | --- |\n|  | pod-b *available* | pod-c *available* |\n|  | pod-d *available* | pod-y |",
+      "type": "table"
+    },
+    {
+      "block_index": 46,
+      "text": "Now, the cluster administrator tries to drain `node-2`.\nThe drain command will try to evict the two pods in some order, say\n`pod-b` first and then `pod-d`. It will succeed at evicting `pod-b`.\nBut, when it tries to evict `pod-d`, it will be refused because that would leave only\none pod available for the deployment.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 47,
+      "text": "The deployment creates a replacement for `pod-b` called `pod-e`.\nBecause there are not enough resources in the cluster to schedule\n`pod-e` the drain will again block. The cluster may end up in this\nstate:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "rows": [
+        [
+          "node-1 *drained*",
+          "node-2",
+          "node-3",
+          "*no node*"
+        ],
+        [
+          "",
+          "pod-b *terminating*",
+          "pod-c *available*",
+          "pod-e *pending*"
+        ],
+        [
+          "",
+          "pod-d *available*",
+          "pod-y",
+          ""
+        ]
+      ],
+      "text": "| node-1 *drained* | node-2 | node-3 | *no node* |\n| --- | --- | --- | --- |\n|  | pod-b *terminating* | pod-c *available* | pod-e *pending* |\n|  | pod-d *available* | pod-y |  |",
+      "type": "table"
+    },
+    {
+      "block_index": 49,
+      "text": "At this point, the cluster administrator needs to\nadd a node back to the cluster to proceed with the upgrade.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 50,
+      "text": "You can see how Kubernetes varies the rate at which disruptions\ncan happen, according to:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "ordered": false,
+      "text": "- how many replicas an application needs\n- how long it takes to gracefully shutdown an instance\n- how long it takes a new instance to start up\n- the type of controller\n- the cluster's resource capacity",
+      "type": "list"
+    },
+    {
+      "block_index": 52,
+      "level": 2,
+      "text": "Pod disruption conditions",
+      "type": "heading"
+    },
+    {
+      "block_index": 53,
+      "text": "*This is a stable feature in Kubernetes, and has been since the 1.31 release. You can no longer toggle this feature (the associated [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates-removed/) has been removed).*",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 54,
+      "text": "A dedicated Pod `DisruptionTarget` [condition](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions)\nis added to indicate\nthat the Pod is about to be deleted due to a [disruption](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/).\nThe `reason` field of the condition additionally\nindicates one of the following reasons for the Pod termination:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 55,
+      "text": "**`PreemptionByScheduler`**\n: Pod is due to be [preempted](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#preemption) by a scheduler in order to accommodate a new Pod with a higher priority. For more information, see [Pod priority preemption](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/).\n**`DeletionByTaintManager`**\n: Pod is due to be deleted by Taint Manager (which is part of the node lifecycle controller within `kube-controller-manager`) due to a `NoExecute` taint that the Pod does not tolerate; see [taint](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)-based evictions.\n**`EvictionByEvictionAPI`**\n: Pod has been marked for [eviction using the Kubernetes API](https://kubernetes.io/docs/concepts/scheduling-eviction/api-eviction/) .\n**`DeletionByPodGC`**\n: Pod, that is bound to a no longer existing Node, is due to be deleted by [Pod garbage collection](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-garbage-collection).\n**`TerminationByKubelet`**\n: Pod has been terminated by the kubelet, because of either [node pressure eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/),\nthe [graceful node shutdown](https://kubernetes.io/docs/concepts/architecture/nodes/#graceful-node-shutdown),\nor preemption for [system critical pods](https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/).",
+      "type": "definition_list"
+    },
+    {
+      "block_index": 56,
+      "text": "In all other disruption scenarios, like eviction due to exceeding\n[Pod container limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/),\nPods don't receive the `DisruptionTarget` condition because the disruptions were\nprobably caused by the Pod and would reoccur on retry.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 57,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 58,
+      "text": "Along with cleaning up the pods, the Pod garbage collector (PodGC) will also mark them as failed if they are in a non-terminal\nphase (see also [Pod garbage collection](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-garbage-collection)).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "text": "When using a Job (or CronJob), you may want to use these Pod disruption conditions as part of your Job's\n[Pod failure policy](https://kubernetes.io/docs/concepts/workloads/controllers/job/#pod-failure-policy).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 60,
+      "level": 2,
+      "text": "Separating Cluster Owner and Application Owner Roles",
+      "type": "heading"
+    },
+    {
+      "block_index": 61,
+      "text": "Often, it is useful to think of the Cluster Manager\nand Application Owner as separate roles with limited knowledge\nof each other. This separation of responsibilities\nmay make sense in these scenarios:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 62,
+      "ordered": false,
+      "text": "- when there are many application teams sharing a Kubernetes cluster, and there is natural specialization of roles\n- when third-party tools or services are used to automate cluster management",
+      "type": "list"
+    },
+    {
+      "block_index": 63,
+      "text": "Pod Disruption Budgets support this separation of roles by providing an\ninterface between the roles.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 64,
+      "text": "If you do not have such a separation of responsibilities in your organization,\nyou may not need to use Pod Disruption Budgets.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 65,
+      "level": 2,
+      "text": "How to perform Disruptive Actions on your Cluster",
+      "type": "heading"
+    },
+    {
+      "block_index": 66,
+      "text": "If you are a Cluster Administrator, and you need to perform a disruptive action on all\nthe nodes in your cluster, such as a node or system software upgrade, here are some options:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 67,
+      "ordered": false,
+      "text": "- Accept downtime during the upgrade.\n- Failover to another complete replica cluster.\n- No downtime, but may be costly both for the duplicated nodes and for human effort to orchestrate the switchover.\n- Write disruption tolerant applications and use PDBs.\n- No downtime.\n  - Minimal resource duplication.\n  - Allows more automation of cluster administration.\n  - Writing disruption-tolerant applications is tricky, but the work to tolerate voluntary disruptions largely overlaps with work to support autoscaling and tolerating involuntary disruptions.",
+      "type": "list"
+    },
+    {
+      "block_index": 68,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 69,
+      "ordered": false,
+      "text": "- Follow steps to protect your application by [configuring a Pod Disruption Budget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/).\n- Learn more about [draining nodes](https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/)\n- Learn about [updating a deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment) including steps to maintain its availability during the rollout.",
+      "type": "list"
+    }
+  ],
+  "content": "# Disruptions\n\nThis guide is for application owners who want to build\nhighly available applications, and thus need to understand\nwhat types of disruptions can happen to Pods.\n\nIt is also for cluster administrators who want to perform automated\ncluster actions, like upgrading and autoscaling clusters.\n\n## Voluntary and involuntary disruptions\n\nPods do not disappear until someone (a person or a controller) destroys them, or\nthere is an unavoidable hardware or system software error.\n\nWe call these unavoidable cases *involuntary disruptions* to\nan application. Examples are:\n\n- a hardware failure of the physical machine backing the node\n- cluster administrator deletes VM (instance) by mistake\n- cloud provider or hypervisor failure makes VM disappear\n- a kernel panic\n- the node disappears from the cluster due to cluster network partition\n- eviction of a pod due to the node being out-of-resources .\n\nExcept for the out-of-resources condition, all these conditions\nshould be familiar to most users; they are not specific\nto Kubernetes.\n\nWe call other cases *voluntary disruptions*. These include both\nactions initiated by the application owner and those initiated by a Cluster\nAdministrator. Typical application owner actions include:\n\n- deleting the deployment or other controller that manages the pod\n- updating a deployment's pod template causing a restart\n- directly deleting a pod (e.g. by accident)\n\nCluster administrator actions include:\n\n- Draining a node for repair or upgrade.\n- Draining a node from a cluster to scale the cluster down (learn about Node Autoscaling ).\n- Removing a pod from a node to permit something else to fit on that node.\n\nThese actions might be taken directly by the cluster administrator, or by automation\nrun by the cluster administrator, or by your cluster hosting provider.\n\nAsk your cluster administrator or consult your cloud provider or distribution documentation\nto determine if any sources of voluntary disruptions are enabled for your cluster.\nIf none are enabled, you can skip creating Pod Disruption Budgets.\n\n#### Caution:\n\n## Dealing with disruptions\n\nHere are some ways to mitigate involuntary disruptions:\n\n- Ensure your pod requests the resources it needs.\n- Replicate your application if you need higher availability. (Learn about running replicated stateless and stateful applications.)\n- For even higher availability when running replicated applications, spread applications across racks (using anti-affinity ) or across zones (if using a multi-zone cluster .)\n\nThe frequency of voluntary disruptions varies. On a basic Kubernetes cluster, there are\nno automated voluntary disruptions (only user-triggered ones). However, your cluster administrator or hosting provider\nmay run some additional services which cause voluntary disruptions. For example,\nrolling out node software updates can cause voluntary disruptions. Also, some implementations\nof cluster (node) autoscaling may cause voluntary disruptions to defragment and compact nodes.\nYour cluster administrator or hosting provider should have documented what level of voluntary\ndisruptions, if any, to expect. Certain configuration options, such as\n[using PriorityClasses](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/)\nin your pod spec can also cause voluntary (and involuntary) disruptions.\n\n## Pod disruption budgets\n\nKubernetes offers features to help you run highly available applications even when you\nintroduce frequent voluntary disruptions.\n\nAs an application owner, you can create a PodDisruptionBudget (PDB) for each application.\nA PDB limits the number of Pods of a replicated application that are down simultaneously from\nvoluntary disruptions. For example, a quorum-based application would\nlike to ensure that the number of replicas running is never brought below the\nnumber needed for a quorum. A web front end might want to\nensure that the number of replicas serving load never falls below a certain\npercentage of the total.\n\nCluster managers and hosting providers should use tools which\nrespect PodDisruptionBudgets by calling the [Eviction API](https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/#eviction-api)\ninstead of directly deleting pods or deployments.\n\nFor example, the `kubectl drain` subcommand lets you mark a node as going out of\nservice. When you run `kubectl drain`, the tool tries to evict all of the Pods on\nthe Node you're taking out of service. The eviction request that `kubectl` submits on\nyour behalf may be temporarily rejected, so the tool periodically retries all failed\nrequests until all Pods on the target node are terminated, or until a configurable timeout\nis reached.\n\nA PDB specifies the number of replicas that an application can tolerate having, relative to how\nmany it is intended to have. For example, a Deployment which has a `.spec.replicas: 5` is\nsupposed to have 5 pods at any given time. If its PDB allows for there to be 4 at a time,\nthen the Eviction API will allow voluntary disruption of one (but not two) pods at a time.\n\nThe group of pods that comprise the application is specified using a label selector, the same\nas the one used by the application's controller (deployment, stateful-set, etc).\n\nThe \"intended\" number of pods is computed from the `.spec.replicas` of the workload resource\nthat is managing those pods. The control plane discovers the owning workload resource by\nexamining the `.metadata.ownerReferences` of the Pod.\n\n[Involuntary disruptions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/#voluntary-and-involuntary-disruptions) cannot be prevented by PDBs; however they\ndo count against the budget.\n\nPods which are deleted or unavailable due to a rolling upgrade to an application do count\nagainst the disruption budget, but workload resources (such as Deployment and StatefulSet)\nare not limited by PDBs when doing rolling upgrades. Instead, the handling of failures\nduring application updates is configured in the spec for the specific workload resource.\n\nIt is recommended to set `AlwaysAllow` [Unhealthy Pod Eviction Policy](https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy)\nto your PodDisruptionBudgets to support eviction of misbehaving applications during a node drain.\nThe default behavior is to wait for the application pods to become [healthy](https://kubernetes.io/docs/tasks/run-application/configure-pdb/#healthiness-of-a-pod)\nbefore the drain can proceed.\n\nWhen a pod is evicted using the eviction API, it is gracefully\n[terminated](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination), honoring the\n`terminationGracePeriodSeconds` setting in its [PodSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#podspec-v1-core).\n\n## PodDisruptionBudget example\n\nConsider a cluster with 3 nodes, `node-1` through `node-3`.\nThe cluster is running several applications. One of them has 3 replicas initially called\n`pod-a`, `pod-b`, and `pod-c`. Another, unrelated pod without a PDB, called `pod-x`, is also shown.\nInitially, the pods are laid out as follows:\n\n| node-1 | node-2 | node-3 |\n| --- | --- | --- |\n| pod-a *available* | pod-b *available* | pod-c *available* |\n| pod-x *available* |  |  |\n\nAll 3 pods are part of a deployment, and they collectively have a PDB which requires\nthere be at least 2 of the 3 pods to be available at all times.\n\nFor example, assume the cluster administrator wants to reboot into a new kernel version to fix a bug in the kernel.\nThe cluster administrator first tries to drain `node-1` using the `kubectl drain` command.\nThat tool tries to evict `pod-a` and `pod-x`. This succeeds immediately.\nBoth pods go into the `terminating` state at the same time.\nThis puts the cluster in this state:\n\n| node-1 *draining* | node-2 | node-3 |\n| --- | --- | --- |\n| pod-a *terminating* | pod-b *available* | pod-c *available* |\n| pod-x *terminating* |  |  |\n\nThe deployment notices that one of the pods is terminating, so it creates a replacement\ncalled `pod-d`. Since `node-1` is cordoned, it lands on another node. Something has\nalso created `pod-y` as a replacement for `pod-x`.\n\n(Note: for a StatefulSet, `pod-a`, which would be called something like `pod-0`, would need\nto terminate completely before its replacement, which is also called `pod-0` but has a\ndifferent UID, could be created. Otherwise, the example applies to a StatefulSet as well.)\n\nNow the cluster is in this state:\n\n| node-1 *draining* | node-2 | node-3 |\n| --- | --- | --- |\n| pod-a *terminating* | pod-b *available* | pod-c *available* |\n| pod-x *terminating* | pod-d *starting* | pod-y |\n\nAt some point, the pods terminate, and the cluster looks like this:\n\n| node-1 *drained* | node-2 | node-3 |\n| --- | --- | --- |\n|  | pod-b *available* | pod-c *available* |\n|  | pod-d *starting* | pod-y |\n\nAt this point, if an impatient cluster administrator tries to drain `node-2` or\n`node-3`, the drain command will block, because there are only 2 available\npods for the deployment, and its PDB requires at least 2. After some time passes, `pod-d` becomes available.\n\nThe cluster state now looks like this:\n\n| node-1 *drained* | node-2 | node-3 |\n| --- | --- | --- |\n|  | pod-b *available* | pod-c *available* |\n|  | pod-d *available* | pod-y |\n\nNow, the cluster administrator tries to drain `node-2`.\nThe drain command will try to evict the two pods in some order, say\n`pod-b` first and then `pod-d`. It will succeed at evicting `pod-b`.\nBut, when it tries to evict `pod-d`, it will be refused because that would leave only\none pod available for the deployment.\n\nThe deployment creates a replacement for `pod-b` called `pod-e`.\nBecause there are not enough resources in the cluster to schedule\n`pod-e` the drain will again block. The cluster may end up in this\nstate:\n\n| node-1 *drained* | node-2 | node-3 | *no node* |\n| --- | --- | --- | --- |\n|  | pod-b *terminating* | pod-c *available* | pod-e *pending* |\n|  | pod-d *available* | pod-y |  |\n\nAt this point, the cluster administrator needs to\nadd a node back to the cluster to proceed with the upgrade.\n\nYou can see how Kubernetes varies the rate at which disruptions\ncan happen, according to:\n\n- how many replicas an application needs\n- how long it takes to gracefully shutdown an instance\n- how long it takes a new instance to start up\n- the type of controller\n- the cluster's resource capacity\n\n## Pod disruption conditions\n\n*This is a stable feature in Kubernetes, and has been since the 1.31 release. You can no longer toggle this feature (the associated [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates-removed/) has been removed).*\n\nA dedicated Pod `DisruptionTarget` [condition](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions)\nis added to indicate\nthat the Pod is about to be deleted due to a [disruption](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/).\nThe `reason` field of the condition additionally\nindicates one of the following reasons for the Pod termination:\n\n**`PreemptionByScheduler`**\n: Pod is due to be [preempted](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#preemption) by a scheduler in order to accommodate a new Pod with a higher priority. For more information, see [Pod priority preemption](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/).\n**`DeletionByTaintManager`**\n: Pod is due to be deleted by Taint Manager (which is part of the node lifecycle controller within `kube-controller-manager`) due to a `NoExecute` taint that the Pod does not tolerate; see [taint](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)-based evictions.\n**`EvictionByEvictionAPI`**\n: Pod has been marked for [eviction using the Kubernetes API](https://kubernetes.io/docs/concepts/scheduling-eviction/api-eviction/) .\n**`DeletionByPodGC`**\n: Pod, that is bound to a no longer existing Node, is due to be deleted by [Pod garbage collection](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-garbage-collection).\n**`TerminationByKubelet`**\n: Pod has been terminated by the kubelet, because of either [node pressure eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/),\nthe [graceful node shutdown](https://kubernetes.io/docs/concepts/architecture/nodes/#graceful-node-shutdown),\nor preemption for [system critical pods](https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/).\n\nIn all other disruption scenarios, like eviction due to exceeding\n[Pod container limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/),\nPods don't receive the `DisruptionTarget` condition because the disruptions were\nprobably caused by the Pod and would reoccur on retry.\n\n#### Note:\n\nAlong with cleaning up the pods, the Pod garbage collector (PodGC) will also mark them as failed if they are in a non-terminal\nphase (see also [Pod garbage collection](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-garbage-collection)).\n\nWhen using a Job (or CronJob), you may want to use these Pod disruption conditions as part of your Job's\n[Pod failure policy](https://kubernetes.io/docs/concepts/workloads/controllers/job/#pod-failure-policy).\n\n## Separating Cluster Owner and Application Owner Roles\n\nOften, it is useful to think of the Cluster Manager\nand Application Owner as separate roles with limited knowledge\nof each other. This separation of responsibilities\nmay make sense in these scenarios:\n\n- when there are many application teams sharing a Kubernetes cluster, and there is natural specialization of roles\n- when third-party tools or services are used to automate cluster management\n\nPod Disruption Budgets support this separation of roles by providing an\ninterface between the roles.\n\nIf you do not have such a separation of responsibilities in your organization,\nyou may not need to use Pod Disruption Budgets.\n\n## How to perform Disruptive Actions on your Cluster\n\nIf you are a Cluster Administrator, and you need to perform a disruptive action on all\nthe nodes in your cluster, such as a node or system software upgrade, here are some options:\n\n- Accept downtime during the upgrade.\n- Failover to another complete replica cluster.\n- No downtime, but may be costly both for the duplicated nodes and for human effort to orchestrate the switchover.\n- Write disruption tolerant applications and use PDBs.\n- No downtime.\n  - Minimal resource duplication.\n  - Allows more automation of cluster administration.\n  - Writing disruption-tolerant applications is tricky, but the work to tolerate voluntary disruptions largely overlaps with work to support autoscaling and tolerating involuntary disruptions.\n\n## What's next\n\n- Follow steps to protect your application by [configuring a Pod Disruption Budget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/).\n- Learn more about [draining nodes](https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/)\n- Learn about [updating a deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment) including steps to maintain its availability during the rollout.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:7ab37f7e511acf04a08a5e8f8b42a6794932557a9a46f7fa90baf5c9c58ce73b",
+  "document_id": "work-006",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Disruptions"
+    },
+    {
+      "block_index": 3,
+      "level": 2,
+      "text": "Voluntary and involuntary disruptions"
+    },
+    {
+      "block_index": 14,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Dealing with disruptions"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "Pod disruption budgets"
+    },
+    {
+      "block_index": 31,
+      "level": 2,
+      "text": "PodDisruptionBudget example"
+    },
+    {
+      "block_index": 52,
+      "level": 2,
+      "text": "Pod disruption conditions"
+    },
+    {
+      "block_index": 57,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 60,
+      "level": 2,
+      "text": "Separating Cluster Owner and Application Owner Roles"
+    },
+    {
+      "block_index": 65,
+      "level": 2,
+      "text": "How to perform Disruptive Actions on your Cluster"
+    },
+    {
+      "block_index": 68,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "using PriorityClasses",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/"
+    },
+    {
+      "text": "Eviction API",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/#eviction-api"
+    },
+    {
+      "text": "Involuntary disruptions",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/#voluntary-and-involuntary-disruptions"
+    },
+    {
+      "text": "Unhealthy Pod Eviction Policy",
+      "url": "https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy"
+    },
+    {
+      "text": "healthy",
+      "url": "https://kubernetes.io/docs/tasks/run-application/configure-pdb/#healthiness-of-a-pod"
+    },
+    {
+      "text": "terminated",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination"
+    },
+    {
+      "text": "PodSpec",
+      "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#podspec-v1-core"
+    },
+    {
+      "text": "feature gate",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates-removed/"
+    },
+    {
+      "text": "condition",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions"
+    },
+    {
+      "text": "disruption",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/"
+    },
+    {
+      "text": "preempted",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#preemption"
+    },
+    {
+      "text": "Pod priority preemption",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/"
+    },
+    {
+      "text": "taint",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/"
+    },
+    {
+      "text": "eviction using the Kubernetes API",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/api-eviction/"
+    },
+    {
+      "text": "Pod garbage collection",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-garbage-collection"
+    },
+    {
+      "text": "node pressure eviction",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/"
+    },
+    {
+      "text": "graceful node shutdown",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/#graceful-node-shutdown"
+    },
+    {
+      "text": "system critical pods",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/"
+    },
+    {
+      "text": "Pod container limits",
+      "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+    },
+    {
+      "text": "Pod failure policy",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/#pod-failure-policy"
+    },
+    {
+      "text": "configuring a Pod Disruption Budget",
+      "url": "https://kubernetes.io/docs/tasks/run-application/configure-pdb/"
+    },
+    {
+      "text": "draining nodes",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/"
+    },
+    {
+      "text": "updating a deployment",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-006.html",
+  "raw_sha256": "sha256:f423038609e6726113ca7a017f1523f35bcab3b98b28c4466ff5eecd2499bbea",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/",
+  "statistics": {
+    "block_count": 70,
+    "character_count": 15322,
+    "code_block_count": 0,
+    "heading_count": 11,
+    "link_count": 23,
+    "list_count": 8,
+    "paragraph_count": 44,
+    "table_count": 6,
+    "word_count": 2138
+  },
+  "title": "Pod Disruptions"
+}

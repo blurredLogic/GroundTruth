@@ -1,0 +1,418 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Quality of Service Classes",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "This page introduces *Quality of Service (QoS) classes* in Kubernetes, and explains\nhow Kubernetes assigns a QoS class to each Pod as a consequence of the resource\nconstraints that you specify for the containers in that Pod. Kubernetes relies on this\nclassification to make decisions about which Pods to evict when there are not enough\navailable resources on a Node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Quality of Service classes",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "text": "Kubernetes classifies the Pods that you run and allocates each Pod into a specific\n*quality of service (QoS) class*. Kubernetes uses that classification to influence how different\npods are handled. Kubernetes does this classification based on the\n[resource requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)\nof the [Containers](https://kubernetes.io/docs/concepts/containers/) in that Pod, along with\nhow those requests relate to resource limits.\nThis is known as [Quality of Service](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/)\n(QoS) class. Kubernetes assigns every Pod a QoS class based on the resource requests\nand limits of its component Containers. QoS classes are used by Kubernetes to decide\nwhich Pods to evict from a Node experiencing\n[Node Pressure](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/). The possible\nQoS classes are `Guaranteed`, `Burstable`, and `BestEffort`. When a Node runs out of resources,\nKubernetes will first evict `BestEffort` Pods running on that Node, followed by `Burstable` and\nfinally `Guaranteed` Pods. When this eviction is due to resource pressure, only Pods exceeding\nresource requests are candidates for eviction.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 3,
+      "text": "Guaranteed",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "Pods that are `Guaranteed` have the strictest resource limits and are least likely\nto face eviction. They are guaranteed not to be killed until they exceed their limits\nor there are no lower-priority Pods that can be preempted from the Node. They may\nnot acquire resources beyond their specified limits. These Pods can also make\nuse of exclusive CPUs using the\n[`static`](https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#static-policy-configuration) CPU management policy.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "level": 4,
+      "text": "Criteria",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "text": "For a Pod to be given a QoS class of `Guaranteed`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "ordered": false,
+      "text": "- Every Container in the Pod must have a memory limit and a memory request, both greater than zero.\n- For every Container in the Pod, the memory limit must equal the memory request.\n- Every Container in the Pod must have a CPU limit and a CPU request, both greater than zero.\n- For every Container in the Pod, the CPU limit must equal the CPU request.",
+      "type": "list"
+    },
+    {
+      "block_index": 9,
+      "text": "If instead the Pod uses [Pod-level resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#pod-level-resource-specification):",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "ordered": false,
+      "text": "- The Pod must have a Pod-level memory limit and memory request, and their values must be equal.\n- The Pod must have a Pod-level CPU limit and CPU request, and their values must be equal.",
+      "type": "list"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Burstable",
+      "type": "heading"
+    },
+    {
+      "block_index": 12,
+      "text": "Pods that are `Burstable` have some lower-bound resource guarantees based on the request, but\ndo not require a specific limit. If a limit is not specified, it defaults to a\nlimit equivalent to the capacity of the Node, which allows the Pods to flexibly increase\ntheir resources if resources are available. In the event of Pod eviction due to Node\nresource pressure, these Pods are evicted only after all `BestEffort` Pods are evicted.\nBecause a `Burstable` Pod can include a Container that has no resource limits or requests, a Pod\nthat is `Burstable` can try to use any amount of node resources.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "level": 4,
+      "text": "Criteria",
+      "type": "heading"
+    },
+    {
+      "block_index": 14,
+      "text": "A Pod is given a QoS class of `Burstable` if:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "ordered": false,
+      "text": "- The Pod does not meet the criteria for QoS class Guaranteed .\n- At least one Container in the Pod has a memory or CPU request or limit, or the Pod has a Pod-level memory or CPU request or limit.",
+      "type": "list"
+    },
+    {
+      "block_index": 16,
+      "level": 3,
+      "text": "BestEffort",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "text": "Pods in the `BestEffort` QoS class can use node resources that aren't specifically assigned\nto Pods in other QoS classes. For example, if you have a node with 16 CPU cores available to the\nkubelet, and you assign 4 CPU cores to a `Guaranteed` Pod, then a Pod in the `BestEffort`\nQoS class can try to use any amount of the remaining 12 CPU cores.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "The kubelet prefers to evict `BestEffort` Pods if the node comes under resource pressure.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "level": 4,
+      "text": "Criteria",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "text": "A Pod has a QoS class of `BestEffort` if it doesn't meet the criteria for either `Guaranteed`\nor `Burstable`. In other words, a Pod is `BestEffort` only if none of the Containers in the Pod have a\nmemory limit or a memory request, and none of the Containers in the Pod have a\nCPU limit or a CPU request, and the Pod does not have any Pod-level memory or CPU limits or requests.\nContainers in a Pod can request other resources (not CPU or memory) and still be classified as\n`BestEffort`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "level": 2,
+      "text": "Memory QoS with cgroup v2",
+      "type": "heading"
+    },
+    {
+      "block_index": 22,
+      "text": "[Memory QoS](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#memoryqos) uses the memory controller of cgroup v2 to manage memory throttling\nand protection in Kubernetes. It uses the Pod's QoS class to decide which cgroup\nsettings to apply, but it does not change how Pods are classified.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "The default `kubelet` configuration does not enable memory\nthrottling or memory protection. To enable either behavior, [configure](https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/)\n`memoryThrottlingFactor` or `memoryReservationPolicy`, respectively.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "Memory throttling",
+      "type": "heading"
+    },
+    {
+      "block_index": 25,
+      "text": "Memory throttling is controlled by the `kubelet` configuration field\n`memoryThrottlingFactor`. Its default value is `nil`, which means that the\n`kubelet` does not set `memory.high`. To enable memory throttling, set\n`memoryThrottlingFactor` to a value greater than 0 and less than or equal to 1.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "For Burstable Pods, the kubelet uses `memory.high` to throttle memory allocation\nbefore the workload hits its hard limit (`memory.max`). The throttling threshold\nfor a container is calculated as:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "language": null,
+      "text": "memory.high = requests + memoryThrottlingFactor * (limits - requests)",
+      "type": "code"
+    },
+    {
+      "block_index": 28,
+      "text": "For example, with `memoryThrottlingFactor` set to `0.9`, a container with a\n`256 MiB` request and a `1 GiB` limit gets `memory.high` set to roughly `947 MiB`.\nIf a Burstable container has no memory limit, the kubelet uses node allocatable\nmemory in place of the limit.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "text": "For BestEffort containers, which have no memory request or limit, the kubelet\ncalculates `memory.high` using a request of zero and node allocatable memory in\nplace of the limit. Guaranteed containers do not get `memory.high` because\ntheir requests equal their limits.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "level": 3,
+      "text": "Configuring memory reservation",
+      "type": "heading"
+    },
+    {
+      "block_index": 31,
+      "text": "Memory reservation is controlled via the kubelet configuration field\n`memoryReservationPolicy`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "ordered": false,
+      "text": "- None (default): the kubelet does not set memory.min or memory.low for containers and pods. No memory is hard-locked by the kernel.\n- TieredReservation : the kubelet sets tiered memory protection based on the Pod's QoS class:\n- Guaranteed pods: memory.min is set to memory requests. The kernel will not reclaim this memory under any circumstances.\n  - Burstable pods: memory.low is set to memory requests. The kernel preferentially retains this memory but may reclaim it under extreme pressure.\n  - BestEffort pods: no memory protection is set.",
+      "type": "list"
+    },
+    {
+      "block_index": 33,
+      "text": "For example, the following kubelet configuration enables memory throttling with\na factor of `0.9` and tiered memory protection:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "language": "yaml",
+      "text": "apiVersion: kubelet.config.k8s.io/v1beta1\nkind: KubeletConfiguration\nmemoryThrottlingFactor: 0.9\nmemoryReservationPolicy: TieredReservation",
+      "type": "code"
+    },
+    {
+      "block_index": 35,
+      "text": "You can configure either field independently. Omit `memoryThrottlingFactor` so\nthat the kubelet does not set `memory.high`, or set\n`memoryReservationPolicy: None` to disable memory protection.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "text": "Because cgroup v2 memory protection is hierarchical, the kubelet also configures\nthe ancestor cgroups. It sets `memory.min` on the kubepods root cgroup to the sum\nof the memory requests for Guaranteed and Burstable Pods. It sets `memory.low`\non the kubepods root cgroup and the Burstable QoS cgroup to the sum of the\nmemory requests for Burstable Pods. Without this ancestor coverage, the\nper-Pod and per-container protection would be ineffective.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 38,
+      "level": 3,
+      "text": "Disabling or rolling back Memory QoS",
+      "type": "heading"
+    },
+    {
+      "block_index": 39,
+      "text": "To disable Memory QoS, set the `MemoryQoS` feature gate to `false`, ensure that\n`memoryReservationPolicy` is unset or set to `None`, and restart the kubelet.\nAt startup, the kubelet resets `memory.min` and `memory.low` on the kubepods\nroot cgroup, and `memory.low` on the Burstable QoS cgroup, to zero. Pod-level\nand container-level `memory.min` and `memory.low` values can remain, but they\nare ineffective because the corresponding ancestor protection is zero.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "text": "When Memory QoS is disabled, the kubelet sets `memory.high` to `max` whenever\nthe container runtime applies a resource configuration to a new, restarted, or\nin-place resized container. An already running container that is not restarted\nor resized can retain its previous `memory.high` value until the next restart or\nin-place resize.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 41,
+      "level": 3,
+      "text": "System requirements",
+      "type": "heading"
+    },
+    {
+      "block_index": 42,
+      "text": "Memory QoS requires Linux with cgroup v2. Kernel 5.9 or higher is recommended\nbecause `memory.high` throttling on older kernels can trigger a known\n[livelock bug](https://lore.kernel.org/all/20200710012662.GA29679@chep.ntu.edu.tw/).\nIf the `MemoryQoS` feature gate is enabled on an older kernel, the kubelet logs\na warning at startup.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 43,
+      "level": 2,
+      "text": "Some behavior is independent of QoS class",
+      "type": "heading"
+    },
+    {
+      "block_index": 44,
+      "text": "Certain behavior is independent of the QoS class assigned by Kubernetes. For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 45,
+      "ordered": false,
+      "text": "- Any Container exceeding a resource limit will be killed and restarted by the kubelet without affecting other Containers in that Pod.\n- If a Container exceeds its resource request and the node it runs on faces resource pressure, the Pod it is in becomes a candidate for [eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/). If this occurs, all Containers in the Pod will be terminated. Kubernetes may create a replacement Pod, usually on a different node.\n- The resource request of a Pod is equal to the sum of the resource requests of its component Containers, and the resource limit of a Pod is equal to the sum of the resource limits of its component Containers.\n- The kube-scheduler does not consider QoS class when selecting which Pods to [preempt](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#preemption). Preemption can occur when a cluster does not have enough resources to run all the Pods you defined.\n- The QoS class is determined when the Pod is created and remains unchanged for the lifetime of the Pod. If you later attempt an [in-place resize](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-resize) that would result in a different QoS class, the resize is rejected by admission.",
+      "type": "list"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "ordered": false,
+      "text": "- Learn about resource management for Pods and Containers .\n- Learn about Node-pressure eviction .\n- Learn about Pod priority and preemption .\n- Learn about Pod disruptions .\n- Learn how to assign memory resources to containers and pods .\n- Learn how to assign CPU resources to containers and pods .\n- Learn how to configure Quality of Service for Pods .",
+      "type": "list"
+    }
+  ],
+  "content": "# Pod Quality of Service Classes\n\nThis page introduces *Quality of Service (QoS) classes* in Kubernetes, and explains\nhow Kubernetes assigns a QoS class to each Pod as a consequence of the resource\nconstraints that you specify for the containers in that Pod. Kubernetes relies on this\nclassification to make decisions about which Pods to evict when there are not enough\navailable resources on a Node.\n\n## Quality of Service classes\n\nKubernetes classifies the Pods that you run and allocates each Pod into a specific\n*quality of service (QoS) class*. Kubernetes uses that classification to influence how different\npods are handled. Kubernetes does this classification based on the\n[resource requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)\nof the [Containers](https://kubernetes.io/docs/concepts/containers/) in that Pod, along with\nhow those requests relate to resource limits.\nThis is known as [Quality of Service](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/)\n(QoS) class. Kubernetes assigns every Pod a QoS class based on the resource requests\nand limits of its component Containers. QoS classes are used by Kubernetes to decide\nwhich Pods to evict from a Node experiencing\n[Node Pressure](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/). The possible\nQoS classes are `Guaranteed`, `Burstable`, and `BestEffort`. When a Node runs out of resources,\nKubernetes will first evict `BestEffort` Pods running on that Node, followed by `Burstable` and\nfinally `Guaranteed` Pods. When this eviction is due to resource pressure, only Pods exceeding\nresource requests are candidates for eviction.\n\n### Guaranteed\n\nPods that are `Guaranteed` have the strictest resource limits and are least likely\nto face eviction. They are guaranteed not to be killed until they exceed their limits\nor there are no lower-priority Pods that can be preempted from the Node. They may\nnot acquire resources beyond their specified limits. These Pods can also make\nuse of exclusive CPUs using the\n[`static`](https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#static-policy-configuration) CPU management policy.\n\n#### Criteria\n\nFor a Pod to be given a QoS class of `Guaranteed`:\n\n- Every Container in the Pod must have a memory limit and a memory request, both greater than zero.\n- For every Container in the Pod, the memory limit must equal the memory request.\n- Every Container in the Pod must have a CPU limit and a CPU request, both greater than zero.\n- For every Container in the Pod, the CPU limit must equal the CPU request.\n\nIf instead the Pod uses [Pod-level resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#pod-level-resource-specification):\n\n- The Pod must have a Pod-level memory limit and memory request, and their values must be equal.\n- The Pod must have a Pod-level CPU limit and CPU request, and their values must be equal.\n\n### Burstable\n\nPods that are `Burstable` have some lower-bound resource guarantees based on the request, but\ndo not require a specific limit. If a limit is not specified, it defaults to a\nlimit equivalent to the capacity of the Node, which allows the Pods to flexibly increase\ntheir resources if resources are available. In the event of Pod eviction due to Node\nresource pressure, these Pods are evicted only after all `BestEffort` Pods are evicted.\nBecause a `Burstable` Pod can include a Container that has no resource limits or requests, a Pod\nthat is `Burstable` can try to use any amount of node resources.\n\n#### Criteria\n\nA Pod is given a QoS class of `Burstable` if:\n\n- The Pod does not meet the criteria for QoS class Guaranteed .\n- At least one Container in the Pod has a memory or CPU request or limit, or the Pod has a Pod-level memory or CPU request or limit.\n\n### BestEffort\n\nPods in the `BestEffort` QoS class can use node resources that aren't specifically assigned\nto Pods in other QoS classes. For example, if you have a node with 16 CPU cores available to the\nkubelet, and you assign 4 CPU cores to a `Guaranteed` Pod, then a Pod in the `BestEffort`\nQoS class can try to use any amount of the remaining 12 CPU cores.\n\nThe kubelet prefers to evict `BestEffort` Pods if the node comes under resource pressure.\n\n#### Criteria\n\nA Pod has a QoS class of `BestEffort` if it doesn't meet the criteria for either `Guaranteed`\nor `Burstable`. In other words, a Pod is `BestEffort` only if none of the Containers in the Pod have a\nmemory limit or a memory request, and none of the Containers in the Pod have a\nCPU limit or a CPU request, and the Pod does not have any Pod-level memory or CPU limits or requests.\nContainers in a Pod can request other resources (not CPU or memory) and still be classified as\n`BestEffort`.\n\n## Memory QoS with cgroup v2\n\n[Memory QoS](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#memoryqos) uses the memory controller of cgroup v2 to manage memory throttling\nand protection in Kubernetes. It uses the Pod's QoS class to decide which cgroup\nsettings to apply, but it does not change how Pods are classified.\n\nThe default `kubelet` configuration does not enable memory\nthrottling or memory protection. To enable either behavior, [configure](https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/)\n`memoryThrottlingFactor` or `memoryReservationPolicy`, respectively.\n\n### Memory throttling\n\nMemory throttling is controlled by the `kubelet` configuration field\n`memoryThrottlingFactor`. Its default value is `nil`, which means that the\n`kubelet` does not set `memory.high`. To enable memory throttling, set\n`memoryThrottlingFactor` to a value greater than 0 and less than or equal to 1.\n\nFor Burstable Pods, the kubelet uses `memory.high` to throttle memory allocation\nbefore the workload hits its hard limit (`memory.max`). The throttling threshold\nfor a container is calculated as:\n\n```\nmemory.high = requests + memoryThrottlingFactor * (limits - requests)\n```\n\nFor example, with `memoryThrottlingFactor` set to `0.9`, a container with a\n`256 MiB` request and a `1 GiB` limit gets `memory.high` set to roughly `947 MiB`.\nIf a Burstable container has no memory limit, the kubelet uses node allocatable\nmemory in place of the limit.\n\nFor BestEffort containers, which have no memory request or limit, the kubelet\ncalculates `memory.high` using a request of zero and node allocatable memory in\nplace of the limit. Guaranteed containers do not get `memory.high` because\ntheir requests equal their limits.\n\n### Configuring memory reservation\n\nMemory reservation is controlled via the kubelet configuration field\n`memoryReservationPolicy`:\n\n- None (default): the kubelet does not set memory.min or memory.low for containers and pods. No memory is hard-locked by the kernel.\n- TieredReservation : the kubelet sets tiered memory protection based on the Pod's QoS class:\n- Guaranteed pods: memory.min is set to memory requests. The kernel will not reclaim this memory under any circumstances.\n  - Burstable pods: memory.low is set to memory requests. The kernel preferentially retains this memory but may reclaim it under extreme pressure.\n  - BestEffort pods: no memory protection is set.\n\nFor example, the following kubelet configuration enables memory throttling with\na factor of `0.9` and tiered memory protection:\n\n```yaml\napiVersion: kubelet.config.k8s.io/v1beta1\nkind: KubeletConfiguration\nmemoryThrottlingFactor: 0.9\nmemoryReservationPolicy: TieredReservation\n```\n\nYou can configure either field independently. Omit `memoryThrottlingFactor` so\nthat the kubelet does not set `memory.high`, or set\n`memoryReservationPolicy: None` to disable memory protection.\n\nBecause cgroup v2 memory protection is hierarchical, the kubelet also configures\nthe ancestor cgroups. It sets `memory.min` on the kubepods root cgroup to the sum\nof the memory requests for Guaranteed and Burstable Pods. It sets `memory.low`\non the kubepods root cgroup and the Burstable QoS cgroup to the sum of the\nmemory requests for Burstable Pods. Without this ancestor coverage, the\nper-Pod and per-container protection would be ineffective.\n\n#### Caution:\n\n### Disabling or rolling back Memory QoS\n\nTo disable Memory QoS, set the `MemoryQoS` feature gate to `false`, ensure that\n`memoryReservationPolicy` is unset or set to `None`, and restart the kubelet.\nAt startup, the kubelet resets `memory.min` and `memory.low` on the kubepods\nroot cgroup, and `memory.low` on the Burstable QoS cgroup, to zero. Pod-level\nand container-level `memory.min` and `memory.low` values can remain, but they\nare ineffective because the corresponding ancestor protection is zero.\n\nWhen Memory QoS is disabled, the kubelet sets `memory.high` to `max` whenever\nthe container runtime applies a resource configuration to a new, restarted, or\nin-place resized container. An already running container that is not restarted\nor resized can retain its previous `memory.high` value until the next restart or\nin-place resize.\n\n### System requirements\n\nMemory QoS requires Linux with cgroup v2. Kernel 5.9 or higher is recommended\nbecause `memory.high` throttling on older kernels can trigger a known\n[livelock bug](https://lore.kernel.org/all/20200710012662.GA29679@chep.ntu.edu.tw/).\nIf the `MemoryQoS` feature gate is enabled on an older kernel, the kubelet logs\na warning at startup.\n\n## Some behavior is independent of QoS class\n\nCertain behavior is independent of the QoS class assigned by Kubernetes. For example:\n\n- Any Container exceeding a resource limit will be killed and restarted by the kubelet without affecting other Containers in that Pod.\n- If a Container exceeds its resource request and the node it runs on faces resource pressure, the Pod it is in becomes a candidate for [eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/). If this occurs, all Containers in the Pod will be terminated. Kubernetes may create a replacement Pod, usually on a different node.\n- The resource request of a Pod is equal to the sum of the resource requests of its component Containers, and the resource limit of a Pod is equal to the sum of the resource limits of its component Containers.\n- The kube-scheduler does not consider QoS class when selecting which Pods to [preempt](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#preemption). Preemption can occur when a cluster does not have enough resources to run all the Pods you defined.\n- The QoS class is determined when the Pod is created and remains unchanged for the lifetime of the Pod. If you later attempt an [in-place resize](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-resize) that would result in a different QoS class, the resize is rejected by admission.\n\n## What's next\n\n- Learn about resource management for Pods and Containers .\n- Learn about Node-pressure eviction .\n- Learn about Pod priority and preemption .\n- Learn about Pod disruptions .\n- Learn how to assign memory resources to containers and pods .\n- Learn how to assign CPU resources to containers and pods .\n- Learn how to configure Quality of Service for Pods .\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:778597b580a517a37a53795e3985960041577f790714581e6302d4d13152d049",
+  "document_id": "work-007",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Quality of Service Classes"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Quality of Service classes"
+    },
+    {
+      "block_index": 4,
+      "level": 3,
+      "text": "Guaranteed"
+    },
+    {
+      "block_index": 6,
+      "level": 4,
+      "text": "Criteria"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Burstable"
+    },
+    {
+      "block_index": 13,
+      "level": 4,
+      "text": "Criteria"
+    },
+    {
+      "block_index": 16,
+      "level": 3,
+      "text": "BestEffort"
+    },
+    {
+      "block_index": 19,
+      "level": 4,
+      "text": "Criteria"
+    },
+    {
+      "block_index": 21,
+      "level": 2,
+      "text": "Memory QoS with cgroup v2"
+    },
+    {
+      "block_index": 24,
+      "level": 3,
+      "text": "Memory throttling"
+    },
+    {
+      "block_index": 30,
+      "level": 3,
+      "text": "Configuring memory reservation"
+    },
+    {
+      "block_index": 37,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 38,
+      "level": 3,
+      "text": "Disabling or rolling back Memory QoS"
+    },
+    {
+      "block_index": 41,
+      "level": 3,
+      "text": "System requirements"
+    },
+    {
+      "block_index": 43,
+      "level": 2,
+      "text": "Some behavior is independent of QoS class"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "resource requests",
+      "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+    },
+    {
+      "text": "Containers",
+      "url": "https://kubernetes.io/docs/concepts/containers/"
+    },
+    {
+      "text": "Quality of Service",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/"
+    },
+    {
+      "text": "Node Pressure",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/"
+    },
+    {
+      "text": "Pod-level resources",
+      "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#pod-level-resource-specification"
+    },
+    {
+      "text": "Memory QoS",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#memoryqos"
+    },
+    {
+      "text": "configure",
+      "url": "https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/"
+    },
+    {
+      "text": "livelock bug",
+      "url": "https://lore.kernel.org/all/20200710012662.GA29679@chep.ntu.edu.tw/"
+    },
+    {
+      "text": "eviction",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/"
+    },
+    {
+      "text": "preempt",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#preemption"
+    },
+    {
+      "text": "in-place resize",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-resize"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-007.html",
+  "raw_sha256": "sha256:3e082d47e108ef42a5b6f6e7a6b831e249b5439db7a54b35dedde0d5a376fcee",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+  "statistics": {
+    "block_count": 48,
+    "character_count": 11177,
+    "code_block_count": 2,
+    "heading_count": 16,
+    "link_count": 11,
+    "list_count": 6,
+    "paragraph_count": 24,
+    "table_count": 0,
+    "word_count": 1669
+  },
+  "title": "Pod Quality of Service Classes"
+}

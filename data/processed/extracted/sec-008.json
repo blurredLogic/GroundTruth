@@ -1,0 +1,236 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Limit Ranges",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "By default, containers run with unbounded\n[compute resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) on a Kubernetes cluster.\nUsing Kubernetes [resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/),\nadministrators (also termed *cluster operators*) can restrict consumption and creation\nof cluster resources (such as CPU time, memory, and persistent storage) within a specified\n[namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces).\nWithin a namespace, a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) can consume as much CPU and memory as is allowed by the ResourceQuotas that apply to that namespace.\nAs a cluster operator, or as a namespace-level administrator, you might also be concerned\nabout making sure that a single object cannot monopolize all available resources within a namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "A LimitRange is a policy to constrain the resource allocations (limits and requests) that you can specify for\neach applicable object kind (such as Pod or [PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims)) in a namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "A *LimitRange* provides constraints that can:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "ordered": false,
+      "text": "- Enforce minimum and maximum compute resources usage per Pod or Container in a namespace.\n- Enforce minimum and maximum storage request per PersistentVolumeClaim in a namespace.\n- Enforce a ratio between request and limit for a resource in a namespace.\n- Set default request/limit for compute resources in a namespace and automatically inject them to Containers at runtime.",
+      "type": "list"
+    },
+    {
+      "block_index": 5,
+      "text": "Kubernetes constrains resource allocations to Pods in a particular namespace\nwhenever there is at least one LimitRange object in that namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "The name of a LimitRange object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "level": 2,
+      "text": "Constraints on resource limits and requests",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "ordered": false,
+      "text": "- The administrator creates a LimitRange in a namespace.\n- Users create (or try to create) objects in that namespace, such as Pods or PersistentVolumeClaims.\n- First, the LimitRange admission controller applies default request and limit values for all Pods (and their containers) that do not set compute resource requirements.\n- Second, the LimitRange tracks usage to ensure it does not exceed resource minimum, maximum and ratio defined in any LimitRange present in the namespace.\n- If you attempt to create or update an object (Pod or PersistentVolumeClaim) that violates a LimitRange constraint, your request to the API server will fail with an HTTP status code 403 Forbidden and a message explaining the constraint that has been violated.\n- If you add a LimitRange in a namespace that applies to compute-related resources such as cpu and memory , you must specify requests or limits for those values. Otherwise, the system may reject Pod creation.\n- LimitRange validations occur only at Pod admission stage, not on running Pods. If you add or modify a LimitRange, the Pods that already exist in that namespace continue unchanged.\n- If two or more LimitRange objects exist in the namespace, it is not deterministic which default value will be applied.",
+      "type": "list"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "LimitRange and admission checks for Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "A LimitRange does **not** check the consistency of the default values it applies.\nThis means that a default value for the *limit* that is set by LimitRange may be\nless than the *request* value specified for the container in the spec that a client\nsubmits to the API server. If that happens, the final Pod will not be schedulable.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "For example, you define a LimitRange with below manifest:Note:The following examples operate within the default namespace of your cluster, as the namespace\nparameter is undefined and the LimitRange scope is limited to the namespace level.\nThis implies that any references or operations within these examples will interact\nwith elements within the default namespace of your cluster. You can override the\noperating namespace by configuring namespace in the `metadata.namespace` field.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: LimitRange\nmetadata:\n  name: cpu-resource-constraint\nspec:\n  limits:\n  - default: # this section defines default limits\n      cpu: 500m\n    defaultRequest: # this section defines default requests\n      cpu: 500m\n    max: # max and min define the limit range\n      cpu: \"1\"\n    min:\n      cpu: 100m\n    type: Container",
+      "type": "code"
+    },
+    {
+      "block_index": 13,
+      "text": "along with a Pod that declares a CPU resource request of `700m`, but not a limit:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: example-conflict-with-limitrange-cpu\nspec:\n  containers:\n  - name: demo\n    image: registry.k8s.io/pause:3.8\n    resources:\n      requests:\n        cpu: 700m",
+      "type": "code"
+    },
+    {
+      "block_index": 15,
+      "text": "then that Pod will not be scheduled, failing with an error similar to:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "language": null,
+      "text": "Pod \"example-conflict-with-limitrange-cpu\" is invalid: spec.containers[0].resources.requests: Invalid value: \"700m\": must be less than or equal to cpu limit",
+      "type": "code"
+    },
+    {
+      "block_index": 17,
+      "text": "If you set both `request` and `limit`, then that new Pod will be scheduled successfully\neven with the same LimitRange in place:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: example-no-conflict-with-limitrange-cpu\nspec:\n  containers:\n  - name: demo\n    image: registry.k8s.io/pause:3.8\n    resources:\n      requests:\n        cpu: 700m\n      limits:\n        cpu: 700m",
+      "type": "code"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "Example resource constraints",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "text": "Examples of policies that could be created using LimitRange are:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "ordered": false,
+      "text": "- In a 2 node cluster with a capacity of 8 GiB RAM and 16 cores, constrain Pods in a namespace to request 100m of CPU with a max limit of 500m for CPU and request 200Mi for Memory with a max limit of 600Mi for Memory.\n- Define default CPU limit and request to 150m and memory default request to 300Mi for Containers started with no cpu and memory requests in their specs.",
+      "type": "list"
+    },
+    {
+      "block_index": 22,
+      "text": "In the case where the total limits of the namespace is less than the sum of the limits\nof the Pods/Containers, there may be contention for resources. In this case, the\nContainers or Pods will not be created.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "Neither contention nor changes to a LimitRange will affect already created resources.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 25,
+      "text": "For examples on using limits, see:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "ordered": false,
+      "text": "- how to configure minimum and maximum CPU constraints per namespace .\n- how to configure minimum and maximum Memory constraints per namespace .\n- how to configure default CPU Requests and Limits per namespace .\n- how to configure default Memory Requests and Limits per namespace .\n- how to configure minimum and maximum Storage consumption per namespace .\n- a detailed example on configuring quota per namespace .",
+      "type": "list"
+    },
+    {
+      "block_index": 27,
+      "text": "Refer to the [LimitRanger design document](https://git.k8s.io/design-proposals-archive/resource-management/admission_control_limit_range.md)\nfor context and historical information.",
+      "type": "paragraph"
+    }
+  ],
+  "content": "# Limit Ranges\n\nBy default, containers run with unbounded\n[compute resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) on a Kubernetes cluster.\nUsing Kubernetes [resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/),\nadministrators (also termed *cluster operators*) can restrict consumption and creation\nof cluster resources (such as CPU time, memory, and persistent storage) within a specified\n[namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces).\nWithin a namespace, a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) can consume as much CPU and memory as is allowed by the ResourceQuotas that apply to that namespace.\nAs a cluster operator, or as a namespace-level administrator, you might also be concerned\nabout making sure that a single object cannot monopolize all available resources within a namespace.\n\nA LimitRange is a policy to constrain the resource allocations (limits and requests) that you can specify for\neach applicable object kind (such as Pod or [PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims)) in a namespace.\n\nA *LimitRange* provides constraints that can:\n\n- Enforce minimum and maximum compute resources usage per Pod or Container in a namespace.\n- Enforce minimum and maximum storage request per PersistentVolumeClaim in a namespace.\n- Enforce a ratio between request and limit for a resource in a namespace.\n- Set default request/limit for compute resources in a namespace and automatically inject them to Containers at runtime.\n\nKubernetes constrains resource allocations to Pods in a particular namespace\nwhenever there is at least one LimitRange object in that namespace.\n\nThe name of a LimitRange object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).\n\n## Constraints on resource limits and requests\n\n- The administrator creates a LimitRange in a namespace.\n- Users create (or try to create) objects in that namespace, such as Pods or PersistentVolumeClaims.\n- First, the LimitRange admission controller applies default request and limit values for all Pods (and their containers) that do not set compute resource requirements.\n- Second, the LimitRange tracks usage to ensure it does not exceed resource minimum, maximum and ratio defined in any LimitRange present in the namespace.\n- If you attempt to create or update an object (Pod or PersistentVolumeClaim) that violates a LimitRange constraint, your request to the API server will fail with an HTTP status code 403 Forbidden and a message explaining the constraint that has been violated.\n- If you add a LimitRange in a namespace that applies to compute-related resources such as cpu and memory , you must specify requests or limits for those values. Otherwise, the system may reject Pod creation.\n- LimitRange validations occur only at Pod admission stage, not on running Pods. If you add or modify a LimitRange, the Pods that already exist in that namespace continue unchanged.\n- If two or more LimitRange objects exist in the namespace, it is not deterministic which default value will be applied.\n\n## LimitRange and admission checks for Pods\n\nA LimitRange does **not** check the consistency of the default values it applies.\nThis means that a default value for the *limit* that is set by LimitRange may be\nless than the *request* value specified for the container in the spec that a client\nsubmits to the API server. If that happens, the final Pod will not be schedulable.\n\nFor example, you define a LimitRange with below manifest:Note:The following examples operate within the default namespace of your cluster, as the namespace\nparameter is undefined and the LimitRange scope is limited to the namespace level.\nThis implies that any references or operations within these examples will interact\nwith elements within the default namespace of your cluster. You can override the\noperating namespace by configuring namespace in the `metadata.namespace` field.\n\n```yaml\napiVersion: v1\nkind: LimitRange\nmetadata:\n  name: cpu-resource-constraint\nspec:\n  limits:\n  - default: # this section defines default limits\n      cpu: 500m\n    defaultRequest: # this section defines default requests\n      cpu: 500m\n    max: # max and min define the limit range\n      cpu: \"1\"\n    min:\n      cpu: 100m\n    type: Container\n```\n\nalong with a Pod that declares a CPU resource request of `700m`, but not a limit:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: example-conflict-with-limitrange-cpu\nspec:\n  containers:\n  - name: demo\n    image: registry.k8s.io/pause:3.8\n    resources:\n      requests:\n        cpu: 700m\n```\n\nthen that Pod will not be scheduled, failing with an error similar to:\n\n```\nPod \"example-conflict-with-limitrange-cpu\" is invalid: spec.containers[0].resources.requests: Invalid value: \"700m\": must be less than or equal to cpu limit\n```\n\nIf you set both `request` and `limit`, then that new Pod will be scheduled successfully\neven with the same LimitRange in place:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: example-no-conflict-with-limitrange-cpu\nspec:\n  containers:\n  - name: demo\n    image: registry.k8s.io/pause:3.8\n    resources:\n      requests:\n        cpu: 700m\n      limits:\n        cpu: 700m\n```\n\n## Example resource constraints\n\nExamples of policies that could be created using LimitRange are:\n\n- In a 2 node cluster with a capacity of 8 GiB RAM and 16 cores, constrain Pods in a namespace to request 100m of CPU with a max limit of 500m for CPU and request 200Mi for Memory with a max limit of 600Mi for Memory.\n- Define default CPU limit and request to 150m and memory default request to 300Mi for Containers started with no cpu and memory requests in their specs.\n\nIn the case where the total limits of the namespace is less than the sum of the limits\nof the Pods/Containers, there may be contention for resources. In this case, the\nContainers or Pods will not be created.\n\nNeither contention nor changes to a LimitRange will affect already created resources.\n\n## What's next\n\nFor examples on using limits, see:\n\n- how to configure minimum and maximum CPU constraints per namespace .\n- how to configure minimum and maximum Memory constraints per namespace .\n- how to configure default CPU Requests and Limits per namespace .\n- how to configure default Memory Requests and Limits per namespace .\n- how to configure minimum and maximum Storage consumption per namespace .\n- a detailed example on configuring quota per namespace .\n\nRefer to the [LimitRanger design document](https://git.k8s.io/design-proposals-archive/resource-management/admission_control_limit_range.md)\nfor context and historical information.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:e115ddc65def4acd862ec8760cfc9d863ba1f456b0ef125e0d8343620d693846",
+  "document_id": "sec-008",
+  "domain": "security_policies",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Limit Ranges"
+    },
+    {
+      "block_index": 7,
+      "level": 2,
+      "text": "Constraints on resource limits and requests"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "LimitRange and admission checks for Pods"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "Example resource constraints"
+    },
+    {
+      "block_index": 24,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "compute resources",
+      "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+    },
+    {
+      "text": "resource quotas",
+      "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/"
+    },
+    {
+      "text": "namespace",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces"
+    },
+    {
+      "text": "Pod",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "PersistentVolumeClaim",
+      "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims"
+    },
+    {
+      "text": "DNS subdomain name",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names"
+    },
+    {
+      "text": "LimitRanger design document",
+      "url": "https://git.k8s.io/design-proposals-archive/resource-management/admission_control_limit_range.md"
+    }
+  ],
+  "raw_path": "data/raw/documents/sec-008.html",
+  "raw_sha256": "sha256:971ef5d08552f94257369bb8798f023a106b788ffb647cf180bbae1e8a8745c9",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/policy/limit-range/",
+  "statistics": {
+    "block_count": 28,
+    "character_count": 6787,
+    "code_block_count": 4,
+    "heading_count": 5,
+    "link_count": 7,
+    "list_count": 4,
+    "paragraph_count": 15,
+    "table_count": 0,
+    "word_count": 972
+  },
+  "title": "Limit Ranges"
+}

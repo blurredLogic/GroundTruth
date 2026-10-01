@@ -1,0 +1,1139 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Ingress",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Feature state:\nStable since Kubernetes v1.19An API object that manages external access to the services in a cluster, typically HTTP.Ingress may provide load balancing, SSL termination and name-based virtual hosting.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "text": "The Kubernetes project recommends using [Gateway](https://gateway-api.sigs.k8s.io/) instead of\n[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).\nThe Ingress API has been frozen.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "This means that:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "ordered": false,
+      "text": "- The Ingress API is generally available, and is subject to the stability guarantees for generally available APIs. The Kubernetes project has no plans to remove Ingress from Kubernetes.\n- The Ingress API is no longer being developed, and will have no further changes or updates made to it.",
+      "type": "list"
+    },
+    {
+      "block_index": 6,
+      "level": 2,
+      "text": "Terminology",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "text": "For clarity, this guide defines the following terms:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "ordered": false,
+      "text": "- Node: A worker machine in Kubernetes, part of a cluster.\n- Cluster: A set of Nodes that run containerized applications managed by Kubernetes. For this example, and in most common Kubernetes deployments, nodes in the cluster are not part of the public internet.\n- Edge router: A router that enforces the firewall policy for your cluster. This could be a gateway managed by a cloud provider or a physical piece of hardware.\n- Cluster network: A set of links, logical or physical, that facilitate communication within a cluster according to the Kubernetes networking model .\n- Service: A Kubernetes Service that identifies a set of Pods using label selectors. Unless mentioned otherwise, Services are assumed to have virtual IPs only routable within the cluster network.",
+      "type": "list"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "What is Ingress?",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "[Ingress](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#ingress-v1-networking-k8s-io)\nexposes HTTP and HTTPS routes from outside the cluster to\n[services](https://kubernetes.io/docs/concepts/services-networking/service/) within the cluster.\nTraffic routing is controlled by rules defined on the Ingress resource.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "Here is a simple example where an Ingress sends all its traffic to one Service:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "text": "Figure. Ingress",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "text": "An Ingress may be configured to give Services externally-reachable URLs,\nload balance traffic, terminate SSL / TLS, and offer name-based virtual hosting.\nAn [Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)\nis responsible for fulfilling the Ingress, usually with a load balancer, though\nit may also configure your edge router or additional frontends to help handle the traffic.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "An Ingress does not expose arbitrary ports or protocols. Exposing services other than HTTP and HTTPS to the internet typically\nuses a service of type [Service.Type=NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) or\n[Service.Type=LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Prerequisites",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "You must have an [Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)\nto satisfy an Ingress. Only creating an Ingress resource has no effect.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "You can choose from a number of [Ingress controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "Ideally, all Ingress controllers should fit the reference specification. In reality, the various Ingress\ncontrollers operate slightly differently.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "The Ingress resource",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "A minimal Ingress resource example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: minimal-ingress\nspec:\n  ingressClassName: nginx-example\n  rules:\n  - http:\n      paths:\n      - path: /testpath\n        pathType: Prefix\n        backend:\n          service:\n            name: test\n            port:\n              number: 80",
+      "type": "code"
+    },
+    {
+      "block_index": 23,
+      "text": "An Ingress needs `apiVersion`, `kind`, `metadata` and `spec` fields.\nThe name of an Ingress object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).\nFor general information about working with config files, see\n[deploying applications](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/),\n[configuring containers](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/),\n[managing resources](https://kubernetes.io/docs/concepts/workloads/management/).\nIngress controllers frequently use [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to configure behavior.\nReview the documentation for your choice of ingress controller to learn which annotations are expected and / or supported.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "text": "The [Ingress spec](https://kubernetes.io/docs/reference/kubernetes-api/service-resources/ingress-v1/#IngressSpec)\nhas all the information needed to configure a load balancer or proxy server. Most importantly, it\ncontains a list of rules matched against all incoming requests. Ingress resource only supports rules\nfor directing HTTP(S) traffic.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "text": "If the `ingressClassName` is omitted, a [default Ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class)\nshould be defined.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "text": "Some ingress controllers work even without the definition of a\ndefault IngressClass. Even if you use an ingress controller that is able\nto operate without any IngressClass, the Kubernetes project still recommends\nthat you define a default IngressClass.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Ingress rules",
+      "type": "heading"
+    },
+    {
+      "block_index": 28,
+      "text": "Each HTTP rule contains the following information:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "ordered": false,
+      "text": "- An optional host. In this example, no host is specified, so the rule applies to all inbound HTTP traffic through the IP address specified. If a host is provided (for example, foo.bar.com), the rules apply to that host.\n- A list of paths (for example, /testpath ), each of which has an associated backend defined with a service.name and a service.port.name or service.port.number . Both the host and path must match the content of an incoming request before the load balancer directs traffic to the referenced Service.\n- A backend is a combination of Service and port names as described in the Service doc or a custom resource backend by way of a CRD . HTTP (and HTTPS) requests to the Ingress that match the host and path of the rule are sent to the listed backend.",
+      "type": "list"
+    },
+    {
+      "block_index": 30,
+      "text": "A `defaultBackend` is often configured in an Ingress controller to service any requests that do not\nmatch a path in the spec.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "level": 3,
+      "text": "DefaultBackend",
+      "type": "heading"
+    },
+    {
+      "block_index": 32,
+      "text": "An Ingress with no rules sends all traffic to a single default backend and `.spec.defaultBackend`\nis the backend that should handle requests in that case.\nThe `defaultBackend` is conventionally a configuration option of the\n[Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) and\nis not specified in your Ingress resources.\nIf no `.spec.rules` are specified, `.spec.defaultBackend` must be specified.\nIf `defaultBackend` is not set, the handling of requests that do not match any of the rules will be up to the\ningress controller (consult the documentation for your ingress controller to find out how it handles this case).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "text": "If none of the hosts or paths match the HTTP request in the Ingress objects, the traffic is\nrouted to your default backend.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "level": 3,
+      "text": "Resource backends",
+      "type": "heading"
+    },
+    {
+      "block_index": 35,
+      "text": "A `Resource` backend is an ObjectRef to another Kubernetes resource within the\nsame namespace as the Ingress object. A `Resource` is a mutually exclusive\nsetting with Service, and will fail validation if both are specified. A common\nusage for a `Resource` backend is to ingress data to an object storage backend\nwith static assets.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: ingress-resource-backend\nspec:\n  defaultBackend:\n    resource:\n      apiGroup: k8s.example.com\n      kind: StorageBucket\n      name: static-assets\n  rules:\n    - http:\n        paths:\n          - path: /icons\n            pathType: ImplementationSpecific\n            backend:\n              resource:\n                apiGroup: k8s.example.com\n                kind: StorageBucket\n                name: icon-assets",
+      "type": "code"
+    },
+    {
+      "block_index": 37,
+      "text": "After creating the Ingress above, you can view it with the following command:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "language": "bash",
+      "text": "kubectl describe ingress ingress-resource-backend",
+      "type": "code"
+    },
+    {
+      "block_index": 39,
+      "language": null,
+      "text": "Name:             ingress-resource-backend\nNamespace:        default\nAddress:\nDefault backend:  APIGroup: k8s.example.com, Kind: StorageBucket, Name: static-assets\nRules:\n  Host        Path  Backends\n  ----        ----  --------\n  *\n              /icons   APIGroup: k8s.example.com, Kind: StorageBucket, Name: icon-assets\nAnnotations:  <none>\nEvents:       <none>",
+      "type": "code"
+    },
+    {
+      "block_index": 40,
+      "level": 3,
+      "text": "Path types",
+      "type": "heading"
+    },
+    {
+      "block_index": 41,
+      "text": "Each path in an Ingress is required to have a corresponding path type. Paths\nthat do not include an explicit `pathType` will fail validation. There are three\nsupported path types:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "ordered": false,
+      "text": "- `ImplementationSpecific`: With this path type, matching is up to the IngressClass. Implementations can treat this as a separate `pathType` or treat it identically to `Prefix` or `Exact` path types.\n- `Exact`: Matches the URL path exactly and with case sensitivity.\n- `Prefix`: Matches based on a URL path prefix split by `/`. Matching is case sensitive and done on a path element by element basis. A path element refers to the list of labels in the path split by the `/` separator. A request is a match for path *p* if every *p* is an element-wise prefix of *p* of the request path. Note:If the last element of the path is a substring of the last element in request path, it is not a match (for example: `/foo/bar` matches `/foo/bar/baz`, but does not match `/foo/barbaz`).",
+      "type": "list"
+    },
+    {
+      "block_index": 43,
+      "level": 3,
+      "text": "Examples",
+      "type": "heading"
+    },
+    {
+      "block_index": 44,
+      "rows": [
+        [
+          "Kind",
+          "Path(s)",
+          "Request path(s)",
+          "Matches?"
+        ],
+        [
+          "Prefix",
+          "`/`",
+          "(all paths)",
+          "Yes"
+        ],
+        [
+          "Exact",
+          "`/foo`",
+          "`/foo`",
+          "Yes"
+        ],
+        [
+          "Exact",
+          "`/foo`",
+          "`/bar`",
+          "No"
+        ],
+        [
+          "Exact",
+          "`/foo`",
+          "`/foo/`",
+          "No"
+        ],
+        [
+          "Exact",
+          "`/foo/`",
+          "`/foo`",
+          "No"
+        ],
+        [
+          "Prefix",
+          "`/foo`",
+          "`/foo`, `/foo/`",
+          "Yes"
+        ],
+        [
+          "Prefix",
+          "`/foo/`",
+          "`/foo`, `/foo/`",
+          "Yes"
+        ],
+        [
+          "Prefix",
+          "`/aaa/bb`",
+          "`/aaa/bbb`",
+          "No"
+        ],
+        [
+          "Prefix",
+          "`/aaa/bbb`",
+          "`/aaa/bbb`",
+          "Yes"
+        ],
+        [
+          "Prefix",
+          "`/aaa/bbb/`",
+          "`/aaa/bbb`",
+          "Yes, ignores trailing slash"
+        ],
+        [
+          "Prefix",
+          "`/aaa/bbb`",
+          "`/aaa/bbb/`",
+          "Yes, matches trailing slash"
+        ],
+        [
+          "Prefix",
+          "`/aaa/bbb`",
+          "`/aaa/bbb/ccc`",
+          "Yes, matches subpath"
+        ],
+        [
+          "Prefix",
+          "`/aaa/bbb`",
+          "`/aaa/bbbxyz`",
+          "No, does not match string prefix"
+        ],
+        [
+          "Prefix",
+          "`/`, `/aaa`",
+          "`/aaa/ccc`",
+          "Yes, matches `/aaa` prefix"
+        ],
+        [
+          "Prefix",
+          "`/`, `/aaa`, `/aaa/bbb`",
+          "`/aaa/bbb`",
+          "Yes, matches `/aaa/bbb` prefix"
+        ],
+        [
+          "Prefix",
+          "`/`, `/aaa`, `/aaa/bbb`",
+          "`/ccc`",
+          "Yes, matches `/` prefix"
+        ],
+        [
+          "Prefix",
+          "`/aaa`",
+          "`/ccc`",
+          "No, uses default backend"
+        ],
+        [
+          "Mixed",
+          "`/foo` (Prefix), `/foo` (Exact)",
+          "`/foo`",
+          "Yes, prefers Exact"
+        ]
+      ],
+      "text": "| Kind | Path(s) | Request path(s) | Matches? |\n| --- | --- | --- | --- |\n| Prefix | `/` | (all paths) | Yes |\n| Exact | `/foo` | `/foo` | Yes |\n| Exact | `/foo` | `/bar` | No |\n| Exact | `/foo` | `/foo/` | No |\n| Exact | `/foo/` | `/foo` | No |\n| Prefix | `/foo` | `/foo`, `/foo/` | Yes |\n| Prefix | `/foo/` | `/foo`, `/foo/` | Yes |\n| Prefix | `/aaa/bb` | `/aaa/bbb` | No |\n| Prefix | `/aaa/bbb` | `/aaa/bbb` | Yes |\n| Prefix | `/aaa/bbb/` | `/aaa/bbb` | Yes, ignores trailing slash |\n| Prefix | `/aaa/bbb` | `/aaa/bbb/` | Yes, matches trailing slash |\n| Prefix | `/aaa/bbb` | `/aaa/bbb/ccc` | Yes, matches subpath |\n| Prefix | `/aaa/bbb` | `/aaa/bbbxyz` | No, does not match string prefix |\n| Prefix | `/`, `/aaa` | `/aaa/ccc` | Yes, matches `/aaa` prefix |\n| Prefix | `/`, `/aaa`, `/aaa/bbb` | `/aaa/bbb` | Yes, matches `/aaa/bbb` prefix |\n| Prefix | `/`, `/aaa`, `/aaa/bbb` | `/ccc` | Yes, matches `/` prefix |\n| Prefix | `/aaa` | `/ccc` | No, uses default backend |\n| Mixed | `/foo` (Prefix), `/foo` (Exact) | `/foo` | Yes, prefers Exact |",
+      "type": "table"
+    },
+    {
+      "block_index": 45,
+      "level": 4,
+      "text": "Multiple matches",
+      "type": "heading"
+    },
+    {
+      "block_index": 46,
+      "text": "In some cases, multiple paths within an Ingress will match a request. In those\ncases precedence will be given first to the longest matching path. If two paths\nare still equally matched, precedence will be given to paths with an exact path\ntype over prefix path type.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 47,
+      "level": 2,
+      "text": "Hostname wildcards",
+      "type": "heading"
+    },
+    {
+      "block_index": 48,
+      "text": "Hosts can be precise matches (for example “`foo.bar.com`”) or a wildcard (for\nexample “`*.foo.com`”). Precise matches require that the HTTP `host` header\nmatches the `host` field. Wildcard matches require the HTTP `host` header is\nequal to the suffix of the wildcard rule.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 49,
+      "rows": [
+        [
+          "Host",
+          "Host header",
+          "Match?"
+        ],
+        [
+          "`*.foo.com`",
+          "`bar.foo.com`",
+          "Matches based on shared suffix"
+        ],
+        [
+          "`*.foo.com`",
+          "`baz.bar.foo.com`",
+          "No match, wildcard only covers a single DNS label"
+        ],
+        [
+          "`*.foo.com`",
+          "`foo.com`",
+          "No match, wildcard only covers a single DNS label"
+        ]
+      ],
+      "text": "| Host | Host header | Match? |\n| --- | --- | --- |\n| `*.foo.com` | `bar.foo.com` | Matches based on shared suffix |\n| `*.foo.com` | `baz.bar.foo.com` | No match, wildcard only covers a single DNS label |\n| `*.foo.com` | `foo.com` | No match, wildcard only covers a single DNS label |",
+      "type": "table"
+    },
+    {
+      "block_index": 50,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: ingress-wildcard-host\nspec:\n  rules:\n  - host: \"foo.bar.com\"\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/bar\"\n        backend:\n          service:\n            name: service1\n            port:\n              number: 80\n  - host: \"*.foo.com\"\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/foo\"\n        backend:\n          service:\n            name: service2\n            port:\n              number: 80",
+      "type": "code"
+    },
+    {
+      "block_index": 51,
+      "level": 2,
+      "text": "Ingress class",
+      "type": "heading"
+    },
+    {
+      "block_index": 52,
+      "text": "Ingresses can be implemented by different controllers, often with different\nconfiguration. Each Ingress should specify a class, a reference to an\nIngressClass resource that contains additional configuration including the name\nof the controller that should implement the class.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 53,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: IngressClass\nmetadata:\n  name: external-lb\nspec:\n  controller: example.com/ingress-controller\n  parameters:\n    apiGroup: k8s.example.com\n    kind: IngressParameters\n    name: external-lb",
+      "type": "code"
+    },
+    {
+      "block_index": 54,
+      "text": "The `.spec.parameters` field of an IngressClass lets you reference another\nresource that provides configuration related to that IngressClass.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 55,
+      "text": "The specific type of parameters to use depends on the ingress controller\nthat you specify in the `.spec.controller` field of the IngressClass.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 56,
+      "level": 3,
+      "text": "IngressClass scope",
+      "type": "heading"
+    },
+    {
+      "block_index": 57,
+      "text": "Depending on your ingress controller, you may be able to use parameters\nthat you set cluster-wide, or just for one namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 58,
+      "text": "The default scope for IngressClass parameters is cluster-wide.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "text": "If you set the `.spec.parameters` field and don't set\n`.spec.parameters.scope`, or if you set `.spec.parameters.scope` to\n`Cluster`, then the IngressClass refers to a cluster-scoped resource.\nThe `kind` (in combination the `apiGroup`) of the parameters\nrefers to a cluster-scoped API (possibly a custom resource), and\nthe `name` of the parameters identifies a specific cluster scoped\nresource for that API.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 60,
+      "text": "For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 61,
+      "language": "yaml",
+      "text": "---\napiVersion: networking.k8s.io/v1\nkind: IngressClass\nmetadata:\n  name: external-lb-1\nspec:\n  controller: example.com/ingress-controller\n  parameters:\n    # The parameters for this IngressClass are specified in a\n    # ClusterIngressParameter (API group k8s.example.net) named\n    # \"external-config-1\". This definition tells Kubernetes to\n    # look for a cluster-scoped parameter resource.\n    scope: Cluster\n    apiGroup: k8s.example.net\n    kind: ClusterIngressParameter\n    name: external-config-1",
+      "type": "code"
+    },
+    {
+      "block_index": 62,
+      "text": "If you set the `.spec.parameters` field and set\n`.spec.parameters.scope` to `Namespace`, then the IngressClass refers\nto a namespaced-scoped resource. You must also set the `namespace`\nfield within `.spec.parameters` to the namespace that contains\nthe parameters you want to use.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 63,
+      "text": "The `kind` (in combination the `apiGroup`) of the parameters\nrefers to a namespaced API (for example: ConfigMap), and\nthe `name` of the parameters identifies a specific resource\nin the namespace you specified in `namespace`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 64,
+      "text": "Namespace-scoped parameters help the cluster operator delegate control over the\nconfiguration (for example: load balancer settings, API gateway definition)\nthat is used for a workload. If you used a cluster-scoped parameter then either:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 65,
+      "ordered": false,
+      "text": "- the cluster operator team needs to approve a different team's changes every time there's a new configuration change being applied.\n- the cluster operator must define specific access controls, such as RBAC roles and bindings, that let the application team make changes to the cluster-scoped parameters resource.",
+      "type": "list"
+    },
+    {
+      "block_index": 66,
+      "text": "The IngressClass API itself is always cluster-scoped.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 67,
+      "text": "Here is an example of an IngressClass that refers to parameters that are\nnamespaced:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 68,
+      "language": "yaml",
+      "text": "---\napiVersion: networking.k8s.io/v1\nkind: IngressClass\nmetadata:\n  name: external-lb-2\nspec:\n  controller: example.com/ingress-controller\n  parameters:\n    # The parameters for this IngressClass are specified in an\n    # IngressParameter (API group k8s.example.com) named \"external-config\",\n    # that's in the \"external-configuration\" namespace.\n    scope: Namespace\n    apiGroup: k8s.example.com\n    kind: IngressParameter\n    namespace: external-configuration\n    name: external-config",
+      "type": "code"
+    },
+    {
+      "block_index": 69,
+      "level": 3,
+      "text": "Deprecated annotation",
+      "type": "heading"
+    },
+    {
+      "block_index": 70,
+      "text": "Before the IngressClass resource and `ingressClassName` field were added in\nKubernetes 1.18, Ingress classes were specified with a\n`kubernetes.io/ingress.class` annotation on the Ingress. This annotation was\nnever formally defined, but was widely supported by Ingress controllers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 71,
+      "text": "The newer `ingressClassName` field on Ingresses is a replacement for that\nannotation, but is not a direct equivalent. While the annotation was generally\nused to reference the name of the Ingress controller that should implement the\nIngress, the field is a reference to an IngressClass resource that contains\nadditional Ingress configuration, including the name of the Ingress controller.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 72,
+      "level": 3,
+      "text": "Default IngressClass",
+      "type": "heading"
+    },
+    {
+      "block_index": 73,
+      "text": "You can mark a particular IngressClass as default for your cluster. Setting the\n`ingressclass.kubernetes.io/is-default-class` annotation to `true` on an\nIngressClass resource will ensure that new Ingresses without an\n`ingressClassName` field specified will be assigned this default IngressClass.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 74,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 75,
+      "text": "Start by defining a\ndefault IngressClass. It is recommended though, to specify the default\nIngressClass:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 76,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: IngressClass\nmetadata:\n  labels:\n    app.kubernetes.io/component: controller\n  name: example-class\n  annotations:\n    ingressclass.kubernetes.io/is-default-class: \"true\"\nspec:\n  controller: k8s.io/example-class",
+      "type": "code"
+    },
+    {
+      "block_index": 77,
+      "level": 2,
+      "text": "Types of Ingress",
+      "type": "heading"
+    },
+    {
+      "block_index": 78,
+      "level": 3,
+      "text": "Ingress backed by a single Service",
+      "type": "heading"
+    },
+    {
+      "block_index": 79,
+      "text": "There are existing Kubernetes concepts that allow you to expose a single Service\n(see [alternatives](https://kubernetes.io/docs/concepts/services-networking/ingress/#alternatives)). You can also do this with an Ingress by specifying a\n*default backend* with no rules.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 80,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: test-ingress\nspec:\n  defaultBackend:\n    service:\n      name: test\n      port:\n        number: 80",
+      "type": "code"
+    },
+    {
+      "block_index": 81,
+      "text": "If you create it using `kubectl apply -f` you should be able to view the state\nof the Ingress you added:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 82,
+      "language": "bash",
+      "text": "kubectl get ingress test-ingress",
+      "type": "code"
+    },
+    {
+      "block_index": 83,
+      "language": null,
+      "text": "NAME           CLASS         HOSTS   ADDRESS         PORTS   AGE\ntest-ingress   external-lb   *       203.0.113.123   80      59s",
+      "type": "code"
+    },
+    {
+      "block_index": 84,
+      "text": "Where `203.0.113.123` is the IP allocated by the Ingress controller to satisfy\nthis Ingress.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 85,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 86,
+      "level": 3,
+      "text": "Simple fanout",
+      "type": "heading"
+    },
+    {
+      "block_index": 87,
+      "text": "A fanout configuration routes traffic from a single IP address to more than one Service,\nbased on the HTTP URI being requested. An Ingress allows you to keep the number of load balancers\ndown to a minimum. For example, a setup like:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 88,
+      "text": "Figure. Ingress Fan Out",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 89,
+      "text": "It would require an Ingress such as:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 90,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: simple-fanout-example\nspec:\n  rules:\n  - host: foo.bar.com\n    http:\n      paths:\n      - path: /foo\n        pathType: Prefix\n        backend:\n          service:\n            name: service1\n            port:\n              number: 4200\n      - path: /bar\n        pathType: Prefix\n        backend:\n          service:\n            name: service2\n            port:\n              number: 8080",
+      "type": "code"
+    },
+    {
+      "block_index": 91,
+      "text": "When you create the Ingress with `kubectl apply -f`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 92,
+      "language": "shell",
+      "text": "kubectl describe ingress simple-fanout-example",
+      "type": "code"
+    },
+    {
+      "block_index": 93,
+      "language": null,
+      "text": "Name:             simple-fanout-example\nNamespace:        default\nAddress:          178.91.123.132\nDefault backend:  default-http-backend:80 (10.8.2.3:8080)\nRules:\n  Host         Path  Backends\n  ----         ----  --------\n  foo.bar.com\n               /foo   service1:4200 (10.8.0.90:4200)\n               /bar   service2:8080 (10.8.0.91:8080)\nEvents:\n  Type     Reason  Age                From                     Message\n  ----     ------  ----               ----                     -------\n  Normal   ADD     22s                loadbalancer-controller  default/test",
+      "type": "code"
+    },
+    {
+      "block_index": 94,
+      "text": "The Ingress controller provisions an implementation-specific load balancer\nthat satisfies the Ingress, as long as the Services (`service1`, `service2`) exist.\nWhen it has done so, you can see the address of the load balancer at the\nAddress field.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 95,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 96,
+      "level": 3,
+      "text": "Name based virtual hosting",
+      "type": "heading"
+    },
+    {
+      "block_index": 97,
+      "text": "Name-based virtual hosts support routing HTTP traffic to multiple host names at the same IP address.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 98,
+      "text": "Figure. Ingress Name Based Virtual hosting",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 99,
+      "text": "The following Ingress tells the backing load balancer to route requests based on\nthe [Host header](https://tools.ietf.org/html/rfc7230#section-5.4).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 100,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: name-virtual-host-ingress\nspec:\n  rules:\n  - host: foo.bar.com\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service1\n            port:\n              number: 80\n  - host: bar.foo.com\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service2\n            port:\n              number: 80",
+      "type": "code"
+    },
+    {
+      "block_index": 101,
+      "text": "If you create an Ingress resource without any hosts defined in the rules, then any\nweb traffic to the IP address of your Ingress controller can be matched without a name based\nvirtual host being required.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 102,
+      "text": "For example, the following Ingress routes traffic\nrequested for `first.bar.com` to `service1`, `second.bar.com` to `service2`,\nand any traffic whose request host header doesn't match `first.bar.com`\nand `second.bar.com` to `service3`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 103,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: name-virtual-host-ingress-no-third-host\nspec:\n  rules:\n  - host: first.bar.com\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service1\n            port:\n              number: 80\n  - host: second.bar.com\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service2\n            port:\n              number: 80\n  - http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service3\n            port:\n              number: 80",
+      "type": "code"
+    },
+    {
+      "block_index": 104,
+      "level": 3,
+      "text": "TLS",
+      "type": "heading"
+    },
+    {
+      "block_index": 105,
+      "text": "You can secure an Ingress by specifying a [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)\nthat contains a TLS private key and certificate. The Ingress resource only\nsupports a single TLS port, 443, and assumes TLS termination at the ingress point\n(traffic to the Service and its Pods is in plaintext).\nIf the TLS configuration section in an Ingress specifies different hosts, they are\nmultiplexed on the same port according to the hostname specified through the\nSNI TLS extension (provided the Ingress controller supports SNI). The TLS secret\nmust contain keys named `tls.crt` and `tls.key` that contain the certificate\nand private key to use for TLS. For example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 106,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: testsecret-tls\n  namespace: default\ndata:\n  tls.crt: base64 encoded cert\n  tls.key: base64 encoded key\ntype: kubernetes.io/tls",
+      "type": "code"
+    },
+    {
+      "block_index": 107,
+      "text": "Referencing this secret in an Ingress tells the Ingress controller to\nsecure the channel from the client to the load balancer using TLS. You need to make\nsure the TLS secret you created came from a certificate that contains a Common\nName (CN), also known as a Fully Qualified Domain Name (FQDN) for `https-example.foo.com`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 108,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 109,
+      "language": "yaml",
+      "text": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: tls-example-ingress\nspec:\n  tls:\n  - hosts:\n      - https-example.foo.com\n    secretName: testsecret-tls\n  rules:\n  - host: https-example.foo.com\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: service1\n            port:\n              number: 80",
+      "type": "code"
+    },
+    {
+      "block_index": 110,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 111,
+      "level": 3,
+      "text": "Load balancing",
+      "type": "heading"
+    },
+    {
+      "block_index": 112,
+      "text": "An Ingress controller is bootstrapped with some load balancing policy settings\nthat it applies to all Ingress, such as the load balancing algorithm, backend\nweight scheme, and others. More advanced load balancing concepts\n(e.g. persistent sessions, dynamic weights) are not yet exposed through the\nIngress. You can instead get these features through the load balancer used for\na Service.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 113,
+      "text": "It's also worth noting that even though health checks are not exposed directly\nthrough the Ingress, there exist parallel concepts in Kubernetes such as\n[readiness probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)\nthat allow you to achieve the same end result. Please review the controller\nspecific documentation to see how they handle health checks.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 114,
+      "level": 2,
+      "text": "Updating an Ingress",
+      "type": "heading"
+    },
+    {
+      "block_index": 115,
+      "text": "To update an existing Ingress to add a new Host, you can update it by editing the resource:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 116,
+      "language": "shell",
+      "text": "kubectl describe ingress test",
+      "type": "code"
+    },
+    {
+      "block_index": 117,
+      "language": null,
+      "text": "Name:             test\nNamespace:        default\nAddress:          178.91.123.132\nDefault backend:  default-http-backend:80 (10.8.2.3:8080)\nRules:\n  Host         Path  Backends\n  ----         ----  --------\n  foo.bar.com\n               /foo   service1:80 (10.8.0.90:80)\nEvents:\n  Type     Reason  Age                From                     Message\n  ----     ------  ----               ----                     -------\n  Normal   ADD     35s                loadbalancer-controller  default/test",
+      "type": "code"
+    },
+    {
+      "block_index": 118,
+      "language": "shell",
+      "text": "kubectl edit ingress test",
+      "type": "code"
+    },
+    {
+      "block_index": 119,
+      "text": "This pops up an editor with the existing configuration in YAML format.\nModify it to include the new Host:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 120,
+      "language": "yaml",
+      "text": "spec:\n  rules:\n  - host: foo.bar.com\n    http:\n      paths:\n      - backend:\n          service:\n            name: service1\n            port:\n              number: 80\n        path: /foo\n        pathType: Prefix\n  - host: bar.baz.com\n    http:\n      paths:\n      - backend:\n          service:\n            name: service2\n            port:\n              number: 80\n        path: /foo\n        pathType: Prefix\n..",
+      "type": "code"
+    },
+    {
+      "block_index": 121,
+      "text": "After you save your changes, kubectl updates the resource in the API server, which tells the\nIngress controller to reconfigure the load balancer.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 122,
+      "text": "Verify this:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 123,
+      "language": "shell",
+      "text": "kubectl describe ingress test",
+      "type": "code"
+    },
+    {
+      "block_index": 124,
+      "language": null,
+      "text": "Name:             test\nNamespace:        default\nAddress:          178.91.123.132\nDefault backend:  default-http-backend:80 (10.8.2.3:8080)\nRules:\n  Host         Path  Backends\n  ----         ----  --------\n  foo.bar.com\n               /foo   service1:80 (10.8.0.90:80)\n  bar.baz.com\n               /foo   service2:80 (10.8.0.91:80)\nEvents:\n  Type     Reason  Age                From                     Message\n  ----     ------  ----               ----                     -------\n  Normal   ADD     45s                loadbalancer-controller  default/test",
+      "type": "code"
+    },
+    {
+      "block_index": 125,
+      "text": "You can achieve the same outcome by invoking `kubectl replace -f` on a modified Ingress YAML file.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 126,
+      "level": 2,
+      "text": "Failing across availability zones",
+      "type": "heading"
+    },
+    {
+      "block_index": 127,
+      "text": "Techniques for spreading traffic across failure domains differ between cloud providers.\nPlease check the documentation of the relevant [Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) for details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 128,
+      "level": 2,
+      "text": "Alternatives",
+      "type": "heading"
+    },
+    {
+      "block_index": 129,
+      "text": "You can expose a Service in multiple ways that don't directly involve the Ingress resource:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 130,
+      "ordered": false,
+      "text": "- Use Service.Type=LoadBalancer\n- Use Service.Type=NodePort",
+      "type": "list"
+    },
+    {
+      "block_index": 131,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 132,
+      "ordered": false,
+      "text": "- Learn about the Ingress API\n- Learn about Ingress controllers",
+      "type": "list"
+    }
+  ],
+  "content": "# Ingress\n\nFeature state:\nStable since Kubernetes v1.19An API object that manages external access to the services in a cluster, typically HTTP.Ingress may provide load balancing, SSL termination and name-based virtual hosting.\n\n#### Note:\n\nThe Kubernetes project recommends using [Gateway](https://gateway-api.sigs.k8s.io/) instead of\n[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).\nThe Ingress API has been frozen.\n\nThis means that:\n\n- The Ingress API is generally available, and is subject to the stability guarantees for generally available APIs. The Kubernetes project has no plans to remove Ingress from Kubernetes.\n- The Ingress API is no longer being developed, and will have no further changes or updates made to it.\n\n## Terminology\n\nFor clarity, this guide defines the following terms:\n\n- Node: A worker machine in Kubernetes, part of a cluster.\n- Cluster: A set of Nodes that run containerized applications managed by Kubernetes. For this example, and in most common Kubernetes deployments, nodes in the cluster are not part of the public internet.\n- Edge router: A router that enforces the firewall policy for your cluster. This could be a gateway managed by a cloud provider or a physical piece of hardware.\n- Cluster network: A set of links, logical or physical, that facilitate communication within a cluster according to the Kubernetes networking model .\n- Service: A Kubernetes Service that identifies a set of Pods using label selectors. Unless mentioned otherwise, Services are assumed to have virtual IPs only routable within the cluster network.\n\n## What is Ingress?\n\n[Ingress](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#ingress-v1-networking-k8s-io)\nexposes HTTP and HTTPS routes from outside the cluster to\n[services](https://kubernetes.io/docs/concepts/services-networking/service/) within the cluster.\nTraffic routing is controlled by rules defined on the Ingress resource.\n\nHere is a simple example where an Ingress sends all its traffic to one Service:\n\nFigure. Ingress\n\nAn Ingress may be configured to give Services externally-reachable URLs,\nload balance traffic, terminate SSL / TLS, and offer name-based virtual hosting.\nAn [Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)\nis responsible for fulfilling the Ingress, usually with a load balancer, though\nit may also configure your edge router or additional frontends to help handle the traffic.\n\nAn Ingress does not expose arbitrary ports or protocols. Exposing services other than HTTP and HTTPS to the internet typically\nuses a service of type [Service.Type=NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) or\n[Service.Type=LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer).\n\n## Prerequisites\n\nYou must have an [Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)\nto satisfy an Ingress. Only creating an Ingress resource has no effect.\n\nYou can choose from a number of [Ingress controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/).\n\nIdeally, all Ingress controllers should fit the reference specification. In reality, the various Ingress\ncontrollers operate slightly differently.\n\n#### Note:\n\n## The Ingress resource\n\nA minimal Ingress resource example:\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: minimal-ingress\nspec:\n  ingressClassName: nginx-example\n  rules:\n  - http:\n      paths:\n      - path: /testpath\n        pathType: Prefix\n        backend:\n          service:\n            name: test\n            port:\n              number: 80\n```\n\nAn Ingress needs `apiVersion`, `kind`, `metadata` and `spec` fields.\nThe name of an Ingress object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).\nFor general information about working with config files, see\n[deploying applications](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/),\n[configuring containers](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/),\n[managing resources](https://kubernetes.io/docs/concepts/workloads/management/).\nIngress controllers frequently use [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to configure behavior.\nReview the documentation for your choice of ingress controller to learn which annotations are expected and / or supported.\n\nThe [Ingress spec](https://kubernetes.io/docs/reference/kubernetes-api/service-resources/ingress-v1/#IngressSpec)\nhas all the information needed to configure a load balancer or proxy server. Most importantly, it\ncontains a list of rules matched against all incoming requests. Ingress resource only supports rules\nfor directing HTTP(S) traffic.\n\nIf the `ingressClassName` is omitted, a [default Ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class)\nshould be defined.\n\nSome ingress controllers work even without the definition of a\ndefault IngressClass. Even if you use an ingress controller that is able\nto operate without any IngressClass, the Kubernetes project still recommends\nthat you define a default IngressClass.\n\n### Ingress rules\n\nEach HTTP rule contains the following information:\n\n- An optional host. In this example, no host is specified, so the rule applies to all inbound HTTP traffic through the IP address specified. If a host is provided (for example, foo.bar.com), the rules apply to that host.\n- A list of paths (for example, /testpath ), each of which has an associated backend defined with a service.name and a service.port.name or service.port.number . Both the host and path must match the content of an incoming request before the load balancer directs traffic to the referenced Service.\n- A backend is a combination of Service and port names as described in the Service doc or a custom resource backend by way of a CRD . HTTP (and HTTPS) requests to the Ingress that match the host and path of the rule are sent to the listed backend.\n\nA `defaultBackend` is often configured in an Ingress controller to service any requests that do not\nmatch a path in the spec.\n\n### DefaultBackend\n\nAn Ingress with no rules sends all traffic to a single default backend and `.spec.defaultBackend`\nis the backend that should handle requests in that case.\nThe `defaultBackend` is conventionally a configuration option of the\n[Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) and\nis not specified in your Ingress resources.\nIf no `.spec.rules` are specified, `.spec.defaultBackend` must be specified.\nIf `defaultBackend` is not set, the handling of requests that do not match any of the rules will be up to the\ningress controller (consult the documentation for your ingress controller to find out how it handles this case).\n\nIf none of the hosts or paths match the HTTP request in the Ingress objects, the traffic is\nrouted to your default backend.\n\n### Resource backends\n\nA `Resource` backend is an ObjectRef to another Kubernetes resource within the\nsame namespace as the Ingress object. A `Resource` is a mutually exclusive\nsetting with Service, and will fail validation if both are specified. A common\nusage for a `Resource` backend is to ingress data to an object storage backend\nwith static assets.\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: ingress-resource-backend\nspec:\n  defaultBackend:\n    resource:\n      apiGroup: k8s.example.com\n      kind: StorageBucket\n      name: static-assets\n  rules:\n    - http:\n        paths:\n          - path: /icons\n            pathType: ImplementationSpecific\n            backend:\n              resource:\n                apiGroup: k8s.example.com\n                kind: StorageBucket\n                name: icon-assets\n```\n\nAfter creating the Ingress above, you can view it with the following command:\n\n```bash\nkubectl describe ingress ingress-resource-backend\n```\n\n```\nName:             ingress-resource-backend\nNamespace:        default\nAddress:\nDefault backend:  APIGroup: k8s.example.com, Kind: StorageBucket, Name: static-assets\nRules:\n  Host        Path  Backends\n  ----        ----  --------\n  *\n              /icons   APIGroup: k8s.example.com, Kind: StorageBucket, Name: icon-assets\nAnnotations:  <none>\nEvents:       <none>\n```\n\n### Path types\n\nEach path in an Ingress is required to have a corresponding path type. Paths\nthat do not include an explicit `pathType` will fail validation. There are three\nsupported path types:\n\n- `ImplementationSpecific`: With this path type, matching is up to the IngressClass. Implementations can treat this as a separate `pathType` or treat it identically to `Prefix` or `Exact` path types.\n- `Exact`: Matches the URL path exactly and with case sensitivity.\n- `Prefix`: Matches based on a URL path prefix split by `/`. Matching is case sensitive and done on a path element by element basis. A path element refers to the list of labels in the path split by the `/` separator. A request is a match for path *p* if every *p* is an element-wise prefix of *p* of the request path. Note:If the last element of the path is a substring of the last element in request path, it is not a match (for example: `/foo/bar` matches `/foo/bar/baz`, but does not match `/foo/barbaz`).\n\n### Examples\n\n| Kind | Path(s) | Request path(s) | Matches? |\n| --- | --- | --- | --- |\n| Prefix | `/` | (all paths) | Yes |\n| Exact | `/foo` | `/foo` | Yes |\n| Exact | `/foo` | `/bar` | No |\n| Exact | `/foo` | `/foo/` | No |\n| Exact | `/foo/` | `/foo` | No |\n| Prefix | `/foo` | `/foo`, `/foo/` | Yes |\n| Prefix | `/foo/` | `/foo`, `/foo/` | Yes |\n| Prefix | `/aaa/bb` | `/aaa/bbb` | No |\n| Prefix | `/aaa/bbb` | `/aaa/bbb` | Yes |\n| Prefix | `/aaa/bbb/` | `/aaa/bbb` | Yes, ignores trailing slash |\n| Prefix | `/aaa/bbb` | `/aaa/bbb/` | Yes, matches trailing slash |\n| Prefix | `/aaa/bbb` | `/aaa/bbb/ccc` | Yes, matches subpath |\n| Prefix | `/aaa/bbb` | `/aaa/bbbxyz` | No, does not match string prefix |\n| Prefix | `/`, `/aaa` | `/aaa/ccc` | Yes, matches `/aaa` prefix |\n| Prefix | `/`, `/aaa`, `/aaa/bbb` | `/aaa/bbb` | Yes, matches `/aaa/bbb` prefix |\n| Prefix | `/`, `/aaa`, `/aaa/bbb` | `/ccc` | Yes, matches `/` prefix |\n| Prefix | `/aaa` | `/ccc` | No, uses default backend |\n| Mixed | `/foo` (Prefix), `/foo` (Exact) | `/foo` | Yes, prefers Exact |\n\n#### Multiple matches\n\nIn some cases, multiple paths within an Ingress will match a request. In those\ncases precedence will be given first to the longest matching path. If two paths\nare still equally matched, precedence will be given to paths with an exact path\ntype over prefix path type.\n\n## Hostname wildcards\n\nHosts can be precise matches (for example “`foo.bar.com`”) or a wildcard (for\nexample “`*.foo.com`”). Precise matches require that the HTTP `host` header\nmatches the `host` field. Wildcard matches require the HTTP `host` header is\nequal to the suffix of the wildcard rule.\n\n| Host | Host header | Match? |\n| --- | --- | --- |\n| `*.foo.com` | `bar.foo.com` | Matches based on shared suffix |\n| `*.foo.com` | `baz.bar.foo.com` | No match, wildcard only covers a single DNS label |\n| `*.foo.com` | `foo.com` | No match, wildcard only covers a single DNS label |\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: ingress-wildcard-host\nspec:\n  rules:\n  - host: \"foo.bar.com\"\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/bar\"\n        backend:\n          service:\n            name: service1\n            port:\n              number: 80\n  - host: \"*.foo.com\"\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/foo\"\n        backend:\n          service:\n            name: service2\n            port:\n              number: 80\n```\n\n## Ingress class\n\nIngresses can be implemented by different controllers, often with different\nconfiguration. Each Ingress should specify a class, a reference to an\nIngressClass resource that contains additional configuration including the name\nof the controller that should implement the class.\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: IngressClass\nmetadata:\n  name: external-lb\nspec:\n  controller: example.com/ingress-controller\n  parameters:\n    apiGroup: k8s.example.com\n    kind: IngressParameters\n    name: external-lb\n```\n\nThe `.spec.parameters` field of an IngressClass lets you reference another\nresource that provides configuration related to that IngressClass.\n\nThe specific type of parameters to use depends on the ingress controller\nthat you specify in the `.spec.controller` field of the IngressClass.\n\n### IngressClass scope\n\nDepending on your ingress controller, you may be able to use parameters\nthat you set cluster-wide, or just for one namespace.\n\nThe default scope for IngressClass parameters is cluster-wide.\n\nIf you set the `.spec.parameters` field and don't set\n`.spec.parameters.scope`, or if you set `.spec.parameters.scope` to\n`Cluster`, then the IngressClass refers to a cluster-scoped resource.\nThe `kind` (in combination the `apiGroup`) of the parameters\nrefers to a cluster-scoped API (possibly a custom resource), and\nthe `name` of the parameters identifies a specific cluster scoped\nresource for that API.\n\nFor example:\n\n```yaml\n---\napiVersion: networking.k8s.io/v1\nkind: IngressClass\nmetadata:\n  name: external-lb-1\nspec:\n  controller: example.com/ingress-controller\n  parameters:\n    # The parameters for this IngressClass are specified in a\n    # ClusterIngressParameter (API group k8s.example.net) named\n    # \"external-config-1\". This definition tells Kubernetes to\n    # look for a cluster-scoped parameter resource.\n    scope: Cluster\n    apiGroup: k8s.example.net\n    kind: ClusterIngressParameter\n    name: external-config-1\n```\n\nIf you set the `.spec.parameters` field and set\n`.spec.parameters.scope` to `Namespace`, then the IngressClass refers\nto a namespaced-scoped resource. You must also set the `namespace`\nfield within `.spec.parameters` to the namespace that contains\nthe parameters you want to use.\n\nThe `kind` (in combination the `apiGroup`) of the parameters\nrefers to a namespaced API (for example: ConfigMap), and\nthe `name` of the parameters identifies a specific resource\nin the namespace you specified in `namespace`.\n\nNamespace-scoped parameters help the cluster operator delegate control over the\nconfiguration (for example: load balancer settings, API gateway definition)\nthat is used for a workload. If you used a cluster-scoped parameter then either:\n\n- the cluster operator team needs to approve a different team's changes every time there's a new configuration change being applied.\n- the cluster operator must define specific access controls, such as RBAC roles and bindings, that let the application team make changes to the cluster-scoped parameters resource.\n\nThe IngressClass API itself is always cluster-scoped.\n\nHere is an example of an IngressClass that refers to parameters that are\nnamespaced:\n\n```yaml\n---\napiVersion: networking.k8s.io/v1\nkind: IngressClass\nmetadata:\n  name: external-lb-2\nspec:\n  controller: example.com/ingress-controller\n  parameters:\n    # The parameters for this IngressClass are specified in an\n    # IngressParameter (API group k8s.example.com) named \"external-config\",\n    # that's in the \"external-configuration\" namespace.\n    scope: Namespace\n    apiGroup: k8s.example.com\n    kind: IngressParameter\n    namespace: external-configuration\n    name: external-config\n```\n\n### Deprecated annotation\n\nBefore the IngressClass resource and `ingressClassName` field were added in\nKubernetes 1.18, Ingress classes were specified with a\n`kubernetes.io/ingress.class` annotation on the Ingress. This annotation was\nnever formally defined, but was widely supported by Ingress controllers.\n\nThe newer `ingressClassName` field on Ingresses is a replacement for that\nannotation, but is not a direct equivalent. While the annotation was generally\nused to reference the name of the Ingress controller that should implement the\nIngress, the field is a reference to an IngressClass resource that contains\nadditional Ingress configuration, including the name of the Ingress controller.\n\n### Default IngressClass\n\nYou can mark a particular IngressClass as default for your cluster. Setting the\n`ingressclass.kubernetes.io/is-default-class` annotation to `true` on an\nIngressClass resource will ensure that new Ingresses without an\n`ingressClassName` field specified will be assigned this default IngressClass.\n\n#### Caution:\n\nStart by defining a\ndefault IngressClass. It is recommended though, to specify the default\nIngressClass:\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: IngressClass\nmetadata:\n  labels:\n    app.kubernetes.io/component: controller\n  name: example-class\n  annotations:\n    ingressclass.kubernetes.io/is-default-class: \"true\"\nspec:\n  controller: k8s.io/example-class\n```\n\n## Types of Ingress\n\n### Ingress backed by a single Service\n\nThere are existing Kubernetes concepts that allow you to expose a single Service\n(see [alternatives](https://kubernetes.io/docs/concepts/services-networking/ingress/#alternatives)). You can also do this with an Ingress by specifying a\n*default backend* with no rules.\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: test-ingress\nspec:\n  defaultBackend:\n    service:\n      name: test\n      port:\n        number: 80\n```\n\nIf you create it using `kubectl apply -f` you should be able to view the state\nof the Ingress you added:\n\n```bash\nkubectl get ingress test-ingress\n```\n\n```\nNAME           CLASS         HOSTS   ADDRESS         PORTS   AGE\ntest-ingress   external-lb   *       203.0.113.123   80      59s\n```\n\nWhere `203.0.113.123` is the IP allocated by the Ingress controller to satisfy\nthis Ingress.\n\n#### Note:\n\n### Simple fanout\n\nA fanout configuration routes traffic from a single IP address to more than one Service,\nbased on the HTTP URI being requested. An Ingress allows you to keep the number of load balancers\ndown to a minimum. For example, a setup like:\n\nFigure. Ingress Fan Out\n\nIt would require an Ingress such as:\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: simple-fanout-example\nspec:\n  rules:\n  - host: foo.bar.com\n    http:\n      paths:\n      - path: /foo\n        pathType: Prefix\n        backend:\n          service:\n            name: service1\n            port:\n              number: 4200\n      - path: /bar\n        pathType: Prefix\n        backend:\n          service:\n            name: service2\n            port:\n              number: 8080\n```\n\nWhen you create the Ingress with `kubectl apply -f`:\n\n```shell\nkubectl describe ingress simple-fanout-example\n```\n\n```\nName:             simple-fanout-example\nNamespace:        default\nAddress:          178.91.123.132\nDefault backend:  default-http-backend:80 (10.8.2.3:8080)\nRules:\n  Host         Path  Backends\n  ----         ----  --------\n  foo.bar.com\n               /foo   service1:4200 (10.8.0.90:4200)\n               /bar   service2:8080 (10.8.0.91:8080)\nEvents:\n  Type     Reason  Age                From                     Message\n  ----     ------  ----               ----                     -------\n  Normal   ADD     22s                loadbalancer-controller  default/test\n```\n\nThe Ingress controller provisions an implementation-specific load balancer\nthat satisfies the Ingress, as long as the Services (`service1`, `service2`) exist.\nWhen it has done so, you can see the address of the load balancer at the\nAddress field.\n\n#### Note:\n\n### Name based virtual hosting\n\nName-based virtual hosts support routing HTTP traffic to multiple host names at the same IP address.\n\nFigure. Ingress Name Based Virtual hosting\n\nThe following Ingress tells the backing load balancer to route requests based on\nthe [Host header](https://tools.ietf.org/html/rfc7230#section-5.4).\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: name-virtual-host-ingress\nspec:\n  rules:\n  - host: foo.bar.com\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service1\n            port:\n              number: 80\n  - host: bar.foo.com\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service2\n            port:\n              number: 80\n```\n\nIf you create an Ingress resource without any hosts defined in the rules, then any\nweb traffic to the IP address of your Ingress controller can be matched without a name based\nvirtual host being required.\n\nFor example, the following Ingress routes traffic\nrequested for `first.bar.com` to `service1`, `second.bar.com` to `service2`,\nand any traffic whose request host header doesn't match `first.bar.com`\nand `second.bar.com` to `service3`.\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: name-virtual-host-ingress-no-third-host\nspec:\n  rules:\n  - host: first.bar.com\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service1\n            port:\n              number: 80\n  - host: second.bar.com\n    http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service2\n            port:\n              number: 80\n  - http:\n      paths:\n      - pathType: Prefix\n        path: \"/\"\n        backend:\n          service:\n            name: service3\n            port:\n              number: 80\n```\n\n### TLS\n\nYou can secure an Ingress by specifying a [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)\nthat contains a TLS private key and certificate. The Ingress resource only\nsupports a single TLS port, 443, and assumes TLS termination at the ingress point\n(traffic to the Service and its Pods is in plaintext).\nIf the TLS configuration section in an Ingress specifies different hosts, they are\nmultiplexed on the same port according to the hostname specified through the\nSNI TLS extension (provided the Ingress controller supports SNI). The TLS secret\nmust contain keys named `tls.crt` and `tls.key` that contain the certificate\nand private key to use for TLS. For example:\n\n```yaml\napiVersion: v1\nkind: Secret\nmetadata:\n  name: testsecret-tls\n  namespace: default\ndata:\n  tls.crt: base64 encoded cert\n  tls.key: base64 encoded key\ntype: kubernetes.io/tls\n```\n\nReferencing this secret in an Ingress tells the Ingress controller to\nsecure the channel from the client to the load balancer using TLS. You need to make\nsure the TLS secret you created came from a certificate that contains a Common\nName (CN), also known as a Fully Qualified Domain Name (FQDN) for `https-example.foo.com`.\n\n#### Note:\n\n```yaml\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: tls-example-ingress\nspec:\n  tls:\n  - hosts:\n      - https-example.foo.com\n    secretName: testsecret-tls\n  rules:\n  - host: https-example.foo.com\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: service1\n            port:\n              number: 80\n```\n\n#### Note:\n\n### Load balancing\n\nAn Ingress controller is bootstrapped with some load balancing policy settings\nthat it applies to all Ingress, such as the load balancing algorithm, backend\nweight scheme, and others. More advanced load balancing concepts\n(e.g. persistent sessions, dynamic weights) are not yet exposed through the\nIngress. You can instead get these features through the load balancer used for\na Service.\n\nIt's also worth noting that even though health checks are not exposed directly\nthrough the Ingress, there exist parallel concepts in Kubernetes such as\n[readiness probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)\nthat allow you to achieve the same end result. Please review the controller\nspecific documentation to see how they handle health checks.\n\n## Updating an Ingress\n\nTo update an existing Ingress to add a new Host, you can update it by editing the resource:\n\n```shell\nkubectl describe ingress test\n```\n\n```\nName:             test\nNamespace:        default\nAddress:          178.91.123.132\nDefault backend:  default-http-backend:80 (10.8.2.3:8080)\nRules:\n  Host         Path  Backends\n  ----         ----  --------\n  foo.bar.com\n               /foo   service1:80 (10.8.0.90:80)\nEvents:\n  Type     Reason  Age                From                     Message\n  ----     ------  ----               ----                     -------\n  Normal   ADD     35s                loadbalancer-controller  default/test\n```\n\n```shell\nkubectl edit ingress test\n```\n\nThis pops up an editor with the existing configuration in YAML format.\nModify it to include the new Host:\n\n```yaml\nspec:\n  rules:\n  - host: foo.bar.com\n    http:\n      paths:\n      - backend:\n          service:\n            name: service1\n            port:\n              number: 80\n        path: /foo\n        pathType: Prefix\n  - host: bar.baz.com\n    http:\n      paths:\n      - backend:\n          service:\n            name: service2\n            port:\n              number: 80\n        path: /foo\n        pathType: Prefix\n..\n```\n\nAfter you save your changes, kubectl updates the resource in the API server, which tells the\nIngress controller to reconfigure the load balancer.\n\nVerify this:\n\n```shell\nkubectl describe ingress test\n```\n\n```\nName:             test\nNamespace:        default\nAddress:          178.91.123.132\nDefault backend:  default-http-backend:80 (10.8.2.3:8080)\nRules:\n  Host         Path  Backends\n  ----         ----  --------\n  foo.bar.com\n               /foo   service1:80 (10.8.0.90:80)\n  bar.baz.com\n               /foo   service2:80 (10.8.0.91:80)\nEvents:\n  Type     Reason  Age                From                     Message\n  ----     ------  ----               ----                     -------\n  Normal   ADD     45s                loadbalancer-controller  default/test\n```\n\nYou can achieve the same outcome by invoking `kubectl replace -f` on a modified Ingress YAML file.\n\n## Failing across availability zones\n\nTechniques for spreading traffic across failure domains differ between cloud providers.\nPlease check the documentation of the relevant [Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) for details.\n\n## Alternatives\n\nYou can expose a Service in multiple ways that don't directly involve the Ingress resource:\n\n- Use Service.Type=LoadBalancer\n- Use Service.Type=NodePort\n\n## What's next\n\n- Learn about the Ingress API\n- Learn about Ingress controllers\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:f7e754a1aec5e76e0685deb20bb720fcde9b6b86ab36ac0549752fc21d11d703",
+  "document_id": "net-003",
+  "domain": "services_networking",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Ingress"
+    },
+    {
+      "block_index": 2,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 6,
+      "level": 2,
+      "text": "Terminology"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "What is Ingress?"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Prerequisites"
+    },
+    {
+      "block_index": 19,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "The Ingress resource"
+    },
+    {
+      "block_index": 27,
+      "level": 3,
+      "text": "Ingress rules"
+    },
+    {
+      "block_index": 31,
+      "level": 3,
+      "text": "DefaultBackend"
+    },
+    {
+      "block_index": 34,
+      "level": 3,
+      "text": "Resource backends"
+    },
+    {
+      "block_index": 40,
+      "level": 3,
+      "text": "Path types"
+    },
+    {
+      "block_index": 43,
+      "level": 3,
+      "text": "Examples"
+    },
+    {
+      "block_index": 45,
+      "level": 4,
+      "text": "Multiple matches"
+    },
+    {
+      "block_index": 47,
+      "level": 2,
+      "text": "Hostname wildcards"
+    },
+    {
+      "block_index": 51,
+      "level": 2,
+      "text": "Ingress class"
+    },
+    {
+      "block_index": 56,
+      "level": 3,
+      "text": "IngressClass scope"
+    },
+    {
+      "block_index": 69,
+      "level": 3,
+      "text": "Deprecated annotation"
+    },
+    {
+      "block_index": 72,
+      "level": 3,
+      "text": "Default IngressClass"
+    },
+    {
+      "block_index": 74,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 77,
+      "level": 2,
+      "text": "Types of Ingress"
+    },
+    {
+      "block_index": 78,
+      "level": 3,
+      "text": "Ingress backed by a single Service"
+    },
+    {
+      "block_index": 85,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 86,
+      "level": 3,
+      "text": "Simple fanout"
+    },
+    {
+      "block_index": 95,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 96,
+      "level": 3,
+      "text": "Name based virtual hosting"
+    },
+    {
+      "block_index": 104,
+      "level": 3,
+      "text": "TLS"
+    },
+    {
+      "block_index": 108,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 110,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 111,
+      "level": 3,
+      "text": "Load balancing"
+    },
+    {
+      "block_index": 114,
+      "level": 2,
+      "text": "Updating an Ingress"
+    },
+    {
+      "block_index": 126,
+      "level": 2,
+      "text": "Failing across availability zones"
+    },
+    {
+      "block_index": 128,
+      "level": 2,
+      "text": "Alternatives"
+    },
+    {
+      "block_index": 131,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Gateway",
+      "url": "https://gateway-api.sigs.k8s.io/"
+    },
+    {
+      "text": "Ingress",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/ingress/"
+    },
+    {
+      "text": "Ingress",
+      "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#ingress-v1-networking-k8s-io"
+    },
+    {
+      "text": "services",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "Ingress controller",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/"
+    },
+    {
+      "text": "Service.Type=NodePort",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport"
+    },
+    {
+      "text": "Service.Type=LoadBalancer",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer"
+    },
+    {
+      "text": "Ingress controllers",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/"
+    },
+    {
+      "text": "DNS subdomain name",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names"
+    },
+    {
+      "text": "deploying applications",
+      "url": "https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/"
+    },
+    {
+      "text": "configuring containers",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/"
+    },
+    {
+      "text": "managing resources",
+      "url": "https://kubernetes.io/docs/concepts/workloads/management/"
+    },
+    {
+      "text": "annotations",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
+    },
+    {
+      "text": "Ingress spec",
+      "url": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/ingress-v1/#IngressSpec"
+    },
+    {
+      "text": "default Ingress class",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class"
+    },
+    {
+      "text": "alternatives",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/ingress/#alternatives"
+    },
+    {
+      "text": "Host header",
+      "url": "https://tools.ietf.org/html/rfc7230#section-5.4"
+    },
+    {
+      "text": "Secret",
+      "url": "https://kubernetes.io/docs/concepts/configuration/secret/"
+    },
+    {
+      "text": "readiness probes",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/"
+    }
+  ],
+  "raw_path": "data/raw/documents/net-003.html",
+  "raw_sha256": "sha256:9b0dc454a96f6edbc2b886d7b688a6b65e7ece6aad5275fa6fbd40852bde5fde",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
+  "statistics": {
+    "block_count": 133,
+    "character_count": 26719,
+    "code_block_count": 25,
+    "heading_count": 33,
+    "link_count": 19,
+    "list_count": 7,
+    "paragraph_count": 66,
+    "table_count": 2,
+    "word_count": 3315
+  },
+  "title": "Ingress"
+}

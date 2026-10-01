@@ -1,0 +1,209 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Static Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "*Static Pods* are managed directly by the kubelet daemon on a specific node,\nwithout the [API server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver)\nobserving them.\nUnlike Pods that are managed by the control plane (for example, a\n[Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)),\nthe kubelet watches each static Pod and restarts it if it fails.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Static Pods are always bound to one [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) on a specific node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "The main use for static Pods is to run a self-hosted control plane: in other words,\nusing the kubelet to supervise the individual\n[control plane components](https://kubernetes.io/docs/concepts/overview/components/#control-plane-components).\nFor example, [kubeadm](https://kubernetes.io/docs/reference/setup-tools/kubeadm/) uses static Pods to run\n`kube-apiserver`, `kube-controller-manager`, `kube-scheduler`, and `etcd` on control plane nodes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Mirror Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "The kubelet automatically tries to create a\n[mirror Pod](https://kubernetes.io/docs/reference/glossary/?all=true#term-mirror-pod)\non the Kubernetes API server for each static Pod.\nThis means that the Pods running on a node are visible on the API server,\nbut cannot be controlled from there.\nThe Pod names will be suffixed with the node hostname with a leading hyphen.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "The kubelet propagates [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels)\nfrom the static Pod to the mirror Pod. You can use those labels as normal via\n[selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "If you try to use `kubectl` to delete the mirror Pod from the API server,\nthe kubelet *does not* remove the static Pod. The kubelet will recreate\nthe mirror Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Limitations",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "The spec of a static Pod cannot refer to other API objects,\nsuch as [ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/),\n[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/), or\n[Secret](https://kubernetes.io/docs/concepts/configuration/secret/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "Static Pods do not support [ephemeral containers](https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "Static Pods vs DaemonSets",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "If you are running clustered Kubernetes and are using static Pods to run a Pod\non every node, you should probably be using a\n[DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset) instead.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "Static Pods are not managed by the control plane, so they cannot be rolled out,\nrolled back, or scaled using standard Kubernetes mechanisms. DaemonSets provide\nthese capabilities and are the recommended approach for running node-level workloads.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "text": "Static Pods are started by the kubelet before the API server is available, which\nmakes them suitable for bootstrapping control plane components. DaemonSets require\na running control plane.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "ordered": false,
+      "text": "- Learn how to create static Pods .\n- Learn about Kubernetes components and how the control plane uses static Pods.\n- Learn about DaemonSets as an alternative to static Pods.",
+      "type": "list"
+    }
+  ],
+  "content": "# Static Pods\n\n*Static Pods* are managed directly by the kubelet daemon on a specific node,\nwithout the [API server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver)\nobserving them.\nUnlike Pods that are managed by the control plane (for example, a\n[Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)),\nthe kubelet watches each static Pod and restarts it if it fails.\n\nStatic Pods are always bound to one [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) on a specific node.\n\nThe main use for static Pods is to run a self-hosted control plane: in other words,\nusing the kubelet to supervise the individual\n[control plane components](https://kubernetes.io/docs/concepts/overview/components/#control-plane-components).\nFor example, [kubeadm](https://kubernetes.io/docs/reference/setup-tools/kubeadm/) uses static Pods to run\n`kube-apiserver`, `kube-controller-manager`, `kube-scheduler`, and `etcd` on control plane nodes.\n\n#### Note:\n\n## Mirror Pods\n\nThe kubelet automatically tries to create a\n[mirror Pod](https://kubernetes.io/docs/reference/glossary/?all=true#term-mirror-pod)\non the Kubernetes API server for each static Pod.\nThis means that the Pods running on a node are visible on the API server,\nbut cannot be controlled from there.\nThe Pod names will be suffixed with the node hostname with a leading hyphen.\n\nThe kubelet propagates [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels)\nfrom the static Pod to the mirror Pod. You can use those labels as normal via\n[selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/).\n\nIf you try to use `kubectl` to delete the mirror Pod from the API server,\nthe kubelet *does not* remove the static Pod. The kubelet will recreate\nthe mirror Pod.\n\n## Limitations\n\nThe spec of a static Pod cannot refer to other API objects,\nsuch as [ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/),\n[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/), or\n[Secret](https://kubernetes.io/docs/concepts/configuration/secret/).\n\nStatic Pods do not support [ephemeral containers](https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/).\n\n## Static Pods vs DaemonSets\n\nIf you are running clustered Kubernetes and are using static Pods to run a Pod\non every node, you should probably be using a\n[DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset) instead.\n\nStatic Pods are not managed by the control plane, so they cannot be rolled out,\nrolled back, or scaled using standard Kubernetes mechanisms. DaemonSets provide\nthese capabilities and are the recommended approach for running node-level workloads.\n\nStatic Pods are started by the kubelet before the API server is available, which\nmakes them suitable for bootstrapping control plane components. DaemonSets require\na running control plane.\n\n## What's next\n\n- Learn how to create static Pods .\n- Learn about Kubernetes components and how the control plane uses static Pods.\n- Learn about DaemonSets as an alternative to static Pods.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:a41d71c2ab5827f7cb7785ae950321598ff771f567ec6d4494cc138cef2be119",
+  "document_id": "work-008",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Static Pods"
+    },
+    {
+      "block_index": 4,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Mirror Pods"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Limitations"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "Static Pods vs DaemonSets"
+    },
+    {
+      "block_index": 16,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "API server",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kube-apiserver"
+    },
+    {
+      "text": "Deployment",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/"
+    },
+    {
+      "text": "kubelet",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet"
+    },
+    {
+      "text": "control plane components",
+      "url": "https://kubernetes.io/docs/concepts/overview/components/#control-plane-components"
+    },
+    {
+      "text": "kubeadm",
+      "url": "https://kubernetes.io/docs/reference/setup-tools/kubeadm/"
+    },
+    {
+      "text": "mirror Pod",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-mirror-pod"
+    },
+    {
+      "text": "labels",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+    },
+    {
+      "text": "selectors",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
+    },
+    {
+      "text": "ServiceAccount",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/"
+    },
+    {
+      "text": "ConfigMap",
+      "url": "https://kubernetes.io/docs/concepts/configuration/configmap/"
+    },
+    {
+      "text": "Secret",
+      "url": "https://kubernetes.io/docs/concepts/configuration/secret/"
+    },
+    {
+      "text": "ephemeral containers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/"
+    },
+    {
+      "text": "DaemonSet",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-008.html",
+  "raw_sha256": "sha256:d20d6b586f82b0e9700685ec82691cdeb3911dd87219db3fc310d185677ff2ce",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/static-pods/",
+  "statistics": {
+    "block_count": 18,
+    "character_count": 3173,
+    "code_block_count": 0,
+    "heading_count": 6,
+    "link_count": 13,
+    "list_count": 1,
+    "paragraph_count": 11,
+    "table_count": 0,
+    "word_count": 444
+  },
+  "title": "Static Pods"
+}

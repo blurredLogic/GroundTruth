@@ -1,0 +1,1797 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Lifecycle",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "This page describes the lifecycle of a Pod. Pods follow a defined lifecycle, starting\nin the `Pending` [phase](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase), moving through `Running` if at least one\nof its primary containers starts OK, and then through either the `Succeeded` or\n`Failed` phases depending on whether any container in the Pod terminated in failure.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "While a Pod runs, the kubelet manages containers and translates the Pod's spec\nfor the container runtime. The kubelet also manages executing\n[probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes) that track the health of your application.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "Like individual application containers, Pods are considered to be relatively\nephemeral (rather than durable) entities. Pods are created, assigned a unique\nID ([UID](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids)), and scheduled\nto run on nodes where they remain until termination (according to restart policy) or\ndeletion.\nIf a [Node](https://kubernetes.io/docs/concepts/architecture/nodes/) dies, the Pods running on (or scheduled\nto run on) that node are [marked for deletion](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-garbage-collection). The control\nplane marks the Pods for removal after a timeout period.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Pod lifetime",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "While a Pod is running, the kubelet is able to restart containers to handle\nsome kind of faults. Within a Pod, Kubernetes tracks different container\n[states](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-states) and determines what action to take to make the Pod\nhealthy again. This is done in a [polling loop](https://kubernetes.io/docs/reference/node/kubelet-sync-loop/) that periodically reconciles the\ndesired state (a Pod spec) with the actual state of the running containers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "In the Kubernetes API, Pods have both a specification and an actual status. The\nstatus for a Pod object consists of a set of [Pod conditions](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions).\nYou can also inject [custom readiness information](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-readiness-gate) into the\ncondition data for a Pod, if that is useful to your application.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "Pods are only [scheduled](https://kubernetes.io/docs/concepts/scheduling-eviction/) once in their lifetime;\nassigning a Pod to a specific node is called *binding*, and the process of selecting\nwhich node to use is called *scheduling*.\nOnce a Pod has been scheduled and is bound to a node, Kubernetes tries\nto run that Pod on the node. The Pod runs on that node until it stops, or until the Pod\nis [terminated](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination); if Kubernetes isn't able to start the Pod on the selected\nnode (for example, if the node crashes before the Pod starts), then that particular Pod\nnever starts.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "You can use [Pod Scheduling Readiness](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-scheduling-readiness/)\nto delay scheduling for a Pod until all its *scheduling gates* are removed. For example,\nyou might want to define a set of Pods but only trigger scheduling once all the Pods\nhave been created.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "Pods and fault recovery",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "If one of the containers in the Pod fails, then Kubernetes may try to restart that\nspecific container.\nRead [How Pods handle problems with containers](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-restarts) to learn more.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "Pods can however fail in a way that the cluster cannot recover from, and in that case\nKubernetes does not attempt to heal the Pod further; instead, Kubernetes deletes the\nPod and relies on other components to provide automatic healing.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "text": "If a Pod is scheduled to a [node](https://kubernetes.io/docs/concepts/architecture/nodes/) and that\nnode then fails, the Pod is treated as unhealthy and Kubernetes eventually deletes the Pod.\nA Pod won't survive an [eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/) due to\na lack of resources or Node maintenance.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "text": "Kubernetes uses a higher-level abstraction, called a\n[controller](https://kubernetes.io/docs/concepts/architecture/controller/), that handles the work of\nmanaging the relatively disposable Pod instances.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "A given Pod (as defined by a UID) is never \"rescheduled\" to a different node; instead,\nthat Pod can be replaced by a new, near-identical Pod. If you make a replacement Pod, it can\neven have same name (as in `.metadata.name`) that the old Pod had, but the replacement\nwould have a different `.metadata.uid` from the old Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "text": "Kubernetes does not guarantee that a replacement for an existing Pod would be scheduled to\nthe same node as the old Pod that was being replaced.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "level": 3,
+      "text": "Associated lifetimes",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "text": "When something is said to have the same lifetime as a Pod, such as a\n[volume](https://kubernetes.io/docs/concepts/storage/volumes/),\nthat means that the thing exists as long as that specific Pod (with that exact UID)\nexists. If that Pod is deleted for any reason, and even if an identical replacement\nis created, the related thing (a volume, in this example) is also destroyed and\ncreated anew.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "level": 4,
+      "text": "Figure 1.",
+      "type": "heading"
+    },
+    {
+      "block_index": 19,
+      "text": "A multi-container Pod that contains a file puller [sidecar](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) and a web server. The Pod uses an [ephemeral `emptyDir` volume](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) for shared storage between the containers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "Pod phase",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "A Pod's `status` field is a\n[PodStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#podstatus-v1-core)\nobject, which has a `phase` field.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "text": "The phase of a Pod is a simple, high-level summary of where the Pod is in its\nlifecycle. The phase is not intended to be a comprehensive rollup of observations\nof container or Pod state, nor is it intended to be a comprehensive state machine.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "The number and meanings of Pod phase values are tightly guarded.\nOther than what is documented here, nothing should be assumed about Pods that\nhave a given `phase` value.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "text": "Here are the possible values for `phase`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "rows": [
+        [
+          "Value",
+          "Description"
+        ],
+        [
+          "`Pending`",
+          "The Pod has been accepted by the Kubernetes cluster, but one or more of the containers has not been set up and made ready to run. This includes time a Pod spends waiting to be scheduled as well as the time spent downloading container images over the network."
+        ],
+        [
+          "`Running`",
+          "The Pod has been bound to a node, and all of the containers have been created. At least one container is still running, or is in the process of starting or restarting."
+        ],
+        [
+          "`Succeeded`",
+          "All containers in the Pod have terminated in success, and will not be restarted."
+        ],
+        [
+          "`Failed`",
+          "All containers in the Pod have terminated, and at least one container has terminated in failure. That is, the container either exited with non-zero status or was terminated by the system, and is not set for automatic restarting."
+        ],
+        [
+          "`Unknown`",
+          "For some reason the state of the Pod could not be obtained. This phase typically occurs due to an error in communicating with the node where the Pod should be running."
+        ]
+      ],
+      "text": "| Value | Description |\n| --- | --- |\n| `Pending` | The Pod has been accepted by the Kubernetes cluster, but one or more of the containers has not been set up and made ready to run. This includes time a Pod spends waiting to be scheduled as well as the time spent downloading container images over the network. |\n| `Running` | The Pod has been bound to a node, and all of the containers have been created. At least one container is still running, or is in the process of starting or restarting. |\n| `Succeeded` | All containers in the Pod have terminated in success, and will not be restarted. |\n| `Failed` | All containers in the Pod have terminated, and at least one container has terminated in failure. That is, the container either exited with non-zero status or was terminated by the system, and is not set for automatic restarting. |\n| `Unknown` | For some reason the state of the Pod could not be obtained. This phase typically occurs due to an error in communicating with the node where the Pod should be running. |",
+      "type": "table"
+    },
+    {
+      "block_index": 26,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "When a pod is failing to start repeatedly, `CrashLoopBackOff` may appear in the `Status` field of some kubectl commands.\nSimilarly, when a pod is being deleted, `Terminating` may appear in the `Status` field of some kubectl commands.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "text": "Make sure not to confuse *Status*, a kubectl display field for user intuition, with the pod's `phase`.\nPod phase is an explicit part of the Kubernetes data model and of the\n[Pod API](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "language": null,
+      "text": "  NAMESPACE               NAME               READY   STATUS             RESTARTS   AGE\n  alessandras-namespace   alessandras-pod    0/1     CrashLoopBackOff   200        2d9h",
+      "type": "code"
+    },
+    {
+      "block_index": 30,
+      "text": "A Pod is granted a term to terminate gracefully, which defaults to 30 seconds.\nYou can use the flag `--force` to [terminate a Pod by force](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination-forced).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "Since Kubernetes 1.27, the kubelet transitions deleted Pods to a terminal phase\n(`Failed` or `Succeeded` depending on the exit statuses of the pod containers)\nbefore their deletion from the API server, with two exceptions:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "ordered": false,
+      "text": "- static Pods (which are managed directly by the kubelet and represented by mirror Pods )\n- force-deleted Pods without a finalizer",
+      "type": "list"
+    },
+    {
+      "block_index": 33,
+      "text": "If a node dies or is disconnected from the rest of the cluster, Kubernetes\napplies a policy for setting the `phase` of all Pods on the lost node to Failed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "level": 2,
+      "text": "Container states",
+      "type": "heading"
+    },
+    {
+      "block_index": 35,
+      "text": "As well as the [phase](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase) of the Pod overall, Kubernetes tracks the state of\neach container inside a Pod. You can use\n[container lifecycle hooks](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/) to\ntrigger events to run at certain points in a container's lifecycle.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "text": "Once the [scheduler](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/)\nassigns a Pod to a Node, the kubelet starts creating containers for that Pod\nusing a [container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes).\nThere are three possible container states: `Waiting`, `Running`, and `Terminated`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "text": "To check the state of a Pod's containers, you can use\n`kubectl describe pod <name-of-pod>`. The output shows the state for each container\nwithin that Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "text": "Each state has a specific meaning:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "level": 3,
+      "text": "`Waiting`",
+      "type": "heading"
+    },
+    {
+      "block_index": 40,
+      "text": "If a container is not in either the `Running` or `Terminated` state, it is `Waiting`.\nA container in the `Waiting` state is still running the operations it requires in\norder to complete start up: for example, pulling the container image from a container\nimage registry, or applying [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)\ndata.\nWhen you use `kubectl` to query a Pod with a container that is `Waiting`, you also see\na Reason field to summarize why the container is in that state.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 41,
+      "level": 3,
+      "text": "`Running`",
+      "type": "heading"
+    },
+    {
+      "block_index": 42,
+      "text": "The `Running` status indicates that a container is executing without issues. If there\nwas a `postStart` hook configured, it has already executed and finished. When you use\n`kubectl` to query a Pod with a container that is `Running`, you also see information\nabout when the container entered the `Running` state.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 43,
+      "level": 3,
+      "text": "`Terminated`",
+      "type": "heading"
+    },
+    {
+      "block_index": 44,
+      "text": "A container in the `Terminated` state began execution and then either ran to\ncompletion or failed for some reason. When you use `kubectl` to query a Pod with\na container that is `Terminated`, you see a reason, an exit code, and the start and\nfinish time for that container's period of execution.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 45,
+      "text": "If a container has a `preStop` hook configured, this hook runs before the container enters\nthe `Terminated` state.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "How Pods handle problems with containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "text": "Kubernetes manages container failures within Pods using a [`restartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy) defined\nin the Pod `spec`. This policy determines how Kubernetes reacts to containers exiting due to errors\nor other reasons, which falls in the following sequence:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "ordered": true,
+      "text": "1. Initial crash : Kubernetes attempts an immediate restart based on the Pod restartPolicy .\n2. Repeated crashes : After the initial crash Kubernetes applies an exponential backoff delay for subsequent restarts, described in `restartPolicy` . This prevents rapid, repeated restart attempts from overloading the system.\n3. CrashLoopBackOff state : This indicates that the backoff delay mechanism is currently in effect for a given container that is in a crash loop, failing and restarting repeatedly.\n4. Backoff reset : If a container runs successfully for a certain duration (e.g., 10 minutes), Kubernetes resets the backoff delay, treating any new crash as the first one.",
+      "type": "list"
+    },
+    {
+      "block_index": 49,
+      "text": "In practice, a `CrashLoopBackOff` is a condition or event that might be seen as output\nfrom the `kubectl` command, while describing or listing Pods, when a container in the Pod\nfails to start properly and then continually tries and fails in a loop.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 50,
+      "text": "In other words, when a container enters the crash loop, Kubernetes applies the\nexponential backoff delay mentioned in the [Container restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).\nThis mechanism prevents a faulty container from overwhelming the system with continuous\nfailed start attempts.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "text": "The `CrashLoopBackOff` can be caused by issues like the following:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 52,
+      "ordered": false,
+      "text": "- Application errors that cause the container to exit.\n- Configuration errors, such as incorrect environment variables or missing configuration files.\n- Resource constraints, where the container might not have enough memory or CPU to start properly.\n- Health checks failing if the application doesn't start serving within the expected time.\n- Container liveness probes or startup probes returning a Failure result as mentioned in the probes section .",
+      "type": "list"
+    },
+    {
+      "block_index": 53,
+      "text": "To investigate the root cause of a `CrashLoopBackOff` issue, a user can:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 54,
+      "ordered": true,
+      "text": "1. Check logs : Use kubectl logs <name-of-pod> to check the logs of the container. This is often the most direct way to diagnose the issue causing the crashes.\n2. Inspect events : Use kubectl describe pod <name-of-pod> to see events for the Pod, which can provide hints about configuration or resource issues.\n3. Review configuration : Ensure that the Pod configuration, including environment variables and mounted volumes, is correct and that all required external resources are available.\n4. Check resource limits : Make sure that the container has enough CPU and memory allocated. Sometimes, increasing the resources in the Pod definition can resolve the issue.\n5. Debug application : There might exist bugs or misconfigurations in the application code. Running this container image locally or in a development environment can help diagnose application specific issues.",
+      "type": "list"
+    },
+    {
+      "block_index": 55,
+      "level": 3,
+      "text": "Container restarts",
+      "type": "heading"
+    },
+    {
+      "block_index": 56,
+      "text": "When a container in your Pod stops, or experiences failure, Kubernetes can restart it.\nA restart isn't always appropriate; for example,\n[init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) run only once (if successful),\nduring Pod startup.\nYou can configure restarts as a policy that applies to all Pods, or using container-level configuration (for example: when you define a\n[sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)) or define container-level override.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 57,
+      "level": 4,
+      "text": "Container restarts and resilience",
+      "type": "heading"
+    },
+    {
+      "block_index": 58,
+      "text": "The Kubernetes project recommends following cloud-native principles, including resilient\ndesign that accounts for unannounced or arbitrary restarts. You can achieve this either\nby failing the Pod and relying on automatic\n[replacement](https://kubernetes.io/docs/concepts/workloads/controllers/), or you can design for container-level resilience.\nEither approach helps to ensure that your overall workload remains available despite\npartial failure.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 59,
+      "level": 4,
+      "text": "Pod-level container restart policy",
+      "type": "heading"
+    },
+    {
+      "block_index": 60,
+      "text": "The `spec` of a Pod has a `restartPolicy` field with possible values Always, OnFailure,\nand Never. The default value is Always.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 61,
+      "text": "The `restartPolicy` for a Pod applies to [app containers](https://kubernetes.io/docs/reference/glossary/?all=true#term-app-container)\nin the Pod and to regular [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).\n[Sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\nignore the Pod-level `restartPolicy` field: in Kubernetes, a sidecar is defined as an\nentry inside `initContainers` that has its container-level `restartPolicy` set to `Always`.\nFor init containers that exit with an error, the kubelet restarts the init container if\nthe Pod level `restartPolicy` is either `OnFailure` or `Always`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 62,
+      "ordered": false,
+      "text": "- Always : Automatically restarts the container after any termination.\n- OnFailure : Only restarts the container if it exits with an error (non-zero exit status).\n- Never : Does not automatically restart the terminated container.",
+      "type": "list"
+    },
+    {
+      "block_index": 63,
+      "level": 5,
+      "text": "Restart behavior comparison",
+      "type": "heading"
+    },
+    {
+      "block_index": 64,
+      "text": "The following table shows how containers behave under different restart policies and exit codes:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 65,
+      "rows": [
+        [
+          "Exit Code",
+          "`restartPolicy: Always`",
+          "`restartPolicy: OnFailure`",
+          "`restartPolicy: Never`",
+          "Sidecar Containers"
+        ],
+        [
+          "0 (Success)",
+          "Restarts",
+          "Does not restart",
+          "Does not restart",
+          "Always restarts"
+        ],
+        [
+          "Non-zero (Failure)",
+          "Restarts",
+          "Restarts",
+          "Does not restart",
+          "Always restarts"
+        ]
+      ],
+      "text": "| Exit Code | `restartPolicy: Always` | `restartPolicy: OnFailure` | `restartPolicy: Never` | Sidecar Containers |\n| --- | --- | --- | --- | --- |\n| 0 (Success) | Restarts | Does not restart | Does not restart | Always restarts |\n| Non-zero (Failure) | Restarts | Restarts | Does not restart | Always restarts |",
+      "type": "table"
+    },
+    {
+      "block_index": 66,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 67,
+      "text": "The restart behavior is particularly important when choosing between Deployments and Jobs:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 68,
+      "ordered": false,
+      "text": "- Deployments typically use restartPolicy: Always (the only allowed value) to keep applications running continuously\n- Jobs commonly use restartPolicy: OnFailure or restartPolicy: Never to handle batch processing tasks appropriately\n- Sidecar containers are init containers that always restart regardless of the Pod's restartPolicy because they have their own container-level restartPolicy: Always",
+      "type": "list"
+    },
+    {
+      "block_index": 69,
+      "level": 5,
+      "text": "Example scenarios",
+      "type": "heading"
+    },
+    {
+      "block_index": 70,
+      "text": "Here are concrete examples demonstrating the different restart behaviors:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 71,
+      "text": "**Example 1: Web server with `restartPolicy: Always` (typical for Deployments)**",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 72,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: web-server\nspec:\n  restartPolicy: Always  # Container restarts regardless of exit code\n  containers:\n  - name: nginx\n    image: nginx:1.14.2\n    # If this container crashes or exits for any reason, it will be restarted",
+      "type": "code"
+    },
+    {
+      "block_index": 73,
+      "text": "**Example 2: Batch job with `restartPolicy: OnFailure`**",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 74,
+      "language": "yaml",
+      "text": "apiVersion: batch/v1\nkind: Job\nmetadata:\n  name: data-processor\nspec:\n  template:\n    spec:\n      restartPolicy: OnFailure  # Only restart on non-zero exit codes\n      containers:\n      - name: processor\n        image: busybox:1.28\n        command: ['sh', '-c', 'echo \"Processing data...\"; exit 0']\n        # Exit code 0: Job completes successfully, no restart\n        # Exit code 1+: Container restarts to retry the task",
+      "type": "code"
+    },
+    {
+      "block_index": 75,
+      "text": "**Example 3: One-time task with `restartPolicy: Never`**",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 76,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: migration-task\nspec:\n  restartPolicy: Never  # Never restart, regardless of exit code\n  containers:\n  - name: migrate\n    image: busybox:1.28\n    command: ['sh', '-c', 'echo \"Running migration...\"; exit 1']\n    # Even with exit code 1 (failure), the container will not restart\n    # The Pod will remain in Failed state",
+      "type": "code"
+    },
+    {
+      "block_index": 77,
+      "level": 5,
+      "text": "Sidecar containers and restart policies",
+      "type": "heading"
+    },
+    {
+      "block_index": 78,
+      "text": "[Sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) have special restart behavior that differs from regular app containers:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 79,
+      "ordered": false,
+      "text": "- Sidecar containers ignore Pod-level `restartPolicy` : They use their own container-level restartPolicy field, which is always set to Always\n- Independent lifecycle : Sidecar containers can restart independently of the main application container\n- Persistent operation : Sidecar containers remain running throughout the Pod's lifetime to provide supporting services",
+      "type": "list"
+    },
+    {
+      "block_index": 80,
+      "text": "**Example: Pod with sidecar container**",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 81,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: app-with-sidecar\nspec:\n  restartPolicy: OnFailure  # Applies to main container only\n  initContainers:\n  - name: logging-sidecar    # This is a sidecar container\n    image: fluent/fluent-bit:1.8\n    restartPolicy: Always    # Sidecar always restarts regardless of exit code\n    # Provides logging services throughout Pod lifetime\n  containers:\n  - name: main-app          # This follows Pod-level restartPolicy\n    image: nginx:1.14.2\n    # Will only restart on failure (non-zero exit) due to Pod's OnFailure policy",
+      "type": "code"
+    },
+    {
+      "block_index": 82,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 83,
+      "text": "When the kubelet is handling container restarts according to the configured restart\npolicy, that only applies to restarts that make replacement containers inside the\nsame Pod and running on the same node. After containers in a Pod exit, the kubelet\nrestarts them with an exponential backoff delay (10s, 20s, 40s, …), that is capped at\n300 seconds (5 minutes). Once a container has executed for 10 minutes without any\nproblems, the kubelet resets the restart backoff timer for that container.\n[Sidecar containers and Pod lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/#sidecar-containers-and-pod-lifecycle)\nexplains the behaviour of `init containers` when specify `restartPolicy` field on it.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 84,
+      "level": 4,
+      "text": "Individual container restart policy and rules",
+      "type": "heading"
+    },
+    {
+      "block_index": 85,
+      "text": "If your cluster has the feature gate `ContainerRestartRules` enabled, you can specify\n`restartPolicy` and `restartPolicyRules` on *individual containers* to override the Pod\nrestart policy. Container restart policy and rules applies to [app containers](https://kubernetes.io/docs/reference/glossary/?all=true#term-app-container)\nin the Pod and to regular [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 86,
+      "text": "A Kubernetes-native [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\nhas its container-level `restartPolicy` set to `Always`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 87,
+      "text": "The container restarts will follow the same exponential backoff as pod restart policy described above.\nSupported container restart policies:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 88,
+      "ordered": false,
+      "text": "- Always : Automatically restarts the container after any termination.\n- OnFailure : Only restarts the container if it exits with an error (non-zero exit status).\n- Never : Does not automatically restart the terminated container.",
+      "type": "list"
+    },
+    {
+      "block_index": 89,
+      "text": "Additionally, *individual containers* can specify `restartPolicyRules`. If the `restartPolicyRules`\nfield is specified, then container `restartPolicy` **must** also be specified. The `restartPolicyRules`\ndefine a list of rules to apply on container exit. Each rule will consist of a condition\nand an action. The supported condition is `exitCodes`, which compares the exit code of the container\nwith a list of given values. The supported action is `Restart`, which means the container will be\nrestarted. The rules will be evaluated in order. On the first match, the action will be applied.\nIf none of the rules’ conditions matched, Kubernetes fallback to container’s configured\n`restartPolicy`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 90,
+      "text": "For example, a Pod with OnFailure restart policy that have a `try-once` container. This allows\nPod to only restart certain containers:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 91,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: on-failure-pod\nspec:\n  restartPolicy: OnFailure\n  containers:\n  - name: try-once-container    # This container will run only once because the restartPolicy is Never.\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Only running once\" && sleep 10 && exit 1']\n    restartPolicy: Never\n  - name: on-failure-container  # This container will be restarted on failure.\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Keep restarting\" && sleep 1800 && exit 1']",
+      "type": "code"
+    },
+    {
+      "block_index": 92,
+      "text": "A Pod with `Always` restart policy with an init container that only execute once. If the init\ncontainer fails, the Pod fails. This allows the Pod to fail if the initialization failed,\nbut also keep running once the initialization succeeds:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 93,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: fail-pod-if-init-fails\nspec:\n  restartPolicy: Always\n  initContainers:\n  - name: init-once      # This init container will only try once. If it fails, the pod will fail.\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Failing initialization\" && sleep 10 && exit 1']\n    restartPolicy: Never\n  containers:\n  - name: main-container # This container will always be restarted once initialization succeeds.\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'sleep 1800 && exit 0']",
+      "type": "code"
+    },
+    {
+      "block_index": 94,
+      "text": "A Pod with Never restart policy with a container that ignores and restarts on specific exit codes.\nThis is useful to differentiate between restartable errors and non-restartable errors:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 95,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: restart-on-exit-codes\nspec:\n  restartPolicy: Never\n  containers:\n  - name: restart-on-exit-codes\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'sleep 60 && exit 0']\n    restartPolicy: Never     # Container restart policy must be specified if rules are specified\n    restartPolicyRules:      # Only restart the container if it exits with code 42\n    - action: Restart\n      exitCodes:\n        operator: In\n        values: [42]",
+      "type": "code"
+    },
+    {
+      "block_index": 96,
+      "text": "Restart rules can be used for many more advanced lifecycle management scenarios. Note, restart rules\nare affected by the same inconsistencies as the regular restart policy. The kubelet restarts, container\nruntime garbage collection, intermitted connectivity issues with the control plane may cause the state\nloss and containers may be re-run even when you expect a container not to be restarted.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 97,
+      "level": 4,
+      "text": "Restart All Containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 98,
+      "text": "If your cluster has the feature gate `RestartAllContainersOnContainerExits` enabled, you can specify\n`RestartAllContainers` as an action in `restartPolicyRules` at container level. When a container's exit\nmatches a rule with this action, the entire Pod is terminated and restarted in-place.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 99,
+      "text": "This \"in-place\" restart offers a more efficient way to reset a Pod's state compared to full deletion\nand recreation. This is especially valuable for workloads where rescheduling is costly, such as\nbatch jobs or AI/ML training tasks.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 100,
+      "level": 5,
+      "text": "How in-place Pod restarts work",
+      "type": "heading"
+    },
+    {
+      "block_index": 101,
+      "text": "When a `RestartAllContainers` action is triggered, the kubelet performs the following steps:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 102,
+      "ordered": true,
+      "text": "1. **Fast Termination**: All running containers in the Pod are terminated. The configured `terminationGracePeriodSeconds` is not respected, and any configured `preStop` hooks are not executed. This ensures a swift shutdown.\n2. **Preservation of Pod Resources**: The Pod's essential resources are preserved:\n- Pod UID, IP address, and network namespace\n  - Pod sandbox and any attached devices\n  - All volumes, including emptyDir and mounted volumes\n3. **Pod Status Update**: The Pod's status is updated with a `PodRestartInPlace` condition set to `True`. This makes the restart process observable.\n4. **Full Restart Sequence**: Once all containers are terminated, the `PodRestartInPlace` condition is set to `False`, and the Pod begins the standard startup process:\n- Init containers are re-run in order.\n  - Sidecar and regular containers are started.",
+      "type": "list"
+    },
+    {
+      "block_index": 103,
+      "text": "A key aspect of this feature is that **all** containers are restarted, including those that\npreviously completed successfully or failed. The `RestartAllContainers` action overrides\nany configured container-level or Pod-level `restartPolicy`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 104,
+      "text": "This mechanism is useful in scenarios where a clean slate for all containers is necessary, such as:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 105,
+      "ordered": false,
+      "text": "- When an init container sets up an environment that can become corrupted, this feature ensures the setup process is re-executed.\n- A sidecar container can monitor the health of a main application and trigger a full Pod restart if the application enters an unrecoverable state.",
+      "type": "list"
+    },
+    {
+      "block_index": 106,
+      "text": "Consider a workload where a watcher sidecar is responsible for restarting the main application\nfrom a known-good state if it encounters an error. The watcher can exit with a specific code\nto trigger a full, in-place restart of the worker Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 107,
+      "language": "yaml",
+      "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: ml-worker\nspec:\n  restartPolicy: Never # The pod itself should not restart unless explicitly told to.\n  initContainers:\n  - name: setup-environment\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Setting up environment\"']\n    # This init container runs once to prepare the environment.\n    # It will run again after a RestartAllContainers action.\n  - name: watcher-sidecar\n    image: registry.k8s.io/busybox:1.27.2\n    # In a real-world scenario, this would be a dedicated watcher image.\n    # This command simulates the watcher exiting with a special code.\n    command: ['sh', '-c', 'sleep 60; exit 88']\n    restartPolicy: Always\n    restartPolicyRules:\n    - action: RestartAllContainers\n      exitCodes:\n        # Exit code 88 triggers a full pod restart.\n        operator: In\n        values: [88]\n  containers:\n  - name: main-application\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Application is running\"; sleep 3600']",
+      "type": "code"
+    },
+    {
+      "block_index": 108,
+      "text": "In this example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 109,
+      "ordered": false,
+      "text": "- The Pod's overall restartPolicy is Never .\n- The watcher-sidecar runs a command and then exits with code 88 .\n- The exit code matches the rule, triggering the RestartAllContainers action.\n- The entire Pod, including the setup-environment init container and the main-application container, is then restarted in-place. The pod keeps its UID, sandbox, IP, and volumes.",
+      "type": "list"
+    },
+    {
+      "block_index": 110,
+      "level": 3,
+      "text": "Reduced container restart delay",
+      "type": "heading"
+    },
+    {
+      "block_index": 111,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [ReduceDefaultCrashLoopBackOffDecay](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ReduceDefaultCrashLoopBackOffDecay) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 112,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 113,
+      "text": "With the alpha feature gate `ReduceDefaultCrashLoopBackOffDecay` enabled,\ncontainer start retries across your cluster will be reduced to begin at 1s\n(instead of 10s) and increase exponentially by 2x each restart until a maximum\ndelay of 60s (instead of 300s which is 5 minutes).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 114,
+      "text": "If you use this feature along with the alpha feature\n`KubeletCrashLoopBackOffMax` (described below), individual nodes may have\ndifferent maximum delays.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 115,
+      "level": 3,
+      "text": "Configurable container restart delay",
+      "type": "heading"
+    },
+    {
+      "block_index": 116,
+      "text": "With the feature gate `KubeletCrashLoopBackOffMax` enabled, you can\nreconfigure the maximum delay between container start retries from the default\nof 300s (5 minutes). This configuration is set per node using kubelet\nconfiguration. In your [kubelet configuration](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/),\nunder `crashLoopBackOff` set the `maxContainerRestartPeriod` field between `\"1s\"` and\n`\"300s\"`. As described above in [Container restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy),\ndelays on that node will still start at 10s and increase exponentially by 2x\neach restart, but will now be capped at your configured maximum. If the\n`maxContainerRestartPeriod` you configure is less than the default initial value\nof 10s, the initial delay will instead be set to the configured maximum.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 117,
+      "text": "See the following kubelet configuration examples:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 118,
+      "language": "yaml",
+      "text": "# container restart delays will start at 10s, increasing\n# 2x each time they are restarted, to a maximum of 100s\nkind: KubeletConfiguration\ncrashLoopBackOff:\n    maxContainerRestartPeriod: \"100s\"",
+      "type": "code"
+    },
+    {
+      "block_index": 119,
+      "language": "yaml",
+      "text": "# delays between container restarts will always be 2s\nkind: KubeletConfiguration\ncrashLoopBackOff:\n    maxContainerRestartPeriod: \"2s\"",
+      "type": "code"
+    },
+    {
+      "block_index": 120,
+      "text": "If you use this feature along with the alpha feature\n`ReduceDefaultCrashLoopBackOffDecay` (described above), your cluster defaults\nfor initial backoff and maximum backoff will no longer be 10s and 300s, but 1s\nand 60s. Per node configuration takes precedence over the defaults set by\n`ReduceDefaultCrashLoopBackOffDecay`, even if this would result in a node having\na longer maximum backoff than other nodes in the cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 121,
+      "level": 2,
+      "text": "Pod conditions",
+      "type": "heading"
+    },
+    {
+      "block_index": 122,
+      "text": "A Pod has a PodStatus, which has an array of\n[PodConditions](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#podcondition-v1-core)\nthrough which the Pod has or has not passed. The kubelet manages the following\nPodConditions:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 123,
+      "ordered": false,
+      "text": "- PodScheduled : the Pod has been scheduled to a node.\n- PodReadyToStartContainers : the Pod sandbox has been successfully created, networking configured, storage volumes mounted, and any dynamic resources (if requested) allocated.\n- ContainersReady : all containers in the Pod are ready.\n- Initialized : all init containers have completed successfully.\n- Ready : the Pod is able to serve requests and should be added to the load balancing pools of all matching Services.\n- DisruptionTarget : the pod is about to be terminated due to a disruption (such as preemption, eviction or garbage-collection).\n- PodResizePending : a pod resize was requested but cannot be applied. See Pod resize status .\n- PodResizeInProgress : the pod is in the process of resizing. See Pod resize status .",
+      "type": "list"
+    },
+    {
+      "block_index": 124,
+      "rows": [
+        [
+          "Field name",
+          "Description"
+        ],
+        [
+          "`type`",
+          "Name of this Pod condition."
+        ],
+        [
+          "`status`",
+          "Indicates whether that condition is applicable, with possible values \"`True`\", \"`False`\", or \"`Unknown`\"."
+        ],
+        [
+          "`lastProbeTime`",
+          "Timestamp of when the Pod condition was last probed."
+        ],
+        [
+          "`lastTransitionTime`",
+          "Timestamp for when the Pod last transitioned from one status to another."
+        ],
+        [
+          "`reason`",
+          "Machine-readable, UpperCamelCase text indicating the reason for the condition's last transition."
+        ],
+        [
+          "`message`",
+          "Human-readable message indicating details about the last status transition."
+        ]
+      ],
+      "text": "| Field name | Description |\n| --- | --- |\n| `type` | Name of this Pod condition. |\n| `status` | Indicates whether that condition is applicable, with possible values \"`True`\", \"`False`\", or \"`Unknown`\". |\n| `lastProbeTime` | Timestamp of when the Pod condition was last probed. |\n| `lastTransitionTime` | Timestamp for when the Pod last transitioned from one status to another. |\n| `reason` | Machine-readable, UpperCamelCase text indicating the reason for the condition's last transition. |\n| `message` | Human-readable message indicating details about the last status transition. |",
+      "type": "table"
+    },
+    {
+      "block_index": 125,
+      "level": 3,
+      "text": "Pod readiness",
+      "type": "heading"
+    },
+    {
+      "block_index": 126,
+      "text": "Your application can inject extra feedback or signals into PodStatus:\n*Pod readiness*. To use this, set `readinessGates` in the Pod's `spec` to\nspecify a list of additional conditions that the kubelet evaluates for Pod readiness.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 127,
+      "text": "Readiness gates are determined by the current state of `status.condition`\nfields for the Pod. If Kubernetes cannot find such a condition in the\n`status.conditions` field of a Pod, the status of the condition\nis defaulted to \"`False`\".",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 128,
+      "text": "Here is an example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 129,
+      "language": "yaml",
+      "text": "kind: Pod\n...\nspec:\n  readinessGates:\n    - conditionType: \"www.example.com/feature-1\"\nstatus:\n  conditions:\n    - type: Ready                              # a built-in PodCondition\n      status: \"False\"\n      lastProbeTime: null\n      lastTransitionTime: 2018-01-01T00:00:00Z\n    - type: \"www.example.com/feature-1\"        # an extra PodCondition\n      status: \"False\"\n      lastProbeTime: null\n      lastTransitionTime: 2018-01-01T00:00:00Z\n  containerStatuses:\n    - containerID: docker://abcd...\n      ready: true\n...",
+      "type": "code"
+    },
+    {
+      "block_index": 130,
+      "text": "The Pod conditions you add must have names that meet the Kubernetes\n[label key format](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 131,
+      "level": 3,
+      "text": "Status for Pod readiness",
+      "type": "heading"
+    },
+    {
+      "block_index": 132,
+      "text": "The `kubectl patch` command does not support patching object status.\nTo set these `status.conditions` for the Pod, applications and\n[operators](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) should use\nthe `PATCH` action.\nYou can use a [Kubernetes client library](https://kubernetes.io/docs/reference/using-api/client-libraries/) to\nwrite code that sets custom Pod conditions for Pod readiness.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 133,
+      "text": "For a Pod that uses custom conditions, that Pod is evaluated to be ready **only**\nwhen both the following statements apply:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 134,
+      "ordered": false,
+      "text": "- All containers in the Pod are ready.\n- All conditions specified in readinessGates are True .",
+      "type": "list"
+    },
+    {
+      "block_index": 135,
+      "text": "When a Pod's containers are Ready but at least one custom condition is missing or\n`False`, the kubelet sets the Pod's [condition](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions) to `ContainersReady`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 136,
+      "level": 3,
+      "text": "Pod readiness to start containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 137,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 138,
+      "text": "After a Pod gets scheduled on a node, it needs to be admitted by the kubelet and\nto have any required storage volumes mounted. Once these phases are complete,\nthe kubelet works with\na container runtime (using [Container Runtime Interface (CRI)](https://kubernetes.io/docs/concepts/architecture/cri)) to set up a\nruntime sandbox and configure networking for the Pod. If the Pod uses\n[Dynamic Resource Allocation](https://kubernetes.io/docs/concepts/resource-management/dynamic-resource-allocation/),\nthose resources are also allocated during this phase.\nThe `PodReadyToStartContainers` condition is added to the `status.conditions` field of a Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 139,
+      "text": "The condition is set to `False` by the kubelet when it detects a\nPod does not have a runtime sandbox with networking configured. This occurs in\nthe following scenarios:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 140,
+      "ordered": false,
+      "text": "- Early in the lifecycle of the Pod, when the kubelet has not yet begun to set up a sandbox for the Pod using the container runtime.\n- Later in the lifecycle of the Pod, when the Pod sandbox has been destroyed due to either:\n- the node rebooting, without the Pod getting evicted\n  - for container runtimes that use virtual machines for isolation, the Pod sandbox virtual machine rebooting, which then requires creating a new sandbox and fresh container network configuration.",
+      "type": "list"
+    },
+    {
+      "block_index": 141,
+      "text": "After sandbox creation, network configuration, volume mounting, and (if requested) dynamic resource\nallocation are complete, the kubelet sets the `PodReadyToStartContainers` condition to `True`.\nImage pulling and container creation occur after this point.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 142,
+      "text": "For a Pod with init containers, the kubelet sets the `Initialized` condition to\n`True` after the init containers have successfully completed (which happens\nafter successful sandbox creation and network configuration by the runtime\nplugin). For a Pod without init containers, the kubelet sets the `Initialized`\ncondition to `True` before sandbox creation and network configuration starts.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 143,
+      "level": 2,
+      "text": "Resizing Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 144,
+      "text": "Feature state:\nStable since Kubernetes v1.35More information about this featureThis is a stable feature in Kubernetes, and has been since version v1.35. It was first available in the v1.27 release. You can no longer disable or opt out of this feature or behavior (it is locked); if you explicitly set a value for the associated feature gate InPlacePodVerticalScaling, Kubernetes ignores it but does not report any error.Feature state:\nBeta since Kubernetes v1.36; enabled by default",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 145,
+      "text": "Kubernetes supports changing the CPU and memory resources allocated to Pods\nafter they are created. (For other infrastructure resources, you would need to\nuse different techniques specific to those resources.) There are two main\napproaches to resizing CPU and memory:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 146,
+      "level": 3,
+      "text": "In-place Pod resize",
+      "type": "heading"
+    },
+    {
+      "block_index": 147,
+      "text": "You can resize a Pod's container-level CPU and memory resources without recreating the Pod.\nThis is also called *in-place Pod vertical scaling*. This allows you to adjust resource\nallocation for running containers while potentially avoiding application disruption.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 148,
+      "text": "If you have specified resources at the pod-level, you can also resize those in-place.\nFor more details, see [Resize CPU and Memory Resources assigned to Pods](https://kubernetes.io/docs/tasks/configure-pod-container/resize-pod-resources/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 149,
+      "text": "To perform an in-place resize, you update the Pod's desired state using the `/resize`\nsubresource. The kubelet then attempts to apply the new resource values to the running\ncontainers. The Pod [conditions](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions)\n`PodResizePending` and `PodResizeInProgress` (described in [Pod conditions](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions))\nindicate the status of the resize operation. For more details about resize status, see\n[Container Resize Status](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#container-resize-status).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 150,
+      "text": "Key considerations for in-place resize:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 151,
+      "ordered": false,
+      "text": "- Only CPU and memory resources can be resized in-place.\n- The Pod's Quality of Service (QoS) class is determined at creation and cannot be changed by resizing.\n- You can configure whether a container restart is required for the resize using resizePolicy in the container specification.",
+      "type": "list"
+    },
+    {
+      "block_index": 152,
+      "text": "For detailed instructions on performing in-place resize, see\n[Resize CPU and Memory Resources assigned to Containers](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 153,
+      "level": 3,
+      "text": "Resizing by launching replacement Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 154,
+      "text": "The more cloud native approach to changing a Pod's resources is through the\nworkload resource that manages it (such as a Deployment or StatefulSet).\nWhen you update the resource specifications in the Pod template,\nthe workload's controller creates new Pods with the updated resources and terminates\nthe old Pods according to its update strategy.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 155,
+      "text": "This approach:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 156,
+      "ordered": false,
+      "text": "- Works with any Kubernetes version.\n- Can change any Pod specification, not just resources.\n- Results in Pod replacement, so you should design your workload to handle planned disruptions . Consider using a PodDisruptionBudget to control availability.\n- Requires that your Pods are managed by a workload resource.",
+      "type": "list"
+    },
+    {
+      "block_index": 157,
+      "text": "You can also use a\n[VerticalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/vertical-pod-autoscale/)\nto automatically manage Pod resource recommendations and updates.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 158,
+      "level": 2,
+      "text": "Container probes",
+      "type": "heading"
+    },
+    {
+      "block_index": 159,
+      "text": "Kubernetes lets you define *probes* to continuously monitor the health\nof containers in a Pod. A probe is a diagnostic performed periodically\nby the [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) on a container.\nTo perform a diagnostic, the kubelet either executes code within\nthe container or makes a network request.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 160,
+      "text": "Based on the probe results, Kubernetes can restart unhealthy containers\nor stop sending traffic to containers that are not ready.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 161,
+      "text": "The kubelet can optionally perform and react to three kinds of probes on running\ncontainers, each serving a different purpose. For probe mechanisms (`exec`,\n`grpc`, `httpGet`, `tcpSocket`), configuration fields, and detailed usage\nguidance, see [Liveness, Readiness, and Startup Probes](https://kubernetes.io/docs/concepts/workloads/pods/probes/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 162,
+      "level": 3,
+      "text": "Startup probe",
+      "type": "heading"
+    },
+    {
+      "block_index": 163,
+      "text": "Startup probes verify whether the application within a container is started.\nIf a startup probe is configured, Kubernetes does not execute liveness or\nreadiness probes until the startup probe succeeds, allowing the application\ntime to finish its initialization.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 164,
+      "text": "This type of probe is only executed at startup, unlike liveness and readiness\nprobes, which are run periodically.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 165,
+      "text": "If the startup probe fails, the kubelet kills the container, and the container\nis subjected to its [restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 166,
+      "level": 3,
+      "text": "Liveness probe",
+      "type": "heading"
+    },
+    {
+      "block_index": 167,
+      "text": "Liveness probes determine when to restart a container.\nFor example, liveness probes could catch a deadlock, where an application is\nrunning, but unable to make progress. Restarting a container in such a state\ncan help to make the application more available despite bugs.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 168,
+      "text": "If a container fails its liveness probe more times than the configured tolerance,\nthe kubelet restarts that container.\nLiveness probes do not wait for readiness probes to succeed. If you want to\nwait before executing a liveness probe, you can either define\n`initialDelaySeconds` or use a startup probe.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 169,
+      "level": 3,
+      "text": "Readiness probe",
+      "type": "heading"
+    },
+    {
+      "block_index": 170,
+      "text": "Readiness probes determine when a container is ready to accept traffic.\nThis is useful when waiting for an application to perform time-consuming initial\ntasks, such as establishing network connections, loading files, and warming\ncaches.\nReadiness probes can also be useful later in the container's lifecycle,\nfor example, when recovering from temporary faults or overloads.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 171,
+      "text": "If the readiness probe returns a failed state, the\n[EndpointSlice](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/)\ncontroller removes the Pod's IP address from the EndpointSlices of all Services\nthat match the Pod.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 172,
+      "text": "Readiness probes run on the container during its whole lifecycle.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 173,
+      "level": 2,
+      "text": "Termination of Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 174,
+      "text": "Because Pods represent processes running on nodes in the cluster, it is important to\nallow those processes to gracefully terminate when they are no longer needed (rather\nthan being abruptly stopped with a `KILL` signal and having no chance to clean up).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 175,
+      "text": "The design aim is for you to be able to request deletion and know when processes\nterminate, but also be able to ensure that deletes eventually complete.\nWhen you request deletion of a Pod, the cluster records and tracks the intended grace period\nbefore the Pod is allowed to be forcefully killed. With that forceful shutdown tracking in\nplace, the [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) attempts graceful\nshutdown.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 176,
+      "text": "Typically, with this graceful termination of the pod, kubelet makes requests to the container runtime\nto attempt to stop the containers in the pod by first sending a TERM (aka. SIGTERM) signal,\nwith a grace period timeout, to the main process in each container.\nThe requests to stop the containers are processed by the container runtime asynchronously.\nThere is no guarantee to the order of processing for these requests.\nMany container runtimes respect the `STOPSIGNAL` value defined in the container image and,\nif different, send the container image configured STOPSIGNAL instead of TERM.\nOnce the grace period has expired, the KILL signal is sent to any remaining\nprocesses, and the Pod is then deleted from the\n[API Server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver). If the kubelet or the\ncontainer runtime's management service is restarted while waiting for processes to terminate, the\ncluster retries from the start including the full original grace period.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 177,
+      "level": 3,
+      "text": "Stop Signals",
+      "type": "heading"
+    },
+    {
+      "block_index": 178,
+      "text": "The stop signal used to kill the container can be defined in the container image with the `STOPSIGNAL` instruction.\nIf no stop signal is defined in the image, the default signal of the container runtime\n(SIGTERM for both containerd and CRI-O) would be used to kill the container.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 179,
+      "level": 3,
+      "text": "Defining custom stop signals",
+      "type": "heading"
+    },
+    {
+      "block_index": 180,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [ContainerStopSignals](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ContainerStopSignals) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 181,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 182,
+      "text": "If the `ContainerStopSignals` feature gate is enabled, you can configure a custom stop signal\nfor your containers from the container Lifecycle. We require the Pod's `spec.os.name` field\nto be present as a requirement for defining stop signals in the container lifecycle.\nThe list of signals that are valid depends on the OS the Pod is scheduled to.\nFor Pods scheduled to Windows nodes, we only support SIGTERM and SIGKILL as valid signals.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 183,
+      "text": "Here is an example Pod spec defining a custom stop signal:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 184,
+      "language": "yaml",
+      "text": "spec:\n  os:\n    name: linux\n  containers:\n    - name: my-container\n      image: container-image:latest\n      lifecycle:\n        stopSignal: SIGUSR1",
+      "type": "code"
+    },
+    {
+      "block_index": 185,
+      "text": "If a stop signal is defined in the lifecycle, this will override the signal defined in the container image.\nIf no stop signal is defined in the container spec, the container would fall back to the default behavior.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 186,
+      "level": 3,
+      "text": "Pod Termination Flow",
+      "type": "heading"
+    },
+    {
+      "block_index": 187,
+      "text": "Pod termination flow, illustrated with an example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 188,
+      "ordered": true,
+      "text": "1. You use the `kubectl` tool to manually delete a specific Pod, with the default grace period (30 seconds).\n2. The Pod in the API server is updated with the time beyond which the Pod is considered \"dead\" along with the grace period. If you use `kubectl describe` to check the Pod you're deleting, that Pod shows up as \"Terminating\". On the node where the Pod is running: as soon as the kubelet sees that a Pod has been marked as terminating (a graceful shutdown duration has been set), the kubelet begins the local Pod shutdown process. Note:If the `preStop` hook needs longer to complete than the default grace period allows, you must modify `terminationGracePeriodSeconds` to suit this.\n1. If one of the Pod's containers has defined a `preStop` [hook](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/) and the `terminationGracePeriodSeconds` in the Pod spec is not set to 0, the kubelet runs that hook inside of the container. The default `terminationGracePeriodSeconds` setting is 30 seconds. If the `preStop` hook is still running after the grace period expires, the kubelet requests a small, one-off grace period extension of 2 seconds.\n1. The kubelet triggers the container runtime to send a TERM signal to process 1 inside each container. There is [special ordering](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#termination-with-sidecars) if the Pod has any [sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) defined. Otherwise, the containers in the Pod receive the TERM signal at different times and in an arbitrary order. If the order of shutdowns matters, consider using a `preStop` hook to synchronize (or switch to using sidecar containers).\n3. At the same time as the kubelet is starting graceful shutdown of the Pod, the control plane evaluates whether to remove that shutting-down Pod from EndpointSlice objects, where those objects represent a [Service](https://kubernetes.io/docs/concepts/services-networking/service/) with a configured [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/). [ReplicaSets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/) and other workload resources no longer treat the shutting-down Pod as a valid, in-service replica. Pods that shut down slowly should not continue to serve regular traffic and should start terminating and finish processing open connections. Some applications need to go beyond finishing open connections and need more graceful termination, for example, session draining and completion. Any endpoints that represent the terminating Pods are not immediately removed from EndpointSlices, and a status indicating [terminating state](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/#conditions) is exposed from the EndpointSlice API. Terminating endpoints always have their `ready` status as `false` (for backward compatibility with versions before 1.26), so load balancers will not use it for regular traffic. If traffic draining on terminating Pod is needed, the actual readiness can be checked as a condition `serving`. You can find more details on how to implement connections draining in the tutorial [Pods And Endpoints Termination Flow](https://kubernetes.io/docs/tutorials/services/pods-and-endpoint-termination-flow/)\n4. The kubelet ensures the Pod is shut down and terminated\n1. When the grace period expires, if there is still any container running in the Pod, the kubelet triggers forcible shutdown. The container runtime sends SIGKILL to any processes still running in any container in the Pod. The kubelet also cleans up a hidden pause container if that container runtime uses one.\n  2. The kubelet transitions the Pod into a terminal phase ( Failed or Succeeded depending on the end state of its containers).\n  3. The kubelet triggers forcible removal of the Pod object from the API server, by setting grace period to 0 (immediate deletion).\n  4. The API server deletes the Pod's API object, which is then no longer visible from any client.",
+      "type": "list"
+    },
+    {
+      "block_index": 189,
+      "level": 3,
+      "text": "Forced Pod termination",
+      "type": "heading"
+    },
+    {
+      "block_index": 190,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 191,
+      "text": "By default, all deletes are graceful within 30 seconds. The `kubectl delete` command supports\nthe `--grace-period=<seconds>` option which allows you to override the default and specify your\nown value.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 192,
+      "text": "Setting the grace period to `0` forcibly and immediately deletes the Pod from the API\nserver. If the Pod was still running on a node, that forcible deletion triggers the kubelet to\nbegin immediate cleanup.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 193,
+      "text": "Using kubectl, You must specify an additional flag `--force` along with `--grace-period=0`\nin order to perform force deletions.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 194,
+      "text": "When a force deletion is performed, the API server does not wait for confirmation\nfrom the kubelet that the Pod has been terminated on the node it was running on. It\nremoves the Pod in the API immediately so a new Pod can be created with the same\nname. On the node, Pods that are set to terminate immediately will still be given\na small grace period before being force killed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 195,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 196,
+      "text": "If you need to force-delete Pods that are part of a StatefulSet, refer to the task\ndocumentation for\n[deleting Pods from a StatefulSet](https://kubernetes.io/docs/tasks/run-application/force-delete-stateful-set-pod/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 197,
+      "level": 3,
+      "text": "Pod shutdown and sidecar containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 198,
+      "text": "If your Pod includes one or more\n[sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\n(init containers with an `Always` restart policy), the kubelet will delay sending\nthe TERM signal to these sidecar containers until the last main container has fully terminated.\nThe sidecar containers will be terminated in the reverse order they are defined in the Pod spec.\nThis ensures that sidecar containers continue serving the other containers in the Pod until they\nare no longer needed.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 199,
+      "text": "This means that slow termination of a main container will also delay the termination of the sidecar containers.\nIf the grace period expires before the termination process is complete, the Pod may enter [forced termination](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination-beyond-grace-period).\nIn this case, all remaining containers in the Pod will be terminated simultaneously with a short grace period.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 200,
+      "text": "Similarly, if the Pod has a `preStop` hook that exceeds the termination grace period, emergency termination may occur.\nIn general, if you have used `preStop` hooks to control the termination order without sidecar containers, you can now\nremove them and allow the kubelet to manage sidecar termination automatically.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 201,
+      "level": 3,
+      "text": "Garbage collection of Pods",
+      "type": "heading"
+    },
+    {
+      "block_index": 202,
+      "text": "For failed Pods, the API objects remain in the cluster's API until a human or\n[controller](https://kubernetes.io/docs/concepts/architecture/controller/) process\nexplicitly removes them.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 203,
+      "text": "The Pod garbage collector (PodGC), which is a controller in the control plane, cleans up\nterminated Pods (with a phase of `Succeeded` or `Failed`), when the number of Pods exceeds the\nconfigured threshold (determined by `terminated-pod-gc-threshold` in the kube-controller-manager).\nThis avoids a resource leak as Pods are created and terminated over time.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 204,
+      "text": "Additionally, PodGC cleans up any Pods which satisfy any of the following conditions:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 205,
+      "ordered": true,
+      "text": "1. are orphan Pods - bound to a node which no longer exists,\n2. are unscheduled terminating Pods,\n3. are terminating Pods, bound to a non-ready node tainted with `node.kubernetes.io/out-of-service` .",
+      "type": "list"
+    },
+    {
+      "block_index": 206,
+      "text": "Along with cleaning up the Pods, PodGC will also mark them as failed if they are in a non-terminal\nphase. Also, PodGC adds a Pod disruption condition when cleaning up an orphan Pod.\nSee [Pod disruption conditions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/#pod-disruption-conditions)\nfor more details.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 207,
+      "level": 2,
+      "text": "Pod behavior during kubelet restarts",
+      "type": "heading"
+    },
+    {
+      "block_index": 208,
+      "text": "If you restart the kubelet, Pods (and their containers) continue to run\neven during the restart.\nWhen there are running Pods on a node, stopping or restarting the kubelet\non that node does **not** cause the kubelet to stop all local Pods\nbefore the kubelet itself stops.\nTo stop the Pods on a node, you can use `kubectl drain`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 209,
+      "level": 3,
+      "text": "Detection of kubelet restarts",
+      "type": "heading"
+    },
+    {
+      "block_index": 210,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [ChangeContainerStatusOnKubeletRestart](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ChangeContainerStatusOnKubeletRestart) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 211,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 212,
+      "text": "When the kubelet starts, it checks to see if there is already a Node with bound Pods.\nIf the Node's [`Ready` condition](https://kubernetes.io/docs/reference/node/node-status/#condition) remains unchanged,\nin other words the condition has not transitioned from true to false, Kubernetes detects this a *kubelet restart*.\n(It's possible to restart the kubelet in other ways, for example to fix a node bug,\nbut in these cases, Kubernetes picks the safe option and treats this as if you\nstopped the kubelet and then later started it).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 213,
+      "text": "When the kubelet restarts, the container statuses are managed differently based on the feature gate setting:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 214,
+      "ordered": false,
+      "text": "- By default, the kubelet does not change container statuses after a restart. Containers that were in set to `ready: true` state remain ready. If you stop the kubelet long enough for it to fail a series of [node heartbeat](https://kubernetes.io/docs/concepts/architecture/leases/#node-heart-beats) checks, and then you wait before you start the kubelet again, Kubernetes may begin to evict Pods from that Node. However, even though Pod evictions begin to happen, Kubernetes does not mark the individual containers in those Pods as `ready: false`. The Pod-level eviction happens after the control plane taints the node as `node.kubernetes.io/not-ready` (due to the failed heartbeats).\n- In Kubernetes 1.37 you can opt in to a legacy behavior where the kubelet always modify the containers `ready` value, after a kubelet restart, to be false. This legacy behavior was the default for a long time, but caused issue for people using Kubernetes, especially in large scale deployments. Although the feature gate allows reverting to this legacy behavior temporarily, the Kubernetes project recommends that you file a bug report if you encounter problems. The `ChangeContainerStatusOnKubeletRestart` [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ChangeContainerStatusOnKubeletRestart) will be removed in the future.",
+      "type": "list"
+    },
+    {
+      "block_index": 215,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 216,
+      "ordered": false,
+      "text": "- Get hands-on experience [attaching handlers to container lifecycle events](https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/).\n- Get hands-on experience [configuring Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).\n- Learn more about [container lifecycle hooks](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/).\n- Learn more about [sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/).\n- For detailed information about Pod and container status in the API, see the API reference documentation covering [`status`](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodStatus) for Pod.",
+      "type": "list"
+    }
+  ],
+  "content": "# Pod Lifecycle\n\nThis page describes the lifecycle of a Pod. Pods follow a defined lifecycle, starting\nin the `Pending` [phase](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase), moving through `Running` if at least one\nof its primary containers starts OK, and then through either the `Succeeded` or\n`Failed` phases depending on whether any container in the Pod terminated in failure.\n\nWhile a Pod runs, the kubelet manages containers and translates the Pod's spec\nfor the container runtime. The kubelet also manages executing\n[probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes) that track the health of your application.\n\nLike individual application containers, Pods are considered to be relatively\nephemeral (rather than durable) entities. Pods are created, assigned a unique\nID ([UID](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids)), and scheduled\nto run on nodes where they remain until termination (according to restart policy) or\ndeletion.\nIf a [Node](https://kubernetes.io/docs/concepts/architecture/nodes/) dies, the Pods running on (or scheduled\nto run on) that node are [marked for deletion](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-garbage-collection). The control\nplane marks the Pods for removal after a timeout period.\n\n## Pod lifetime\n\nWhile a Pod is running, the kubelet is able to restart containers to handle\nsome kind of faults. Within a Pod, Kubernetes tracks different container\n[states](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-states) and determines what action to take to make the Pod\nhealthy again. This is done in a [polling loop](https://kubernetes.io/docs/reference/node/kubelet-sync-loop/) that periodically reconciles the\ndesired state (a Pod spec) with the actual state of the running containers.\n\nIn the Kubernetes API, Pods have both a specification and an actual status. The\nstatus for a Pod object consists of a set of [Pod conditions](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions).\nYou can also inject [custom readiness information](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-readiness-gate) into the\ncondition data for a Pod, if that is useful to your application.\n\nPods are only [scheduled](https://kubernetes.io/docs/concepts/scheduling-eviction/) once in their lifetime;\nassigning a Pod to a specific node is called *binding*, and the process of selecting\nwhich node to use is called *scheduling*.\nOnce a Pod has been scheduled and is bound to a node, Kubernetes tries\nto run that Pod on the node. The Pod runs on that node until it stops, or until the Pod\nis [terminated](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination); if Kubernetes isn't able to start the Pod on the selected\nnode (for example, if the node crashes before the Pod starts), then that particular Pod\nnever starts.\n\nYou can use [Pod Scheduling Readiness](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-scheduling-readiness/)\nto delay scheduling for a Pod until all its *scheduling gates* are removed. For example,\nyou might want to define a set of Pods but only trigger scheduling once all the Pods\nhave been created.\n\n### Pods and fault recovery\n\nIf one of the containers in the Pod fails, then Kubernetes may try to restart that\nspecific container.\nRead [How Pods handle problems with containers](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-restarts) to learn more.\n\nPods can however fail in a way that the cluster cannot recover from, and in that case\nKubernetes does not attempt to heal the Pod further; instead, Kubernetes deletes the\nPod and relies on other components to provide automatic healing.\n\nIf a Pod is scheduled to a [node](https://kubernetes.io/docs/concepts/architecture/nodes/) and that\nnode then fails, the Pod is treated as unhealthy and Kubernetes eventually deletes the Pod.\nA Pod won't survive an [eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/) due to\na lack of resources or Node maintenance.\n\nKubernetes uses a higher-level abstraction, called a\n[controller](https://kubernetes.io/docs/concepts/architecture/controller/), that handles the work of\nmanaging the relatively disposable Pod instances.\n\nA given Pod (as defined by a UID) is never \"rescheduled\" to a different node; instead,\nthat Pod can be replaced by a new, near-identical Pod. If you make a replacement Pod, it can\neven have same name (as in `.metadata.name`) that the old Pod had, but the replacement\nwould have a different `.metadata.uid` from the old Pod.\n\nKubernetes does not guarantee that a replacement for an existing Pod would be scheduled to\nthe same node as the old Pod that was being replaced.\n\n### Associated lifetimes\n\nWhen something is said to have the same lifetime as a Pod, such as a\n[volume](https://kubernetes.io/docs/concepts/storage/volumes/),\nthat means that the thing exists as long as that specific Pod (with that exact UID)\nexists. If that Pod is deleted for any reason, and even if an identical replacement\nis created, the related thing (a volume, in this example) is also destroyed and\ncreated anew.\n\n#### Figure 1.\n\nA multi-container Pod that contains a file puller [sidecar](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) and a web server. The Pod uses an [ephemeral `emptyDir` volume](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) for shared storage between the containers.\n\n## Pod phase\n\nA Pod's `status` field is a\n[PodStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#podstatus-v1-core)\nobject, which has a `phase` field.\n\nThe phase of a Pod is a simple, high-level summary of where the Pod is in its\nlifecycle. The phase is not intended to be a comprehensive rollup of observations\nof container or Pod state, nor is it intended to be a comprehensive state machine.\n\nThe number and meanings of Pod phase values are tightly guarded.\nOther than what is documented here, nothing should be assumed about Pods that\nhave a given `phase` value.\n\nHere are the possible values for `phase`:\n\n| Value | Description |\n| --- | --- |\n| `Pending` | The Pod has been accepted by the Kubernetes cluster, but one or more of the containers has not been set up and made ready to run. This includes time a Pod spends waiting to be scheduled as well as the time spent downloading container images over the network. |\n| `Running` | The Pod has been bound to a node, and all of the containers have been created. At least one container is still running, or is in the process of starting or restarting. |\n| `Succeeded` | All containers in the Pod have terminated in success, and will not be restarted. |\n| `Failed` | All containers in the Pod have terminated, and at least one container has terminated in failure. That is, the container either exited with non-zero status or was terminated by the system, and is not set for automatic restarting. |\n| `Unknown` | For some reason the state of the Pod could not be obtained. This phase typically occurs due to an error in communicating with the node where the Pod should be running. |\n\n#### Note:\n\nWhen a pod is failing to start repeatedly, `CrashLoopBackOff` may appear in the `Status` field of some kubectl commands.\nSimilarly, when a pod is being deleted, `Terminating` may appear in the `Status` field of some kubectl commands.\n\nMake sure not to confuse *Status*, a kubectl display field for user intuition, with the pod's `phase`.\nPod phase is an explicit part of the Kubernetes data model and of the\n[Pod API](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/).\n\n```\nNAMESPACE               NAME               READY   STATUS             RESTARTS   AGE\n  alessandras-namespace   alessandras-pod    0/1     CrashLoopBackOff   200        2d9h\n```\n\nA Pod is granted a term to terminate gracefully, which defaults to 30 seconds.\nYou can use the flag `--force` to [terminate a Pod by force](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination-forced).\n\nSince Kubernetes 1.27, the kubelet transitions deleted Pods to a terminal phase\n(`Failed` or `Succeeded` depending on the exit statuses of the pod containers)\nbefore their deletion from the API server, with two exceptions:\n\n- static Pods (which are managed directly by the kubelet and represented by mirror Pods )\n- force-deleted Pods without a finalizer\n\nIf a node dies or is disconnected from the rest of the cluster, Kubernetes\napplies a policy for setting the `phase` of all Pods on the lost node to Failed.\n\n## Container states\n\nAs well as the [phase](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase) of the Pod overall, Kubernetes tracks the state of\neach container inside a Pod. You can use\n[container lifecycle hooks](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/) to\ntrigger events to run at certain points in a container's lifecycle.\n\nOnce the [scheduler](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/)\nassigns a Pod to a Node, the kubelet starts creating containers for that Pod\nusing a [container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes).\nThere are three possible container states: `Waiting`, `Running`, and `Terminated`.\n\nTo check the state of a Pod's containers, you can use\n`kubectl describe pod <name-of-pod>`. The output shows the state for each container\nwithin that Pod.\n\nEach state has a specific meaning:\n\n### `Waiting`\n\nIf a container is not in either the `Running` or `Terminated` state, it is `Waiting`.\nA container in the `Waiting` state is still running the operations it requires in\norder to complete start up: for example, pulling the container image from a container\nimage registry, or applying [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)\ndata.\nWhen you use `kubectl` to query a Pod with a container that is `Waiting`, you also see\na Reason field to summarize why the container is in that state.\n\n### `Running`\n\nThe `Running` status indicates that a container is executing without issues. If there\nwas a `postStart` hook configured, it has already executed and finished. When you use\n`kubectl` to query a Pod with a container that is `Running`, you also see information\nabout when the container entered the `Running` state.\n\n### `Terminated`\n\nA container in the `Terminated` state began execution and then either ran to\ncompletion or failed for some reason. When you use `kubectl` to query a Pod with\na container that is `Terminated`, you see a reason, an exit code, and the start and\nfinish time for that container's period of execution.\n\nIf a container has a `preStop` hook configured, this hook runs before the container enters\nthe `Terminated` state.\n\n## How Pods handle problems with containers\n\nKubernetes manages container failures within Pods using a [`restartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy) defined\nin the Pod `spec`. This policy determines how Kubernetes reacts to containers exiting due to errors\nor other reasons, which falls in the following sequence:\n\n1. Initial crash : Kubernetes attempts an immediate restart based on the Pod restartPolicy .\n2. Repeated crashes : After the initial crash Kubernetes applies an exponential backoff delay for subsequent restarts, described in `restartPolicy` . This prevents rapid, repeated restart attempts from overloading the system.\n3. CrashLoopBackOff state : This indicates that the backoff delay mechanism is currently in effect for a given container that is in a crash loop, failing and restarting repeatedly.\n4. Backoff reset : If a container runs successfully for a certain duration (e.g., 10 minutes), Kubernetes resets the backoff delay, treating any new crash as the first one.\n\nIn practice, a `CrashLoopBackOff` is a condition or event that might be seen as output\nfrom the `kubectl` command, while describing or listing Pods, when a container in the Pod\nfails to start properly and then continually tries and fails in a loop.\n\nIn other words, when a container enters the crash loop, Kubernetes applies the\nexponential backoff delay mentioned in the [Container restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).\nThis mechanism prevents a faulty container from overwhelming the system with continuous\nfailed start attempts.\n\nThe `CrashLoopBackOff` can be caused by issues like the following:\n\n- Application errors that cause the container to exit.\n- Configuration errors, such as incorrect environment variables or missing configuration files.\n- Resource constraints, where the container might not have enough memory or CPU to start properly.\n- Health checks failing if the application doesn't start serving within the expected time.\n- Container liveness probes or startup probes returning a Failure result as mentioned in the probes section .\n\nTo investigate the root cause of a `CrashLoopBackOff` issue, a user can:\n\n1. Check logs : Use kubectl logs <name-of-pod> to check the logs of the container. This is often the most direct way to diagnose the issue causing the crashes.\n2. Inspect events : Use kubectl describe pod <name-of-pod> to see events for the Pod, which can provide hints about configuration or resource issues.\n3. Review configuration : Ensure that the Pod configuration, including environment variables and mounted volumes, is correct and that all required external resources are available.\n4. Check resource limits : Make sure that the container has enough CPU and memory allocated. Sometimes, increasing the resources in the Pod definition can resolve the issue.\n5. Debug application : There might exist bugs or misconfigurations in the application code. Running this container image locally or in a development environment can help diagnose application specific issues.\n\n### Container restarts\n\nWhen a container in your Pod stops, or experiences failure, Kubernetes can restart it.\nA restart isn't always appropriate; for example,\n[init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) run only once (if successful),\nduring Pod startup.\nYou can configure restarts as a policy that applies to all Pods, or using container-level configuration (for example: when you define a\n[sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)) or define container-level override.\n\n#### Container restarts and resilience\n\nThe Kubernetes project recommends following cloud-native principles, including resilient\ndesign that accounts for unannounced or arbitrary restarts. You can achieve this either\nby failing the Pod and relying on automatic\n[replacement](https://kubernetes.io/docs/concepts/workloads/controllers/), or you can design for container-level resilience.\nEither approach helps to ensure that your overall workload remains available despite\npartial failure.\n\n#### Pod-level container restart policy\n\nThe `spec` of a Pod has a `restartPolicy` field with possible values Always, OnFailure,\nand Never. The default value is Always.\n\nThe `restartPolicy` for a Pod applies to [app containers](https://kubernetes.io/docs/reference/glossary/?all=true#term-app-container)\nin the Pod and to regular [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).\n[Sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\nignore the Pod-level `restartPolicy` field: in Kubernetes, a sidecar is defined as an\nentry inside `initContainers` that has its container-level `restartPolicy` set to `Always`.\nFor init containers that exit with an error, the kubelet restarts the init container if\nthe Pod level `restartPolicy` is either `OnFailure` or `Always`:\n\n- Always : Automatically restarts the container after any termination.\n- OnFailure : Only restarts the container if it exits with an error (non-zero exit status).\n- Never : Does not automatically restart the terminated container.\n\n##### Restart behavior comparison\n\nThe following table shows how containers behave under different restart policies and exit codes:\n\n| Exit Code | `restartPolicy: Always` | `restartPolicy: OnFailure` | `restartPolicy: Never` | Sidecar Containers |\n| --- | --- | --- | --- | --- |\n| 0 (Success) | Restarts | Does not restart | Does not restart | Always restarts |\n| Non-zero (Failure) | Restarts | Restarts | Does not restart | Always restarts |\n\n#### Note:\n\nThe restart behavior is particularly important when choosing between Deployments and Jobs:\n\n- Deployments typically use restartPolicy: Always (the only allowed value) to keep applications running continuously\n- Jobs commonly use restartPolicy: OnFailure or restartPolicy: Never to handle batch processing tasks appropriately\n- Sidecar containers are init containers that always restart regardless of the Pod's restartPolicy because they have their own container-level restartPolicy: Always\n\n##### Example scenarios\n\nHere are concrete examples demonstrating the different restart behaviors:\n\n**Example 1: Web server with `restartPolicy: Always` (typical for Deployments)**\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: web-server\nspec:\n  restartPolicy: Always  # Container restarts regardless of exit code\n  containers:\n  - name: nginx\n    image: nginx:1.14.2\n    # If this container crashes or exits for any reason, it will be restarted\n```\n\n**Example 2: Batch job with `restartPolicy: OnFailure`**\n\n```yaml\napiVersion: batch/v1\nkind: Job\nmetadata:\n  name: data-processor\nspec:\n  template:\n    spec:\n      restartPolicy: OnFailure  # Only restart on non-zero exit codes\n      containers:\n      - name: processor\n        image: busybox:1.28\n        command: ['sh', '-c', 'echo \"Processing data...\"; exit 0']\n        # Exit code 0: Job completes successfully, no restart\n        # Exit code 1+: Container restarts to retry the task\n```\n\n**Example 3: One-time task with `restartPolicy: Never`**\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: migration-task\nspec:\n  restartPolicy: Never  # Never restart, regardless of exit code\n  containers:\n  - name: migrate\n    image: busybox:1.28\n    command: ['sh', '-c', 'echo \"Running migration...\"; exit 1']\n    # Even with exit code 1 (failure), the container will not restart\n    # The Pod will remain in Failed state\n```\n\n##### Sidecar containers and restart policies\n\n[Sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) have special restart behavior that differs from regular app containers:\n\n- Sidecar containers ignore Pod-level `restartPolicy` : They use their own container-level restartPolicy field, which is always set to Always\n- Independent lifecycle : Sidecar containers can restart independently of the main application container\n- Persistent operation : Sidecar containers remain running throughout the Pod's lifetime to provide supporting services\n\n**Example: Pod with sidecar container**\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: app-with-sidecar\nspec:\n  restartPolicy: OnFailure  # Applies to main container only\n  initContainers:\n  - name: logging-sidecar    # This is a sidecar container\n    image: fluent/fluent-bit:1.8\n    restartPolicy: Always    # Sidecar always restarts regardless of exit code\n    # Provides logging services throughout Pod lifetime\n  containers:\n  - name: main-app          # This follows Pod-level restartPolicy\n    image: nginx:1.14.2\n    # Will only restart on failure (non-zero exit) due to Pod's OnFailure policy\n```\n\n#### Note:\n\nWhen the kubelet is handling container restarts according to the configured restart\npolicy, that only applies to restarts that make replacement containers inside the\nsame Pod and running on the same node. After containers in a Pod exit, the kubelet\nrestarts them with an exponential backoff delay (10s, 20s, 40s, …), that is capped at\n300 seconds (5 minutes). Once a container has executed for 10 minutes without any\nproblems, the kubelet resets the restart backoff timer for that container.\n[Sidecar containers and Pod lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/#sidecar-containers-and-pod-lifecycle)\nexplains the behaviour of `init containers` when specify `restartPolicy` field on it.\n\n#### Individual container restart policy and rules\n\nIf your cluster has the feature gate `ContainerRestartRules` enabled, you can specify\n`restartPolicy` and `restartPolicyRules` on *individual containers* to override the Pod\nrestart policy. Container restart policy and rules applies to [app containers](https://kubernetes.io/docs/reference/glossary/?all=true#term-app-container)\nin the Pod and to regular [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).\n\nA Kubernetes-native [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\nhas its container-level `restartPolicy` set to `Always`.\n\nThe container restarts will follow the same exponential backoff as pod restart policy described above.\nSupported container restart policies:\n\n- Always : Automatically restarts the container after any termination.\n- OnFailure : Only restarts the container if it exits with an error (non-zero exit status).\n- Never : Does not automatically restart the terminated container.\n\nAdditionally, *individual containers* can specify `restartPolicyRules`. If the `restartPolicyRules`\nfield is specified, then container `restartPolicy` **must** also be specified. The `restartPolicyRules`\ndefine a list of rules to apply on container exit. Each rule will consist of a condition\nand an action. The supported condition is `exitCodes`, which compares the exit code of the container\nwith a list of given values. The supported action is `Restart`, which means the container will be\nrestarted. The rules will be evaluated in order. On the first match, the action will be applied.\nIf none of the rules’ conditions matched, Kubernetes fallback to container’s configured\n`restartPolicy`.\n\nFor example, a Pod with OnFailure restart policy that have a `try-once` container. This allows\nPod to only restart certain containers:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: on-failure-pod\nspec:\n  restartPolicy: OnFailure\n  containers:\n  - name: try-once-container    # This container will run only once because the restartPolicy is Never.\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Only running once\" && sleep 10 && exit 1']\n    restartPolicy: Never\n  - name: on-failure-container  # This container will be restarted on failure.\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Keep restarting\" && sleep 1800 && exit 1']\n```\n\nA Pod with `Always` restart policy with an init container that only execute once. If the init\ncontainer fails, the Pod fails. This allows the Pod to fail if the initialization failed,\nbut also keep running once the initialization succeeds:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: fail-pod-if-init-fails\nspec:\n  restartPolicy: Always\n  initContainers:\n  - name: init-once      # This init container will only try once. If it fails, the pod will fail.\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Failing initialization\" && sleep 10 && exit 1']\n    restartPolicy: Never\n  containers:\n  - name: main-container # This container will always be restarted once initialization succeeds.\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'sleep 1800 && exit 0']\n```\n\nA Pod with Never restart policy with a container that ignores and restarts on specific exit codes.\nThis is useful to differentiate between restartable errors and non-restartable errors:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: restart-on-exit-codes\nspec:\n  restartPolicy: Never\n  containers:\n  - name: restart-on-exit-codes\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'sleep 60 && exit 0']\n    restartPolicy: Never     # Container restart policy must be specified if rules are specified\n    restartPolicyRules:      # Only restart the container if it exits with code 42\n    - action: Restart\n      exitCodes:\n        operator: In\n        values: [42]\n```\n\nRestart rules can be used for many more advanced lifecycle management scenarios. Note, restart rules\nare affected by the same inconsistencies as the regular restart policy. The kubelet restarts, container\nruntime garbage collection, intermitted connectivity issues with the control plane may cause the state\nloss and containers may be re-run even when you expect a container not to be restarted.\n\n#### Restart All Containers\n\nIf your cluster has the feature gate `RestartAllContainersOnContainerExits` enabled, you can specify\n`RestartAllContainers` as an action in `restartPolicyRules` at container level. When a container's exit\nmatches a rule with this action, the entire Pod is terminated and restarted in-place.\n\nThis \"in-place\" restart offers a more efficient way to reset a Pod's state compared to full deletion\nand recreation. This is especially valuable for workloads where rescheduling is costly, such as\nbatch jobs or AI/ML training tasks.\n\n##### How in-place Pod restarts work\n\nWhen a `RestartAllContainers` action is triggered, the kubelet performs the following steps:\n\n1. **Fast Termination**: All running containers in the Pod are terminated. The configured `terminationGracePeriodSeconds` is not respected, and any configured `preStop` hooks are not executed. This ensures a swift shutdown.\n2. **Preservation of Pod Resources**: The Pod's essential resources are preserved:\n- Pod UID, IP address, and network namespace\n  - Pod sandbox and any attached devices\n  - All volumes, including emptyDir and mounted volumes\n3. **Pod Status Update**: The Pod's status is updated with a `PodRestartInPlace` condition set to `True`. This makes the restart process observable.\n4. **Full Restart Sequence**: Once all containers are terminated, the `PodRestartInPlace` condition is set to `False`, and the Pod begins the standard startup process:\n- Init containers are re-run in order.\n  - Sidecar and regular containers are started.\n\nA key aspect of this feature is that **all** containers are restarted, including those that\npreviously completed successfully or failed. The `RestartAllContainers` action overrides\nany configured container-level or Pod-level `restartPolicy`.\n\nThis mechanism is useful in scenarios where a clean slate for all containers is necessary, such as:\n\n- When an init container sets up an environment that can become corrupted, this feature ensures the setup process is re-executed.\n- A sidecar container can monitor the health of a main application and trigger a full Pod restart if the application enters an unrecoverable state.\n\nConsider a workload where a watcher sidecar is responsible for restarting the main application\nfrom a known-good state if it encounters an error. The watcher can exit with a specific code\nto trigger a full, in-place restart of the worker Pod.\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: ml-worker\nspec:\n  restartPolicy: Never # The pod itself should not restart unless explicitly told to.\n  initContainers:\n  - name: setup-environment\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Setting up environment\"']\n    # This init container runs once to prepare the environment.\n    # It will run again after a RestartAllContainers action.\n  - name: watcher-sidecar\n    image: registry.k8s.io/busybox:1.27.2\n    # In a real-world scenario, this would be a dedicated watcher image.\n    # This command simulates the watcher exiting with a special code.\n    command: ['sh', '-c', 'sleep 60; exit 88']\n    restartPolicy: Always\n    restartPolicyRules:\n    - action: RestartAllContainers\n      exitCodes:\n        # Exit code 88 triggers a full pod restart.\n        operator: In\n        values: [88]\n  containers:\n  - name: main-application\n    image: registry.k8s.io/busybox:1.27.2\n    command: ['sh', '-c', 'echo \"Application is running\"; sleep 3600']\n```\n\nIn this example:\n\n- The Pod's overall restartPolicy is Never .\n- The watcher-sidecar runs a command and then exits with code 88 .\n- The exit code matches the rule, triggering the RestartAllContainers action.\n- The entire Pod, including the setup-environment init container and the main-application container, is then restarted in-place. The pod keeps its UID, sandbox, IP, and volumes.\n\n### Reduced container restart delay\n\nTo use this feature, you (or a cluster administrator) will need to enable the [ReduceDefaultCrashLoopBackOffDecay](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ReduceDefaultCrashLoopBackOffDecay) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nWith the alpha feature gate `ReduceDefaultCrashLoopBackOffDecay` enabled,\ncontainer start retries across your cluster will be reduced to begin at 1s\n(instead of 10s) and increase exponentially by 2x each restart until a maximum\ndelay of 60s (instead of 300s which is 5 minutes).\n\nIf you use this feature along with the alpha feature\n`KubeletCrashLoopBackOffMax` (described below), individual nodes may have\ndifferent maximum delays.\n\n### Configurable container restart delay\n\nWith the feature gate `KubeletCrashLoopBackOffMax` enabled, you can\nreconfigure the maximum delay between container start retries from the default\nof 300s (5 minutes). This configuration is set per node using kubelet\nconfiguration. In your [kubelet configuration](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/),\nunder `crashLoopBackOff` set the `maxContainerRestartPeriod` field between `\"1s\"` and\n`\"300s\"`. As described above in [Container restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy),\ndelays on that node will still start at 10s and increase exponentially by 2x\neach restart, but will now be capped at your configured maximum. If the\n`maxContainerRestartPeriod` you configure is less than the default initial value\nof 10s, the initial delay will instead be set to the configured maximum.\n\nSee the following kubelet configuration examples:\n\n```yaml\n# container restart delays will start at 10s, increasing\n# 2x each time they are restarted, to a maximum of 100s\nkind: KubeletConfiguration\ncrashLoopBackOff:\n    maxContainerRestartPeriod: \"100s\"\n```\n\n```yaml\n# delays between container restarts will always be 2s\nkind: KubeletConfiguration\ncrashLoopBackOff:\n    maxContainerRestartPeriod: \"2s\"\n```\n\nIf you use this feature along with the alpha feature\n`ReduceDefaultCrashLoopBackOffDecay` (described above), your cluster defaults\nfor initial backoff and maximum backoff will no longer be 10s and 300s, but 1s\nand 60s. Per node configuration takes precedence over the defaults set by\n`ReduceDefaultCrashLoopBackOffDecay`, even if this would result in a node having\na longer maximum backoff than other nodes in the cluster.\n\n## Pod conditions\n\nA Pod has a PodStatus, which has an array of\n[PodConditions](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#podcondition-v1-core)\nthrough which the Pod has or has not passed. The kubelet manages the following\nPodConditions:\n\n- PodScheduled : the Pod has been scheduled to a node.\n- PodReadyToStartContainers : the Pod sandbox has been successfully created, networking configured, storage volumes mounted, and any dynamic resources (if requested) allocated.\n- ContainersReady : all containers in the Pod are ready.\n- Initialized : all init containers have completed successfully.\n- Ready : the Pod is able to serve requests and should be added to the load balancing pools of all matching Services.\n- DisruptionTarget : the pod is about to be terminated due to a disruption (such as preemption, eviction or garbage-collection).\n- PodResizePending : a pod resize was requested but cannot be applied. See Pod resize status .\n- PodResizeInProgress : the pod is in the process of resizing. See Pod resize status .\n\n| Field name | Description |\n| --- | --- |\n| `type` | Name of this Pod condition. |\n| `status` | Indicates whether that condition is applicable, with possible values \"`True`\", \"`False`\", or \"`Unknown`\". |\n| `lastProbeTime` | Timestamp of when the Pod condition was last probed. |\n| `lastTransitionTime` | Timestamp for when the Pod last transitioned from one status to another. |\n| `reason` | Machine-readable, UpperCamelCase text indicating the reason for the condition's last transition. |\n| `message` | Human-readable message indicating details about the last status transition. |\n\n### Pod readiness\n\nYour application can inject extra feedback or signals into PodStatus:\n*Pod readiness*. To use this, set `readinessGates` in the Pod's `spec` to\nspecify a list of additional conditions that the kubelet evaluates for Pod readiness.\n\nReadiness gates are determined by the current state of `status.condition`\nfields for the Pod. If Kubernetes cannot find such a condition in the\n`status.conditions` field of a Pod, the status of the condition\nis defaulted to \"`False`\".\n\nHere is an example:\n\n```yaml\nkind: Pod\n...\nspec:\n  readinessGates:\n    - conditionType: \"www.example.com/feature-1\"\nstatus:\n  conditions:\n    - type: Ready                              # a built-in PodCondition\n      status: \"False\"\n      lastProbeTime: null\n      lastTransitionTime: 2018-01-01T00:00:00Z\n    - type: \"www.example.com/feature-1\"        # an extra PodCondition\n      status: \"False\"\n      lastProbeTime: null\n      lastTransitionTime: 2018-01-01T00:00:00Z\n  containerStatuses:\n    - containerID: docker://abcd...\n      ready: true\n...\n```\n\nThe Pod conditions you add must have names that meet the Kubernetes\n[label key format](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set).\n\n### Status for Pod readiness\n\nThe `kubectl patch` command does not support patching object status.\nTo set these `status.conditions` for the Pod, applications and\n[operators](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) should use\nthe `PATCH` action.\nYou can use a [Kubernetes client library](https://kubernetes.io/docs/reference/using-api/client-libraries/) to\nwrite code that sets custom Pod conditions for Pod readiness.\n\nFor a Pod that uses custom conditions, that Pod is evaluated to be ready **only**\nwhen both the following statements apply:\n\n- All containers in the Pod are ready.\n- All conditions specified in readinessGates are True .\n\nWhen a Pod's containers are Ready but at least one custom condition is missing or\n`False`, the kubelet sets the Pod's [condition](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions) to `ContainersReady`.\n\n### Pod readiness to start containers\n\n#### Note:\n\nAfter a Pod gets scheduled on a node, it needs to be admitted by the kubelet and\nto have any required storage volumes mounted. Once these phases are complete,\nthe kubelet works with\na container runtime (using [Container Runtime Interface (CRI)](https://kubernetes.io/docs/concepts/architecture/cri)) to set up a\nruntime sandbox and configure networking for the Pod. If the Pod uses\n[Dynamic Resource Allocation](https://kubernetes.io/docs/concepts/resource-management/dynamic-resource-allocation/),\nthose resources are also allocated during this phase.\nThe `PodReadyToStartContainers` condition is added to the `status.conditions` field of a Pod.\n\nThe condition is set to `False` by the kubelet when it detects a\nPod does not have a runtime sandbox with networking configured. This occurs in\nthe following scenarios:\n\n- Early in the lifecycle of the Pod, when the kubelet has not yet begun to set up a sandbox for the Pod using the container runtime.\n- Later in the lifecycle of the Pod, when the Pod sandbox has been destroyed due to either:\n- the node rebooting, without the Pod getting evicted\n  - for container runtimes that use virtual machines for isolation, the Pod sandbox virtual machine rebooting, which then requires creating a new sandbox and fresh container network configuration.\n\nAfter sandbox creation, network configuration, volume mounting, and (if requested) dynamic resource\nallocation are complete, the kubelet sets the `PodReadyToStartContainers` condition to `True`.\nImage pulling and container creation occur after this point.\n\nFor a Pod with init containers, the kubelet sets the `Initialized` condition to\n`True` after the init containers have successfully completed (which happens\nafter successful sandbox creation and network configuration by the runtime\nplugin). For a Pod without init containers, the kubelet sets the `Initialized`\ncondition to `True` before sandbox creation and network configuration starts.\n\n## Resizing Pods\n\nFeature state:\nStable since Kubernetes v1.35More information about this featureThis is a stable feature in Kubernetes, and has been since version v1.35. It was first available in the v1.27 release. You can no longer disable or opt out of this feature or behavior (it is locked); if you explicitly set a value for the associated feature gate InPlacePodVerticalScaling, Kubernetes ignores it but does not report any error.Feature state:\nBeta since Kubernetes v1.36; enabled by default\n\nKubernetes supports changing the CPU and memory resources allocated to Pods\nafter they are created. (For other infrastructure resources, you would need to\nuse different techniques specific to those resources.) There are two main\napproaches to resizing CPU and memory:\n\n### In-place Pod resize\n\nYou can resize a Pod's container-level CPU and memory resources without recreating the Pod.\nThis is also called *in-place Pod vertical scaling*. This allows you to adjust resource\nallocation for running containers while potentially avoiding application disruption.\n\nIf you have specified resources at the pod-level, you can also resize those in-place.\nFor more details, see [Resize CPU and Memory Resources assigned to Pods](https://kubernetes.io/docs/tasks/configure-pod-container/resize-pod-resources/).\n\nTo perform an in-place resize, you update the Pod's desired state using the `/resize`\nsubresource. The kubelet then attempts to apply the new resource values to the running\ncontainers. The Pod [conditions](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions)\n`PodResizePending` and `PodResizeInProgress` (described in [Pod conditions](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions))\nindicate the status of the resize operation. For more details about resize status, see\n[Container Resize Status](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#container-resize-status).\n\nKey considerations for in-place resize:\n\n- Only CPU and memory resources can be resized in-place.\n- The Pod's Quality of Service (QoS) class is determined at creation and cannot be changed by resizing.\n- You can configure whether a container restart is required for the resize using resizePolicy in the container specification.\n\nFor detailed instructions on performing in-place resize, see\n[Resize CPU and Memory Resources assigned to Containers](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/).\n\n### Resizing by launching replacement Pods\n\nThe more cloud native approach to changing a Pod's resources is through the\nworkload resource that manages it (such as a Deployment or StatefulSet).\nWhen you update the resource specifications in the Pod template,\nthe workload's controller creates new Pods with the updated resources and terminates\nthe old Pods according to its update strategy.\n\nThis approach:\n\n- Works with any Kubernetes version.\n- Can change any Pod specification, not just resources.\n- Results in Pod replacement, so you should design your workload to handle planned disruptions . Consider using a PodDisruptionBudget to control availability.\n- Requires that your Pods are managed by a workload resource.\n\nYou can also use a\n[VerticalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/vertical-pod-autoscale/)\nto automatically manage Pod resource recommendations and updates.\n\n## Container probes\n\nKubernetes lets you define *probes* to continuously monitor the health\nof containers in a Pod. A probe is a diagnostic performed periodically\nby the [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) on a container.\nTo perform a diagnostic, the kubelet either executes code within\nthe container or makes a network request.\n\nBased on the probe results, Kubernetes can restart unhealthy containers\nor stop sending traffic to containers that are not ready.\n\nThe kubelet can optionally perform and react to three kinds of probes on running\ncontainers, each serving a different purpose. For probe mechanisms (`exec`,\n`grpc`, `httpGet`, `tcpSocket`), configuration fields, and detailed usage\nguidance, see [Liveness, Readiness, and Startup Probes](https://kubernetes.io/docs/concepts/workloads/pods/probes/).\n\n### Startup probe\n\nStartup probes verify whether the application within a container is started.\nIf a startup probe is configured, Kubernetes does not execute liveness or\nreadiness probes until the startup probe succeeds, allowing the application\ntime to finish its initialization.\n\nThis type of probe is only executed at startup, unlike liveness and readiness\nprobes, which are run periodically.\n\nIf the startup probe fails, the kubelet kills the container, and the container\nis subjected to its [restart policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy).\n\n### Liveness probe\n\nLiveness probes determine when to restart a container.\nFor example, liveness probes could catch a deadlock, where an application is\nrunning, but unable to make progress. Restarting a container in such a state\ncan help to make the application more available despite bugs.\n\nIf a container fails its liveness probe more times than the configured tolerance,\nthe kubelet restarts that container.\nLiveness probes do not wait for readiness probes to succeed. If you want to\nwait before executing a liveness probe, you can either define\n`initialDelaySeconds` or use a startup probe.\n\n### Readiness probe\n\nReadiness probes determine when a container is ready to accept traffic.\nThis is useful when waiting for an application to perform time-consuming initial\ntasks, such as establishing network connections, loading files, and warming\ncaches.\nReadiness probes can also be useful later in the container's lifecycle,\nfor example, when recovering from temporary faults or overloads.\n\nIf the readiness probe returns a failed state, the\n[EndpointSlice](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/)\ncontroller removes the Pod's IP address from the EndpointSlices of all Services\nthat match the Pod.\n\nReadiness probes run on the container during its whole lifecycle.\n\n## Termination of Pods\n\nBecause Pods represent processes running on nodes in the cluster, it is important to\nallow those processes to gracefully terminate when they are no longer needed (rather\nthan being abruptly stopped with a `KILL` signal and having no chance to clean up).\n\nThe design aim is for you to be able to request deletion and know when processes\nterminate, but also be able to ensure that deletes eventually complete.\nWhen you request deletion of a Pod, the cluster records and tracks the intended grace period\nbefore the Pod is allowed to be forcefully killed. With that forceful shutdown tracking in\nplace, the [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) attempts graceful\nshutdown.\n\nTypically, with this graceful termination of the pod, kubelet makes requests to the container runtime\nto attempt to stop the containers in the pod by first sending a TERM (aka. SIGTERM) signal,\nwith a grace period timeout, to the main process in each container.\nThe requests to stop the containers are processed by the container runtime asynchronously.\nThere is no guarantee to the order of processing for these requests.\nMany container runtimes respect the `STOPSIGNAL` value defined in the container image and,\nif different, send the container image configured STOPSIGNAL instead of TERM.\nOnce the grace period has expired, the KILL signal is sent to any remaining\nprocesses, and the Pod is then deleted from the\n[API Server](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver). If the kubelet or the\ncontainer runtime's management service is restarted while waiting for processes to terminate, the\ncluster retries from the start including the full original grace period.\n\n### Stop Signals\n\nThe stop signal used to kill the container can be defined in the container image with the `STOPSIGNAL` instruction.\nIf no stop signal is defined in the image, the default signal of the container runtime\n(SIGTERM for both containerd and CRI-O) would be used to kill the container.\n\n### Defining custom stop signals\n\nTo use this feature, you (or a cluster administrator) will need to enable the [ContainerStopSignals](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ContainerStopSignals) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nIf the `ContainerStopSignals` feature gate is enabled, you can configure a custom stop signal\nfor your containers from the container Lifecycle. We require the Pod's `spec.os.name` field\nto be present as a requirement for defining stop signals in the container lifecycle.\nThe list of signals that are valid depends on the OS the Pod is scheduled to.\nFor Pods scheduled to Windows nodes, we only support SIGTERM and SIGKILL as valid signals.\n\nHere is an example Pod spec defining a custom stop signal:\n\n```yaml\nspec:\n  os:\n    name: linux\n  containers:\n    - name: my-container\n      image: container-image:latest\n      lifecycle:\n        stopSignal: SIGUSR1\n```\n\nIf a stop signal is defined in the lifecycle, this will override the signal defined in the container image.\nIf no stop signal is defined in the container spec, the container would fall back to the default behavior.\n\n### Pod Termination Flow\n\nPod termination flow, illustrated with an example:\n\n1. You use the `kubectl` tool to manually delete a specific Pod, with the default grace period (30 seconds).\n2. The Pod in the API server is updated with the time beyond which the Pod is considered \"dead\" along with the grace period. If you use `kubectl describe` to check the Pod you're deleting, that Pod shows up as \"Terminating\". On the node where the Pod is running: as soon as the kubelet sees that a Pod has been marked as terminating (a graceful shutdown duration has been set), the kubelet begins the local Pod shutdown process. Note:If the `preStop` hook needs longer to complete than the default grace period allows, you must modify `terminationGracePeriodSeconds` to suit this.\n1. If one of the Pod's containers has defined a `preStop` [hook](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/) and the `terminationGracePeriodSeconds` in the Pod spec is not set to 0, the kubelet runs that hook inside of the container. The default `terminationGracePeriodSeconds` setting is 30 seconds. If the `preStop` hook is still running after the grace period expires, the kubelet requests a small, one-off grace period extension of 2 seconds.\n1. The kubelet triggers the container runtime to send a TERM signal to process 1 inside each container. There is [special ordering](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#termination-with-sidecars) if the Pod has any [sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) defined. Otherwise, the containers in the Pod receive the TERM signal at different times and in an arbitrary order. If the order of shutdowns matters, consider using a `preStop` hook to synchronize (or switch to using sidecar containers).\n3. At the same time as the kubelet is starting graceful shutdown of the Pod, the control plane evaluates whether to remove that shutting-down Pod from EndpointSlice objects, where those objects represent a [Service](https://kubernetes.io/docs/concepts/services-networking/service/) with a configured [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/). [ReplicaSets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/) and other workload resources no longer treat the shutting-down Pod as a valid, in-service replica. Pods that shut down slowly should not continue to serve regular traffic and should start terminating and finish processing open connections. Some applications need to go beyond finishing open connections and need more graceful termination, for example, session draining and completion. Any endpoints that represent the terminating Pods are not immediately removed from EndpointSlices, and a status indicating [terminating state](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/#conditions) is exposed from the EndpointSlice API. Terminating endpoints always have their `ready` status as `false` (for backward compatibility with versions before 1.26), so load balancers will not use it for regular traffic. If traffic draining on terminating Pod is needed, the actual readiness can be checked as a condition `serving`. You can find more details on how to implement connections draining in the tutorial [Pods And Endpoints Termination Flow](https://kubernetes.io/docs/tutorials/services/pods-and-endpoint-termination-flow/)\n4. The kubelet ensures the Pod is shut down and terminated\n1. When the grace period expires, if there is still any container running in the Pod, the kubelet triggers forcible shutdown. The container runtime sends SIGKILL to any processes still running in any container in the Pod. The kubelet also cleans up a hidden pause container if that container runtime uses one.\n  2. The kubelet transitions the Pod into a terminal phase ( Failed or Succeeded depending on the end state of its containers).\n  3. The kubelet triggers forcible removal of the Pod object from the API server, by setting grace period to 0 (immediate deletion).\n  4. The API server deletes the Pod's API object, which is then no longer visible from any client.\n\n### Forced Pod termination\n\n#### Caution:\n\nBy default, all deletes are graceful within 30 seconds. The `kubectl delete` command supports\nthe `--grace-period=<seconds>` option which allows you to override the default and specify your\nown value.\n\nSetting the grace period to `0` forcibly and immediately deletes the Pod from the API\nserver. If the Pod was still running on a node, that forcible deletion triggers the kubelet to\nbegin immediate cleanup.\n\nUsing kubectl, You must specify an additional flag `--force` along with `--grace-period=0`\nin order to perform force deletions.\n\nWhen a force deletion is performed, the API server does not wait for confirmation\nfrom the kubelet that the Pod has been terminated on the node it was running on. It\nremoves the Pod in the API immediately so a new Pod can be created with the same\nname. On the node, Pods that are set to terminate immediately will still be given\na small grace period before being force killed.\n\n#### Caution:\n\nIf you need to force-delete Pods that are part of a StatefulSet, refer to the task\ndocumentation for\n[deleting Pods from a StatefulSet](https://kubernetes.io/docs/tasks/run-application/force-delete-stateful-set-pod/).\n\n### Pod shutdown and sidecar containers\n\nIf your Pod includes one or more\n[sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\n(init containers with an `Always` restart policy), the kubelet will delay sending\nthe TERM signal to these sidecar containers until the last main container has fully terminated.\nThe sidecar containers will be terminated in the reverse order they are defined in the Pod spec.\nThis ensures that sidecar containers continue serving the other containers in the Pod until they\nare no longer needed.\n\nThis means that slow termination of a main container will also delay the termination of the sidecar containers.\nIf the grace period expires before the termination process is complete, the Pod may enter [forced termination](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination-beyond-grace-period).\nIn this case, all remaining containers in the Pod will be terminated simultaneously with a short grace period.\n\nSimilarly, if the Pod has a `preStop` hook that exceeds the termination grace period, emergency termination may occur.\nIn general, if you have used `preStop` hooks to control the termination order without sidecar containers, you can now\nremove them and allow the kubelet to manage sidecar termination automatically.\n\n### Garbage collection of Pods\n\nFor failed Pods, the API objects remain in the cluster's API until a human or\n[controller](https://kubernetes.io/docs/concepts/architecture/controller/) process\nexplicitly removes them.\n\nThe Pod garbage collector (PodGC), which is a controller in the control plane, cleans up\nterminated Pods (with a phase of `Succeeded` or `Failed`), when the number of Pods exceeds the\nconfigured threshold (determined by `terminated-pod-gc-threshold` in the kube-controller-manager).\nThis avoids a resource leak as Pods are created and terminated over time.\n\nAdditionally, PodGC cleans up any Pods which satisfy any of the following conditions:\n\n1. are orphan Pods - bound to a node which no longer exists,\n2. are unscheduled terminating Pods,\n3. are terminating Pods, bound to a non-ready node tainted with `node.kubernetes.io/out-of-service` .\n\nAlong with cleaning up the Pods, PodGC will also mark them as failed if they are in a non-terminal\nphase. Also, PodGC adds a Pod disruption condition when cleaning up an orphan Pod.\nSee [Pod disruption conditions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/#pod-disruption-conditions)\nfor more details.\n\n## Pod behavior during kubelet restarts\n\nIf you restart the kubelet, Pods (and their containers) continue to run\neven during the restart.\nWhen there are running Pods on a node, stopping or restarting the kubelet\non that node does **not** cause the kubelet to stop all local Pods\nbefore the kubelet itself stops.\nTo stop the Pods on a node, you can use `kubectl drain`.\n\n### Detection of kubelet restarts\n\nTo use this feature, you (or a cluster administrator) will need to enable the [ChangeContainerStatusOnKubeletRestart](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ChangeContainerStatusOnKubeletRestart) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nWhen the kubelet starts, it checks to see if there is already a Node with bound Pods.\nIf the Node's [`Ready` condition](https://kubernetes.io/docs/reference/node/node-status/#condition) remains unchanged,\nin other words the condition has not transitioned from true to false, Kubernetes detects this a *kubelet restart*.\n(It's possible to restart the kubelet in other ways, for example to fix a node bug,\nbut in these cases, Kubernetes picks the safe option and treats this as if you\nstopped the kubelet and then later started it).\n\nWhen the kubelet restarts, the container statuses are managed differently based on the feature gate setting:\n\n- By default, the kubelet does not change container statuses after a restart. Containers that were in set to `ready: true` state remain ready. If you stop the kubelet long enough for it to fail a series of [node heartbeat](https://kubernetes.io/docs/concepts/architecture/leases/#node-heart-beats) checks, and then you wait before you start the kubelet again, Kubernetes may begin to evict Pods from that Node. However, even though Pod evictions begin to happen, Kubernetes does not mark the individual containers in those Pods as `ready: false`. The Pod-level eviction happens after the control plane taints the node as `node.kubernetes.io/not-ready` (due to the failed heartbeats).\n- In Kubernetes 1.37 you can opt in to a legacy behavior where the kubelet always modify the containers `ready` value, after a kubelet restart, to be false. This legacy behavior was the default for a long time, but caused issue for people using Kubernetes, especially in large scale deployments. Although the feature gate allows reverting to this legacy behavior temporarily, the Kubernetes project recommends that you file a bug report if you encounter problems. The `ChangeContainerStatusOnKubeletRestart` [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ChangeContainerStatusOnKubeletRestart) will be removed in the future.\n\n## What's next\n\n- Get hands-on experience [attaching handlers to container lifecycle events](https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/).\n- Get hands-on experience [configuring Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).\n- Learn more about [container lifecycle hooks](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/).\n- Learn more about [sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/).\n- For detailed information about Pod and container status in the API, see the API reference documentation covering [`status`](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodStatus) for Pod.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:535d9e71e9f7c2ca50df2687b2e31992a0254b1b1a77f3efcce940e743c704e8",
+  "document_id": "work-003",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Lifecycle"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Pod lifetime"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "Pods and fault recovery"
+    },
+    {
+      "block_index": 16,
+      "level": 3,
+      "text": "Associated lifetimes"
+    },
+    {
+      "block_index": 18,
+      "level": 4,
+      "text": "Figure 1."
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "Pod phase"
+    },
+    {
+      "block_index": 26,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 34,
+      "level": 2,
+      "text": "Container states"
+    },
+    {
+      "block_index": 39,
+      "level": 3,
+      "text": "`Waiting`"
+    },
+    {
+      "block_index": 41,
+      "level": 3,
+      "text": "`Running`"
+    },
+    {
+      "block_index": 43,
+      "level": 3,
+      "text": "`Terminated`"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "How Pods handle problems with containers"
+    },
+    {
+      "block_index": 55,
+      "level": 3,
+      "text": "Container restarts"
+    },
+    {
+      "block_index": 57,
+      "level": 4,
+      "text": "Container restarts and resilience"
+    },
+    {
+      "block_index": 59,
+      "level": 4,
+      "text": "Pod-level container restart policy"
+    },
+    {
+      "block_index": 63,
+      "level": 5,
+      "text": "Restart behavior comparison"
+    },
+    {
+      "block_index": 66,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 69,
+      "level": 5,
+      "text": "Example scenarios"
+    },
+    {
+      "block_index": 77,
+      "level": 5,
+      "text": "Sidecar containers and restart policies"
+    },
+    {
+      "block_index": 82,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 84,
+      "level": 4,
+      "text": "Individual container restart policy and rules"
+    },
+    {
+      "block_index": 97,
+      "level": 4,
+      "text": "Restart All Containers"
+    },
+    {
+      "block_index": 100,
+      "level": 5,
+      "text": "How in-place Pod restarts work"
+    },
+    {
+      "block_index": 110,
+      "level": 3,
+      "text": "Reduced container restart delay"
+    },
+    {
+      "block_index": 115,
+      "level": 3,
+      "text": "Configurable container restart delay"
+    },
+    {
+      "block_index": 121,
+      "level": 2,
+      "text": "Pod conditions"
+    },
+    {
+      "block_index": 125,
+      "level": 3,
+      "text": "Pod readiness"
+    },
+    {
+      "block_index": 131,
+      "level": 3,
+      "text": "Status for Pod readiness"
+    },
+    {
+      "block_index": 136,
+      "level": 3,
+      "text": "Pod readiness to start containers"
+    },
+    {
+      "block_index": 137,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 143,
+      "level": 2,
+      "text": "Resizing Pods"
+    },
+    {
+      "block_index": 146,
+      "level": 3,
+      "text": "In-place Pod resize"
+    },
+    {
+      "block_index": 153,
+      "level": 3,
+      "text": "Resizing by launching replacement Pods"
+    },
+    {
+      "block_index": 158,
+      "level": 2,
+      "text": "Container probes"
+    },
+    {
+      "block_index": 162,
+      "level": 3,
+      "text": "Startup probe"
+    },
+    {
+      "block_index": 166,
+      "level": 3,
+      "text": "Liveness probe"
+    },
+    {
+      "block_index": 169,
+      "level": 3,
+      "text": "Readiness probe"
+    },
+    {
+      "block_index": 173,
+      "level": 2,
+      "text": "Termination of Pods"
+    },
+    {
+      "block_index": 177,
+      "level": 3,
+      "text": "Stop Signals"
+    },
+    {
+      "block_index": 179,
+      "level": 3,
+      "text": "Defining custom stop signals"
+    },
+    {
+      "block_index": 186,
+      "level": 3,
+      "text": "Pod Termination Flow"
+    },
+    {
+      "block_index": 189,
+      "level": 3,
+      "text": "Forced Pod termination"
+    },
+    {
+      "block_index": 190,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 195,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 197,
+      "level": 3,
+      "text": "Pod shutdown and sidecar containers"
+    },
+    {
+      "block_index": 201,
+      "level": 3,
+      "text": "Garbage collection of Pods"
+    },
+    {
+      "block_index": 207,
+      "level": 2,
+      "text": "Pod behavior during kubelet restarts"
+    },
+    {
+      "block_index": 209,
+      "level": 3,
+      "text": "Detection of kubelet restarts"
+    },
+    {
+      "block_index": 215,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "phase",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase"
+    },
+    {
+      "text": "probes",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes"
+    },
+    {
+      "text": "UID",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
+    },
+    {
+      "text": "Node",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/"
+    },
+    {
+      "text": "marked for deletion",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-garbage-collection"
+    },
+    {
+      "text": "states",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-states"
+    },
+    {
+      "text": "polling loop",
+      "url": "https://kubernetes.io/docs/reference/node/kubelet-sync-loop/"
+    },
+    {
+      "text": "Pod conditions",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions"
+    },
+    {
+      "text": "custom readiness information",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-readiness-gate"
+    },
+    {
+      "text": "scheduled",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/"
+    },
+    {
+      "text": "terminated",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination"
+    },
+    {
+      "text": "Pod Scheduling Readiness",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-scheduling-readiness/"
+    },
+    {
+      "text": "How Pods handle problems with containers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-restarts"
+    },
+    {
+      "text": "node",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/"
+    },
+    {
+      "text": "eviction",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/"
+    },
+    {
+      "text": "controller",
+      "url": "https://kubernetes.io/docs/concepts/architecture/controller/"
+    },
+    {
+      "text": "volume",
+      "url": "https://kubernetes.io/docs/concepts/storage/volumes/"
+    },
+    {
+      "text": "sidecar",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/"
+    },
+    {
+      "text": "PodStatus",
+      "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#podstatus-v1-core"
+    },
+    {
+      "text": "Pod API",
+      "url": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/"
+    },
+    {
+      "text": "terminate a Pod by force",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination-forced"
+    },
+    {
+      "text": "container lifecycle hooks",
+      "url": "https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/"
+    },
+    {
+      "text": "scheduler",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/"
+    },
+    {
+      "text": "container runtime",
+      "url": "https://kubernetes.io/docs/setup/production-environment/container-runtimes"
+    },
+    {
+      "text": "Secret",
+      "url": "https://kubernetes.io/docs/concepts/configuration/secret/"
+    },
+    {
+      "text": "Container restart policy",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy"
+    },
+    {
+      "text": "init containers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/"
+    },
+    {
+      "text": "sidecar container",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/"
+    },
+    {
+      "text": "replacement",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/"
+    },
+    {
+      "text": "app containers",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-app-container"
+    },
+    {
+      "text": "Sidecar containers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/"
+    },
+    {
+      "text": "Sidecar containers and Pod lifecycle",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/#sidecar-containers-and-pod-lifecycle"
+    },
+    {
+      "text": "ReduceDefaultCrashLoopBackOffDecay",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ReduceDefaultCrashLoopBackOffDecay"
+    },
+    {
+      "text": "Enable Or Disable Feature Gates",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/"
+    },
+    {
+      "text": "kubelet configuration",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/"
+    },
+    {
+      "text": "PodConditions",
+      "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#podcondition-v1-core"
+    },
+    {
+      "text": "label key format",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set"
+    },
+    {
+      "text": "operators",
+      "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/"
+    },
+    {
+      "text": "Kubernetes client library",
+      "url": "https://kubernetes.io/docs/reference/using-api/client-libraries/"
+    },
+    {
+      "text": "condition",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions"
+    },
+    {
+      "text": "Container Runtime Interface (CRI)",
+      "url": "https://kubernetes.io/docs/concepts/architecture/cri"
+    },
+    {
+      "text": "Dynamic Resource Allocation",
+      "url": "https://kubernetes.io/docs/concepts/resource-management/dynamic-resource-allocation/"
+    },
+    {
+      "text": "Resize CPU and Memory Resources assigned to Pods",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/resize-pod-resources/"
+    },
+    {
+      "text": "conditions",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-conditions"
+    },
+    {
+      "text": "Container Resize Status",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#container-resize-status"
+    },
+    {
+      "text": "Resize CPU and Memory Resources assigned to Containers",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/"
+    },
+    {
+      "text": "VerticalPodAutoscaler",
+      "url": "https://kubernetes.io/docs/concepts/workloads/autoscaling/vertical-pod-autoscale/"
+    },
+    {
+      "text": "kubelet",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet"
+    },
+    {
+      "text": "Liveness, Readiness, and Startup Probes",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/probes/"
+    },
+    {
+      "text": "restart policy",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy"
+    },
+    {
+      "text": "EndpointSlice",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/"
+    },
+    {
+      "text": "API Server",
+      "url": "https://kubernetes.io/docs/concepts/architecture/#kube-apiserver"
+    },
+    {
+      "text": "ContainerStopSignals",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ContainerStopSignals"
+    },
+    {
+      "text": "hook",
+      "url": "https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/"
+    },
+    {
+      "text": "special ordering",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#termination-with-sidecars"
+    },
+    {
+      "text": "sidecar containers",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/"
+    },
+    {
+      "text": "Service",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "selector",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
+    },
+    {
+      "text": "ReplicaSets",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/"
+    },
+    {
+      "text": "terminating state",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/#conditions"
+    },
+    {
+      "text": "Pods And Endpoints Termination Flow",
+      "url": "https://kubernetes.io/docs/tutorials/services/pods-and-endpoint-termination-flow/"
+    },
+    {
+      "text": "deleting Pods from a StatefulSet",
+      "url": "https://kubernetes.io/docs/tasks/run-application/force-delete-stateful-set-pod/"
+    },
+    {
+      "text": "forced termination",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination-beyond-grace-period"
+    },
+    {
+      "text": "Pod disruption conditions",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/#pod-disruption-conditions"
+    },
+    {
+      "text": "ChangeContainerStatusOnKubeletRestart",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ChangeContainerStatusOnKubeletRestart"
+    },
+    {
+      "text": "node heartbeat",
+      "url": "https://kubernetes.io/docs/concepts/architecture/leases/#node-heart-beats"
+    },
+    {
+      "text": "feature gate",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#ChangeContainerStatusOnKubeletRestart"
+    },
+    {
+      "text": "attaching handlers to container lifecycle events",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/"
+    },
+    {
+      "text": "configuring Liveness, Readiness and Startup Probes",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-003.html",
+  "raw_sha256": "sha256:ed4a9eeb5fdc86e55e97eb0e02424948d8606b39f2bc52f7b6d89f8099e6b21b",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/",
+  "statistics": {
+    "block_count": 217,
+    "character_count": 58038,
+    "code_block_count": 13,
+    "heading_count": 49,
+    "link_count": 69,
+    "list_count": 20,
+    "paragraph_count": 132,
+    "table_count": 3,
+    "word_count": 8196
+  },
+  "title": "Pod Lifecycle"
+}

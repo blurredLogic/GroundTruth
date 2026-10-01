@@ -1,0 +1,198 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Workloads",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "A workload is an application running on Kubernetes.\nWhether your workload is a single component or several that work together, on Kubernetes you run\nit inside a set of [*pods*](https://kubernetes.io/docs/concepts/workloads/pods/).\nIn Kubernetes, a Pod represents a set of one or more running\n[containers](https://kubernetes.io/docs/concepts/containers/) on your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Kubernetes pods have a [defined lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/).\nFor example, once a pod is running in your cluster then a critical fault on the\n[node](https://kubernetes.io/docs/concepts/architecture/nodes/) where that pod is running means that\nall the pods on that node fail. Kubernetes treats that level of failure as final: you\nwould need to create a new Pod to recover, even if the node later becomes healthy.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "However, to make life considerably easier, you don't need to manage each Pod directly.\nInstead, you can use *workload resources* that manage a set of pods on your behalf.\nThese resources configure [controllers](https://kubernetes.io/docs/concepts/architecture/controller/)\nthat make sure the right number of the right kind of pod are running, to match the state\nyou specified.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "Kubernetes provides several built-in workload resources:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "ordered": false,
+      "text": "- Deployment and ReplicaSet (replacing the legacy resource ReplicationController ). Deployment is a good fit for managing a stateless application workload on your cluster, where any Pod in the Deployment is interchangeable and can be replaced if needed.\n- StatefulSet lets you run one or more related Pods that do track state somehow. For example, if your workload records data persistently, you can run a StatefulSet that matches each Pod with a PersistentVolume . Your code, running in the Pods for that StatefulSet, can replicate data to other Pods in the same StatefulSet to improve overall resilience.\n- DaemonSet defines Pods that provide facilities that are local to nodes. Every time you add a node to your cluster that matches the specification in a DaemonSet, the control plane schedules a Pod for that DaemonSet onto the new node. Each pod in a DaemonSet performs a job similar to a system daemon on a classic Unix / POSIX server. A DaemonSet might be fundamental to the operation of your cluster, such as a plugin to run cluster networking , it might help you to manage the node, or it could provide optional behavior that enhances the container platform you are running.\n- Job and CronJob provide different ways to define tasks that run to completion and then stop. You can use a Job to define a task that runs to completion, just once. You can use a CronJob to run the same Job multiple times according a schedule.",
+      "type": "list"
+    },
+    {
+      "block_index": 6,
+      "text": "In the wider Kubernetes ecosystem, you can find third-party workload resources that provide\nadditional behaviors. Using a\n[custom resource definition](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/),\nyou can add in a third-party workload resource if you want a specific behavior that's not part\nof Kubernetes' core. For example, if you wanted to run a group of Pods for your application but\nstop work unless *all* the Pods are available (perhaps for some high-throughput distributed task),\nthen you can implement or install an extension that does provide that feature.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "level": 2,
+      "text": "Workload placement",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "text": "To use this feature, you (or a cluster administrator) will need to enable the [GenericWorkload](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GenericWorkload) feature gate for all relevant components in your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "text": "See [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "text": "While standard workload resources (like Deployments and Jobs) manage the lifecycle of Pods,\nyou may have complex scheduling requirements where groups of Pods must be treated as a single unit.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "The [Workload API](https://kubernetes.io/docs/concepts/workloads/workload-api/) allows you to define `PodGroupTemplates` to group Pods and apply advanced scheduling policies to them,\nsuch as [gang scheduling](https://kubernetes.io/docs/concepts/scheduling-eviction/gang-scheduling/).\nControllers create [PodGroup](https://kubernetes.io/docs/concepts/workloads/podgroup-api/) objects from these templates at runtime,\nand `Pods` reference their `PodGroup` via the\n`spec.schedulingGroup` field. This is particularly useful for batch processing and machine\nlearning workloads where \"all-or-nothing\" placement is required.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "As well as reading about each API kind for workload management, you can read how to\ndo specific tasks:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "ordered": false,
+      "text": "- Run a stateless application using a Deployment\n- Run a stateful application either as a single instance or as a replicated set\n- Run automated tasks with a CronJob",
+      "type": "list"
+    },
+    {
+      "block_index": 15,
+      "text": "To learn about Kubernetes' mechanisms for separating code from configuration,\nvisit [Configuration](https://kubernetes.io/docs/concepts/configuration/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "text": "There are two supporting concepts that provide backgrounds about how Kubernetes manages pods\nfor applications:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "ordered": false,
+      "text": "- Garbage collection tidies up objects from your cluster after their owning resource has been removed.\n- The *time-to-live after finished* controller removes Jobs once a defined time has passed since they completed.",
+      "type": "list"
+    },
+    {
+      "block_index": 18,
+      "text": "Once your application is running, you might want to make it available on the internet as\na [Service](https://kubernetes.io/docs/concepts/services-networking/service/) or, for web application only,\nusing an [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).",
+      "type": "paragraph"
+    }
+  ],
+  "content": "# Workloads\n\nA workload is an application running on Kubernetes.\nWhether your workload is a single component or several that work together, on Kubernetes you run\nit inside a set of [*pods*](https://kubernetes.io/docs/concepts/workloads/pods/).\nIn Kubernetes, a Pod represents a set of one or more running\n[containers](https://kubernetes.io/docs/concepts/containers/) on your cluster.\n\nKubernetes pods have a [defined lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/).\nFor example, once a pod is running in your cluster then a critical fault on the\n[node](https://kubernetes.io/docs/concepts/architecture/nodes/) where that pod is running means that\nall the pods on that node fail. Kubernetes treats that level of failure as final: you\nwould need to create a new Pod to recover, even if the node later becomes healthy.\n\nHowever, to make life considerably easier, you don't need to manage each Pod directly.\nInstead, you can use *workload resources* that manage a set of pods on your behalf.\nThese resources configure [controllers](https://kubernetes.io/docs/concepts/architecture/controller/)\nthat make sure the right number of the right kind of pod are running, to match the state\nyou specified.\n\nKubernetes provides several built-in workload resources:\n\n- Deployment and ReplicaSet (replacing the legacy resource ReplicationController ). Deployment is a good fit for managing a stateless application workload on your cluster, where any Pod in the Deployment is interchangeable and can be replaced if needed.\n- StatefulSet lets you run one or more related Pods that do track state somehow. For example, if your workload records data persistently, you can run a StatefulSet that matches each Pod with a PersistentVolume . Your code, running in the Pods for that StatefulSet, can replicate data to other Pods in the same StatefulSet to improve overall resilience.\n- DaemonSet defines Pods that provide facilities that are local to nodes. Every time you add a node to your cluster that matches the specification in a DaemonSet, the control plane schedules a Pod for that DaemonSet onto the new node. Each pod in a DaemonSet performs a job similar to a system daemon on a classic Unix / POSIX server. A DaemonSet might be fundamental to the operation of your cluster, such as a plugin to run cluster networking , it might help you to manage the node, or it could provide optional behavior that enhances the container platform you are running.\n- Job and CronJob provide different ways to define tasks that run to completion and then stop. You can use a Job to define a task that runs to completion, just once. You can use a CronJob to run the same Job multiple times according a schedule.\n\nIn the wider Kubernetes ecosystem, you can find third-party workload resources that provide\nadditional behaviors. Using a\n[custom resource definition](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/),\nyou can add in a third-party workload resource if you want a specific behavior that's not part\nof Kubernetes' core. For example, if you wanted to run a group of Pods for your application but\nstop work unless *all* the Pods are available (perhaps for some high-throughput distributed task),\nthen you can implement or install an extension that does provide that feature.\n\n## Workload placement\n\nTo use this feature, you (or a cluster administrator) will need to enable the [GenericWorkload](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GenericWorkload) feature gate for all relevant components in your cluster.\n\nSee [Enable Or Disable Feature Gates](https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/) for more information.\n\nWhile standard workload resources (like Deployments and Jobs) manage the lifecycle of Pods,\nyou may have complex scheduling requirements where groups of Pods must be treated as a single unit.\n\nThe [Workload API](https://kubernetes.io/docs/concepts/workloads/workload-api/) allows you to define `PodGroupTemplates` to group Pods and apply advanced scheduling policies to them,\nsuch as [gang scheduling](https://kubernetes.io/docs/concepts/scheduling-eviction/gang-scheduling/).\nControllers create [PodGroup](https://kubernetes.io/docs/concepts/workloads/podgroup-api/) objects from these templates at runtime,\nand `Pods` reference their `PodGroup` via the\n`spec.schedulingGroup` field. This is particularly useful for batch processing and machine\nlearning workloads where \"all-or-nothing\" placement is required.\n\n## What's next\n\nAs well as reading about each API kind for workload management, you can read how to\ndo specific tasks:\n\n- Run a stateless application using a Deployment\n- Run a stateful application either as a single instance or as a replicated set\n- Run automated tasks with a CronJob\n\nTo learn about Kubernetes' mechanisms for separating code from configuration,\nvisit [Configuration](https://kubernetes.io/docs/concepts/configuration/).\n\nThere are two supporting concepts that provide backgrounds about how Kubernetes manages pods\nfor applications:\n\n- Garbage collection tidies up objects from your cluster after their owning resource has been removed.\n- The *time-to-live after finished* controller removes Jobs once a defined time has passed since they completed.\n\nOnce your application is running, you might want to make it available on the internet as\na [Service](https://kubernetes.io/docs/concepts/services-networking/service/) or, for web application only,\nusing an [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:1d9b52b42d2ff447f520046697083282eb280fa8225eda2b72099e83abadfb03",
+  "document_id": "work-001",
+  "domain": "workloads",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Workloads"
+    },
+    {
+      "block_index": 7,
+      "level": 2,
+      "text": "Workload placement"
+    },
+    {
+      "block_index": 12,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "containers",
+      "url": "https://kubernetes.io/docs/concepts/containers/"
+    },
+    {
+      "text": "defined lifecycle",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/"
+    },
+    {
+      "text": "node",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/"
+    },
+    {
+      "text": "controllers",
+      "url": "https://kubernetes.io/docs/concepts/architecture/controller/"
+    },
+    {
+      "text": "custom resource definition",
+      "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/"
+    },
+    {
+      "text": "GenericWorkload",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#GenericWorkload"
+    },
+    {
+      "text": "Enable Or Disable Feature Gates",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/configure-feature-gates/"
+    },
+    {
+      "text": "Workload API",
+      "url": "https://kubernetes.io/docs/concepts/workloads/workload-api/"
+    },
+    {
+      "text": "gang scheduling",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/gang-scheduling/"
+    },
+    {
+      "text": "PodGroup",
+      "url": "https://kubernetes.io/docs/concepts/workloads/podgroup-api/"
+    },
+    {
+      "text": "Configuration",
+      "url": "https://kubernetes.io/docs/concepts/configuration/"
+    },
+    {
+      "text": "Service",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "Ingress",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/ingress/"
+    }
+  ],
+  "raw_path": "data/raw/documents/work-001.html",
+  "raw_sha256": "sha256:25f08d5174bb547a4a9a56eae4c547d57170d36b470b5cd987e918190da5a986",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/workloads/",
+  "statistics": {
+    "block_count": 19,
+    "character_count": 5602,
+    "code_block_count": 0,
+    "heading_count": 3,
+    "link_count": 13,
+    "list_count": 3,
+    "paragraph_count": 13,
+    "table_count": 0,
+    "word_count": 830
+  },
+  "title": "Workloads"
+}

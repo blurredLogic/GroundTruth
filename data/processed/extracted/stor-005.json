@@ -1,0 +1,393 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Ephemeral Volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "This document describes *ephemeral volumes* in Kubernetes. Familiarity\nwith [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) is suggested, in\nparticular PersistentVolumeClaim and PersistentVolume.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Some applications need additional storage but don't care whether that\ndata is stored persistently across restarts. For example, caching\nservices are often limited by memory size and can move infrequently\nused data into storage that is slower than memory with little impact\non overall performance.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "Other applications expect some read-only input data to be present in\nfiles, like configuration data or secret keys.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "*Ephemeral volumes* are designed for these use cases. Because volumes\nfollow the Pod's lifetime and get created and deleted along with the\nPod, Pods can be stopped and restarted without being limited to where\nsome persistent volume is available.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "text": "Ephemeral volumes are specified *inline* in the Pod spec, which\nsimplifies application deployment and management.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "level": 3,
+      "text": "Types of ephemeral volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "text": "Kubernetes supports several different kinds of ephemeral volumes for\ndifferent purposes:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "ordered": false,
+      "text": "- emptyDir : empty at Pod startup, with storage coming locally from the kubelet base directory (usually the root disk) or RAM\n- configMap , downwardAPI , secret : inject different kinds of Kubernetes data into a Pod\n- image : allows mounting container image files or artifacts, directly to a Pod.\n- CSI ephemeral volumes : similar to the previous volume kinds, but provided by special CSI drivers which specifically support this feature\n- generic ephemeral volumes , which can be provided by all storage drivers that also support persistent volumes",
+      "type": "list"
+    },
+    {
+      "block_index": 9,
+      "text": "`emptyDir`, `configMap`, `downwardAPI`, `secret` are provided as\n[local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/).\nThey are managed by kubelet on each node.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "text": "CSI ephemeral volumes *must* be provided by third-party CSI storage\ndrivers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "Generic ephemeral volumes *can* be provided by third-party CSI storage\ndrivers, but also by any other storage driver that supports dynamic\nprovisioning. Some CSI drivers are written specifically for CSI\nephemeral volumes and do not support dynamic provisioning: those then\ncannot be used for generic ephemeral volumes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "text": "The advantage of using third-party drivers is that they can offer\nfunctionality that Kubernetes itself does not support, for example\nstorage with different performance characteristics than the disk that\nis managed by kubelet, or injecting different data.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "level": 3,
+      "text": "CSI ephemeral volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 14,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 15,
+      "text": "Conceptually, CSI ephemeral volumes are similar to `configMap`,\n`downwardAPI` and `secret` volume types: the storage is managed locally on each\nnode and is created together with other local resources after a Pod has been\nscheduled onto a node. Kubernetes has no concept of rescheduling Pods\nanymore at this stage. Volume creation has to be unlikely to fail,\notherwise Pod startup gets stuck. In particular, [storage capacity aware Pod scheduling](https://kubernetes.io/docs/concepts/storage/storage-capacity/) is *not*\nsupported for these volumes. They are currently also not covered by\nthe storage resource usage limits of a Pod, because that is something\nthat kubelet can only enforce for storage that it manages itself.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "text": "Here's an example manifest for a Pod that uses CSI ephemeral storage:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "language": "yaml",
+      "text": "kind: Pod\napiVersion: v1\nmetadata:\n  name: my-csi-app\nspec:\n  containers:\n    - name: my-frontend\n      image: busybox:1.28\n      volumeMounts:\n      - mountPath: \"/data\"\n        name: my-csi-inline-vol\n      command: [ \"sleep\", \"1000000\" ]\n  volumes:\n    - name: my-csi-inline-vol\n      csi:\n        driver: inline.storage.kubernetes.io\n        volumeAttributes:\n          foo: bar",
+      "type": "code"
+    },
+    {
+      "block_index": 18,
+      "text": "The `volumeAttributes` determine what volume is prepared by the\ndriver. These attributes are specific to each driver and not\nstandardized. See the documentation of each CSI driver for further\ninstructions.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "level": 3,
+      "text": "CSI driver restrictions",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "text": "CSI ephemeral volumes allow users to provide `volumeAttributes`\ndirectly to the CSI driver as part of the Pod spec. A CSI driver\nallowing `volumeAttributes` that are typically restricted to\nadministrators is NOT suitable for use in an inline ephemeral volume.\nFor example, parameters that are normally defined in the StorageClass\nshould not be exposed to users through the use of inline ephemeral volumes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "text": "Cluster administrators who need to restrict the CSI drivers that are\nallowed to be used as inline volumes within a Pod spec may do so by:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "ordered": false,
+      "text": "- Removing Ephemeral from volumeLifecycleModes in the CSIDriver spec, which prevents the driver from being used as an inline ephemeral volume.\n- Using an admission webhook to restrict how this driver is used.",
+      "type": "list"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Generic ephemeral volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "Generic ephemeral volumes are similar to `emptyDir` volumes in the\nsense that they provide a per-pod directory for scratch data that is\nusually empty after provisioning. But they may also have additional\nfeatures:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "ordered": false,
+      "text": "- Storage can be local or network-attached.\n- Volumes can have a fixed size that Pods are not able to exceed.\n- Volumes may have some initial data, depending on the driver and parameters.\n- Typical operations on volumes are supported assuming that the driver supports them, including snapshotting , cloning , resizing , and storage capacity tracking .",
+      "type": "list"
+    },
+    {
+      "block_index": 26,
+      "text": "Example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 27,
+      "language": "yaml",
+      "text": "kind: Pod\napiVersion: v1\nmetadata:\n  name: my-app\nspec:\n  containers:\n    - name: my-frontend\n      image: busybox:1.28\n      volumeMounts:\n      - mountPath: \"/scratch\"\n        name: scratch-volume\n      command: [ \"sleep\", \"1000000\" ]\n  volumes:\n    - name: scratch-volume\n      ephemeral:\n        volumeClaimTemplate:\n          metadata:\n            labels:\n              type: my-frontend-volume\n          spec:\n            accessModes: [ \"ReadWriteOnce\" ]\n            storageClassName: \"scratch-storage-class\"\n            resources:\n              requests:\n                storage: 1Gi",
+      "type": "code"
+    },
+    {
+      "block_index": 28,
+      "level": 3,
+      "text": "Lifecycle and PersistentVolumeClaim",
+      "type": "heading"
+    },
+    {
+      "block_index": 29,
+      "text": "The key design idea is that the\n[parameters for a volume claim](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#ephemeralvolumesource-v1-core)\nare allowed inside a volume source of the Pod. Labels, annotations and\nthe whole set of fields for a PersistentVolumeClaim are supported. When such a Pod gets\ncreated, the ephemeral volume controller then creates an actual PersistentVolumeClaim\nobject in the same namespace as the Pod and ensures that the PersistentVolumeClaim\ngets deleted when the Pod gets deleted.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 30,
+      "text": "That triggers volume binding and/or provisioning, either immediately if\nthe [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes) uses immediate volume binding or when the Pod is\ntentatively scheduled onto a node (`WaitForFirstConsumer` volume\nbinding mode). The latter is recommended for generic ephemeral volumes\nbecause then the scheduler is free to choose a suitable node for\nthe Pod. With immediate binding, the scheduler is forced to select a node that has\naccess to the volume once it is available.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "In terms of [resource ownership](https://kubernetes.io/docs/concepts/architecture/garbage-collection/#owners-dependents),\na Pod that has generic ephemeral storage is the owner of the PersistentVolumeClaim(s)\nthat provide that ephemeral storage. When the Pod is deleted,\nthe Kubernetes garbage collector deletes the PVC, which then usually\ntriggers deletion of the volume because the default reclaim policy of\nstorage classes is to delete volumes. You can create quasi-ephemeral local storage\nusing a StorageClass with a reclaim policy of `retain`: the storage outlives the Pod,\nand in this case you need to ensure that volume clean up happens separately.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "text": "While these PVCs exist, they can be used like any other PVC. In\nparticular, they can be referenced as data source in volume cloning or\nsnapshotting. The PVC object also holds the current status of the\nvolume.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "level": 3,
+      "text": "PersistentVolumeClaim naming",
+      "type": "heading"
+    },
+    {
+      "block_index": 34,
+      "text": "Naming of the automatically created PVCs is deterministic: the name is\na combination of the Pod name and volume name, with a hyphen (`-`) in the\nmiddle. In the example above, the PVC name will be\n`my-app-scratch-volume`. This deterministic naming makes it easier to\ninteract with the PVC because one does not have to search for it once\nthe Pod name and volume name are known.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "The deterministic naming also introduces a potential conflict between different\nPods (a Pod \"pod-a\" with volume \"scratch\" and another Pod with name\n\"pod\" and volume \"a-scratch\" both end up with the same PVC name\n\"pod-a-scratch\") and between Pods and manually created PVCs.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "text": "Such conflicts are detected: a PVC is only used for an ephemeral\nvolume if it was created for the Pod. This check is based on the\nownership relationship. An existing PVC is not overwritten or\nmodified. But this does not resolve the conflict because without the\nright PVC, the Pod cannot start.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 38,
+      "level": 3,
+      "text": "Security",
+      "type": "heading"
+    },
+    {
+      "block_index": 39,
+      "text": "Using generic ephemeral volumes allows users to create PVCs indirectly\nif they can create Pods, even if they do not have permission to create PVCs directly.\nCluster administrators must be aware of this. If this does not fit their security model,\nthey should use an [admission webhook](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)\nthat rejects objects like Pods that have a generic ephemeral volume.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "text": "The normal [namespace quota for PVCs](https://kubernetes.io/docs/concepts/policy/resource-quotas/#storage-resource-quota)\nstill applies, so even if users are allowed to use this new mechanism, they cannot use\nit to circumvent other policies.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 41,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 42,
+      "level": 3,
+      "text": "Ephemeral volumes managed by kubelet",
+      "type": "heading"
+    },
+    {
+      "block_index": 43,
+      "text": "See [local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 44,
+      "level": 3,
+      "text": "CSI ephemeral volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 45,
+      "ordered": false,
+      "text": "- For more information on the design, see the Ephemeral Inline CSI volumes KEP .\n- For more information on further development of this feature, see the enhancement tracking issue #596 .",
+      "type": "list"
+    },
+    {
+      "block_index": 46,
+      "level": 3,
+      "text": "Generic ephemeral volumes",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "ordered": false,
+      "text": "- For more information on the design, see the Generic ephemeral inline volumes KEP .",
+      "type": "list"
+    }
+  ],
+  "content": "# Ephemeral Volumes\n\nThis document describes *ephemeral volumes* in Kubernetes. Familiarity\nwith [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) is suggested, in\nparticular PersistentVolumeClaim and PersistentVolume.\n\nSome applications need additional storage but don't care whether that\ndata is stored persistently across restarts. For example, caching\nservices are often limited by memory size and can move infrequently\nused data into storage that is slower than memory with little impact\non overall performance.\n\nOther applications expect some read-only input data to be present in\nfiles, like configuration data or secret keys.\n\n*Ephemeral volumes* are designed for these use cases. Because volumes\nfollow the Pod's lifetime and get created and deleted along with the\nPod, Pods can be stopped and restarted without being limited to where\nsome persistent volume is available.\n\nEphemeral volumes are specified *inline* in the Pod spec, which\nsimplifies application deployment and management.\n\n### Types of ephemeral volumes\n\nKubernetes supports several different kinds of ephemeral volumes for\ndifferent purposes:\n\n- emptyDir : empty at Pod startup, with storage coming locally from the kubelet base directory (usually the root disk) or RAM\n- configMap , downwardAPI , secret : inject different kinds of Kubernetes data into a Pod\n- image : allows mounting container image files or artifacts, directly to a Pod.\n- CSI ephemeral volumes : similar to the previous volume kinds, but provided by special CSI drivers which specifically support this feature\n- generic ephemeral volumes , which can be provided by all storage drivers that also support persistent volumes\n\n`emptyDir`, `configMap`, `downwardAPI`, `secret` are provided as\n[local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/).\nThey are managed by kubelet on each node.\n\nCSI ephemeral volumes *must* be provided by third-party CSI storage\ndrivers.\n\nGeneric ephemeral volumes *can* be provided by third-party CSI storage\ndrivers, but also by any other storage driver that supports dynamic\nprovisioning. Some CSI drivers are written specifically for CSI\nephemeral volumes and do not support dynamic provisioning: those then\ncannot be used for generic ephemeral volumes.\n\nThe advantage of using third-party drivers is that they can offer\nfunctionality that Kubernetes itself does not support, for example\nstorage with different performance characteristics than the disk that\nis managed by kubelet, or injecting different data.\n\n### CSI ephemeral volumes\n\n#### Note:\n\nConceptually, CSI ephemeral volumes are similar to `configMap`,\n`downwardAPI` and `secret` volume types: the storage is managed locally on each\nnode and is created together with other local resources after a Pod has been\nscheduled onto a node. Kubernetes has no concept of rescheduling Pods\nanymore at this stage. Volume creation has to be unlikely to fail,\notherwise Pod startup gets stuck. In particular, [storage capacity aware Pod scheduling](https://kubernetes.io/docs/concepts/storage/storage-capacity/) is *not*\nsupported for these volumes. They are currently also not covered by\nthe storage resource usage limits of a Pod, because that is something\nthat kubelet can only enforce for storage that it manages itself.\n\nHere's an example manifest for a Pod that uses CSI ephemeral storage:\n\n```yaml\nkind: Pod\napiVersion: v1\nmetadata:\n  name: my-csi-app\nspec:\n  containers:\n    - name: my-frontend\n      image: busybox:1.28\n      volumeMounts:\n      - mountPath: \"/data\"\n        name: my-csi-inline-vol\n      command: [ \"sleep\", \"1000000\" ]\n  volumes:\n    - name: my-csi-inline-vol\n      csi:\n        driver: inline.storage.kubernetes.io\n        volumeAttributes:\n          foo: bar\n```\n\nThe `volumeAttributes` determine what volume is prepared by the\ndriver. These attributes are specific to each driver and not\nstandardized. See the documentation of each CSI driver for further\ninstructions.\n\n### CSI driver restrictions\n\nCSI ephemeral volumes allow users to provide `volumeAttributes`\ndirectly to the CSI driver as part of the Pod spec. A CSI driver\nallowing `volumeAttributes` that are typically restricted to\nadministrators is NOT suitable for use in an inline ephemeral volume.\nFor example, parameters that are normally defined in the StorageClass\nshould not be exposed to users through the use of inline ephemeral volumes.\n\nCluster administrators who need to restrict the CSI drivers that are\nallowed to be used as inline volumes within a Pod spec may do so by:\n\n- Removing Ephemeral from volumeLifecycleModes in the CSIDriver spec, which prevents the driver from being used as an inline ephemeral volume.\n- Using an admission webhook to restrict how this driver is used.\n\n### Generic ephemeral volumes\n\nGeneric ephemeral volumes are similar to `emptyDir` volumes in the\nsense that they provide a per-pod directory for scratch data that is\nusually empty after provisioning. But they may also have additional\nfeatures:\n\n- Storage can be local or network-attached.\n- Volumes can have a fixed size that Pods are not able to exceed.\n- Volumes may have some initial data, depending on the driver and parameters.\n- Typical operations on volumes are supported assuming that the driver supports them, including snapshotting , cloning , resizing , and storage capacity tracking .\n\nExample:\n\n```yaml\nkind: Pod\napiVersion: v1\nmetadata:\n  name: my-app\nspec:\n  containers:\n    - name: my-frontend\n      image: busybox:1.28\n      volumeMounts:\n      - mountPath: \"/scratch\"\n        name: scratch-volume\n      command: [ \"sleep\", \"1000000\" ]\n  volumes:\n    - name: scratch-volume\n      ephemeral:\n        volumeClaimTemplate:\n          metadata:\n            labels:\n              type: my-frontend-volume\n          spec:\n            accessModes: [ \"ReadWriteOnce\" ]\n            storageClassName: \"scratch-storage-class\"\n            resources:\n              requests:\n                storage: 1Gi\n```\n\n### Lifecycle and PersistentVolumeClaim\n\nThe key design idea is that the\n[parameters for a volume claim](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#ephemeralvolumesource-v1-core)\nare allowed inside a volume source of the Pod. Labels, annotations and\nthe whole set of fields for a PersistentVolumeClaim are supported. When such a Pod gets\ncreated, the ephemeral volume controller then creates an actual PersistentVolumeClaim\nobject in the same namespace as the Pod and ensures that the PersistentVolumeClaim\ngets deleted when the Pod gets deleted.\n\nThat triggers volume binding and/or provisioning, either immediately if\nthe [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes) uses immediate volume binding or when the Pod is\ntentatively scheduled onto a node (`WaitForFirstConsumer` volume\nbinding mode). The latter is recommended for generic ephemeral volumes\nbecause then the scheduler is free to choose a suitable node for\nthe Pod. With immediate binding, the scheduler is forced to select a node that has\naccess to the volume once it is available.\n\nIn terms of [resource ownership](https://kubernetes.io/docs/concepts/architecture/garbage-collection/#owners-dependents),\na Pod that has generic ephemeral storage is the owner of the PersistentVolumeClaim(s)\nthat provide that ephemeral storage. When the Pod is deleted,\nthe Kubernetes garbage collector deletes the PVC, which then usually\ntriggers deletion of the volume because the default reclaim policy of\nstorage classes is to delete volumes. You can create quasi-ephemeral local storage\nusing a StorageClass with a reclaim policy of `retain`: the storage outlives the Pod,\nand in this case you need to ensure that volume clean up happens separately.\n\nWhile these PVCs exist, they can be used like any other PVC. In\nparticular, they can be referenced as data source in volume cloning or\nsnapshotting. The PVC object also holds the current status of the\nvolume.\n\n### PersistentVolumeClaim naming\n\nNaming of the automatically created PVCs is deterministic: the name is\na combination of the Pod name and volume name, with a hyphen (`-`) in the\nmiddle. In the example above, the PVC name will be\n`my-app-scratch-volume`. This deterministic naming makes it easier to\ninteract with the PVC because one does not have to search for it once\nthe Pod name and volume name are known.\n\nThe deterministic naming also introduces a potential conflict between different\nPods (a Pod \"pod-a\" with volume \"scratch\" and another Pod with name\n\"pod\" and volume \"a-scratch\" both end up with the same PVC name\n\"pod-a-scratch\") and between Pods and manually created PVCs.\n\nSuch conflicts are detected: a PVC is only used for an ephemeral\nvolume if it was created for the Pod. This check is based on the\nownership relationship. An existing PVC is not overwritten or\nmodified. But this does not resolve the conflict because without the\nright PVC, the Pod cannot start.\n\n#### Caution:\n\n### Security\n\nUsing generic ephemeral volumes allows users to create PVCs indirectly\nif they can create Pods, even if they do not have permission to create PVCs directly.\nCluster administrators must be aware of this. If this does not fit their security model,\nthey should use an [admission webhook](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)\nthat rejects objects like Pods that have a generic ephemeral volume.\n\nThe normal [namespace quota for PVCs](https://kubernetes.io/docs/concepts/policy/resource-quotas/#storage-resource-quota)\nstill applies, so even if users are allowed to use this new mechanism, they cannot use\nit to circumvent other policies.\n\n## What's next\n\n### Ephemeral volumes managed by kubelet\n\nSee [local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/).\n\n### CSI ephemeral volumes\n\n- For more information on the design, see the Ephemeral Inline CSI volumes KEP .\n- For more information on further development of this feature, see the enhancement tracking issue #596 .\n\n### Generic ephemeral volumes\n\n- For more information on the design, see the Generic ephemeral inline volumes KEP .\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:69a101ebd31a290caacecbe65979ab5e9540bc96d4e3bb37a1ae1c4ff92cac0c",
+  "document_id": "stor-005",
+  "domain": "storage",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Ephemeral Volumes"
+    },
+    {
+      "block_index": 6,
+      "level": 3,
+      "text": "Types of ephemeral volumes"
+    },
+    {
+      "block_index": 13,
+      "level": 3,
+      "text": "CSI ephemeral volumes"
+    },
+    {
+      "block_index": 14,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 19,
+      "level": 3,
+      "text": "CSI driver restrictions"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "Generic ephemeral volumes"
+    },
+    {
+      "block_index": 28,
+      "level": 3,
+      "text": "Lifecycle and PersistentVolumeClaim"
+    },
+    {
+      "block_index": 33,
+      "level": 3,
+      "text": "PersistentVolumeClaim naming"
+    },
+    {
+      "block_index": 37,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 38,
+      "level": 3,
+      "text": "Security"
+    },
+    {
+      "block_index": 41,
+      "level": 2,
+      "text": "What's next"
+    },
+    {
+      "block_index": 42,
+      "level": 3,
+      "text": "Ephemeral volumes managed by kubelet"
+    },
+    {
+      "block_index": 44,
+      "level": 3,
+      "text": "CSI ephemeral volumes"
+    },
+    {
+      "block_index": 46,
+      "level": 3,
+      "text": "Generic ephemeral volumes"
+    }
+  ],
+  "links": [
+    {
+      "text": "volumes",
+      "url": "https://kubernetes.io/docs/concepts/storage/volumes/"
+    },
+    {
+      "text": "local ephemeral storage",
+      "url": "https://kubernetes.io/docs/concepts/storage/ephemeral-storage/"
+    },
+    {
+      "text": "storage capacity aware Pod scheduling",
+      "url": "https://kubernetes.io/docs/concepts/storage/storage-capacity/"
+    },
+    {
+      "text": "admission webhook",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/"
+    },
+    {
+      "text": "parameters for a volume claim",
+      "url": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#ephemeralvolumesource-v1-core"
+    },
+    {
+      "text": "StorageClass",
+      "url": "https://kubernetes.io/docs/concepts/storage/storage-classes"
+    },
+    {
+      "text": "resource ownership",
+      "url": "https://kubernetes.io/docs/concepts/architecture/garbage-collection/#owners-dependents"
+    },
+    {
+      "text": "namespace quota for PVCs",
+      "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/#storage-resource-quota"
+    }
+  ],
+  "raw_path": "data/raw/documents/stor-005.html",
+  "raw_sha256": "sha256:adb24af786807cbecf7692c8ab493156a7dd603f9038b9e99b025964fdbee03b",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/",
+  "statistics": {
+    "block_count": 48,
+    "character_count": 10122,
+    "code_block_count": 2,
+    "heading_count": 14,
+    "link_count": 8,
+    "list_count": 5,
+    "paragraph_count": 27,
+    "table_count": 0,
+    "word_count": 1419
+  },
+  "title": "Ephemeral Volumes"
+}

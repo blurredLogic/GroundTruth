@@ -1,0 +1,286 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Storage",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "---",
+      "type": "separator"
+    },
+    {
+      "block_index": 2,
+      "level": 5,
+      "text": "[Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "level": 5,
+      "text": "[Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 4,
+      "level": 5,
+      "text": "[Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "level": 5,
+      "text": "[Ephemeral Volumes](https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "level": 5,
+      "text": "[Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 7,
+      "level": 5,
+      "text": "[Volume Attributes Classes](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "level": 5,
+      "text": "[Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 9,
+      "level": 5,
+      "text": "[Volume Snapshots](https://kubernetes.io/docs/concepts/storage/volume-snapshots/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "level": 5,
+      "text": "[Volume Snapshot Classes](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 11,
+      "level": 5,
+      "text": "[CSI Volume Cloning](https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 12,
+      "level": 5,
+      "text": "[Volume Populators and Data Sources](https://kubernetes.io/docs/concepts/storage/volume-populators-and-data-sources/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "level": 5,
+      "text": "[Storage Capacity](https://kubernetes.io/docs/concepts/storage/storage-capacity/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 14,
+      "level": 5,
+      "text": "[Node-specific Volume Limits](https://kubernetes.io/docs/concepts/storage/storage-limits/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 15,
+      "level": 5,
+      "text": "[Local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "level": 5,
+      "text": "[Volume Health Monitoring](https://kubernetes.io/docs/concepts/storage/volume-health-monitoring/)",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "level": 5,
+      "text": "[Windows Storage](https://kubernetes.io/docs/concepts/storage/windows-storage/)",
+      "type": "heading"
+    }
+  ],
+  "content": "# Storage\n\n---\n\n##### [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)\n\n##### [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)\n\n##### [Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)\n\n##### [Ephemeral Volumes](https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/)\n\n##### [Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)\n\n##### [Volume Attributes Classes](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/)\n\n##### [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)\n\n##### [Volume Snapshots](https://kubernetes.io/docs/concepts/storage/volume-snapshots/)\n\n##### [Volume Snapshot Classes](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)\n\n##### [CSI Volume Cloning](https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/)\n\n##### [Volume Populators and Data Sources](https://kubernetes.io/docs/concepts/storage/volume-populators-and-data-sources/)\n\n##### [Storage Capacity](https://kubernetes.io/docs/concepts/storage/storage-capacity/)\n\n##### [Node-specific Volume Limits](https://kubernetes.io/docs/concepts/storage/storage-limits/)\n\n##### [Local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/)\n\n##### [Volume Health Monitoring](https://kubernetes.io/docs/concepts/storage/volume-health-monitoring/)\n\n##### [Windows Storage](https://kubernetes.io/docs/concepts/storage/windows-storage/)\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:894e7d21c8518244615a5bf32dca22f65b132ceb5548f105533f6345d565e6fc",
+  "document_id": "stor-001",
+  "domain": "storage",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Storage"
+    },
+    {
+      "block_index": 2,
+      "level": 5,
+      "text": "[Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)"
+    },
+    {
+      "block_index": 3,
+      "level": 5,
+      "text": "[Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)"
+    },
+    {
+      "block_index": 4,
+      "level": 5,
+      "text": "[Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)"
+    },
+    {
+      "block_index": 5,
+      "level": 5,
+      "text": "[Ephemeral Volumes](https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/)"
+    },
+    {
+      "block_index": 6,
+      "level": 5,
+      "text": "[Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)"
+    },
+    {
+      "block_index": 7,
+      "level": 5,
+      "text": "[Volume Attributes Classes](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/)"
+    },
+    {
+      "block_index": 8,
+      "level": 5,
+      "text": "[Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)"
+    },
+    {
+      "block_index": 9,
+      "level": 5,
+      "text": "[Volume Snapshots](https://kubernetes.io/docs/concepts/storage/volume-snapshots/)"
+    },
+    {
+      "block_index": 10,
+      "level": 5,
+      "text": "[Volume Snapshot Classes](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)"
+    },
+    {
+      "block_index": 11,
+      "level": 5,
+      "text": "[CSI Volume Cloning](https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/)"
+    },
+    {
+      "block_index": 12,
+      "level": 5,
+      "text": "[Volume Populators and Data Sources](https://kubernetes.io/docs/concepts/storage/volume-populators-and-data-sources/)"
+    },
+    {
+      "block_index": 13,
+      "level": 5,
+      "text": "[Storage Capacity](https://kubernetes.io/docs/concepts/storage/storage-capacity/)"
+    },
+    {
+      "block_index": 14,
+      "level": 5,
+      "text": "[Node-specific Volume Limits](https://kubernetes.io/docs/concepts/storage/storage-limits/)"
+    },
+    {
+      "block_index": 15,
+      "level": 5,
+      "text": "[Local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/)"
+    },
+    {
+      "block_index": 16,
+      "level": 5,
+      "text": "[Volume Health Monitoring](https://kubernetes.io/docs/concepts/storage/volume-health-monitoring/)"
+    },
+    {
+      "block_index": 17,
+      "level": 5,
+      "text": "[Windows Storage](https://kubernetes.io/docs/concepts/storage/windows-storage/)"
+    }
+  ],
+  "links": [
+    {
+      "text": "Volumes",
+      "url": "https://kubernetes.io/docs/concepts/storage/volumes/"
+    },
+    {
+      "text": "Persistent Volumes",
+      "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/"
+    },
+    {
+      "text": "Projected Volumes",
+      "url": "https://kubernetes.io/docs/concepts/storage/projected-volumes/"
+    },
+    {
+      "text": "Ephemeral Volumes",
+      "url": "https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/"
+    },
+    {
+      "text": "Storage Classes",
+      "url": "https://kubernetes.io/docs/concepts/storage/storage-classes/"
+    },
+    {
+      "text": "Volume Attributes Classes",
+      "url": "https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/"
+    },
+    {
+      "text": "Dynamic Volume Provisioning",
+      "url": "https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/"
+    },
+    {
+      "text": "Volume Snapshots",
+      "url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/"
+    },
+    {
+      "text": "Volume Snapshot Classes",
+      "url": "https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/"
+    },
+    {
+      "text": "CSI Volume Cloning",
+      "url": "https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/"
+    },
+    {
+      "text": "Volume Populators and Data Sources",
+      "url": "https://kubernetes.io/docs/concepts/storage/volume-populators-and-data-sources/"
+    },
+    {
+      "text": "Storage Capacity",
+      "url": "https://kubernetes.io/docs/concepts/storage/storage-capacity/"
+    },
+    {
+      "text": "Node-specific Volume Limits",
+      "url": "https://kubernetes.io/docs/concepts/storage/storage-limits/"
+    },
+    {
+      "text": "Local ephemeral storage",
+      "url": "https://kubernetes.io/docs/concepts/storage/ephemeral-storage/"
+    },
+    {
+      "text": "Volume Health Monitoring",
+      "url": "https://kubernetes.io/docs/concepts/storage/volume-health-monitoring/"
+    },
+    {
+      "text": "Windows Storage",
+      "url": "https://kubernetes.io/docs/concepts/storage/windows-storage/"
+    }
+  ],
+  "raw_path": "data/raw/documents/stor-001.html",
+  "raw_sha256": "sha256:45f6d0ff3861f7019144d6743fea26f6e3b4e52634a2b5f1d1cc8436ec75f56c",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/storage/",
+  "statistics": {
+    "block_count": 18,
+    "character_count": 1548,
+    "code_block_count": 0,
+    "heading_count": 17,
+    "link_count": 16,
+    "list_count": 0,
+    "paragraph_count": 0,
+    "table_count": 0,
+    "word_count": 138
+  },
+  "title": "Storage"
+}

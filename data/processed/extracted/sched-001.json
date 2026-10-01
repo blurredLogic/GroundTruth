@@ -1,0 +1,114 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Scheduling, Preemption and Eviction",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "In Kubernetes, scheduling refers to making sure that [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)\nare matched to [Nodes](https://kubernetes.io/docs/concepts/architecture/nodes/) so that the\n[kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) can run them. Preemption\nis the process of terminating Pods with lower [Priority](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority)\nso that Pods with higher Priority can schedule on Nodes. Eviction is the process\nof terminating one or more Pods on Nodes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Scheduling",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "ordered": false,
+      "text": "- Kubernetes Scheduler\n- Assigning Pods to Nodes\n- Pod Overhead\n- Pod Topology Spread Constraints\n- Taints and Tolerations\n- Scheduling Framework\n- Scheduler Performance Tuning\n- Resource Bin Packing for Extended Resources\n- Pod Scheduling Readiness\n- PodGroup Scheduling\n- Gang Scheduling\n- Topology-aware Scheduling\n- Workload-aware preemption\n- Descheduler\n- Node Declared Features",
+      "type": "list"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Pod Disruption",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "[Pod disruption](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) is the process by which\nPods on Nodes are terminated either voluntarily or involuntarily.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "Voluntary disruptions are started intentionally by application owners or cluster\nadministrators. Involuntary disruptions are unintentional and can be triggered by\nunavoidable issues like Nodes running out of [resources](https://kubernetes.io/docs/reference/glossary/?all=true#term-infrastructure-resource),\nor by accidental deletions.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "ordered": false,
+      "text": "- Pod Priority and Preemption\n- Node-pressure Eviction\n- API-initiated Eviction",
+      "type": "list"
+    }
+  ],
+  "content": "# Scheduling, Preemption and Eviction\n\nIn Kubernetes, scheduling refers to making sure that [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)\nare matched to [Nodes](https://kubernetes.io/docs/concepts/architecture/nodes/) so that the\n[kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) can run them. Preemption\nis the process of terminating Pods with lower [Priority](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority)\nso that Pods with higher Priority can schedule on Nodes. Eviction is the process\nof terminating one or more Pods on Nodes.\n\n## Scheduling\n\n- Kubernetes Scheduler\n- Assigning Pods to Nodes\n- Pod Overhead\n- Pod Topology Spread Constraints\n- Taints and Tolerations\n- Scheduling Framework\n- Scheduler Performance Tuning\n- Resource Bin Packing for Extended Resources\n- Pod Scheduling Readiness\n- PodGroup Scheduling\n- Gang Scheduling\n- Topology-aware Scheduling\n- Workload-aware preemption\n- Descheduler\n- Node Declared Features\n\n## Pod Disruption\n\n[Pod disruption](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) is the process by which\nPods on Nodes are terminated either voluntarily or involuntarily.\n\nVoluntary disruptions are started intentionally by application owners or cluster\nadministrators. Involuntary disruptions are unintentional and can be triggered by\nunavoidable issues like Nodes running out of [resources](https://kubernetes.io/docs/reference/glossary/?all=true#term-infrastructure-resource),\nor by accidental deletions.\n\n- Pod Priority and Preemption\n- Node-pressure Eviction\n- API-initiated Eviction\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:8845fd0133f7839b8b8aa47972f143a704c3854eff042b088cd5cec740afd1b6",
+  "document_id": "sched-001",
+  "domain": "scheduling_resource_management",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Scheduling, Preemption and Eviction"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Scheduling"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Pod Disruption"
+    }
+  ],
+  "links": [
+    {
+      "text": "Pods",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "Nodes",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/"
+    },
+    {
+      "text": "kubelet",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet"
+    },
+    {
+      "text": "Priority",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority"
+    },
+    {
+      "text": "Pod disruption",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/"
+    },
+    {
+      "text": "resources",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-infrastructure-resource"
+    }
+  ],
+  "raw_path": "data/raw/documents/sched-001.html",
+  "raw_sha256": "sha256:c7cbda4bfa9b31168f3bf358dda01881fcb867f54ad91deb7e1f366f955b46bc",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/scheduling-eviction/",
+  "statistics": {
+    "block_count": 8,
+    "character_count": 1639,
+    "code_block_count": 0,
+    "heading_count": 3,
+    "link_count": 6,
+    "list_count": 2,
+    "paragraph_count": 3,
+    "table_count": 0,
+    "word_count": 196
+  },
+  "title": "Scheduling, Preemption and Eviction"
+}

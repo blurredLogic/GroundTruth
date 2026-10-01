@@ -1,0 +1,188 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Kubernetes Scheduler",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "In Kubernetes, *scheduling* refers to making sure that [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)\nare matched to [Nodes](https://kubernetes.io/docs/concepts/architecture/nodes/) so that\n[Kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) can run them.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Scheduling overview",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "text": "A scheduler watches for newly created Pods that have no Node assigned. For\nevery Pod that the scheduler discovers, the scheduler becomes responsible\nfor finding the best Node for that Pod to run on. The scheduler reaches\nthis placement decision taking into account the scheduling principles\ndescribed below.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "If you want to understand why Pods are placed onto a particular Node,\nor if you're planning to implement a custom scheduler yourself, this\npage will help you learn about scheduling.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "kube-scheduler",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "[kube-scheduler](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/)\nis the default scheduler for Kubernetes and runs as part of the\n[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane).\nkube-scheduler is designed so that, if you want and need to, you can\nwrite your own scheduling component and use that instead.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "Kube-scheduler selects an optimal node to run newly created or not yet\nscheduled (unscheduled) pods. Since containers in pods - and pods themselves -\ncan have different requirements, the scheduler filters out any nodes that\ndon't meet a Pod's specific scheduling needs. Alternatively, the API lets\nyou specify a node for a Pod when you create it, but this is unusual\nand is only done in special cases.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "In a cluster, Nodes that meet the scheduling requirements for a Pod\nare called *feasible* nodes. If none of the nodes are suitable, the pod\nremains unscheduled until the scheduler is able to place it.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "text": "The scheduler finds feasible Nodes for a Pod and then runs a set of\nfunctions to score the feasible Nodes and picks a Node with the highest\nscore among the feasible ones to run the Pod. The scheduler then notifies\nthe API server about this decision in a process called *binding*.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "text": "Factors that need to be taken into account for scheduling decisions include\nindividual and collective resource requirements, hardware / software /\npolicy constraints, affinity and anti-affinity specifications, data\nlocality, inter-workload interference, and so on.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Node selection in kube-scheduler",
+      "type": "heading"
+    },
+    {
+      "block_index": 12,
+      "text": "kube-scheduler selects a node for the pod in a 2-step operation:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "ordered": true,
+      "text": "1. Filtering\n2. Scoring",
+      "type": "list"
+    },
+    {
+      "block_index": 14,
+      "text": "The *filtering* step finds the set of Nodes where it's feasible to\nschedule the Pod. For example, the PodFitsResources filter checks whether a\ncandidate Node has enough available resources to meet a Pod's specific\nresource requests. After this step, the node list contains any suitable\nNodes; often, there will be more than one. If the list is empty, that\nPod isn't (yet) schedulable.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "text": "In the *scoring* step, the scheduler ranks the remaining nodes to choose\nthe most suitable Pod placement. The scheduler assigns a score to each Node\nthat survived filtering, basing this score on the active scoring rules.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "text": "Finally, kube-scheduler assigns the Pod to the Node with the highest ranking.\nIf there is more than one node with equal scores, kube-scheduler selects\none of these at random.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "There are two supported ways to configure the filtering and scoring behavior\nof the scheduler:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "ordered": true,
+      "text": "1. Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring.\n2. Scheduling Profiles allow you to configure Plugins that implement different scheduling stages, including: QueueSort , Filter , Score , Bind , Reserve , Permit , and others. You can also configure the kube-scheduler to run different profiles.",
+      "type": "list"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 20,
+      "ordered": false,
+      "text": "- Read about scheduler performance tuning\n- Read about Pod topology spread constraints\n- Read the reference documentation for kube-scheduler\n- Read the kube-scheduler config (v1) reference\n- Learn about configuring multiple schedulers\n- Learn about topology management policies\n- Learn about Pod Overhead\n- Learn about scheduling of Pods that use volumes in:\n- Volume Topology Support\n  - Storage Capacity Tracking\n  - Node-specific Volume Limits",
+      "type": "list"
+    }
+  ],
+  "content": "# Kubernetes Scheduler\n\nIn Kubernetes, *scheduling* refers to making sure that [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)\nare matched to [Nodes](https://kubernetes.io/docs/concepts/architecture/nodes/) so that\n[Kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet) can run them.\n\n## Scheduling overview\n\nA scheduler watches for newly created Pods that have no Node assigned. For\nevery Pod that the scheduler discovers, the scheduler becomes responsible\nfor finding the best Node for that Pod to run on. The scheduler reaches\nthis placement decision taking into account the scheduling principles\ndescribed below.\n\nIf you want to understand why Pods are placed onto a particular Node,\nor if you're planning to implement a custom scheduler yourself, this\npage will help you learn about scheduling.\n\n## kube-scheduler\n\n[kube-scheduler](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/)\nis the default scheduler for Kubernetes and runs as part of the\n[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane).\nkube-scheduler is designed so that, if you want and need to, you can\nwrite your own scheduling component and use that instead.\n\nKube-scheduler selects an optimal node to run newly created or not yet\nscheduled (unscheduled) pods. Since containers in pods - and pods themselves -\ncan have different requirements, the scheduler filters out any nodes that\ndon't meet a Pod's specific scheduling needs. Alternatively, the API lets\nyou specify a node for a Pod when you create it, but this is unusual\nand is only done in special cases.\n\nIn a cluster, Nodes that meet the scheduling requirements for a Pod\nare called *feasible* nodes. If none of the nodes are suitable, the pod\nremains unscheduled until the scheduler is able to place it.\n\nThe scheduler finds feasible Nodes for a Pod and then runs a set of\nfunctions to score the feasible Nodes and picks a Node with the highest\nscore among the feasible ones to run the Pod. The scheduler then notifies\nthe API server about this decision in a process called *binding*.\n\nFactors that need to be taken into account for scheduling decisions include\nindividual and collective resource requirements, hardware / software /\npolicy constraints, affinity and anti-affinity specifications, data\nlocality, inter-workload interference, and so on.\n\n### Node selection in kube-scheduler\n\nkube-scheduler selects a node for the pod in a 2-step operation:\n\n1. Filtering\n2. Scoring\n\nThe *filtering* step finds the set of Nodes where it's feasible to\nschedule the Pod. For example, the PodFitsResources filter checks whether a\ncandidate Node has enough available resources to meet a Pod's specific\nresource requests. After this step, the node list contains any suitable\nNodes; often, there will be more than one. If the list is empty, that\nPod isn't (yet) schedulable.\n\nIn the *scoring* step, the scheduler ranks the remaining nodes to choose\nthe most suitable Pod placement. The scheduler assigns a score to each Node\nthat survived filtering, basing this score on the active scoring rules.\n\nFinally, kube-scheduler assigns the Pod to the Node with the highest ranking.\nIf there is more than one node with equal scores, kube-scheduler selects\none of these at random.\n\nThere are two supported ways to configure the filtering and scoring behavior\nof the scheduler:\n\n1. Scheduling Policies allow you to configure Predicates for filtering and Priorities for scoring.\n2. Scheduling Profiles allow you to configure Plugins that implement different scheduling stages, including: QueueSort , Filter , Score , Bind , Reserve , Permit , and others. You can also configure the kube-scheduler to run different profiles.\n\n## What's next\n\n- Read about scheduler performance tuning\n- Read about Pod topology spread constraints\n- Read the reference documentation for kube-scheduler\n- Read the kube-scheduler config (v1) reference\n- Learn about configuring multiple schedulers\n- Learn about topology management policies\n- Learn about Pod Overhead\n- Learn about scheduling of Pods that use volumes in:\n- Volume Topology Support\n  - Storage Capacity Tracking\n  - Node-specific Volume Limits\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:4277f39d5a10a92c562094c77392f499f5dc6ea69e6093bbbed99f93ae8faac0",
+  "document_id": "sched-002",
+  "domain": "scheduling_resource_management",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Kubernetes Scheduler"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Scheduling overview"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "kube-scheduler"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Node selection in kube-scheduler"
+    },
+    {
+      "block_index": 19,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Pods",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "Nodes",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/"
+    },
+    {
+      "text": "Kubelet",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet"
+    },
+    {
+      "text": "kube-scheduler",
+      "url": "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/"
+    },
+    {
+      "text": "control plane",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane"
+    }
+  ],
+  "raw_path": "data/raw/documents/sched-002.html",
+  "raw_sha256": "sha256:eb136ceb6d3b2aa78592859a5b6b0714ce1b7b264c9b0825afdf1b12c46d6bf4",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/",
+  "statistics": {
+    "block_count": 21,
+    "character_count": 4216,
+    "code_block_count": 0,
+    "heading_count": 5,
+    "link_count": 5,
+    "list_count": 3,
+    "paragraph_count": 13,
+    "table_count": 0,
+    "word_count": 628
+  },
+  "title": "Kube-Scheduler"
+}

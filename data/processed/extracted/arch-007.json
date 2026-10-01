@@ -1,0 +1,369 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Cloud Controller Manager",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Cloud infrastructure technologies let you run Kubernetes on public, private, and hybrid clouds.\nKubernetes believes in automated, API-driven infrastructure without tight coupling between\ncomponents.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "The cloud-controller-manager is a Kubernetes [control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane) component\nthat embeds cloud-specific control logic. The cloud controller manager lets you link your\ncluster into your cloud provider's API, and separates out the components that interact\nwith that cloud platform from components that only interact with your cluster.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "By decoupling the interoperability logic between Kubernetes and the underlying cloud\ninfrastructure, the cloud-controller-manager component enables cloud providers to release\nfeatures at a different pace compared to the main Kubernetes project.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "text": "The cloud-controller-manager is structured using a plugin\nmechanism that allows different cloud providers to integrate their platforms with Kubernetes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Design",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "[Image: Kubernetes components]",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "The cloud controller manager runs in the control plane as a replicated set of processes\n(usually, these are containers in Pods). Each cloud-controller-manager implements\nmultiple [controllers](https://kubernetes.io/docs/concepts/architecture/controller/) in a single\nprocess.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Cloud controller manager functions",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "The controllers inside the cloud controller manager include:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Node controller",
+      "type": "heading"
+    },
+    {
+      "block_index": 12,
+      "text": "The node controller is responsible for updating [Node](https://kubernetes.io/docs/concepts/architecture/nodes/) objects\nwhen new servers are created in your cloud infrastructure. The node controller obtains information about the\nhosts running inside your tenancy with the cloud provider. The node controller performs the following functions:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "ordered": true,
+      "text": "1. Update a Node object with the corresponding server's unique identifier obtained from the cloud provider API.\n2. Annotating and labelling the Node object with cloud-specific information, such as the region the node is deployed into and the resources (CPU, memory, etc) that it has available.\n3. Obtain the node's hostname and network addresses.\n4. Verifying the node's health. In case a node becomes unresponsive, this controller checks with your cloud provider's API to see if the server has been deactivated / deleted / terminated. If the node has been deleted from the cloud, the controller deletes the Node object from your Kubernetes cluster.",
+      "type": "list"
+    },
+    {
+      "block_index": 14,
+      "text": "Some cloud provider implementations split this into a node controller and a separate node\nlifecycle controller.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Route controller",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "The route controller is responsible for configuring routes in the cloud\nappropriately so that containers on different nodes in your Kubernetes\ncluster can communicate with each other.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "Depending on the cloud provider, the route controller might also allocate blocks\nof IP addresses for the Pod network.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "level": 3,
+      "text": "Service controller",
+      "type": "heading"
+    },
+    {
+      "block_index": 19,
+      "text": "[Services](https://kubernetes.io/docs/concepts/services-networking/service/) integrate with cloud\ninfrastructure components such as managed load balancers, IP addresses, network\npacket filtering, and target health checking. The service controller interacts with your\ncloud provider's APIs to set up load balancers and other infrastructure components\nwhen you declare a Service resource that requires them.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "Authorization",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "This section breaks down the access that the cloud controller manager requires\non various API objects, in order to perform its operations.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "level": 3,
+      "text": "Node controller",
+      "type": "heading"
+    },
+    {
+      "block_index": 23,
+      "text": "The Node controller only works with Node objects. It requires full access\nto read and modify Node objects.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "text": "`v1/Node`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "ordered": false,
+      "text": "- get\n- list\n- create\n- update\n- patch\n- watch\n- delete",
+      "type": "list"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Route controller",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "The route controller listens to Node object creation and configures\nroutes appropriately. It requires Get access to Node objects.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "text": "`v1/Node`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "ordered": false,
+      "text": "- get",
+      "type": "list"
+    },
+    {
+      "block_index": 30,
+      "level": 3,
+      "text": "Service controller",
+      "type": "heading"
+    },
+    {
+      "block_index": 31,
+      "text": "The service controller watches for Service object **create**, **update** and **delete** events and then\nconfigures load balancers for those Services appropriately.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "text": "To access Services, it requires **list**, and **watch** access. To update Services, it requires\n**patch** and **update** access to the `status` subresource.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "text": "`v1/Service`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 34,
+      "ordered": false,
+      "text": "- list\n- get\n- watch\n- patch\n- update",
+      "type": "list"
+    },
+    {
+      "block_index": 35,
+      "level": 3,
+      "text": "Others",
+      "type": "heading"
+    },
+    {
+      "block_index": 36,
+      "text": "The implementation of the core of the cloud controller manager requires access to create Event\nobjects, and to ensure secure operation, it requires access to create ServiceAccounts.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 37,
+      "text": "`v1/Event`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "ordered": false,
+      "text": "- create\n- patch\n- update",
+      "type": "list"
+    },
+    {
+      "block_index": 39,
+      "text": "`v1/ServiceAccount`:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 40,
+      "ordered": false,
+      "text": "- create",
+      "type": "list"
+    },
+    {
+      "block_index": 41,
+      "text": "The [RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) ClusterRole for the cloud\ncontroller manager looks like:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "language": "yaml",
+      "text": "apiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRole\nmetadata:\n  name: cloud-controller-manager\nrules:\n- apiGroups:\n  - \"\"\n  resources:\n  - events\n  verbs:\n  - create\n  - patch\n  - update\n- apiGroups:\n  - \"\"\n  resources:\n  - nodes\n  verbs:\n  - '*'\n- apiGroups:\n  - \"\"\n  resources:\n  - nodes/status\n  verbs:\n  - patch\n- apiGroups:\n  - \"\"\n  resources:\n  - services\n  verbs:\n  - list\n  - watch\n- apiGroups:\n  - \"\"\n  resources:\n  - services/status\n  verbs:\n  - patch\n  - update\n- apiGroups:\n  - \"\"\n  resources:\n  - serviceaccounts\n  verbs:\n  - create\n- apiGroups:\n  - \"\"\n  resources:\n  - persistentvolumes\n  verbs:\n  - get\n  - list\n  - update\n  - watch",
+      "type": "code"
+    },
+    {
+      "block_index": 43,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 44,
+      "ordered": false,
+      "text": "- [Cloud Controller Manager Administration](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/#cloud-controller-manager) has instructions on running and managing the cloud controller manager.\n- To upgrade a HA control plane to use the cloud controller manager, see [Migrate Replicated Control Plane To Use Cloud Controller Manager](https://kubernetes.io/docs/tasks/administer-cluster/controller-manager-leader-migration/).\n- Want to know how to implement your own cloud controller manager, or extend an existing project?\n- The cloud controller manager uses Go interfaces, specifically, CloudProvider interface defined in `cloud.go` from kubernetes/cloud-provider to allow implementations from any cloud to be plugged in.\n  - The implementation of the shared controllers highlighted in this document (Node, Route, and Service), and some scaffolding along with the shared cloudprovider interface, is part of the Kubernetes core. Implementations specific to cloud providers are outside the core of Kubernetes and implement the CloudProvider interface.\n  - For more information about developing plugins, see Developing Cloud Controller Manager .",
+      "type": "list"
+    }
+  ],
+  "content": "# Cloud Controller Manager\n\nCloud infrastructure technologies let you run Kubernetes on public, private, and hybrid clouds.\nKubernetes believes in automated, API-driven infrastructure without tight coupling between\ncomponents.\n\nThe cloud-controller-manager is a Kubernetes [control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane) component\nthat embeds cloud-specific control logic. The cloud controller manager lets you link your\ncluster into your cloud provider's API, and separates out the components that interact\nwith that cloud platform from components that only interact with your cluster.\n\nBy decoupling the interoperability logic between Kubernetes and the underlying cloud\ninfrastructure, the cloud-controller-manager component enables cloud providers to release\nfeatures at a different pace compared to the main Kubernetes project.\n\nThe cloud-controller-manager is structured using a plugin\nmechanism that allows different cloud providers to integrate their platforms with Kubernetes.\n\n## Design\n\n[Image: Kubernetes components]\n\nThe cloud controller manager runs in the control plane as a replicated set of processes\n(usually, these are containers in Pods). Each cloud-controller-manager implements\nmultiple [controllers](https://kubernetes.io/docs/concepts/architecture/controller/) in a single\nprocess.\n\n#### Note:\n\n## Cloud controller manager functions\n\nThe controllers inside the cloud controller manager include:\n\n### Node controller\n\nThe node controller is responsible for updating [Node](https://kubernetes.io/docs/concepts/architecture/nodes/) objects\nwhen new servers are created in your cloud infrastructure. The node controller obtains information about the\nhosts running inside your tenancy with the cloud provider. The node controller performs the following functions:\n\n1. Update a Node object with the corresponding server's unique identifier obtained from the cloud provider API.\n2. Annotating and labelling the Node object with cloud-specific information, such as the region the node is deployed into and the resources (CPU, memory, etc) that it has available.\n3. Obtain the node's hostname and network addresses.\n4. Verifying the node's health. In case a node becomes unresponsive, this controller checks with your cloud provider's API to see if the server has been deactivated / deleted / terminated. If the node has been deleted from the cloud, the controller deletes the Node object from your Kubernetes cluster.\n\nSome cloud provider implementations split this into a node controller and a separate node\nlifecycle controller.\n\n### Route controller\n\nThe route controller is responsible for configuring routes in the cloud\nappropriately so that containers on different nodes in your Kubernetes\ncluster can communicate with each other.\n\nDepending on the cloud provider, the route controller might also allocate blocks\nof IP addresses for the Pod network.\n\n### Service controller\n\n[Services](https://kubernetes.io/docs/concepts/services-networking/service/) integrate with cloud\ninfrastructure components such as managed load balancers, IP addresses, network\npacket filtering, and target health checking. The service controller interacts with your\ncloud provider's APIs to set up load balancers and other infrastructure components\nwhen you declare a Service resource that requires them.\n\n## Authorization\n\nThis section breaks down the access that the cloud controller manager requires\non various API objects, in order to perform its operations.\n\n### Node controller\n\nThe Node controller only works with Node objects. It requires full access\nto read and modify Node objects.\n\n`v1/Node`:\n\n- get\n- list\n- create\n- update\n- patch\n- watch\n- delete\n\n### Route controller\n\nThe route controller listens to Node object creation and configures\nroutes appropriately. It requires Get access to Node objects.\n\n`v1/Node`:\n\n- get\n\n### Service controller\n\nThe service controller watches for Service object **create**, **update** and **delete** events and then\nconfigures load balancers for those Services appropriately.\n\nTo access Services, it requires **list**, and **watch** access. To update Services, it requires\n**patch** and **update** access to the `status` subresource.\n\n`v1/Service`:\n\n- list\n- get\n- watch\n- patch\n- update\n\n### Others\n\nThe implementation of the core of the cloud controller manager requires access to create Event\nobjects, and to ensure secure operation, it requires access to create ServiceAccounts.\n\n`v1/Event`:\n\n- create\n- patch\n- update\n\n`v1/ServiceAccount`:\n\n- create\n\nThe [RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) ClusterRole for the cloud\ncontroller manager looks like:\n\n```yaml\napiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRole\nmetadata:\n  name: cloud-controller-manager\nrules:\n- apiGroups:\n  - \"\"\n  resources:\n  - events\n  verbs:\n  - create\n  - patch\n  - update\n- apiGroups:\n  - \"\"\n  resources:\n  - nodes\n  verbs:\n  - '*'\n- apiGroups:\n  - \"\"\n  resources:\n  - nodes/status\n  verbs:\n  - patch\n- apiGroups:\n  - \"\"\n  resources:\n  - services\n  verbs:\n  - list\n  - watch\n- apiGroups:\n  - \"\"\n  resources:\n  - services/status\n  verbs:\n  - patch\n  - update\n- apiGroups:\n  - \"\"\n  resources:\n  - serviceaccounts\n  verbs:\n  - create\n- apiGroups:\n  - \"\"\n  resources:\n  - persistentvolumes\n  verbs:\n  - get\n  - list\n  - update\n  - watch\n```\n\n## What's next\n\n- [Cloud Controller Manager Administration](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/#cloud-controller-manager) has instructions on running and managing the cloud controller manager.\n- To upgrade a HA control plane to use the cloud controller manager, see [Migrate Replicated Control Plane To Use Cloud Controller Manager](https://kubernetes.io/docs/tasks/administer-cluster/controller-manager-leader-migration/).\n- Want to know how to implement your own cloud controller manager, or extend an existing project?\n- The cloud controller manager uses Go interfaces, specifically, CloudProvider interface defined in `cloud.go` from kubernetes/cloud-provider to allow implementations from any cloud to be plugged in.\n  - The implementation of the shared controllers highlighted in this document (Node, Route, and Service), and some scaffolding along with the shared cloudprovider interface, is part of the Kubernetes core. Implementations specific to cloud providers are outside the core of Kubernetes and implement the CloudProvider interface.\n  - For more information about developing plugins, see Developing Cloud Controller Manager .\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:e01b0f9160ba65c4bcb37a09becc144caaf9e69d9953e7abbab75775b791063e",
+  "document_id": "arch-007",
+  "domain": "cluster_architecture",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Cloud Controller Manager"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Design"
+    },
+    {
+      "block_index": 8,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 9,
+      "level": 2,
+      "text": "Cloud controller manager functions"
+    },
+    {
+      "block_index": 11,
+      "level": 3,
+      "text": "Node controller"
+    },
+    {
+      "block_index": 15,
+      "level": 3,
+      "text": "Route controller"
+    },
+    {
+      "block_index": 18,
+      "level": 3,
+      "text": "Service controller"
+    },
+    {
+      "block_index": 20,
+      "level": 2,
+      "text": "Authorization"
+    },
+    {
+      "block_index": 22,
+      "level": 3,
+      "text": "Node controller"
+    },
+    {
+      "block_index": 26,
+      "level": 3,
+      "text": "Route controller"
+    },
+    {
+      "block_index": 30,
+      "level": 3,
+      "text": "Service controller"
+    },
+    {
+      "block_index": 35,
+      "level": 3,
+      "text": "Others"
+    },
+    {
+      "block_index": 43,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "control plane",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane"
+    },
+    {
+      "text": "controllers",
+      "url": "https://kubernetes.io/docs/concepts/architecture/controller/"
+    },
+    {
+      "text": "Node",
+      "url": "https://kubernetes.io/docs/concepts/architecture/nodes/"
+    },
+    {
+      "text": "Services",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "RBAC",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+    },
+    {
+      "text": "Cloud Controller Manager Administration",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/#cloud-controller-manager"
+    },
+    {
+      "text": "Migrate Replicated Control Plane To Use Cloud Controller Manager",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/controller-manager-leader-migration/"
+    }
+  ],
+  "raw_path": "data/raw/documents/arch-007.html",
+  "raw_sha256": "sha256:d54675d8c215214d65bd4495a0901da88b11c9c91528829ae1e9bf004d564ea2",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/architecture/cloud-controller/",
+  "statistics": {
+    "block_count": 45,
+    "character_count": 6530,
+    "code_block_count": 1,
+    "heading_count": 13,
+    "link_count": 7,
+    "list_count": 7,
+    "paragraph_count": 24,
+    "table_count": 0,
+    "word_count": 843
+  },
+  "title": "Cloud Controller Manager"
+}

@@ -1,0 +1,308 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Security Admission",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "The Kubernetes [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/) define\ndifferent isolation levels for Pods. These standards let you define how you want to restrict the\nbehavior of pods in a clear, consistent fashion.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "Kubernetes offers a built-in *Pod Security* [admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) to enforce the Pod Security Standards. Pod security restrictions\nare applied at the [namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces) level when pods are\ncreated.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "level": 3,
+      "text": "Built-in Pod Security admission enforcement",
+      "type": "heading"
+    },
+    {
+      "block_index": 4,
+      "text": "This page is part of the documentation for Kubernetes v1.37.\nIf you are running a different version of Kubernetes, consult the documentation for that release.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Pod Security levels",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "Pod Security admission places requirements on a Pod's [Security Context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) and other related fields according\nto the three levels defined by the [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/): `privileged`, `baseline`, and\n`restricted`. Refer to the [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)\npage for an in-depth look at those requirements.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "level": 2,
+      "text": "Pod Security Admission labels for namespaces",
+      "type": "heading"
+    },
+    {
+      "block_index": 8,
+      "text": "Once the feature is enabled or the webhook is installed, you can configure namespaces to define the admission\ncontrol mode you want to use for pod security in each namespace. Kubernetes defines a set of\n[labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels) that you can set to define which of the\npredefined Pod Security Standard levels you want to use for a namespace. The label you select\ndefines what action the [control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane)\ntakes if a potential violation is detected:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "rows": [
+        [
+          "Mode",
+          "Description"
+        ],
+        [
+          "**enforce**",
+          "Policy violations will cause the pod to be rejected."
+        ],
+        [
+          "**audit**",
+          "Policy violations will trigger the addition of an audit annotation to the event recorded in the [audit log](https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/), but are otherwise allowed."
+        ],
+        [
+          "**warn**",
+          "Policy violations will trigger a user-facing warning, but are otherwise allowed."
+        ]
+      ],
+      "text": "| Mode | Description |\n| --- | --- |\n| **enforce** | Policy violations will cause the pod to be rejected. |\n| **audit** | Policy violations will trigger the addition of an audit annotation to the event recorded in the [audit log](https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/), but are otherwise allowed. |\n| **warn** | Policy violations will trigger a user-facing warning, but are otherwise allowed. |",
+      "type": "table"
+    },
+    {
+      "block_index": 10,
+      "text": "A namespace can configure any or all modes, or even set a different level for different modes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "For each mode, there are two labels that determine the policy used:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "language": "yaml",
+      "text": "# The per-mode level label indicates which policy level to apply for the mode.\n#\n# MODE must be one of `enforce`, `audit`, or `warn`.\n# LEVEL must be one of `privileged`, `baseline`, or `restricted`.\npod-security.kubernetes.io/<MODE>: <LEVEL>\n\n# Optional: per-mode version label that can be used to pin the policy to the\n# version that shipped with a given Kubernetes minor version (for example v1.37).\n#\n# MODE must be one of `enforce`, `audit`, or `warn`.\n# VERSION must be a valid Kubernetes minor version, or `latest`.\npod-security.kubernetes.io/<MODE>-version: <VERSION>",
+      "type": "code"
+    },
+    {
+      "block_index": 13,
+      "text": "Check out [Enforce Pod Security Standards with Namespace Labels](https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-namespace-labels/) to see example usage.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "level": 2,
+      "text": "Workload resources and Pod templates",
+      "type": "heading"
+    },
+    {
+      "block_index": 15,
+      "text": "Pods are often created indirectly, by creating a [workload object](https://kubernetes.io/docs/concepts/workloads/controllers/) such as a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) or [Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/). The workload object defines a\n*Pod template* and a [controller](https://kubernetes.io/docs/concepts/architecture/controller/) for the\nworkload resource creates Pods based on that template. To help catch violations early, both the\naudit and warning modes are applied to the workload resources. However, enforce mode is **not**\napplied to workload resources, only to the resulting pod objects.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "level": 2,
+      "text": "Exemptions",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "text": "You can define *exemptions* from pod security enforcement in order to allow the creation of pods that\nwould have otherwise been prohibited due to the policy associated with a given namespace.\nExemptions can be statically configured in the\n[Admission Controller configuration](https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/#configure-the-admission-controller).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "Exemptions must be explicitly enumerated. Requests meeting exemption criteria are *ignored* by the\nAdmission Controller (all `enforce`, `audit` and `warn` behaviors are skipped). Exemption dimensions include:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "ordered": false,
+      "text": "- Usernames: requests from users with an exempt authenticated (or impersonated) username are ignored.\n- RuntimeClassNames: pods and workload resources specifying an exempt runtime class name are ignored.\n- Namespaces: pods and workload resources in an exempt namespace are ignored.",
+      "type": "list"
+    },
+    {
+      "block_index": 20,
+      "level": 4,
+      "text": "Caution:",
+      "type": "heading"
+    },
+    {
+      "block_index": 21,
+      "text": "Updates to the following pod fields are exempt from policy checks, meaning that if a pod update\nrequest only changes these fields, it will not be denied even if the pod is in violation of the\ncurrent policy level:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "ordered": false,
+      "text": "- Any metadata updates except changes to the seccomp or AppArmor annotations:\n- seccomp.security.alpha.kubernetes.io/pod (deprecated)\n  - container.seccomp.security.alpha.kubernetes.io/* (deprecated)\n  - container.apparmor.security.beta.kubernetes.io/* (deprecated)\n- Valid updates to .spec.activeDeadlineSeconds\n- Valid updates to .spec.tolerations",
+      "type": "list"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "Metrics",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "Here are the Prometheus metrics exposed by kube-apiserver:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "ordered": false,
+      "text": "- pod_security_errors_total : This metric indicates the number of errors preventing normal evaluation. Non-fatal errors may result in the latest restricted profile being used for enforcement.\n- pod_security_evaluations_total : This metric indicates the number of policy evaluations that have occurred, not counting ignored or exempt requests during exporting.\n- pod_security_exemptions_total : This metric indicates the number of exempt requests, not counting ignored or out of scope requests.",
+      "type": "list"
+    },
+    {
+      "block_index": 26,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "ordered": false,
+      "text": "- Pod Security Standards\n- Enforcing Pod Security Standards\n- Enforce Pod Security Standards by Configuring the Built-in Admission Controller\n- Enforce Pod Security Standards with Namespace Labels",
+      "type": "list"
+    },
+    {
+      "block_index": 28,
+      "text": "If you are running an older version of Kubernetes and want to upgrade\nto a version of Kubernetes that does not include PodSecurityPolicies,\nread [migrate from PodSecurityPolicy to the Built-In PodSecurity Admission Controller](https://kubernetes.io/docs/tasks/configure-pod-container/migrate-from-psp/).",
+      "type": "paragraph"
+    }
+  ],
+  "content": "# Pod Security Admission\n\nThe Kubernetes [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/) define\ndifferent isolation levels for Pods. These standards let you define how you want to restrict the\nbehavior of pods in a clear, consistent fashion.\n\nKubernetes offers a built-in *Pod Security* [admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) to enforce the Pod Security Standards. Pod security restrictions\nare applied at the [namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces) level when pods are\ncreated.\n\n### Built-in Pod Security admission enforcement\n\nThis page is part of the documentation for Kubernetes v1.37.\nIf you are running a different version of Kubernetes, consult the documentation for that release.\n\n## Pod Security levels\n\nPod Security admission places requirements on a Pod's [Security Context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) and other related fields according\nto the three levels defined by the [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/): `privileged`, `baseline`, and\n`restricted`. Refer to the [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)\npage for an in-depth look at those requirements.\n\n## Pod Security Admission labels for namespaces\n\nOnce the feature is enabled or the webhook is installed, you can configure namespaces to define the admission\ncontrol mode you want to use for pod security in each namespace. Kubernetes defines a set of\n[labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels) that you can set to define which of the\npredefined Pod Security Standard levels you want to use for a namespace. The label you select\ndefines what action the [control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane)\ntakes if a potential violation is detected:\n\n| Mode | Description |\n| --- | --- |\n| **enforce** | Policy violations will cause the pod to be rejected. |\n| **audit** | Policy violations will trigger the addition of an audit annotation to the event recorded in the [audit log](https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/), but are otherwise allowed. |\n| **warn** | Policy violations will trigger a user-facing warning, but are otherwise allowed. |\n\nA namespace can configure any or all modes, or even set a different level for different modes.\n\nFor each mode, there are two labels that determine the policy used:\n\n```yaml\n# The per-mode level label indicates which policy level to apply for the mode.\n#\n# MODE must be one of `enforce`, `audit`, or `warn`.\n# LEVEL must be one of `privileged`, `baseline`, or `restricted`.\npod-security.kubernetes.io/<MODE>: <LEVEL>\n\n# Optional: per-mode version label that can be used to pin the policy to the\n# version that shipped with a given Kubernetes minor version (for example v1.37).\n#\n# MODE must be one of `enforce`, `audit`, or `warn`.\n# VERSION must be a valid Kubernetes minor version, or `latest`.\npod-security.kubernetes.io/<MODE>-version: <VERSION>\n```\n\nCheck out [Enforce Pod Security Standards with Namespace Labels](https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-namespace-labels/) to see example usage.\n\n## Workload resources and Pod templates\n\nPods are often created indirectly, by creating a [workload object](https://kubernetes.io/docs/concepts/workloads/controllers/) such as a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) or [Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/). The workload object defines a\n*Pod template* and a [controller](https://kubernetes.io/docs/concepts/architecture/controller/) for the\nworkload resource creates Pods based on that template. To help catch violations early, both the\naudit and warning modes are applied to the workload resources. However, enforce mode is **not**\napplied to workload resources, only to the resulting pod objects.\n\n## Exemptions\n\nYou can define *exemptions* from pod security enforcement in order to allow the creation of pods that\nwould have otherwise been prohibited due to the policy associated with a given namespace.\nExemptions can be statically configured in the\n[Admission Controller configuration](https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/#configure-the-admission-controller).\n\nExemptions must be explicitly enumerated. Requests meeting exemption criteria are *ignored* by the\nAdmission Controller (all `enforce`, `audit` and `warn` behaviors are skipped). Exemption dimensions include:\n\n- Usernames: requests from users with an exempt authenticated (or impersonated) username are ignored.\n- RuntimeClassNames: pods and workload resources specifying an exempt runtime class name are ignored.\n- Namespaces: pods and workload resources in an exempt namespace are ignored.\n\n#### Caution:\n\nUpdates to the following pod fields are exempt from policy checks, meaning that if a pod update\nrequest only changes these fields, it will not be denied even if the pod is in violation of the\ncurrent policy level:\n\n- Any metadata updates except changes to the seccomp or AppArmor annotations:\n- seccomp.security.alpha.kubernetes.io/pod (deprecated)\n  - container.seccomp.security.alpha.kubernetes.io/* (deprecated)\n  - container.apparmor.security.beta.kubernetes.io/* (deprecated)\n- Valid updates to .spec.activeDeadlineSeconds\n- Valid updates to .spec.tolerations\n\n## Metrics\n\nHere are the Prometheus metrics exposed by kube-apiserver:\n\n- pod_security_errors_total : This metric indicates the number of errors preventing normal evaluation. Non-fatal errors may result in the latest restricted profile being used for enforcement.\n- pod_security_evaluations_total : This metric indicates the number of policy evaluations that have occurred, not counting ignored or exempt requests during exporting.\n- pod_security_exemptions_total : This metric indicates the number of exempt requests, not counting ignored or out of scope requests.\n\n## What's next\n\n- Pod Security Standards\n- Enforcing Pod Security Standards\n- Enforce Pod Security Standards by Configuring the Built-in Admission Controller\n- Enforce Pod Security Standards with Namespace Labels\n\nIf you are running an older version of Kubernetes and want to upgrade\nto a version of Kubernetes that does not include PodSecurityPolicies,\nread [migrate from PodSecurityPolicy to the Built-In PodSecurity Admission Controller](https://kubernetes.io/docs/tasks/configure-pod-container/migrate-from-psp/).\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:28c23e1b27ea3975090900b280ffec482998e1570ec992dc749c83bdbf5c9176",
+  "document_id": "sec-003",
+  "domain": "security_policies",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Pod Security Admission"
+    },
+    {
+      "block_index": 3,
+      "level": 3,
+      "text": "Built-in Pod Security admission enforcement"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Pod Security levels"
+    },
+    {
+      "block_index": 7,
+      "level": 2,
+      "text": "Pod Security Admission labels for namespaces"
+    },
+    {
+      "block_index": 14,
+      "level": 2,
+      "text": "Workload resources and Pod templates"
+    },
+    {
+      "block_index": 16,
+      "level": 2,
+      "text": "Exemptions"
+    },
+    {
+      "block_index": 20,
+      "level": 4,
+      "text": "Caution:"
+    },
+    {
+      "block_index": 23,
+      "level": 2,
+      "text": "Metrics"
+    },
+    {
+      "block_index": 26,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "Pod Security Standards",
+      "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+    },
+    {
+      "text": "admission controller",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/"
+    },
+    {
+      "text": "namespace",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces"
+    },
+    {
+      "text": "Security Context",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
+    },
+    {
+      "text": "labels",
+      "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+    },
+    {
+      "text": "control plane",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane"
+    },
+    {
+      "text": "audit log",
+      "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/"
+    },
+    {
+      "text": "Enforce Pod Security Standards with Namespace Labels",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-namespace-labels/"
+    },
+    {
+      "text": "workload object",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/"
+    },
+    {
+      "text": "Deployment",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/"
+    },
+    {
+      "text": "Job",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/"
+    },
+    {
+      "text": "controller",
+      "url": "https://kubernetes.io/docs/concepts/architecture/controller/"
+    },
+    {
+      "text": "Admission Controller configuration",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/#configure-the-admission-controller"
+    },
+    {
+      "text": "migrate from PodSecurityPolicy to the Built-In PodSecurity Admission Controller",
+      "url": "https://kubernetes.io/docs/tasks/configure-pod-container/migrate-from-psp/"
+    }
+  ],
+  "raw_path": "data/raw/documents/sec-003.html",
+  "raw_sha256": "sha256:3136083e4b07f613c1017aaa13a3f95658190b76c8d64b78df81721fdf0a2e4f",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/security/pod-security-admission/",
+  "statistics": {
+    "block_count": 29,
+    "character_count": 6689,
+    "code_block_count": 1,
+    "heading_count": 9,
+    "link_count": 14,
+    "list_count": 4,
+    "paragraph_count": 14,
+    "table_count": 1,
+    "word_count": 868
+  },
+  "title": "Pod Security Admission"
+}

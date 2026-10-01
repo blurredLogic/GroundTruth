@@ -1,0 +1,355 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Configuration",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Kubernetes provides ways to *separate configuration from code*. This is a common\npractice that aligns with DevOps as a practice, and with cloud native architecture.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "text": "If you have a [container image](https://kubernetes.io/docs/reference/glossary/?all=true#term-image) that\nallows separate configuration, you can deploy the **same** application code in\ndifferent contexts. For example, you can run tests against the built image, and\nthen run that exact same image in a production context. Doing that gives you\nbetter confidence in your testing, compared with if you deployed the application\none way for tests and a different way in production.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 3,
+      "text": "To learn about configuring the `kubectl` command-line tool,\nread [configure access to multiple clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Kubernetes configuration-related APIs",
+      "type": "heading"
+    },
+    {
+      "block_index": 5,
+      "text": "Kubernetes provides two main API kinds that you can use to store configuration,\nready for a Pod (or other component) to load and use:\n[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/), and\n[Secret](https://kubernetes.io/docs/concepts/configuration/secret/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 6,
+      "text": "The special-use\n[CertificateSigningRequest](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#certificate-signing-requests)\nand\n[ClusterTrustBundle](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#cluster-trust-bundles)\nAPI kinds also hold configuration data that's relevant to some specific cases,\nsuch as TLS configuration.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "text": "All of these configuration mechanisms, even for certificates, are designed so that configuration\ncan be reused and shared across multiple Pods. You typically don't have to write the configuration\nout once per Pod, and you should design applications where possible so that they can work with\nshared configuration.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 8,
+      "text": "To learn about using configuration in your applications, read\n[inject data into applications](https://kubernetes.io/docs/tasks/inject-data-application/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "ConfigMaps",
+      "type": "heading"
+    },
+    {
+      "block_index": 10,
+      "text": "A ConfigMap is an API object used to store non-confidential data in key-value pairs.\n[Pods](https://kubernetes.io/docs/concepts/workloads/pods/) can consume ConfigMaps as\nenvironment variables, command-line arguments, or as configuration files in a\n[volume](https://kubernetes.io/docs/concepts/storage/volumes/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 11,
+      "text": "A ConfigMap allows you to decouple environment-specific configuration from your [container images](https://kubernetes.io/docs/reference/glossary/?all=true#term-image), so that your applications are easily portable.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "level": 3,
+      "text": "Secrets",
+      "type": "heading"
+    },
+    {
+      "block_index": 13,
+      "text": "A Secret is an object that contains an amount of confidential data,\nsuch as a password, a token, or a key.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 14,
+      "text": "Secrets are similar to [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)\nbut are specifically intended to hold confidential data. Read the page about [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)\nto learn about the benefits (and limitations) around information security and Secrets.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Configuration via sidecar containers or init containers",
+      "type": "heading"
+    },
+    {
+      "block_index": 16,
+      "text": "You can also use an\n[init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) or a\n[sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\nto provide configuration to your workload.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 17,
+      "text": "This is useful if you already have some means, outside of Kubernetes, to store\nconfiguration or security keys or other information that your containers must\nuse, and that shouldn't be stored in container images.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "level": 3,
+      "text": "Sidecar container helper",
+      "type": "heading"
+    },
+    {
+      "block_index": 19,
+      "text": "A *sidecar* configuration helper runs in the same Pod as the application container, so\neach Pod has its own sidecar. A typical configuration sidecar fetches configuration data over the\nPod network, and then writes it into a [volume](https://kubernetes.io/docs/concepts/storage/volumes/)\nthat is mounted into both containers.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 20,
+      "text": "There are many variations on this basic pattern, that still have a helper\ncontainer writing configuration for the app container to consume.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "level": 3,
+      "text": "Init container helper",
+      "type": "heading"
+    },
+    {
+      "block_index": 22,
+      "text": "Pods can have *init* containers that start before the main application. Unlike sidecars,\ninit containers complete before the Pod's main (application) containers start up, so the\nconfiguration only gets set once.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 23,
+      "text": "You have two main options for configuration using init containers:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 24,
+      "level": 4,
+      "text": "Configuration via the filesystem",
+      "type": "heading"
+    },
+    {
+      "block_index": 25,
+      "text": "With this option, the init container fetches configuration and writes the configuration to\na file, or several files, typically to a Pod-local\n[volume](https://kubernetes.io/docs/concepts/storage/volumes/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "level": 4,
+      "text": "Configuration via environment variables",
+      "type": "heading"
+    },
+    {
+      "block_index": 27,
+      "text": "This is done using a local volume, but only the init container mounts that volume. The kubelet then reads from that volume before starting the app container.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "text": "Read [Define Environment Variable Values Using An Init Container](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-via-file/)\nto learn more.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "level": 2,
+      "text": "Cluster configuration",
+      "type": "heading"
+    },
+    {
+      "block_index": 30,
+      "text": "This section of the documentation is about configuration. However,\nif you are doing platform-level or cluster-level configuration, read\nthe [cluster administration](https://kubernetes.io/docs/concepts/cluster-administration/) pages\nand look through the list of [cluster administration tasks](https://kubernetes.io/docs/tasks/administer-cluster/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 32,
+      "text": "The following links are all relevant to the overall idea of *configuration* and Kubernetes:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "ordered": false,
+      "text": "- Configure Pods and Containers\n- Inject Data Into Applications\n- Policies , another form of configuration\n- Management of Kubernetes Objects Using Configuration Files , which is about Kubernetes manifests\n- Kubernetes Object Management is also about object management / configuration\n- Configure Redis Using A ConfigMap (a tutorial)\n- Updating Configuration via a ConfigMap (another tutorial)",
+      "type": "list"
+    },
+    {
+      "block_index": 34,
+      "text": "and you can review the [list of configuration file formats](https://kubernetes.io/docs/reference/config-api/)\nin the reference section.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "Within **this** section of the documentation, you can read about:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "ordered": false,
+      "text": "- ConfigMaps\n- Secrets\n- Resource Management for Pods and Containers\n- Organizing Cluster Access Using kubeconfig Files\n- Resource Management for Windows nodes",
+      "type": "list"
+    }
+  ],
+  "content": "# Configuration\n\nKubernetes provides ways to *separate configuration from code*. This is a common\npractice that aligns with DevOps as a practice, and with cloud native architecture.\n\nIf you have a [container image](https://kubernetes.io/docs/reference/glossary/?all=true#term-image) that\nallows separate configuration, you can deploy the **same** application code in\ndifferent contexts. For example, you can run tests against the built image, and\nthen run that exact same image in a production context. Doing that gives you\nbetter confidence in your testing, compared with if you deployed the application\none way for tests and a different way in production.\n\nTo learn about configuring the `kubectl` command-line tool,\nread [configure access to multiple clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/).\n\n## Kubernetes configuration-related APIs\n\nKubernetes provides two main API kinds that you can use to store configuration,\nready for a Pod (or other component) to load and use:\n[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/), and\n[Secret](https://kubernetes.io/docs/concepts/configuration/secret/).\n\nThe special-use\n[CertificateSigningRequest](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#certificate-signing-requests)\nand\n[ClusterTrustBundle](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#cluster-trust-bundles)\nAPI kinds also hold configuration data that's relevant to some specific cases,\nsuch as TLS configuration.\n\nAll of these configuration mechanisms, even for certificates, are designed so that configuration\ncan be reused and shared across multiple Pods. You typically don't have to write the configuration\nout once per Pod, and you should design applications where possible so that they can work with\nshared configuration.\n\nTo learn about using configuration in your applications, read\n[inject data into applications](https://kubernetes.io/docs/tasks/inject-data-application/).\n\n### ConfigMaps\n\nA ConfigMap is an API object used to store non-confidential data in key-value pairs.\n[Pods](https://kubernetes.io/docs/concepts/workloads/pods/) can consume ConfigMaps as\nenvironment variables, command-line arguments, or as configuration files in a\n[volume](https://kubernetes.io/docs/concepts/storage/volumes/).\n\nA ConfigMap allows you to decouple environment-specific configuration from your [container images](https://kubernetes.io/docs/reference/glossary/?all=true#term-image), so that your applications are easily portable.\n\n### Secrets\n\nA Secret is an object that contains an amount of confidential data,\nsuch as a password, a token, or a key.\n\nSecrets are similar to [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)\nbut are specifically intended to hold confidential data. Read the page about [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)\nto learn about the benefits (and limitations) around information security and Secrets.\n\n## Configuration via sidecar containers or init containers\n\nYou can also use an\n[init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) or a\n[sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)\nto provide configuration to your workload.\n\nThis is useful if you already have some means, outside of Kubernetes, to store\nconfiguration or security keys or other information that your containers must\nuse, and that shouldn't be stored in container images.\n\n### Sidecar container helper\n\nA *sidecar* configuration helper runs in the same Pod as the application container, so\neach Pod has its own sidecar. A typical configuration sidecar fetches configuration data over the\nPod network, and then writes it into a [volume](https://kubernetes.io/docs/concepts/storage/volumes/)\nthat is mounted into both containers.\n\nThere are many variations on this basic pattern, that still have a helper\ncontainer writing configuration for the app container to consume.\n\n### Init container helper\n\nPods can have *init* containers that start before the main application. Unlike sidecars,\ninit containers complete before the Pod's main (application) containers start up, so the\nconfiguration only gets set once.\n\nYou have two main options for configuration using init containers:\n\n#### Configuration via the filesystem\n\nWith this option, the init container fetches configuration and writes the configuration to\na file, or several files, typically to a Pod-local\n[volume](https://kubernetes.io/docs/concepts/storage/volumes/).\n\n#### Configuration via environment variables\n\nThis is done using a local volume, but only the init container mounts that volume. The kubelet then reads from that volume before starting the app container.\n\nRead [Define Environment Variable Values Using An Init Container](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-via-file/)\nto learn more.\n\n## Cluster configuration\n\nThis section of the documentation is about configuration. However,\nif you are doing platform-level or cluster-level configuration, read\nthe [cluster administration](https://kubernetes.io/docs/concepts/cluster-administration/) pages\nand look through the list of [cluster administration tasks](https://kubernetes.io/docs/tasks/administer-cluster/).\n\n## What's next\n\nThe following links are all relevant to the overall idea of *configuration* and Kubernetes:\n\n- Configure Pods and Containers\n- Inject Data Into Applications\n- Policies , another form of configuration\n- Management of Kubernetes Objects Using Configuration Files , which is about Kubernetes manifests\n- Kubernetes Object Management is also about object management / configuration\n- Configure Redis Using A ConfigMap (a tutorial)\n- Updating Configuration via a ConfigMap (another tutorial)\n\nand you can review the [list of configuration file formats](https://kubernetes.io/docs/reference/config-api/)\nin the reference section.\n\nWithin **this** section of the documentation, you can read about:\n\n- ConfigMaps\n- Secrets\n- Resource Management for Pods and Containers\n- Organizing Cluster Access Using kubeconfig Files\n- Resource Management for Windows nodes\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:deddce50e5943f5a47afff000a094a10b19e750fbea1304b479fde8ffd71337a",
+  "document_id": "conf-001",
+  "domain": "configuration",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Configuration"
+    },
+    {
+      "block_index": 4,
+      "level": 2,
+      "text": "Kubernetes configuration-related APIs"
+    },
+    {
+      "block_index": 9,
+      "level": 3,
+      "text": "ConfigMaps"
+    },
+    {
+      "block_index": 12,
+      "level": 3,
+      "text": "Secrets"
+    },
+    {
+      "block_index": 15,
+      "level": 2,
+      "text": "Configuration via sidecar containers or init containers"
+    },
+    {
+      "block_index": 18,
+      "level": 3,
+      "text": "Sidecar container helper"
+    },
+    {
+      "block_index": 21,
+      "level": 3,
+      "text": "Init container helper"
+    },
+    {
+      "block_index": 24,
+      "level": 4,
+      "text": "Configuration via the filesystem"
+    },
+    {
+      "block_index": 26,
+      "level": 4,
+      "text": "Configuration via environment variables"
+    },
+    {
+      "block_index": 29,
+      "level": 2,
+      "text": "Cluster configuration"
+    },
+    {
+      "block_index": 31,
+      "level": 2,
+      "text": "What's next"
+    }
+  ],
+  "links": [
+    {
+      "text": "container image",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-image"
+    },
+    {
+      "text": "configure access to multiple clusters",
+      "url": "https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/"
+    },
+    {
+      "text": "ConfigMap",
+      "url": "https://kubernetes.io/docs/concepts/configuration/configmap/"
+    },
+    {
+      "text": "Secret",
+      "url": "https://kubernetes.io/docs/concepts/configuration/secret/"
+    },
+    {
+      "text": "CertificateSigningRequest",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#certificate-signing-requests"
+    },
+    {
+      "text": "ClusterTrustBundle",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#cluster-trust-bundles"
+    },
+    {
+      "text": "inject data into applications",
+      "url": "https://kubernetes.io/docs/tasks/inject-data-application/"
+    },
+    {
+      "text": "Pods",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/"
+    },
+    {
+      "text": "volume",
+      "url": "https://kubernetes.io/docs/concepts/storage/volumes/"
+    },
+    {
+      "text": "container images",
+      "url": "https://kubernetes.io/docs/reference/glossary/?all=true#term-image"
+    },
+    {
+      "text": "ConfigMaps",
+      "url": "https://kubernetes.io/docs/concepts/configuration/configmap/"
+    },
+    {
+      "text": "Secrets",
+      "url": "https://kubernetes.io/docs/concepts/configuration/secret/"
+    },
+    {
+      "text": "init container",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/"
+    },
+    {
+      "text": "sidecar container",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/"
+    },
+    {
+      "text": "Define Environment Variable Values Using An Init Container",
+      "url": "https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-via-file/"
+    },
+    {
+      "text": "cluster administration",
+      "url": "https://kubernetes.io/docs/concepts/cluster-administration/"
+    },
+    {
+      "text": "cluster administration tasks",
+      "url": "https://kubernetes.io/docs/tasks/administer-cluster/"
+    },
+    {
+      "text": "list of configuration file formats",
+      "url": "https://kubernetes.io/docs/reference/config-api/"
+    }
+  ],
+  "raw_path": "data/raw/documents/conf-001.html",
+  "raw_sha256": "sha256:656a510ed887940b1d1dc243c1023ec4caa3abf22e5d4bd54a9a7fe2d6b2a255",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/configuration/",
+  "statistics": {
+    "block_count": 37,
+    "character_count": 6253,
+    "code_block_count": 0,
+    "heading_count": 11,
+    "link_count": 18,
+    "list_count": 2,
+    "paragraph_count": 24,
+    "table_count": 0,
+    "word_count": 831
+  },
+  "title": "Configuration"
+}

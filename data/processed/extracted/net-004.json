@@ -1,0 +1,449 @@
+{
+  "blocks": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Gateway API",
+      "type": "heading"
+    },
+    {
+      "block_index": 1,
+      "text": "Make network services available by using an extensible, role-oriented, protocol-aware configuration\nmechanism. [Gateway API](https://gateway-api.sigs.k8s.io/) is an [add-on](https://kubernetes.io/docs/concepts/cluster-administration/addons/)\ncontaining API [kinds](https://gateway-api.sigs.k8s.io/references/spec/) that provide dynamic infrastructure\nprovisioning and advanced traffic routing.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Design principles",
+      "type": "heading"
+    },
+    {
+      "block_index": 3,
+      "text": "The following principles shaped the design and architecture of Gateway API:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 4,
+      "ordered": false,
+      "text": "- Role-oriented: Gateway API kinds are modeled after organizational roles that are responsible for managing Kubernetes service networking:\n- Infrastructure Provider: Manages infrastructure that allows multiple isolated clusters to serve multiple tenants, e.g. a cloud provider.\n  - Cluster Operator: Manages clusters and is typically concerned with policies, network access, application permissions, etc.\n  - Application Developer: Manages an application running in a cluster and is typically concerned with application-level configuration and Service composition.\n- Portable: Gateway API specifications are defined as custom resources and are supported by many implementations .\n- Expressive: Gateway API kinds support functionality for common traffic routing use cases such as header-based matching, traffic weighting, and others that were only possible in Ingress by using custom annotations.\n- Extensible: Gateway allows for custom resources to be linked at various layers of the API. This makes granular customization possible at the appropriate places within the API structure.",
+      "type": "list"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Resource model",
+      "type": "heading"
+    },
+    {
+      "block_index": 6,
+      "text": "Gateway API has four stable API kinds:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 7,
+      "ordered": false,
+      "text": "- **GatewayClass:** Defines a set of gateways with common configuration and managed by a controller that implements the class.\n- **Gateway:** Defines an instance of traffic handling infrastructure, such as cloud load balancer.\n- **HTTPRoute:** Defines HTTP-specific rules for mapping traffic from a Gateway listener to a representation of backend network endpoints. These endpoints are often represented as a [Service](https://kubernetes.io/docs/concepts/services-networking/service/).\n- **GRPCRoute:** Defines gRPC-specific rules for mapping traffic from a Gateway listener to a representation of backend network endpoints. These endpoints are often represented as a [Service](https://kubernetes.io/docs/concepts/services-networking/service/).",
+      "type": "list"
+    },
+    {
+      "block_index": 8,
+      "text": "Gateway API is organized into different API kinds that have interdependent relationships to support\nthe role-oriented nature of organizations. A Gateway object is associated with exactly one GatewayClass;\nthe GatewayClass describes the gateway controller responsible for managing Gateways of this class.\nOne or more route kinds such as HTTPRoute, are then associated to Gateways. A Gateway can filter the routes\nthat may be attached to its `listeners`, forming a bidirectional trust model with routes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 9,
+      "text": "The following figure illustrates the relationships of the three stable Gateway API kinds:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 10,
+      "level": 3,
+      "text": "GatewayClass",
+      "type": "heading"
+    },
+    {
+      "block_index": 11,
+      "text": "Gateways can be implemented by different controllers, often with different configurations. A Gateway\nmust reference a GatewayClass that contains the name of the controller that implements the\nclass.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 12,
+      "text": "A minimal GatewayClass example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 13,
+      "language": "yaml",
+      "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: GatewayClass\nmetadata:\n  name: example-class\nspec:\n  controllerName: example.com/gateway-controller",
+      "type": "code"
+    },
+    {
+      "block_index": 14,
+      "text": "In this example, a controller that has implemented Gateway API is configured to manage GatewayClasses\nwith the controller name `example.com/gateway-controller`. Gateways of this class will be managed by\nthe implementation's controller.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 15,
+      "text": "See the [GatewayClass](https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1.GatewayClass)\nreference for a full definition of this API kind.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 16,
+      "level": 3,
+      "text": "Gateway",
+      "type": "heading"
+    },
+    {
+      "block_index": 17,
+      "text": "A Gateway describes an instance of traffic handling infrastructure. It defines a network endpoint\nthat can be used for processing traffic, i.e. filtering, balancing, splitting, etc. for backends\nsuch as a Service. For example, a Gateway may represent a cloud load balancer or an in-cluster proxy\nserver that is configured to accept HTTP traffic.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 18,
+      "text": "A typical Gateway resource example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 19,
+      "language": "yaml",
+      "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: Gateway\nmetadata:\n  name: example-gateway\n  namespace: example-namespace\nspec:\n  gatewayClassName: example-class\n  listeners:\n  - name: http\n    protocol: HTTP\n    port: 80\n    hostname: \"www.example.com\"\n    allowedRoutes:\n      namespaces:\n        from: Same",
+      "type": "code"
+    },
+    {
+      "block_index": 20,
+      "text": "In this example, an instance of traffic handling infrastructure is programmed to listen for HTTP\ntraffic on port 80. Since the `addresses` field is unspecified, an address or hostname is assigned\nto the Gateway by the implementation's controller. This address is used as a network endpoint for\nprocessing traffic of backend network endpoints defined in routes.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 21,
+      "text": "See the [Gateway](https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1.Gateway)\nreference for a full definition of this API kind. For guidance on configuring HTTPS/TLS listeners, see the\n[Gateway API TLS Guide](https://gateway-api.sigs.k8s.io/guides/tls/).",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 22,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "HTTPRoute",
+      "type": "heading"
+    },
+    {
+      "block_index": 24,
+      "text": "The HTTPRoute kind specifies routing behavior of HTTP requests from a Gateway listener to backend network\nendpoints. For a Service backend, an implementation may represent the backend network endpoint as a Service\nIP or the backing EndpointSlices of the Service. An HTTPRoute represents configuration that is applied to the\nunderlying Gateway implementation. For example, defining a new HTTPRoute may result in configuring additional\ntraffic routes in a cloud load balancer or in-cluster proxy server.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 25,
+      "text": "A typical HTTPRoute example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 26,
+      "language": "yaml",
+      "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: example-httproute\nspec:\n  parentRefs:\n  - name: example-gateway\n  hostnames:\n  - \"www.example.com\"\n  rules:\n  - matches:\n    - path:\n        type: PathPrefix\n        value: /login\n    backendRefs:\n    - name: example-svc\n      port: 8080",
+      "type": "code"
+    },
+    {
+      "block_index": 27,
+      "text": "In this example, HTTP traffic from Gateway `example-gateway` with the Host: header set to `www.example.com`\nand the request path specified as `/login` will be routed to Service `example-svc` on port `8080`.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 28,
+      "text": "See the [HTTPRoute](https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1.HTTPRoute)\nreference for a full definition of this API kind.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 29,
+      "level": 3,
+      "text": "GRPCRoute",
+      "type": "heading"
+    },
+    {
+      "block_index": 30,
+      "text": "The GRPCRoute kind specifies routing behavior of gRPC requests from a Gateway listener to backend network\nendpoints. For a Service backend, an implementation may represent the backend network endpoint as a Service\nIP or the backing EndpointSlices of the Service. A GRPCRoute represents configuration that is applied to the\nunderlying Gateway implementation. For example, defining a new GRPCRoute may result in configuring additional\ntraffic routes in a cloud load balancer or in-cluster proxy server.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 31,
+      "text": "Gateways supporting GRPCRoute are required to support HTTP/2 without an initial upgrade from HTTP/1,\nso gRPC traffic is guaranteed to flow properly.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 32,
+      "text": "A typical GRPCRoute example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 33,
+      "language": "yaml",
+      "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: GRPCRoute\nmetadata:\n  name: example-grpcroute\nspec:\n  parentRefs:\n  - name: example-gateway\n  hostnames:\n  - \"svc.example.com\"\n  rules:\n  - backendRefs:\n    - name: example-svc\n      port: 50051",
+      "type": "code"
+    },
+    {
+      "block_index": 34,
+      "text": "In this example, gRPC traffic from Gateway `example-gateway` with the host set to `svc.example.com`\nwill be directed to the service `example-svc` on port `50051` from the same namespace.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 35,
+      "text": "GRPCRoute allows matching specific gRPC services, as per the following example:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 36,
+      "language": "yaml",
+      "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: GRPCRoute\nmetadata:\n  name: example-grpcroute\nspec:\n  parentRefs:\n  - name: example-gateway\n  hostnames:\n  - \"svc.example.com\"\n  rules:\n  - matches:\n    - method:\n        service: com.example\n        method: Login\n    backendRefs:\n    - name: foo-svc\n      port: 50051",
+      "type": "code"
+    },
+    {
+      "block_index": 37,
+      "text": "In this case, the GRPCRoute will match any traffic for svc.example.com and apply its routing rules\nto forward the traffic to the correct backend. Since there is only one match specified,only requests\nfor the com.example.User.Login method to svc.example.com will be forwarded.\nRPCs of any other method` will not be matched by this Route.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 38,
+      "text": "See the [GRPCRoute](https://gateway-api.sigs.k8s.io/references/spec/#grpcroute)\nreference for a full definition of this API kind.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 39,
+      "level": 2,
+      "text": "Request flow",
+      "type": "heading"
+    },
+    {
+      "block_index": 40,
+      "text": "Here is a simple example of HTTP traffic being routed to a Service by using a Gateway and an HTTPRoute:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 41,
+      "text": "In this example, the request flow for a Gateway implemented as a reverse proxy is:",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 42,
+      "ordered": true,
+      "text": "1. The client starts to prepare an HTTP request for the URL http://www.example.com\n2. The client's DNS resolver queries for the destination name and learns a mapping to one or more IP addresses associated with the Gateway.\n3. The client sends a request to the Gateway IP address; the reverse proxy receives the HTTP request and uses the Host: header to match a configuration that was derived from the Gateway and attached HTTPRoute.\n4. Optionally, the reverse proxy can perform request header and/or path matching based on match rules of the HTTPRoute.\n5. Optionally, the reverse proxy can modify the request; for example, to add or remove headers, based on filter rules of the HTTPRoute.\n6. Lastly, the reverse proxy forwards the request to one or more backends.",
+      "type": "list"
+    },
+    {
+      "block_index": 43,
+      "level": 2,
+      "text": "Conformance",
+      "type": "heading"
+    },
+    {
+      "block_index": 44,
+      "text": "Gateway API covers a broad set of features and is widely implemented. This combination requires\nclear conformance definitions and tests to ensure that the API provides a consistent experience\nwherever it is used.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 45,
+      "text": "See the [conformance](https://gateway-api.sigs.k8s.io/docs/concepts/conformance/) documentation to\nunderstand details such as release channels, support levels, and running conformance tests.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "Migrating from Ingress",
+      "type": "heading"
+    },
+    {
+      "block_index": 47,
+      "text": "Gateway API is the successor to the [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) API.\nHowever, it does not include the Ingress kind. As a result, a one-time conversion from your existing\nIngress resources to Gateway API resources is necessary.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 48,
+      "text": "Refer to the [ingress migration](https://gateway-api.sigs.k8s.io/guides/getting-started/migrating-from-ingress)\nguide for details on migrating Ingress resources to Gateway API resources.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 49,
+      "level": 2,
+      "text": "What's next",
+      "type": "heading"
+    },
+    {
+      "block_index": 50,
+      "text": "Instead of Gateway API resources being natively implemented by Kubernetes, the specifications\nare defined as [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)\nsupported by a wide range of [implementations](https://gateway-api.sigs.k8s.io/implementations/).\n[Install](https://gateway-api.sigs.k8s.io/guides/#installing-gateway-api) the Gateway API CRDs or\nfollow the installation instructions of your selected implementation. After installing an\nimplementation, use the [Getting Started](https://gateway-api.sigs.k8s.io/guides/) guide to help\nyou quickly start working with Gateway API.",
+      "type": "paragraph"
+    },
+    {
+      "block_index": 51,
+      "level": 4,
+      "text": "Note:",
+      "type": "heading"
+    },
+    {
+      "block_index": 52,
+      "text": "Refer to the [API specification](https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/) for additional\ndetails of all Gateway API kinds.",
+      "type": "paragraph"
+    }
+  ],
+  "content": "# Gateway API\n\nMake network services available by using an extensible, role-oriented, protocol-aware configuration\nmechanism. [Gateway API](https://gateway-api.sigs.k8s.io/) is an [add-on](https://kubernetes.io/docs/concepts/cluster-administration/addons/)\ncontaining API [kinds](https://gateway-api.sigs.k8s.io/references/spec/) that provide dynamic infrastructure\nprovisioning and advanced traffic routing.\n\n## Design principles\n\nThe following principles shaped the design and architecture of Gateway API:\n\n- Role-oriented: Gateway API kinds are modeled after organizational roles that are responsible for managing Kubernetes service networking:\n- Infrastructure Provider: Manages infrastructure that allows multiple isolated clusters to serve multiple tenants, e.g. a cloud provider.\n  - Cluster Operator: Manages clusters and is typically concerned with policies, network access, application permissions, etc.\n  - Application Developer: Manages an application running in a cluster and is typically concerned with application-level configuration and Service composition.\n- Portable: Gateway API specifications are defined as custom resources and are supported by many implementations .\n- Expressive: Gateway API kinds support functionality for common traffic routing use cases such as header-based matching, traffic weighting, and others that were only possible in Ingress by using custom annotations.\n- Extensible: Gateway allows for custom resources to be linked at various layers of the API. This makes granular customization possible at the appropriate places within the API structure.\n\n## Resource model\n\nGateway API has four stable API kinds:\n\n- **GatewayClass:** Defines a set of gateways with common configuration and managed by a controller that implements the class.\n- **Gateway:** Defines an instance of traffic handling infrastructure, such as cloud load balancer.\n- **HTTPRoute:** Defines HTTP-specific rules for mapping traffic from a Gateway listener to a representation of backend network endpoints. These endpoints are often represented as a [Service](https://kubernetes.io/docs/concepts/services-networking/service/).\n- **GRPCRoute:** Defines gRPC-specific rules for mapping traffic from a Gateway listener to a representation of backend network endpoints. These endpoints are often represented as a [Service](https://kubernetes.io/docs/concepts/services-networking/service/).\n\nGateway API is organized into different API kinds that have interdependent relationships to support\nthe role-oriented nature of organizations. A Gateway object is associated with exactly one GatewayClass;\nthe GatewayClass describes the gateway controller responsible for managing Gateways of this class.\nOne or more route kinds such as HTTPRoute, are then associated to Gateways. A Gateway can filter the routes\nthat may be attached to its `listeners`, forming a bidirectional trust model with routes.\n\nThe following figure illustrates the relationships of the three stable Gateway API kinds:\n\n### GatewayClass\n\nGateways can be implemented by different controllers, often with different configurations. A Gateway\nmust reference a GatewayClass that contains the name of the controller that implements the\nclass.\n\nA minimal GatewayClass example:\n\n```yaml\napiVersion: gateway.networking.k8s.io/v1\nkind: GatewayClass\nmetadata:\n  name: example-class\nspec:\n  controllerName: example.com/gateway-controller\n```\n\nIn this example, a controller that has implemented Gateway API is configured to manage GatewayClasses\nwith the controller name `example.com/gateway-controller`. Gateways of this class will be managed by\nthe implementation's controller.\n\nSee the [GatewayClass](https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1.GatewayClass)\nreference for a full definition of this API kind.\n\n### Gateway\n\nA Gateway describes an instance of traffic handling infrastructure. It defines a network endpoint\nthat can be used for processing traffic, i.e. filtering, balancing, splitting, etc. for backends\nsuch as a Service. For example, a Gateway may represent a cloud load balancer or an in-cluster proxy\nserver that is configured to accept HTTP traffic.\n\nA typical Gateway resource example:\n\n```yaml\napiVersion: gateway.networking.k8s.io/v1\nkind: Gateway\nmetadata:\n  name: example-gateway\n  namespace: example-namespace\nspec:\n  gatewayClassName: example-class\n  listeners:\n  - name: http\n    protocol: HTTP\n    port: 80\n    hostname: \"www.example.com\"\n    allowedRoutes:\n      namespaces:\n        from: Same\n```\n\nIn this example, an instance of traffic handling infrastructure is programmed to listen for HTTP\ntraffic on port 80. Since the `addresses` field is unspecified, an address or hostname is assigned\nto the Gateway by the implementation's controller. This address is used as a network endpoint for\nprocessing traffic of backend network endpoints defined in routes.\n\nSee the [Gateway](https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1.Gateway)\nreference for a full definition of this API kind. For guidance on configuring HTTPS/TLS listeners, see the\n[Gateway API TLS Guide](https://gateway-api.sigs.k8s.io/guides/tls/).\n\n#### Note:\n\n### HTTPRoute\n\nThe HTTPRoute kind specifies routing behavior of HTTP requests from a Gateway listener to backend network\nendpoints. For a Service backend, an implementation may represent the backend network endpoint as a Service\nIP or the backing EndpointSlices of the Service. An HTTPRoute represents configuration that is applied to the\nunderlying Gateway implementation. For example, defining a new HTTPRoute may result in configuring additional\ntraffic routes in a cloud load balancer or in-cluster proxy server.\n\nA typical HTTPRoute example:\n\n```yaml\napiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: example-httproute\nspec:\n  parentRefs:\n  - name: example-gateway\n  hostnames:\n  - \"www.example.com\"\n  rules:\n  - matches:\n    - path:\n        type: PathPrefix\n        value: /login\n    backendRefs:\n    - name: example-svc\n      port: 8080\n```\n\nIn this example, HTTP traffic from Gateway `example-gateway` with the Host: header set to `www.example.com`\nand the request path specified as `/login` will be routed to Service `example-svc` on port `8080`.\n\nSee the [HTTPRoute](https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1.HTTPRoute)\nreference for a full definition of this API kind.\n\n### GRPCRoute\n\nThe GRPCRoute kind specifies routing behavior of gRPC requests from a Gateway listener to backend network\nendpoints. For a Service backend, an implementation may represent the backend network endpoint as a Service\nIP or the backing EndpointSlices of the Service. A GRPCRoute represents configuration that is applied to the\nunderlying Gateway implementation. For example, defining a new GRPCRoute may result in configuring additional\ntraffic routes in a cloud load balancer or in-cluster proxy server.\n\nGateways supporting GRPCRoute are required to support HTTP/2 without an initial upgrade from HTTP/1,\nso gRPC traffic is guaranteed to flow properly.\n\nA typical GRPCRoute example:\n\n```yaml\napiVersion: gateway.networking.k8s.io/v1\nkind: GRPCRoute\nmetadata:\n  name: example-grpcroute\nspec:\n  parentRefs:\n  - name: example-gateway\n  hostnames:\n  - \"svc.example.com\"\n  rules:\n  - backendRefs:\n    - name: example-svc\n      port: 50051\n```\n\nIn this example, gRPC traffic from Gateway `example-gateway` with the host set to `svc.example.com`\nwill be directed to the service `example-svc` on port `50051` from the same namespace.\n\nGRPCRoute allows matching specific gRPC services, as per the following example:\n\n```yaml\napiVersion: gateway.networking.k8s.io/v1\nkind: GRPCRoute\nmetadata:\n  name: example-grpcroute\nspec:\n  parentRefs:\n  - name: example-gateway\n  hostnames:\n  - \"svc.example.com\"\n  rules:\n  - matches:\n    - method:\n        service: com.example\n        method: Login\n    backendRefs:\n    - name: foo-svc\n      port: 50051\n```\n\nIn this case, the GRPCRoute will match any traffic for svc.example.com and apply its routing rules\nto forward the traffic to the correct backend. Since there is only one match specified,only requests\nfor the com.example.User.Login method to svc.example.com will be forwarded.\nRPCs of any other method` will not be matched by this Route.\n\nSee the [GRPCRoute](https://gateway-api.sigs.k8s.io/references/spec/#grpcroute)\nreference for a full definition of this API kind.\n\n## Request flow\n\nHere is a simple example of HTTP traffic being routed to a Service by using a Gateway and an HTTPRoute:\n\nIn this example, the request flow for a Gateway implemented as a reverse proxy is:\n\n1. The client starts to prepare an HTTP request for the URL http://www.example.com\n2. The client's DNS resolver queries for the destination name and learns a mapping to one or more IP addresses associated with the Gateway.\n3. The client sends a request to the Gateway IP address; the reverse proxy receives the HTTP request and uses the Host: header to match a configuration that was derived from the Gateway and attached HTTPRoute.\n4. Optionally, the reverse proxy can perform request header and/or path matching based on match rules of the HTTPRoute.\n5. Optionally, the reverse proxy can modify the request; for example, to add or remove headers, based on filter rules of the HTTPRoute.\n6. Lastly, the reverse proxy forwards the request to one or more backends.\n\n## Conformance\n\nGateway API covers a broad set of features and is widely implemented. This combination requires\nclear conformance definitions and tests to ensure that the API provides a consistent experience\nwherever it is used.\n\nSee the [conformance](https://gateway-api.sigs.k8s.io/docs/concepts/conformance/) documentation to\nunderstand details such as release channels, support levels, and running conformance tests.\n\n## Migrating from Ingress\n\nGateway API is the successor to the [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) API.\nHowever, it does not include the Ingress kind. As a result, a one-time conversion from your existing\nIngress resources to Gateway API resources is necessary.\n\nRefer to the [ingress migration](https://gateway-api.sigs.k8s.io/guides/getting-started/migrating-from-ingress)\nguide for details on migrating Ingress resources to Gateway API resources.\n\n## What's next\n\nInstead of Gateway API resources being natively implemented by Kubernetes, the specifications\nare defined as [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)\nsupported by a wide range of [implementations](https://gateway-api.sigs.k8s.io/implementations/).\n[Install](https://gateway-api.sigs.k8s.io/guides/#installing-gateway-api) the Gateway API CRDs or\nfollow the installation instructions of your selected implementation. After installing an\nimplementation, use the [Getting Started](https://gateway-api.sigs.k8s.io/guides/) guide to help\nyou quickly start working with Gateway API.\n\n#### Note:\n\nRefer to the [API specification](https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/) for additional\ndetails of all Gateway API kinds.\n",
+  "content_selector": ".td-content",
+  "content_sha256": "sha256:a37a9ada076939868e1b9a27e6be7d4a0cdaf3c3ffb5e7cf5a504db732b3c2ef",
+  "document_id": "net-004",
+  "domain": "services_networking",
+  "extraction_version": "0.1.0",
+  "headings": [
+    {
+      "block_index": 0,
+      "level": 1,
+      "text": "Gateway API"
+    },
+    {
+      "block_index": 2,
+      "level": 2,
+      "text": "Design principles"
+    },
+    {
+      "block_index": 5,
+      "level": 2,
+      "text": "Resource model"
+    },
+    {
+      "block_index": 10,
+      "level": 3,
+      "text": "GatewayClass"
+    },
+    {
+      "block_index": 16,
+      "level": 3,
+      "text": "Gateway"
+    },
+    {
+      "block_index": 22,
+      "level": 4,
+      "text": "Note:"
+    },
+    {
+      "block_index": 23,
+      "level": 3,
+      "text": "HTTPRoute"
+    },
+    {
+      "block_index": 29,
+      "level": 3,
+      "text": "GRPCRoute"
+    },
+    {
+      "block_index": 39,
+      "level": 2,
+      "text": "Request flow"
+    },
+    {
+      "block_index": 43,
+      "level": 2,
+      "text": "Conformance"
+    },
+    {
+      "block_index": 46,
+      "level": 2,
+      "text": "Migrating from Ingress"
+    },
+    {
+      "block_index": 49,
+      "level": 2,
+      "text": "What's next"
+    },
+    {
+      "block_index": 51,
+      "level": 4,
+      "text": "Note:"
+    }
+  ],
+  "links": [
+    {
+      "text": "Gateway API",
+      "url": "https://gateway-api.sigs.k8s.io/"
+    },
+    {
+      "text": "add-on",
+      "url": "https://kubernetes.io/docs/concepts/cluster-administration/addons/"
+    },
+    {
+      "text": "kinds",
+      "url": "https://gateway-api.sigs.k8s.io/references/spec/"
+    },
+    {
+      "text": "Service",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+    },
+    {
+      "text": "implementations",
+      "url": "https://gateway-api.sigs.k8s.io/implementations/"
+    },
+    {
+      "text": "Ingress",
+      "url": "https://kubernetes.io/docs/concepts/services-networking/ingress/"
+    },
+    {
+      "text": "GatewayClass",
+      "url": "https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1.GatewayClass"
+    },
+    {
+      "text": "Gateway",
+      "url": "https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1.Gateway"
+    },
+    {
+      "text": "Gateway API TLS Guide",
+      "url": "https://gateway-api.sigs.k8s.io/guides/tls/"
+    },
+    {
+      "text": "HTTPRoute",
+      "url": "https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1.HTTPRoute"
+    },
+    {
+      "text": "GRPCRoute",
+      "url": "https://gateway-api.sigs.k8s.io/references/spec/#grpcroute"
+    },
+    {
+      "text": "conformance",
+      "url": "https://gateway-api.sigs.k8s.io/docs/concepts/conformance/"
+    },
+    {
+      "text": "ingress migration",
+      "url": "https://gateway-api.sigs.k8s.io/guides/getting-started/migrating-from-ingress"
+    },
+    {
+      "text": "Custom Resources",
+      "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/"
+    },
+    {
+      "text": "Install",
+      "url": "https://gateway-api.sigs.k8s.io/guides/#installing-gateway-api"
+    },
+    {
+      "text": "Getting Started",
+      "url": "https://gateway-api.sigs.k8s.io/guides/"
+    },
+    {
+      "text": "API specification",
+      "url": "https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/"
+    }
+  ],
+  "raw_path": "data/raw/documents/net-004.html",
+  "raw_sha256": "sha256:97defcf0f883b35172bcb91d1ddb2996fc73acb058d8eb3a2cbb3e9fe34a6dc3",
+  "schema_version": "0.1",
+  "source_url": "https://kubernetes.io/docs/concepts/services-networking/gateway/",
+  "statistics": {
+    "block_count": 53,
+    "character_count": 11143,
+    "code_block_count": 5,
+    "heading_count": 13,
+    "link_count": 17,
+    "list_count": 3,
+    "paragraph_count": 32,
+    "table_count": 0,
+    "word_count": 1465
+  },
+  "title": "Gateway API"
+}
