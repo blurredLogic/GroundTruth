@@ -1,0 +1,568 @@
+{
+  "documents": [
+    {
+      "document_id": "arch-001",
+      "error": null,
+      "extracted_path": "data/processed/extracted/arch-001.json",
+      "maximum_heading_level": 3,
+      "root_section_count": 1,
+      "section_count": 6,
+      "status": "success"
+    },
+    {
+      "document_id": "arch-002",
+      "error": null,
+      "extracted_path": "data/processed/extracted/arch-002.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 16,
+      "status": "success"
+    },
+    {
+      "document_id": "arch-003",
+      "error": null,
+      "extracted_path": "data/processed/extracted/arch-003.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 9,
+      "status": "success"
+    },
+    {
+      "document_id": "arch-004",
+      "error": null,
+      "extracted_path": "data/processed/extracted/arch-004.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 9,
+      "status": "success"
+    },
+    {
+      "document_id": "arch-005",
+      "error": null,
+      "extracted_path": "data/processed/extracted/arch-005.json",
+      "maximum_heading_level": 2,
+      "root_section_count": 1,
+      "section_count": 4,
+      "status": "success"
+    },
+    {
+      "document_id": "arch-006",
+      "error": null,
+      "extracted_path": "data/processed/extracted/arch-006.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 15,
+      "status": "success"
+    },
+    {
+      "document_id": "arch-007",
+      "error": null,
+      "extracted_path": "data/processed/extracted/arch-007.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 13,
+      "status": "success"
+    },
+    {
+      "document_id": "work-001",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-001.json",
+      "maximum_heading_level": 2,
+      "root_section_count": 1,
+      "section_count": 3,
+      "status": "success"
+    },
+    {
+      "document_id": "work-002",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-002.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 27,
+      "status": "success"
+    },
+    {
+      "document_id": "work-003",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-003.json",
+      "maximum_heading_level": 5,
+      "root_section_count": 1,
+      "section_count": 49,
+      "status": "success"
+    },
+    {
+      "document_id": "work-004",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-004.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 12,
+      "status": "success"
+    },
+    {
+      "document_id": "work-005",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-005.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 11,
+      "status": "success"
+    },
+    {
+      "document_id": "work-006",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-006.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 11,
+      "status": "success"
+    },
+    {
+      "document_id": "work-007",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-007.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 16,
+      "status": "success"
+    },
+    {
+      "document_id": "work-008",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-008.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 6,
+      "status": "success"
+    },
+    {
+      "document_id": "work-009",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-009.json",
+      "maximum_heading_level": 5,
+      "root_section_count": 1,
+      "section_count": 46,
+      "status": "success"
+    },
+    {
+      "document_id": "work-010",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-010.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 27,
+      "status": "success"
+    },
+    {
+      "document_id": "work-011",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-011.json",
+      "maximum_heading_level": 5,
+      "root_section_count": 1,
+      "section_count": 40,
+      "status": "success"
+    },
+    {
+      "document_id": "work-012",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-012.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 18,
+      "status": "success"
+    },
+    {
+      "document_id": "work-013",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-013.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 53,
+      "status": "success"
+    },
+    {
+      "document_id": "work-014",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-014.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 18,
+      "status": "success"
+    },
+    {
+      "document_id": "work-015",
+      "error": null,
+      "extracted_path": "data/processed/extracted/work-015.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 25,
+      "status": "success"
+    },
+    {
+      "document_id": "net-001",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-001.json",
+      "maximum_heading_level": 2,
+      "root_section_count": 1,
+      "section_count": 3,
+      "status": "success"
+    },
+    {
+      "document_id": "net-002",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-002.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 52,
+      "status": "success"
+    },
+    {
+      "document_id": "net-003",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-003.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 33,
+      "status": "success"
+    },
+    {
+      "document_id": "net-004",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-004.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 13,
+      "status": "success"
+    },
+    {
+      "document_id": "net-005",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-005.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 15,
+      "status": "success"
+    },
+    {
+      "document_id": "net-006",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-006.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 26,
+      "status": "success"
+    },
+    {
+      "document_id": "net-007",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-007.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 19,
+      "status": "success"
+    },
+    {
+      "document_id": "net-008",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-008.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 19,
+      "status": "success"
+    },
+    {
+      "document_id": "net-009",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-009.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 15,
+      "status": "success"
+    },
+    {
+      "document_id": "net-010",
+      "error": null,
+      "extracted_path": "data/processed/extracted/net-010.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 5,
+      "status": "success"
+    },
+    {
+      "document_id": "stor-001",
+      "error": null,
+      "extracted_path": "data/processed/extracted/stor-001.json",
+      "maximum_heading_level": 5,
+      "root_section_count": 1,
+      "section_count": 17,
+      "status": "success"
+    },
+    {
+      "document_id": "stor-002",
+      "error": null,
+      "extracted_path": "data/processed/extracted/stor-002.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 66,
+      "status": "success"
+    },
+    {
+      "document_id": "stor-003",
+      "error": null,
+      "extracted_path": "data/processed/extracted/stor-003.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 71,
+      "status": "success"
+    },
+    {
+      "document_id": "stor-004",
+      "error": null,
+      "extracted_path": "data/processed/extracted/stor-004.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 14,
+      "status": "success"
+    },
+    {
+      "document_id": "stor-005",
+      "error": null,
+      "extracted_path": "data/processed/extracted/stor-005.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 14,
+      "status": "success"
+    },
+    {
+      "document_id": "stor-006",
+      "error": null,
+      "extracted_path": "data/processed/extracted/stor-006.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 25,
+      "status": "success"
+    },
+    {
+      "document_id": "stor-007",
+      "error": null,
+      "extracted_path": "data/processed/extracted/stor-007.json",
+      "maximum_heading_level": 2,
+      "root_section_count": 1,
+      "section_count": 6,
+      "status": "success"
+    },
+    {
+      "document_id": "stor-008",
+      "error": null,
+      "extracted_path": "data/processed/extracted/stor-008.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 14,
+      "status": "success"
+    },
+    {
+      "document_id": "conf-001",
+      "error": null,
+      "extracted_path": "data/processed/extracted/conf-001.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 11,
+      "status": "success"
+    },
+    {
+      "document_id": "conf-002",
+      "error": null,
+      "extracted_path": "data/processed/extracted/conf-002.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 14,
+      "status": "success"
+    },
+    {
+      "document_id": "conf-003",
+      "error": null,
+      "extracted_path": "data/processed/extracted/conf-003.json",
+      "maximum_heading_level": 5,
+      "root_section_count": 1,
+      "section_count": 43,
+      "status": "success"
+    },
+    {
+      "document_id": "conf-004",
+      "error": null,
+      "extracted_path": "data/processed/extracted/conf-004.json",
+      "maximum_heading_level": 5,
+      "root_section_count": 1,
+      "section_count": 42,
+      "status": "success"
+    },
+    {
+      "document_id": "conf-005",
+      "error": null,
+      "extracted_path": "data/processed/extracted/conf-005.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 10,
+      "status": "success"
+    },
+    {
+      "document_id": "sec-001",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sec-001.json",
+      "maximum_heading_level": 3,
+      "root_section_count": 1,
+      "section_count": 10,
+      "status": "success"
+    },
+    {
+      "document_id": "sec-002",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sec-002.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 18,
+      "status": "success"
+    },
+    {
+      "document_id": "sec-003",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sec-003.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 9,
+      "status": "success"
+    },
+    {
+      "document_id": "sec-004",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sec-004.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 17,
+      "status": "success"
+    },
+    {
+      "document_id": "sec-005",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sec-005.json",
+      "maximum_heading_level": 2,
+      "root_section_count": 1,
+      "section_count": 7,
+      "status": "success"
+    },
+    {
+      "document_id": "sec-006",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sec-006.json",
+      "maximum_heading_level": 3,
+      "root_section_count": 1,
+      "section_count": 21,
+      "status": "success"
+    },
+    {
+      "document_id": "sec-007",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sec-007.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 14,
+      "status": "success"
+    },
+    {
+      "document_id": "sec-008",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sec-008.json",
+      "maximum_heading_level": 2,
+      "root_section_count": 1,
+      "section_count": 5,
+      "status": "success"
+    },
+    {
+      "document_id": "sec-009",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sec-009.json",
+      "maximum_heading_level": 5,
+      "root_section_count": 1,
+      "section_count": 28,
+      "status": "success"
+    },
+    {
+      "document_id": "sched-001",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sched-001.json",
+      "maximum_heading_level": 2,
+      "root_section_count": 1,
+      "section_count": 3,
+      "status": "success"
+    },
+    {
+      "document_id": "sched-002",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sched-002.json",
+      "maximum_heading_level": 3,
+      "root_section_count": 1,
+      "section_count": 5,
+      "status": "success"
+    },
+    {
+      "document_id": "sched-003",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sched-003.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 35,
+      "status": "success"
+    },
+    {
+      "document_id": "sched-004",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sched-004.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 21,
+      "status": "success"
+    },
+    {
+      "document_id": "sched-005",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sched-005.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 15,
+      "status": "success"
+    },
+    {
+      "document_id": "sched-006",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sched-006.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 30,
+      "status": "success"
+    },
+    {
+      "document_id": "sched-007",
+      "error": null,
+      "extracted_path": "data/processed/extracted/sched-007.json",
+      "maximum_heading_level": 4,
+      "root_section_count": 1,
+      "section_count": 36,
+      "status": "success"
+    }
+  ],
+  "documents_failed": 0,
+  "documents_processed": 61,
+  "documents_requested": 61,
+  "documents_successful": 61,
+  "manifest": "manifest/kubernetes_v0.1.yaml",
+  "maximum_heading_level": 5,
+  "output": "data/processed/sections.jsonl",
+  "root_sections": 61,
+  "schema_version": "0.1",
+  "section_builder_version": "0.1.0",
+  "stage": "build_sections",
+  "status": "SUCCESS",
+  "total_characters": 1061443,
+  "total_sections": 1255,
+  "total_words": 145821
+}

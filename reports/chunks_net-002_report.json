@@ -1,0 +1,461 @@
+{
+  "chunk_builder_version": "0.1.0",
+  "chunking_config": {
+    "boundary_priority": [
+      "blank_line",
+      "line_break",
+      "sentence_end",
+      "whitespace",
+      "hard_token_cut"
+    ],
+    "boundary_search_tokens": 128,
+    "overlap_tokens": 64,
+    "respect_section_boundaries": true,
+    "strategy": "recursive_boundary",
+    "target_tokens": 512,
+    "tiktoken_version": "0.14.0",
+    "tokenizer": "cl100k_base"
+  },
+  "chunking_config_sha256": "sha256:5c3861bae9aed8539cf1942dc984c6a7ee7f575210dbc4394a00a8e848257a91",
+  "chunks_generated": 52,
+  "documents_selected": 1,
+  "manifest": "manifest/kubernetes_v0.1.yaml",
+  "output": "data/processed/chunks_net-002.jsonl",
+  "output_sha256": "sha256:1aac9a7e3bc0d73a99f34ad456d792a8c783abb0cbef763ae3b1183536a1c7fd",
+  "schema_version": "0.1",
+  "sections": [
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-001",
+      "section_token_count": 369,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-002",
+      "section_token_count": 464,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-003",
+      "section_token_count": 141,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-004",
+      "section_token_count": 388,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-005",
+      "section_token_count": 3,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-006",
+      "section_token_count": 368,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-007",
+      "section_token_count": 438,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-008",
+      "section_token_count": 105,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-009",
+      "section_token_count": 312,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-010",
+      "section_token_count": 102,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-011",
+      "section_token_count": 56,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-012",
+      "section_token_count": 163,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-013",
+      "section_token_count": 119,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-014",
+      "section_token_count": 249,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-015",
+      "section_token_count": 234,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-016",
+      "section_token_count": 147,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-017",
+      "section_token_count": 86,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-018",
+      "section_token_count": 490,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-019",
+      "section_token_count": 107,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-020",
+      "section_token_count": 200,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-021",
+      "section_token_count": 240,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-022",
+      "section_token_count": 245,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-023",
+      "section_token_count": 215,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-024",
+      "section_token_count": 354,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-025",
+      "section_token_count": 397,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-026",
+      "section_token_count": 401,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-027",
+      "section_token_count": 153,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-028",
+      "section_token_count": 115,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-029",
+      "section_token_count": 158,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-030",
+      "section_token_count": 3,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-031",
+      "section_token_count": 154,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-032",
+      "section_token_count": 233,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-033",
+      "section_token_count": 220,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-034",
+      "section_token_count": 381,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-035",
+      "section_token_count": 123,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-036",
+      "section_token_count": 211,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-037",
+      "section_token_count": 99,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-038",
+      "section_token_count": 297,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-039",
+      "section_token_count": 56,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-040",
+      "section_token_count": 130,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-041",
+      "section_token_count": 28,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-042",
+      "section_token_count": 207,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-043",
+      "section_token_count": 190,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-044",
+      "section_token_count": 345,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-045",
+      "section_token_count": 47,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-046",
+      "section_token_count": 64,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-047",
+      "section_token_count": 213,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-048",
+      "section_token_count": 68,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-049",
+      "section_token_count": 280,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-050",
+      "section_token_count": 3,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-051",
+      "section_token_count": 49,
+      "status": "success"
+    },
+    {
+      "chunk_count": 1,
+      "document_id": "net-002",
+      "error": null,
+      "section_id": "net-002-sec-052",
+      "section_token_count": 103,
+      "status": "success"
+    }
+  ],
+  "sections_failed": 0,
+  "sections_input": "data/processed/sections.jsonl",
+  "sections_processed": 52,
+  "sections_selected": 52,
+  "sections_single_chunk": 52,
+  "sections_split": 0,
+  "stage": "build_chunks",
+  "status": "SUCCESS",
+  "token_statistics": {
+    "maximum": 490,
+    "mean": 198.519,
+    "median": 176.5,
+    "minimum": 3,
+    "p90": 387.3,
+    "p95": 417.65,
+    "total_including_overlap": 10323
+  }
+}

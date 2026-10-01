@@ -1,0 +1,2240 @@
+{
+  "audit_version": "0.1.0",
+  "configuration_consistency": {
+    "chunking_config_hashes": {
+      "sha256:5c3861bae9aed8539cf1942dc984c6a7ee7f575210dbc4394a00a8e848257a91": 1356
+    },
+    "tokenizers": {
+      "cl100k_base": 1356
+    }
+  },
+  "duplicates": {
+    "duplicate_chunk_content_hashes": {
+      "group_count": 3,
+      "groups": [
+        {
+          "count": 59,
+          "record_ids": [
+            "arch-002-sec-008-ch-001",
+            "arch-002-sec-014-ch-001",
+            "arch-003-sec-007-ch-001",
+            "arch-006-sec-011-ch-001",
+            "arch-006-sec-013-ch-001",
+            "arch-007-sec-003-ch-001",
+            "conf-002-sec-004-ch-001",
+            "conf-002-sec-011-ch-001",
+            "conf-003-sec-021-ch-001",
+            "conf-003-sec-039-ch-001",
+            "conf-004-sec-003-ch-001",
+            "conf-004-sec-032-ch-001",
+            "conf-005-sec-002-ch-001",
+            "net-002-sec-005-ch-001",
+            "net-002-sec-030-ch-001",
+            "net-002-sec-050-ch-001",
+            "net-003-sec-006-ch-001",
+            "net-003-sec-022-ch-001",
+            "net-003-sec-024-ch-001",
+            "net-003-sec-028-ch-001",
+            "net-004-sec-006-ch-001",
+            "net-006-sec-017-ch-001",
+            "net-006-sec-019-ch-001",
+            "net-007-sec-010-ch-001",
+            "net-008-sec-014-ch-001",
+            "net-008-sec-016-ch-001",
+            "sched-003-sec-003-ch-001",
+            "sched-003-sec-011-ch-001",
+            "sched-003-sec-013-ch-001",
+            "sched-003-sec-034-ch-001",
+            "sched-005-sec-012-ch-001",
+            "sec-002-sec-011-ch-001",
+            "stor-002-sec-012-ch-001",
+            "stor-002-sec-018-ch-001",
+            "stor-002-sec-033-ch-001",
+            "stor-002-sec-038-ch-001",
+            "stor-002-sec-065-ch-001",
+            "stor-003-sec-023-ch-001",
+            "stor-003-sec-027-ch-001",
+            "stor-003-sec-047-ch-001",
+            "stor-003-sec-053-ch-001",
+            "stor-003-sec-061-ch-001",
+            "stor-003-sec-063-ch-001",
+            "stor-004-sec-006-ch-001",
+            "stor-006-sec-008-ch-001",
+            "work-008-sec-002-ch-001",
+            "work-009-sec-002-ch-001",
+            "work-009-sec-010-ch-001",
+            "work-009-sec-020-ch-001",
+            "work-009-sec-037-ch-001",
+            "work-010-sec-009-ch-001",
+            "work-011-sec-013-ch-001",
+            "work-011-sec-025-ch-001",
+            "work-013-sec-010-ch-001",
+            "work-013-sec-020-ch-001",
+            "work-013-sec-027-ch-001",
+            "work-013-sec-042-ch-001",
+            "work-013-sec-051-ch-001",
+            "work-015-sec-007-ch-001"
+          ],
+          "value": "sha256:4723c815d7edf446ece7a59db7f085372a46078e2b96db001f5a7710892f5f15"
+        },
+        {
+          "count": 11,
+          "record_ids": [
+            "conf-002-sec-002-ch-001",
+            "conf-003-sec-018-ch-001",
+            "net-006-sec-011-ch-001",
+            "sec-007-sec-014-ch-001",
+            "sec-009-sec-002-ch-001",
+            "stor-005-sec-009-ch-001",
+            "work-006-sec-003-ch-001",
+            "work-007-sec-012-ch-001",
+            "work-014-sec-010-ch-001",
+            "work-015-sec-013-ch-001",
+            "work-015-sec-016-ch-001"
+          ],
+          "value": "sha256:1869d964e7638d0213cbd750d1d0efc5a209f83cdbd8e0256c803d977f39c487"
+        },
+        {
+          "count": 2,
+          "record_ids": [
+            "conf-003-sec-042-ch-001",
+            "stor-003-sec-019-ch-001"
+          ],
+          "value": "sha256:ab07df5bdafcef7ac9f683e77a57b2508f8555bb6ca14d4a139290b790617907"
+        }
+      ]
+    },
+    "duplicate_chunk_ids": {
+      "group_count": 0,
+      "groups": []
+    },
+    "duplicate_section_ids": {
+      "group_count": 0,
+      "groups": []
+    }
+  },
+  "expected_chunking": {
+    "overlap_tokens": 64,
+    "target_tokens": 512,
+    "tokenizer": "cl100k_base"
+  },
+  "inputs": {
+    "chunks": "data/processed/chunks.jsonl",
+    "manifest": "manifest/kubernetes_v0.1.yaml",
+    "sections": "data/processed/sections.jsonl"
+  },
+  "issues": [
+    {
+      "code": "duplicate_chunk_content_hashes",
+      "message": "Found 3 content hash value(s) shared by multiple chunks. This can be legitimate for repeated headings, but should be reviewed.",
+      "severity": "WARNING"
+    },
+    {
+      "code": "very_short_chunks",
+      "message": "171 chunk(s) contain fewer than 32 tokens.",
+      "severity": "WARNING"
+    }
+  ],
+  "overlap_validation": {
+    "expected_overlap_tokens": 64,
+    "issue_count": 0,
+    "issues": [],
+    "token_span_issue_count": 0,
+    "token_span_issues": []
+  },
+  "referential_integrity": {
+    "chunk_ids_with_chunk_index_mismatch": [],
+    "chunk_ids_with_invalid_shape_or_section_prefix": [],
+    "chunks_with_document_mismatch": [],
+    "chunks_with_missing_section": [],
+    "document_hash_mismatches": [],
+    "domain_mismatches": [],
+    "heading_path_mismatches": [],
+    "issue_count": 0,
+    "manifest_documents_without_chunks": [],
+    "manifest_documents_without_sections": [],
+    "section_hash_mismatches": [],
+    "sections_without_chunks": [],
+    "source_url_mismatches": [],
+    "unknown_manifest_document_ids": []
+  },
+  "section_split_statistics": {
+    "chunk_count_distribution": {
+      "1": 1173,
+      "2": 68,
+      "3": 10,
+      "4": 3,
+      "5": 1
+    },
+    "maximum_chunks_for_one_section": 5,
+    "most_split_sections": [
+      {
+        "chunk_count": 5,
+        "document_id": "work-013",
+        "section_id": "work-013-sec-002",
+        "title": "Running an example Job"
+      },
+      {
+        "chunk_count": 4,
+        "document_id": "sched-004",
+        "section_id": "sched-004-sec-005",
+        "title": "Spread constraint definition"
+      },
+      {
+        "chunk_count": 4,
+        "document_id": "sec-002",
+        "section_id": "sec-002-sec-005",
+        "title": "Note:"
+      },
+      {
+        "chunk_count": 4,
+        "document_id": "work-009",
+        "section_id": "work-009-sec-009",
+        "title": "Note:"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "conf-004",
+        "section_id": "conf-004-sec-040",
+        "title": "My Pods are pending with event message `FailedScheduling`"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "sched-003",
+        "section_id": "sched-003-sec-019",
+        "title": "Pod Affinity Example"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "sched-004",
+        "section_id": "sched-004-sec-010",
+        "title": "Example: one topology spread constraint"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "work-003",
+        "section_id": "work-003-sec-021",
+        "title": "Individual container restart policy and rules"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "work-003",
+        "section_id": "work-003-sec-041",
+        "title": "Pod Termination Flow"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "work-004",
+        "section_id": "work-004-sec-007",
+        "title": "Init containers in use"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "work-006",
+        "section_id": "work-006-sec-006",
+        "title": "PodDisruptionBudget example"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "work-009",
+        "section_id": "work-009-sec-004",
+        "title": "Creating a Deployment"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "work-009",
+        "section_id": "work-009-sec-014",
+        "title": "Note:"
+      },
+      {
+        "chunk_count": 3,
+        "document_id": "work-013",
+        "section_id": "work-013-sec-021",
+        "title": "Backoff limit per index"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "arch-002",
+        "section_id": "arch-002-sec-005",
+        "title": "Self-registration of Nodes"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "conf-002",
+        "section_id": "conf-002-sec-007",
+        "title": "Note:"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "conf-002",
+        "section_id": "conf-002-sec-012",
+        "title": "Using Configmaps as environment variables"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "conf-003",
+        "section_id": "conf-003-sec-020",
+        "title": "Bootstrap token Secrets"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "conf-004",
+        "section_id": "conf-004-sec-041",
+        "title": "My container is terminated"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "conf-005",
+        "section_id": "conf-005-sec-007",
+        "title": "Merging kubeconfig files"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "net-001",
+        "section_id": "net-001-sec-002",
+        "title": "The Kubernetes network model"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "net-003",
+        "section_id": "net-003-sec-016",
+        "title": "IngressClass scope"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "net-003",
+        "section_id": "net-003-sec-030",
+        "title": "Updating an Ingress"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "net-006",
+        "section_id": "net-006-sec-005",
+        "title": "Note:"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "net-006",
+        "section_id": "net-006-sec-006",
+        "title": "Behavior of `to` and `from` selectors"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "net-007",
+        "section_id": "net-007-sec-009",
+        "title": "Pod's hostname and subdomain fields"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "net-007",
+        "section_id": "net-007-sec-015",
+        "title": "Pod's DNS Config"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "net-008",
+        "section_id": "net-008-sec-009",
+        "title": "Dual-stack options on new Services"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "net-008",
+        "section_id": "net-008-sec-010",
+        "title": "Dual-stack defaults on existing Services"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sched-003",
+        "section_id": "sched-003-sec-027",
+        "title": "More practical use-cases"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sched-005",
+        "section_id": "sched-005-sec-002",
+        "title": "Concepts"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sched-005",
+        "section_id": "sched-005-sec-003",
+        "title": "Note:"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sched-005",
+        "section_id": "sched-005-sec-008",
+        "title": "Example Use Cases"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sched-006",
+        "section_id": "sched-006-sec-023",
+        "title": "Preemption for in-place Pod resize"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sec-002",
+        "section_id": "sec-002-sec-007",
+        "title": "Note:"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sec-005",
+        "section_id": "sec-005-sec-004",
+        "title": "Authorization"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sec-008",
+        "section_id": "sec-008-sec-003",
+        "title": "LimitRange and admission checks for Pods"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sec-009",
+        "section_id": "sec-009-sec-004",
+        "title": "Note:"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sec-009",
+        "section_id": "sec-009-sec-016",
+        "title": "Viewing and Setting Quotas"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sec-009",
+        "section_id": "sec-009-sec-018",
+        "title": "Quota scopes"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "sec-009",
+        "section_id": "sec-009-sec-025",
+        "title": "Example"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "stor-002",
+        "section_id": "stor-002-sec-028",
+        "title": "image"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "stor-002",
+        "section_id": "stor-002-sec-032",
+        "title": "local"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "stor-002",
+        "section_id": "stor-002-sec-048",
+        "title": "Note:"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "stor-002",
+        "section_id": "stor-002-sec-057",
+        "title": "Caution:"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "stor-002",
+        "section_id": "stor-002-sec-059",
+        "title": "Recursive read-only mounts"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "stor-003",
+        "section_id": "stor-003-sec-016",
+        "title": "PersistentVolume deletion protection finalizer"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "stor-004",
+        "section_id": "stor-004-sec-007",
+        "title": "clusterTrustBundle projected volumes"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "stor-004",
+        "section_id": "stor-004-sec-008",
+        "title": "podCertificate projected volumes"
+      },
+      {
+        "chunk_count": 2,
+        "document_id": "stor-006",
+        "section_id": "stor-006-sec-019",
+        "title": "vCP Provisioner"
+      }
+    ],
+    "sections_with_multiple_chunks": 82,
+    "sections_with_one_chunk": 1173,
+    "sections_with_zero_chunks": 0,
+    "total_sections": 1255
+  },
+  "smallest_chunks": [
+    {
+      "chunk_id": "net-007-sec-004-ch-001",
+      "document_id": "net-007",
+      "heading_only": true,
+      "preview": "## Services",
+      "section_id": "net-007-sec-004",
+      "section_title": "Services",
+      "token_count": 2
+    },
+    {
+      "chunk_id": "net-007-sec-007-ch-001",
+      "document_id": "net-007",
+      "heading_only": true,
+      "preview": "## Pods",
+      "section_id": "net-007-sec-007",
+      "section_title": "Pods",
+      "token_count": 2
+    },
+    {
+      "chunk_id": "sec-002-sec-015-ch-001",
+      "document_id": "sec-002",
+      "heading_only": true,
+      "preview": "## FAQ",
+      "section_id": "sec-002-sec-015",
+      "section_title": "FAQ",
+      "token_count": 2
+    },
+    {
+      "chunk_id": "arch-002-sec-008-ch-001",
+      "document_id": "arch-002",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "arch-002-sec-008",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "arch-002-sec-014-ch-001",
+      "document_id": "arch-002",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "arch-002-sec-014",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "arch-003-sec-007-ch-001",
+      "document_id": "arch-003",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "arch-003-sec-007",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "arch-006-sec-011-ch-001",
+      "document_id": "arch-006",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "arch-006-sec-011",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "arch-006-sec-013-ch-001",
+      "document_id": "arch-006",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "arch-006-sec-013",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "arch-007-sec-003-ch-001",
+      "document_id": "arch-007",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "arch-007-sec-003",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "conf-002-sec-004-ch-001",
+      "document_id": "conf-002",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "conf-002-sec-004",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "conf-002-sec-011-ch-001",
+      "document_id": "conf-002",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "conf-002-sec-011",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "conf-003-sec-021-ch-001",
+      "document_id": "conf-003",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "conf-003-sec-021",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "conf-003-sec-039-ch-001",
+      "document_id": "conf-003",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "conf-003-sec-039",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "conf-003-sec-042-ch-001",
+      "document_id": "conf-003",
+      "heading_only": true,
+      "preview": "#### Warning:",
+      "section_id": "conf-003-sec-042",
+      "section_title": "Warning:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "conf-004-sec-003-ch-001",
+      "document_id": "conf-004",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "conf-004-sec-003",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "conf-004-sec-032-ch-001",
+      "document_id": "conf-004",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "conf-004-sec-032",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "conf-005-sec-002-ch-001",
+      "document_id": "conf-005",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "conf-005-sec-002",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "net-002-sec-005-ch-001",
+      "document_id": "net-002",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "net-002-sec-005",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "net-002-sec-030-ch-001",
+      "document_id": "net-002",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "net-002-sec-030",
+      "section_title": "Note:",
+      "token_count": 3
+    },
+    {
+      "chunk_id": "net-002-sec-050-ch-001",
+      "document_id": "net-002",
+      "heading_only": true,
+      "preview": "#### Note:",
+      "section_id": "net-002-sec-050",
+      "section_title": "Note:",
+      "token_count": 3
+    }
+  ],
+  "status": "WARN",
+  "summary": {
+    "chunks": 1356,
+    "errors": 0,
+    "manifest_documents": 61,
+    "sections": 1255,
+    "unique_chunk_content_hashes": 1287,
+    "unique_chunk_ids": 1356,
+    "warnings": 2
+  },
+  "token_buckets": {
+    "0": 0,
+    "1-9": 116,
+    "10-31": 55,
+    "128-255": 393,
+    "256-383": 179,
+    "32-63": 138,
+    "384-511": 163,
+    "512": 9,
+    "64-127": 303,
+    ">512": 0
+  },
+  "token_count_validation": {
+    "mismatch_count": 0,
+    "mismatches": [],
+    "oversized_chunk_count": 0,
+    "oversized_chunks": [],
+    "zero_token_chunk_count": 0
+  },
+  "token_statistics": {
+    "count": 1356,
+    "maximum": 512,
+    "mean": 180.767,
+    "median": 146.0,
+    "minimum": 2
+  },
+  "very_short_chunks_under_32_tokens": {
+    "chunks": [
+      {
+        "chunk_id": "net-007-sec-004-ch-001",
+        "document_id": "net-007",
+        "heading_only": true,
+        "preview": "## Services",
+        "section_id": "net-007-sec-004",
+        "section_title": "Services",
+        "token_count": 2
+      },
+      {
+        "chunk_id": "net-007-sec-007-ch-001",
+        "document_id": "net-007",
+        "heading_only": true,
+        "preview": "## Pods",
+        "section_id": "net-007-sec-007",
+        "section_title": "Pods",
+        "token_count": 2
+      },
+      {
+        "chunk_id": "sec-002-sec-015-ch-001",
+        "document_id": "sec-002",
+        "heading_only": true,
+        "preview": "## FAQ",
+        "section_id": "sec-002-sec-015",
+        "section_title": "FAQ",
+        "token_count": 2
+      },
+      {
+        "chunk_id": "arch-002-sec-008-ch-001",
+        "document_id": "arch-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "arch-002-sec-008",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "arch-002-sec-014-ch-001",
+        "document_id": "arch-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "arch-002-sec-014",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "arch-003-sec-007-ch-001",
+        "document_id": "arch-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "arch-003-sec-007",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "arch-006-sec-011-ch-001",
+        "document_id": "arch-006",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "arch-006-sec-011",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "arch-006-sec-013-ch-001",
+        "document_id": "arch-006",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "arch-006-sec-013",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "arch-007-sec-003-ch-001",
+        "document_id": "arch-007",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "arch-007-sec-003",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "conf-002-sec-004-ch-001",
+        "document_id": "conf-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "conf-002-sec-004",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "conf-002-sec-011-ch-001",
+        "document_id": "conf-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "conf-002-sec-011",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "conf-003-sec-021-ch-001",
+        "document_id": "conf-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "conf-003-sec-021",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "conf-003-sec-039-ch-001",
+        "document_id": "conf-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "conf-003-sec-039",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "conf-003-sec-042-ch-001",
+        "document_id": "conf-003",
+        "heading_only": true,
+        "preview": "#### Warning:",
+        "section_id": "conf-003-sec-042",
+        "section_title": "Warning:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "conf-004-sec-003-ch-001",
+        "document_id": "conf-004",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "conf-004-sec-003",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "conf-004-sec-032-ch-001",
+        "document_id": "conf-004",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "conf-004-sec-032",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "conf-005-sec-002-ch-001",
+        "document_id": "conf-005",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "conf-005-sec-002",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-002-sec-005-ch-001",
+        "document_id": "net-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-002-sec-005",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-002-sec-030-ch-001",
+        "document_id": "net-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-002-sec-030",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-002-sec-050-ch-001",
+        "document_id": "net-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-002-sec-050",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-003-sec-006-ch-001",
+        "document_id": "net-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-003-sec-006",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-003-sec-022-ch-001",
+        "document_id": "net-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-003-sec-022",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-003-sec-024-ch-001",
+        "document_id": "net-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-003-sec-024",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-003-sec-028-ch-001",
+        "document_id": "net-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-003-sec-028",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-004-sec-006-ch-001",
+        "document_id": "net-004",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-004-sec-006",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-006-sec-017-ch-001",
+        "document_id": "net-006",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-006-sec-017",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-006-sec-019-ch-001",
+        "document_id": "net-006",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-006-sec-019",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-006-sec-021-ch-001",
+        "document_id": "net-006",
+        "heading_only": true,
+        "preview": "## Pod lifecycle",
+        "section_id": "net-006-sec-021",
+        "section_title": "Pod lifecycle",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-007-sec-010-ch-001",
+        "document_id": "net-007",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-007-sec-010",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-008-sec-014-ch-001",
+        "document_id": "net-008",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-008-sec-014",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "net-008-sec-016-ch-001",
+        "document_id": "net-008",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "net-008-sec-016",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "sched-003-sec-003-ch-001",
+        "document_id": "sched-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "sched-003-sec-003",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "sched-003-sec-011-ch-001",
+        "document_id": "sched-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "sched-003-sec-011",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "sched-003-sec-013-ch-001",
+        "document_id": "sched-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "sched-003-sec-013",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "sched-003-sec-034-ch-001",
+        "document_id": "sched-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "sched-003-sec-034",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "sched-005-sec-012-ch-001",
+        "document_id": "sched-005",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "sched-005-sec-012",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "sec-002-sec-002-ch-001",
+        "document_id": "sec-002",
+        "heading_only": true,
+        "preview": "## Profile Details",
+        "section_id": "sec-002-sec-002",
+        "section_title": "Profile Details",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "sec-002-sec-011-ch-001",
+        "document_id": "sec-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "sec-002-sec-011",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-002-sec-012-ch-001",
+        "document_id": "stor-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-002-sec-012",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-002-sec-018-ch-001",
+        "document_id": "stor-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-002-sec-018",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-002-sec-033-ch-001",
+        "document_id": "stor-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-002-sec-033",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-002-sec-038-ch-001",
+        "document_id": "stor-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-002-sec-038",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-002-sec-056-ch-001",
+        "document_id": "stor-002",
+        "heading_only": true,
+        "preview": "## Mount propagation",
+        "section_id": "stor-002-sec-056",
+        "section_title": "Mount propagation",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-002-sec-060-ch-001",
+        "document_id": "stor-002",
+        "heading_only": true,
+        "preview": "## File owner",
+        "section_id": "stor-002-sec-060",
+        "section_title": "File owner",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-002-sec-065-ch-001",
+        "document_id": "stor-002",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-002-sec-065",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-003-sec-014-ch-001",
+        "document_id": "stor-003",
+        "heading_only": true,
+        "preview": "#### Recycle",
+        "section_id": "stor-003-sec-014",
+        "section_title": "Recycle",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-003-sec-019-ch-001",
+        "document_id": "stor-003",
+        "heading_only": true,
+        "preview": "#### Warning:",
+        "section_id": "stor-003-sec-019",
+        "section_title": "Warning:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-003-sec-023-ch-001",
+        "document_id": "stor-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-003-sec-023",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-003-sec-027-ch-001",
+        "document_id": "stor-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-003-sec-027",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-003-sec-047-ch-001",
+        "document_id": "stor-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-003-sec-047",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-003-sec-053-ch-001",
+        "document_id": "stor-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-003-sec-053",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-003-sec-061-ch-001",
+        "document_id": "stor-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-003-sec-061",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-003-sec-063-ch-001",
+        "document_id": "stor-003",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-003-sec-063",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-004-sec-006-ch-001",
+        "document_id": "stor-004",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-004-sec-006",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "stor-006-sec-008-ch-001",
+        "document_id": "stor-006",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "stor-006-sec-008",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-008-sec-002-ch-001",
+        "document_id": "work-008",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-008-sec-002",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-009-sec-002-ch-001",
+        "document_id": "work-009",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-009-sec-002",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-009-sec-010-ch-001",
+        "document_id": "work-009",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-009-sec-010",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-009-sec-020-ch-001",
+        "document_id": "work-009",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-009-sec-020",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-009-sec-037-ch-001",
+        "document_id": "work-009",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-009-sec-037",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-010-sec-009-ch-001",
+        "document_id": "work-010",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-010-sec-009",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-011-sec-013-ch-001",
+        "document_id": "work-011",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-011-sec-013",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-011-sec-025-ch-001",
+        "document_id": "work-011",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-011-sec-025",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-011-sec-034-ch-001",
+        "document_id": "work-011",
+        "heading_only": true,
+        "preview": "#### Best Practices",
+        "section_id": "work-011-sec-034",
+        "section_title": "Best Practices",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-013-sec-010-ch-001",
+        "document_id": "work-013",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-013-sec-010",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-013-sec-020-ch-001",
+        "document_id": "work-013",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-013-sec-020",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-013-sec-027-ch-001",
+        "document_id": "work-013",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-013-sec-027",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-013-sec-035-ch-001",
+        "document_id": "work-013",
+        "heading_only": true,
+        "preview": "## Advanced usage",
+        "section_id": "work-013-sec-035",
+        "section_title": "Advanced usage",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-013-sec-042-ch-001",
+        "document_id": "work-013",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-013-sec-042",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-013-sec-048-ch-001",
+        "document_id": "work-013",
+        "heading_only": true,
+        "preview": "## Alternatives",
+        "section_id": "work-013-sec-048",
+        "section_title": "Alternatives",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-013-sec-051-ch-001",
+        "document_id": "work-013",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-013-sec-051",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "work-015-sec-007-ch-001",
+        "document_id": "work-015",
+        "heading_only": true,
+        "preview": "#### Note:",
+        "section_id": "work-015-sec-007",
+        "section_title": "Note:",
+        "token_count": 3
+      },
+      {
+        "chunk_id": "conf-002-sec-002-ch-001",
+        "document_id": "conf-002",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "conf-002-sec-002",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "conf-003-sec-018-ch-001",
+        "document_id": "conf-003",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "conf-003-sec-018",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "conf-003-sec-022-ch-001",
+        "document_id": "conf-003",
+        "heading_only": true,
+        "preview": "## Working with Secrets",
+        "section_id": "conf-003-sec-022",
+        "section_title": "Working with Secrets",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "conf-004-sec-028-ch-001",
+        "document_id": "conf-004",
+        "heading_only": true,
+        "preview": "### Managing extended resources",
+        "section_id": "conf-004-sec-028",
+        "section_title": "Managing extended resources",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "conf-004-sec-039-ch-001",
+        "document_id": "conf-004",
+        "heading_only": true,
+        "preview": "## Troubleshooting",
+        "section_id": "conf-004-sec-039",
+        "section_title": "Troubleshooting",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "net-005-sec-001-ch-001",
+        "document_id": "net-005",
+        "heading_only": true,
+        "preview": "# EndpointSlices",
+        "section_id": "net-005-sec-001",
+        "section_title": "EndpointSlices",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "net-006-sec-011-ch-001",
+        "document_id": "net-006",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "net-006-sec-011",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "sched-007-sec-026-ch-001",
+        "document_id": "sched-007",
+        "heading_only": true,
+        "preview": "### Minimum eviction reclaim",
+        "section_id": "sched-007-sec-026",
+        "section_title": "Minimum eviction reclaim",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "sec-006-sec-002-ch-001",
+        "document_id": "sec-006",
+        "heading_only": true,
+        "preview": "## General good practice",
+        "section_id": "sec-006-sec-002",
+        "section_title": "General good practice",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "sec-007-sec-014-ch-001",
+        "document_id": "sec-007",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "sec-007-sec-014",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "sec-009-sec-002-ch-001",
+        "document_id": "sec-009",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "sec-009-sec-002",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "stor-001-sec-001-ch-001",
+        "document_id": "stor-001",
+        "heading_only": false,
+        "preview": "# Storage ---",
+        "section_id": "stor-001-sec-001",
+        "section_title": "Storage",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "stor-003-sec-037-ch-001",
+        "document_id": "stor-003",
+        "heading_only": true,
+        "preview": "### Node Affinity",
+        "section_id": "stor-003-sec-037",
+        "section_title": "Node Affinity",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "stor-005-sec-009-ch-001",
+        "document_id": "stor-005",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "stor-005-sec-009",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "stor-005-sec-011-ch-001",
+        "document_id": "stor-005",
+        "heading_only": true,
+        "preview": "## What's next",
+        "section_id": "stor-005-sec-011",
+        "section_title": "What's next",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "work-003-sec-042-ch-001",
+        "document_id": "work-003",
+        "heading_only": true,
+        "preview": "### Forced Pod termination",
+        "section_id": "work-003-sec-042",
+        "section_title": "Forced Pod termination",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "work-006-sec-003-ch-001",
+        "document_id": "work-006",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "work-006-sec-003",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "work-007-sec-012-ch-001",
+        "document_id": "work-007",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "work-007-sec-012",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "work-009-sec-008-ch-001",
+        "document_id": "work-009",
+        "heading_only": true,
+        "preview": "## Updating a Deployment",
+        "section_id": "work-009-sec-008",
+        "section_title": "Updating a Deployment",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "work-014-sec-010-ch-001",
+        "document_id": "work-014",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "work-014-sec-010",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "work-014-sec-013-ch-001",
+        "document_id": "work-014",
+        "heading_only": true,
+        "preview": "## CronJob limitations",
+        "section_id": "work-014-sec-013",
+        "section_title": "CronJob limitations",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "work-015-sec-013-ch-001",
+        "document_id": "work-015",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "work-015-sec-013",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "work-015-sec-016-ch-001",
+        "document_id": "work-015",
+        "heading_only": true,
+        "preview": "#### Caution:",
+        "section_id": "work-015-sec-016",
+        "section_title": "Caution:",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "work-015-sec-018-ch-001",
+        "document_id": "work-015",
+        "heading_only": true,
+        "preview": "## Probe mechanism details",
+        "section_id": "work-015-sec-018",
+        "section_title": "Probe mechanism details",
+        "token_count": 4
+      },
+      {
+        "chunk_id": "conf-004-sec-009-ch-001",
+        "document_id": "conf-004",
+        "heading_only": true,
+        "preview": "## Resource units in Kubernetes",
+        "section_id": "conf-004-sec-009",
+        "section_title": "Resource units in Kubernetes",
+        "token_count": 5
+      },
+      {
+        "chunk_id": "net-003-sec-020-ch-001",
+        "document_id": "net-003",
+        "heading_only": true,
+        "preview": "## Types of Ingress",
+        "section_id": "net-003-sec-020",
+        "section_title": "Types of Ingress",
+        "token_count": 5
+      },
+      {
+        "chunk_id": "net-009-sec-001-ch-001",
+        "document_id": "net-009",
+        "heading_only": true,
+        "preview": "# Topology Aware Routing",
+        "section_id": "net-009-sec-001",
+        "section_title": "Topology Aware Routing",
+        "token_count": 5
+      },
+      {
+        "chunk_id": "stor-005-sec-003-ch-001",
+        "document_id": "stor-005",
+        "heading_only": true,
+        "preview": "### CSI ephemeral volumes",
+        "section_id": "stor-005-sec-003",
+        "section_title": "CSI ephemeral volumes",
+        "token_count": 5
+      },
+      {
+        "chunk_id": "work-009-sec-006-ch-001",
+        "document_id": "work-009",
+        "heading_only": true,
+        "preview": "### Pod-template-hash label",
+        "section_id": "work-009-sec-006",
+        "section_title": "Pod-template-hash label",
+        "token_count": 5
+      },
+      {
+        "chunk_id": "work-010-sec-011-ch-001",
+        "document_id": "work-010",
+        "heading_only": true,
+        "preview": "## Working with ReplicaSets",
+        "section_id": "work-010-sec-011",
+        "section_title": "Working with ReplicaSets",
+        "token_count": 5
+      },
+      {
+        "chunk_id": "sched-004-sec-009-ch-001",
+        "document_id": "sched-004",
+        "heading_only": true,
+        "preview": "## Topology spread constraint examples",
+        "section_id": "sched-004-sec-009",
+        "section_title": "Topology spread constraint examples",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "sched-006-sec-017-ch-001",
+        "document_id": "sched-006",
+        "heading_only": true,
+        "preview": "### Limitations of preemption",
+        "section_id": "sched-006-sec-017",
+        "section_title": "Limitations of preemption",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "stor-002-sec-020-ch-001",
+        "document_id": "stor-002",
+        "heading_only": true,
+        "preview": "### gitRepo (disabled)",
+        "section_id": "stor-002-sec-020",
+        "section_title": "gitRepo (disabled)",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "work-002-sec-002-ch-001",
+        "document_id": "work-002",
+        "heading_only": true,
+        "preview": "## What is a Pod?",
+        "section_id": "work-002-sec-002",
+        "section_title": "What is a Pod?",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "work-003-sec-029-ch-001",
+        "document_id": "work-003",
+        "heading_only": true,
+        "preview": "### Pod readiness to start containers",
+        "section_id": "work-003-sec-029",
+        "section_title": "Pod readiness to start containers",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "work-010-sec-021-ch-001",
+        "document_id": "work-010",
+        "heading_only": true,
+        "preview": "## Alternatives to ReplicaSet",
+        "section_id": "work-010-sec-021",
+        "section_title": "Alternatives to ReplicaSet",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "work-012-sec-002-ch-001",
+        "document_id": "work-012",
+        "heading_only": true,
+        "preview": "## Writing a DaemonSet Spec",
+        "section_id": "work-012-sec-002",
+        "section_title": "Writing a DaemonSet Spec",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "work-012-sec-013-ch-001",
+        "document_id": "work-012",
+        "heading_only": true,
+        "preview": "## Alternatives to DaemonSet",
+        "section_id": "work-012-sec-013",
+        "section_title": "Alternatives to DaemonSet",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "work-014-sec-003-ch-001",
+        "document_id": "work-014",
+        "heading_only": true,
+        "preview": "## Writing a CronJob spec",
+        "section_id": "work-014-sec-003",
+        "section_title": "Writing a CronJob spec",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "work-015-sec-008-ch-001",
+        "document_id": "work-015",
+        "heading_only": true,
+        "preview": "## When to use each probe",
+        "section_id": "work-015-sec-008",
+        "section_title": "When to use each probe",
+        "token_count": 6
+      },
+      {
+        "chunk_id": "net-009-sec-004-ch-001",
+        "document_id": "net-009",
+        "heading_only": true,
+        "preview": "## Enabling Topology Aware Routing",
+        "section_id": "net-009-sec-004",
+        "section_title": "Enabling Topology Aware Routing",
+        "token_count": 7
+      },
+      {
+        "chunk_id": "stor-006-sec-020-ch-001",
+        "document_id": "stor-006",
+        "heading_only": true,
+        "preview": "### Ceph RBD (deprecated)",
+        "section_id": "stor-006-sec-020",
+        "section_title": "Ceph RBD (deprecated)",
+        "token_count": 8
+      },
+      {
+        "chunk_id": "net-001-sec-001-ch-001",
+        "document_id": "net-001",
+        "heading_only": true,
+        "preview": "# Services, Load Balancing, and Networking",
+        "section_id": "net-001-sec-001",
+        "section_title": "Services, Load Balancing, and Networking",
+        "token_count": 9
+      },
+      {
+        "chunk_id": "sec-006-sec-019-ch-001",
+        "document_id": "sec-006",
+        "heading_only": true,
+        "preview": "## Kubernetes RBAC - denial of service risks",
+        "section_id": "sec-006-sec-019",
+        "section_title": "Kubernetes RBAC - denial of service risks",
+        "token_count": 9
+      },
+      {
+        "chunk_id": "sec-004-sec-012-ch-001",
+        "document_id": "sec-004",
+        "heading_only": true,
+        "preview": "### Restricting access to Secrets (deprecated)",
+        "section_id": "sec-004-sec-012",
+        "section_title": "Restricting access to Secrets (deprecated)",
+        "token_count": 10
+      },
+      {
+        "chunk_id": "conf-004-sec-022-ch-001",
+        "document_id": "conf-004",
+        "heading_only": true,
+        "preview": "### Considerations for memory backed `emptyDir` volumes",
+        "section_id": "conf-004-sec-022",
+        "section_title": "Considerations for memory backed `emptyDir` volumes",
+        "token_count": 11
+      },
+      {
+        "chunk_id": "net-009-sec-006-ch-001",
+        "document_id": "net-009",
+        "heading_only": false,
+        "preview": "## When it works best This feature works best when:",
+        "section_id": "net-009-sec-006",
+        "section_title": "When it works best",
+        "token_count": 12
+      },
+      {
+        "chunk_id": "stor-002-sec-004-ch-001",
+        "document_id": "stor-002",
+        "heading_only": false,
+        "preview": "## Types of volumes Kubernetes supports several types of volumes.",
+        "section_id": "stor-002-sec-004",
+        "section_title": "Types of volumes",
+        "token_count": 13
+      },
+      {
+        "chunk_id": "sched-007-sec-030-ch-001",
+        "document_id": "sched-007",
+        "heading_only": false,
+        "preview": "## Good practices The following sections describe good practice for eviction configuration.",
+        "section_id": "sched-007-sec-030",
+        "section_title": "Good practices",
+        "token_count": 14
+      },
+      {
+        "chunk_id": "arch-007-sec-004-ch-001",
+        "document_id": "arch-007",
+        "heading_only": false,
+        "preview": "## Cloud controller manager functions The controllers inside the cloud controller manager include:",
+        "section_id": "arch-007-sec-004",
+        "section_title": "Cloud controller manager functions",
+        "token_count": 15
+      },
+      {
+        "chunk_id": "conf-004-sec-029-ch-001",
+        "document_id": "conf-004",
+        "heading_only": false,
+        "preview": "#### Node-level extended resources Node-level extended resources are tied to nodes.",
+        "section_id": "conf-004-sec-029",
+        "section_title": "Node-level extended resources",
+        "token_count": 15
+      },
+      {
+        "chunk_id": "stor-001-sec-002-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)",
+        "section_id": "stor-001-sec-002",
+        "section_title": "[Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)",
+        "token_count": 16
+      },
+      {
+        "chunk_id": "sched-007-sec-033-ch-001",
+        "document_id": "sched-007",
+        "heading_only": false,
+        "preview": "## Known issues The following sections describe known issues related to out of resource handling.",
+        "section_id": "sched-007-sec-033",
+        "section_title": "Known issues",
+        "token_count": 17
+      },
+      {
+        "chunk_id": "sec-007-sec-006-ch-001",
+        "document_id": "sec-007",
+        "heading_only": false,
+        "preview": "#### Restrict Access for Secrets Use separate namespaces to isolate access to mounted secrets.",
+        "section_id": "sec-007-sec-006",
+        "section_title": "Restrict Access for Secrets",
+        "token_count": 17
+      },
+      {
+        "chunk_id": "stor-001-sec-017-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Windows Storage](https://kubernetes.io/docs/concepts/storage/windows-storage/)",
+        "section_id": "stor-001-sec-017",
+        "section_title": "[Windows Storage](https://kubernetes.io/docs/concepts/storage/windows-storage/)",
+        "token_count": 17
+      },
+      {
+        "chunk_id": "conf-005-sec-010-ch-001",
+        "document_id": "conf-005",
+        "heading_only": false,
+        "preview": "## What's next - Configure Access to Multiple Clusters - `kubectl config`",
+        "section_id": "conf-005-sec-010",
+        "section_title": "What's next",
+        "token_count": 18
+      },
+      {
+        "chunk_id": "stor-001-sec-006-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)",
+        "section_id": "stor-001-sec-006",
+        "section_title": "[Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)",
+        "token_count": 18
+      },
+      {
+        "chunk_id": "stor-001-sec-013-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Storage Capacity](https://kubernetes.io/docs/concepts/storage/storage-capacity/)",
+        "section_id": "stor-001-sec-013",
+        "section_title": "[Storage Capacity](https://kubernetes.io/docs/concepts/storage/storage-capacity/)",
+        "token_count": 18
+      },
+      {
+        "chunk_id": "net-003-sec-033-ch-001",
+        "document_id": "net-003",
+        "heading_only": false,
+        "preview": "## What's next - Learn about the Ingress API - Learn about Ingress controllers",
+        "section_id": "net-003-sec-033",
+        "section_title": "What's next",
+        "token_count": 19
+      },
+      {
+        "chunk_id": "sec-006-sec-021-ch-001",
+        "document_id": "sec-006",
+        "heading_only": false,
+        "preview": "## What's next - To learn more about RBAC, see the RBAC documentation .",
+        "section_id": "sec-006-sec-021",
+        "section_title": "What's next",
+        "token_count": 19
+      },
+      {
+        "chunk_id": "stor-003-sec-004-ch-001",
+        "document_id": "stor-003",
+        "heading_only": false,
+        "preview": "### Provisioning There are two ways PVs may be provisioned: statically or dynamically.",
+        "section_id": "stor-003-sec-004",
+        "section_title": "Provisioning",
+        "token_count": 19
+      },
+      {
+        "chunk_id": "work-002-sec-018-ch-001",
+        "document_id": "work-002",
+        "heading_only": false,
+        "preview": "## Resource sharing and communication Pods enable data sharing and communication among their constituent containers.",
+        "section_id": "work-002-sec-018",
+        "section_title": "Resource sharing and communication",
+        "token_count": 19
+      },
+      {
+        "chunk_id": "net-008-sec-008-ch-001",
+        "document_id": "net-008",
+        "heading_only": false,
+        "preview": "### Dual-stack Service configuration scenarios These examples demonstrate the behavior of various dual-stack Service configuration scenarios.",
+        "section_id": "net-008-sec-008",
+        "section_title": "Dual-stack Service configuration scenarios",
+        "token_count": 20
+      },
+      {
+        "chunk_id": "stor-001-sec-003-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)",
+        "section_id": "stor-001-sec-003",
+        "section_title": "[Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)",
+        "token_count": 20
+      },
+      {
+        "chunk_id": "stor-001-sec-004-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)",
+        "section_id": "stor-001-sec-004",
+        "section_title": "[Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)",
+        "token_count": 20
+      },
+      {
+        "chunk_id": "stor-001-sec-014-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Node-specific Volume Limits](https://kubernetes.io/docs/concepts/storage/storage-limits/)",
+        "section_id": "stor-001-sec-014",
+        "section_title": "[Node-specific Volume Limits](https://kubernetes.io/docs/concepts/storage/storage-limits/)",
+        "token_count": 20
+      },
+      {
+        "chunk_id": "stor-001-sec-009-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Volume Snapshots](https://kubernetes.io/docs/concepts/storage/volume-snapshots/)",
+        "section_id": "stor-001-sec-009",
+        "section_title": "[Volume Snapshots](https://kubernetes.io/docs/concepts/storage/volume-snapshots/)",
+        "token_count": 21
+      },
+      {
+        "chunk_id": "stor-001-sec-016-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Volume Health Monitoring](https://kubernetes.io/docs/concepts/storage/volume-health-monitoring/)",
+        "section_id": "stor-001-sec-016",
+        "section_title": "[Volume Health Monitoring](https://kubernetes.io/docs/concepts/storage/volume-health-monitoring/)",
+        "token_count": 21
+      },
+      {
+        "chunk_id": "stor-001-sec-007-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Volume Attributes Classes](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/)",
+        "section_id": "stor-001-sec-007",
+        "section_title": "[Volume Attributes Classes](https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/)",
+        "token_count": 22
+      },
+      {
+        "chunk_id": "stor-001-sec-008-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)",
+        "section_id": "stor-001-sec-008",
+        "section_title": "[Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)",
+        "token_count": 22
+      },
+      {
+        "chunk_id": "stor-001-sec-010-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Volume Snapshot Classes](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)",
+        "section_id": "stor-001-sec-010",
+        "section_title": "[Volume Snapshot Classes](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)",
+        "token_count": 22
+      },
+      {
+        "chunk_id": "stor-001-sec-015-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/)",
+        "section_id": "stor-001-sec-015",
+        "section_title": "[Local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/)",
+        "token_count": 22
+      },
+      {
+        "chunk_id": "work-005-sec-003-ch-001",
+        "document_id": "work-005",
+        "heading_only": false,
+        "preview": "### Example application Here's an example of a Deployment with two containers, one of which is a sidecar:",
+        "section_id": "work-005-sec-003",
+        "section_title": "Example application",
+        "token_count": 23
+      },
+      {
+        "chunk_id": "stor-001-sec-005-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Ephemeral Volumes](https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/)",
+        "section_id": "stor-001-sec-005",
+        "section_title": "[Ephemeral Volumes](https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/)",
+        "token_count": 24
+      },
+      {
+        "chunk_id": "stor-001-sec-011-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [CSI Volume Cloning](https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/)",
+        "section_id": "stor-001-sec-011",
+        "section_title": "[CSI Volume Cloning](https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/)",
+        "token_count": 24
+      },
+      {
+        "chunk_id": "stor-003-sec-035-ch-001",
+        "document_id": "stor-003",
+        "heading_only": false,
+        "preview": "### Mount Options A Kubernetes administrator can specify additional mount options for when a Persistent Volume is mounted on a node.",
+        "section_id": "stor-003-sec-035",
+        "section_title": "Mount Options",
+        "token_count": 24
+      },
+      {
+        "chunk_id": "stor-003-sec-071-ch-001",
+        "document_id": "stor-003",
+        "heading_only": false,
+        "preview": "### API references Read about the APIs described in this page: - `PersistentVolume` - `PersistentVolumeClaim`",
+        "section_id": "stor-003-sec-071",
+        "section_title": "API references",
+        "token_count": 24
+      },
+      {
+        "chunk_id": "stor-005-sec-014-ch-001",
+        "document_id": "stor-005",
+        "heading_only": false,
+        "preview": "### Generic ephemeral volumes - For more information on the design, see the Generic ephemeral inline volumes KEP .",
+        "section_id": "stor-005-sec-014",
+        "section_title": "Generic ephemeral volumes",
+        "token_count": 24
+      },
+      {
+        "chunk_id": "work-009-sec-036-ch-001",
+        "document_id": "work-009",
+        "heading_only": false,
+        "preview": "#### Recreate Deployment All existing Pods are killed before new ones are created when `.spec.strategy.type==Recreate`.",
+        "section_id": "work-009-sec-036",
+        "section_title": "Recreate Deployment",
+        "token_count": 24
+      },
+      {
+        "chunk_id": "stor-008-sec-004-ch-001",
+        "document_id": "stor-008",
+        "heading_only": false,
+        "preview": "### Provisioning Volume Snapshot There are two ways snapshots may be provisioned: pre-provisioned or dynamically provisioned.",
+        "section_id": "stor-008-sec-004",
+        "section_title": "Provisioning Volume Snapshot",
+        "token_count": 25
+      },
+      {
+        "chunk_id": "work-011-sec-036-ch-001",
+        "document_id": "work-011",
+        "heading_only": false,
+        "preview": "##### Monitoring - Regularly check revisions with: `kubectl get controllerrevisions` - Alert on rapid revision count growth .",
+        "section_id": "work-011-sec-036",
+        "section_title": "Monitoring",
+        "token_count": 25
+      },
+      {
+        "chunk_id": "net-008-sec-019-ch-001",
+        "document_id": "net-008",
+        "heading_only": false,
+        "preview": "## What's next - Validate IPv4/IPv6 dual-stack networking - Enable dual-stack networking using kubeadm",
+        "section_id": "net-008-sec-019",
+        "section_title": "What's next",
+        "token_count": 26
+      },
+      {
+        "chunk_id": "sec-007-sec-002-ch-001",
+        "document_id": "sec-007",
+        "heading_only": false,
+        "preview": "## Cluster administrators This section provides good practices that cluster administrators can use to improve the security of confidential information in the cluster.",
+        "section_id": "sec-007-sec-002",
+        "section_title": "Cluster administrators",
+        "token_count": 27
+      },
+      {
+        "chunk_id": "sec-007-sec-010-ch-001",
+        "document_id": "sec-007",
+        "heading_only": false,
+        "preview": "## Developers This section provides good practices for developers to use to improve the security of confidential data when building and deploying Kubernetes resources.",
+        "section_id": "sec-007-sec-010",
+        "section_title": "Developers",
+        "token_count": 27
+      },
+      {
+        "chunk_id": "stor-001-sec-012-ch-001",
+        "document_id": "stor-001",
+        "heading_only": true,
+        "preview": "##### [Volume Populators and Data Sources](https://kubernetes.io/docs/concepts/storage/volume-populators-and-data-sources/)",
+        "section_id": "stor-001-sec-012",
+        "section_title": "[Volume Populators and Data Sources](https://kubernetes.io/docs/concepts/storage/volume-populators-and-data-sources/)",
+        "token_count": 27
+      },
+      {
+        "chunk_id": "work-009-sec-034-ch-001",
+        "document_id": "work-009",
+        "heading_only": false,
+        "preview": "#### Note: If you have multiple controllers that have overlapping selectors, the controllers will fight with each other and won't behave correctly.",
+        "section_id": "work-009-sec-034",
+        "section_title": "Note:",
+        "token_count": 27
+      },
+      {
+        "chunk_id": "work-013-sec-004-ch-001",
+        "document_id": "work-013",
+        "heading_only": false,
+        "preview": "### Job Labels Job labels will have `batch.kubernetes.io/` prefix for `job-name` and `controller-uid`.",
+        "section_id": "work-013-sec-004",
+        "section_title": "Job Labels",
+        "token_count": 27
+      },
+      {
+        "chunk_id": "arch-001-sec-001-ch-001",
+        "document_id": "arch-001",
+        "heading_only": false,
+        "preview": "# Kubernetes Components This page provides a high-level overview of the essential components that make up a Kubernetes cluster. The components of a Kubernetes cluster",
+        "section_id": "arch-001-sec-001",
+        "section_title": "Kubernetes Components",
+        "token_count": 28
+      },
+      {
+        "chunk_id": "arch-007-sec-008-ch-001",
+        "document_id": "arch-007",
+        "heading_only": false,
+        "preview": "## Authorization This section breaks down the access that the cloud controller manager requires on various API objects, in order to perform its operations.",
+        "section_id": "arch-007-sec-008",
+        "section_title": "Authorization",
+        "token_count": 28
+      },
+      {
+        "chunk_id": "conf-003-sec-041-ch-001",
+        "document_id": "conf-003",
+        "heading_only": false,
+        "preview": "### Configure least-privilege access to Secrets To enhance the security measures around Secrets, use separate namespaces to isolate access to mounted secrets.",
+        "section_id": "conf-003-sec-041",
+        "section_title": "Configure least-privilege access to Secrets",
+        "token_count": 28
+      },
+      {
+        "chunk_id": "net-002-sec-041-ch-001",
+        "document_id": "net-002",
+        "heading_only": false,
+        "preview": "## Discovering services For clients running inside your cluster, Kubernetes supports two primary modes of finding a Service: environment variables and DNS.",
+        "section_id": "net-002-sec-041",
+        "section_title": "Discovering services",
+        "token_count": 28
+      },
+      {
+        "chunk_id": "arch-001-sec-002-ch-001",
+        "document_id": "arch-001",
+        "heading_only": false,
+        "preview": "## Core Components A Kubernetes cluster consists of a control plane and one or more worker nodes. Here's a brief overview of the main components:",
+        "section_id": "arch-001-sec-002",
+        "section_title": "Core Components",
+        "token_count": 29
+      },
+      {
+        "chunk_id": "net-010-sec-005-ch-001",
+        "document_id": "net-010",
+        "heading_only": false,
+        "preview": "## What's next - Read about Topology Aware Routing - Read about Service External Traffic Policy - Follow the Connecting Applications with Services tutorial",
+        "section_id": "net-010-sec-005",
+        "section_title": "What's next",
+        "token_count": 29
+      },
+      {
+        "chunk_id": "sched-007-sec-014-ch-001",
+        "document_id": "sched-007",
+        "heading_only": false,
+        "preview": "## Eviction monitoring interval The kubelet evaluates eviction thresholds based on its configured `housekeeping-interval`, which defaults to `10s`.",
+        "section_id": "sched-007-sec-014",
+        "section_title": "Eviction monitoring interval",
+        "token_count": 29
+      },
+      {
+        "chunk_id": "sec-006-sec-016-ch-001",
+        "document_id": "sec-006",
+        "heading_only": false,
+        "preview": "### Token request Users with `create` rights on `serviceaccounts/token` can create TokenRequests to issue tokens for existing service accounts.",
+        "section_id": "sec-006-sec-016",
+        "section_title": "Token request",
+        "token_count": 29
+      },
+      {
+        "chunk_id": "net-006-sec-026-ch-001",
+        "document_id": "net-006",
+        "heading_only": false,
+        "preview": "## What's next - See the Declare Network Policy walkthrough for further examples. - See more recipes for common scenarios enabled by the NetworkPolicy resource.",
+        "section_id": "net-006-sec-026",
+        "section_title": "What's next",
+        "token_count": 30
+      },
+      {
+        "chunk_id": "work-011-sec-035-ch-001",
+        "document_id": "work-011",
+        "heading_only": false,
+        "preview": "##### Retention Policy - Set revisionHistoryLimit between 5–10 for most workloads. - Increase only if deep rollback history is required.",
+        "section_id": "work-011-sec-035",
+        "section_title": "Retention Policy",
+        "token_count": 30
+      },
+      {
+        "chunk_id": "sched-006-sec-025-ch-001",
+        "document_id": "sched-006",
+        "heading_only": false,
+        "preview": "## Troubleshooting Pod priority and preemption can have unwanted side effects. Here are some examples of potential problems and ways to deal with them.",
+        "section_id": "sched-006-sec-025",
+        "section_title": "Troubleshooting",
+        "token_count": 31
+      },
+      {
+        "chunk_id": "sec-001-sec-004-ch-001",
+        "document_id": "sec-001",
+        "heading_only": false,
+        "preview": "### Secrets The [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) API provides basic protection for configuration values that require confidentiality.",
+        "section_id": "sec-001-sec-004",
+        "section_title": "Secrets",
+        "token_count": 31
+      }
+    ],
+    "count": 171,
+    "heading_only_count": 133
+  }
+}
