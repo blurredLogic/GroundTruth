@@ -1,0 +1,18 @@
+{
+  "section_id": "net-002-sec-004",
+  "document_id": "net-002",
+  "title": "Service types",
+  "heading_path": [
+    "Service",
+    "Service types"
+  ],
+  "heading_level": 2,
+  "section_order": 4,
+  "parent_section_id": null,
+  "text": "...",
+  "char_start": 8240,
+  "char_end": 11342,
+  "source_url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+  "content_hash": "sha256:...",
+  "corpus_version": "0.1.0"
+}

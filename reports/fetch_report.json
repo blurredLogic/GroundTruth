@@ -1,0 +1,18 @@
+{
+  "completed_at": "2026-10-01T10:42:49.655260+00:00",
+  "documents_requested": 61,
+  "duration_seconds": 74.891,
+  "failed": 0,
+  "failed_documents": [],
+  "manifest": "manifest\\kubernetes_v0.1.yaml",
+  "raw_files": {
+    "new": 60,
+    "overwritten": 0,
+    "unchanged": 1
+  },
+  "schema_version": "0.1",
+  "stage": "fetch",
+  "started_at": "2026-10-01T10:41:34.763328+00:00",
+  "status": "SUCCESS",
+  "successful": 61
+}

@@ -1,0 +1,21 @@
+{
+  "source_id": "src-k8s-net-002",
+  "document_id": "net-002",
+
+  "url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+  "canonical_url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+
+  "publisher": "Kubernetes",
+  "source_type": "official_documentation",
+
+  "retrieved_at": "2026-10-01T10:00:00Z",
+  "http_status": 200,
+
+  "content_type": "text/html",
+
+  "content_hash": "sha256:...",
+
+  "retrieval_method": "http",
+
+  "corpus_version": "0.1.0"
+}

@@ -1,0 +1,33 @@
+{
+  "chunk_id": "net-002-sec-004-ch-003",
+  "document_id": "net-002",
+  "section_id": "net-002-sec-004",
+  "domain": "services_networking",
+
+  "text": "A ClusterIP Service provides a stable internal IP address...",
+
+  "heading_path": [
+    "Service",
+    "Service types",
+    "ClusterIP"
+  ],
+
+  "chunk_index": 3,
+  "token_count": 412,
+
+  "start_char": 10234,
+  "end_char": 11871,
+
+  "source_url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+  "canonical_url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+
+  "chunking": {
+    "strategy": "recursive",
+    "target_tokens": 512,
+    "overlap_tokens": 64
+  },
+
+  "content_hash": "sha256:...",
+
+  "corpus_version": "0.1.0"
+}

@@ -1,0 +1,18 @@
+{
+  "document_id": "net-002",
+  "title": "Service",
+  "domain": "services_networking",
+  "url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+  "canonical_url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+  "source_type": "official_documentation",
+  "publisher": "Kubernetes",
+  "language": "en",
+  "status": "approved",
+  "retrieved_at": "2026-10-01T10:00:00Z",
+  "content_hash": "sha256:...",
+  "word_count": 3240,
+  "token_count": 4680,
+  "section_count": 14,
+  "chunk_count": 22,
+  "corpus_version": "0.1.0"
+}
