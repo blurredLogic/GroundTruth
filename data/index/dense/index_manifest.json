@@ -1,0 +1,62 @@
+{
+  "corpus": {
+    "chunk_count": 1223,
+    "chunking_config_sha256": "sha256:5c3861bae9aed8539cf1942dc984c6a7ee7f575210dbc4394a00a8e848257a91",
+    "corpus_version": "0.1.0",
+    "document_count": 61,
+    "embedded_field": "retrieval_text",
+    "input": "data/index/chunks_indexable.jsonl",
+    "input_sha256": "sha256:6428fa415ffaa92baa0da6a54d3853b20c7e567a796244c9110d198daaf47d9d",
+    "row_order": "document_id, section_id, chunk_index, chunk_id",
+    "section_count": 1122
+  },
+  "created_at": "2026-10-05T09:08:02.711888+00:00",
+  "duration_seconds": 26.078,
+  "embedding_model": {
+    "document_instruction": null,
+    "model_max_seq_length": 512,
+    "name": "BAAI/bge-small-en-v1.5",
+    "query_instruction": "Handled by the retriever, not during corpus embedding.",
+    "sentence_embedding_dimension": 384
+  },
+  "embeddings": {
+    "dtype": "float32",
+    "normalization": {
+      "maximum_absolute_error_from_1": 1.1920928955078125e-07,
+      "maximum_norm": 1.0000001192092896,
+      "mean_norm": 1.0,
+      "minimum_norm": 0.9999999403953552
+    },
+    "path": "data/index/dense/embeddings.npy",
+    "sha256": "sha256:6f4d0b8578de0e371024e0cd8dc0bb0f6fa1a96b0361e336ddd0db368877a4cd",
+    "shape": [
+      1223,
+      384
+    ]
+  },
+  "index_builder_version": "0.1.0",
+  "index_type": "dense",
+  "metadata": {
+    "path": "data/index/dense/metadata.jsonl",
+    "record_count": 1223,
+    "sha256": "sha256:4e3afe8075fad932ad09e3a8b105aa4a716566938337bebb5427615c31b7a91d"
+  },
+  "runtime": {
+    "batch_size": 32,
+    "device": "cuda",
+    "device_description": "NVIDIA GeForce RTX 2080 Super",
+    "huggingface_hub": "1.33.0",
+    "numpy": "1.24.4",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.10.6",
+    "sentence_transformers": "6.1.0",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  },
+  "similarity": {
+    "embeddings_l2_normalized": true,
+    "metric": "cosine",
+    "retrieval_operation": "dot_product_equivalent_to_cosine_for_normalized_vectors"
+  },
+  "started_at": "2026-10-05T09:07:36.636344+00:00"
+}

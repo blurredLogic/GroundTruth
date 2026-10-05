@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://groundtruth.local/schemas/golden-question-v0.1.json",
+  "title": "GroundTruth Golden Retrieval Question",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","question_id","question","category","difficulty","split","answerable","relevance_judgments","notes"],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "question_id": {"type": "string", "pattern": "^k8s-[0-9]{3}$"},
+    "question": {"type": "string", "minLength": 5},
+    "category": {"type": "string", "enum": ["direct_factual","comparison","scenario_application","multi_hop","troubleshooting","negative_near_miss"]},
+    "difficulty": {"type": "string", "enum": ["easy","medium","hard"]},
+    "split": {"type": "string", "enum": ["dev","test"]},
+    "answerable": {"type": "boolean"},
+    "relevance_judgments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["chunk_id","grade"],
+        "properties": {
+          "chunk_id": {"type": "string", "pattern": "^[a-z0-9]+-[0-9]{3}-sec-[0-9]{3}-ch-[0-9]{3}$"},
+          "grade": {"type": "integer", "minimum": 0, "maximum": 3},
+          "rationale": {"type": "string"}
+        }
+      }
+    },
+    "reference_answer": {"type": ["string","null"]},
+    "source_document_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "notes": {"type": "string"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"answerable": {"const": true}}, "required": ["answerable"]},
+      "then": {
+        "properties": {
+          "relevance_judgments": {
+            "minItems": 1,
+            "contains": {"type": "object", "properties": {"grade": {"minimum": 1}}, "required": ["grade"]}
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"category": {"const": "negative_near_miss"}}, "required": ["category"]},
+      "then": {"properties": {"answerable": {"const": false}}}
+    }
+  ]
+}

@@ -1,0 +1,705 @@
+{
+  "by_category": {
+    "direct_factual": {
+      "MRR": 1.0,
+      "Recall@10": 1.0,
+      "Recall@5": 0.816667,
+      "answerable_question_count": 5,
+      "nDCG@10": 0.960198,
+      "nDCG@5": 0.928319,
+      "question_count": 5,
+      "top1_hit_rate": 1.0
+    },
+    "scenario_application": {
+      "MRR": 0.5,
+      "Recall@10": 0.5,
+      "Recall@5": 0.5,
+      "answerable_question_count": 1,
+      "nDCG@10": 0.578764,
+      "nDCG@5": 0.578764,
+      "question_count": 1,
+      "top1_hit_rate": 0.0
+    }
+  },
+  "by_difficulty": {
+    "easy": {
+      "MRR": 1.0,
+      "Recall@10": 1.0,
+      "Recall@5": 0.770833,
+      "answerable_question_count": 4,
+      "nDCG@10": 0.96129,
+      "nDCG@5": 0.92144,
+      "question_count": 4,
+      "top1_hit_rate": 1.0
+    },
+    "medium": {
+      "MRR": 0.75,
+      "Recall@10": 0.75,
+      "Recall@5": 0.75,
+      "answerable_question_count": 2,
+      "nDCG@10": 0.767297,
+      "nDCG@5": 0.767297,
+      "question_count": 2,
+      "top1_hit_rate": 0.5
+    }
+  },
+  "by_split": {
+    "dev": {
+      "MRR": 1.0,
+      "Recall@10": 1.0,
+      "Recall@5": 0.854167,
+      "answerable_question_count": 4,
+      "nDCG@10": 0.953265,
+      "nDCG@5": 0.920888,
+      "question_count": 4,
+      "top1_hit_rate": 1.0
+    },
+    "test": {
+      "MRR": 0.75,
+      "Recall@10": 0.75,
+      "Recall@5": 0.583333,
+      "answerable_question_count": 2,
+      "nDCG@10": 0.783349,
+      "nDCG@5": 0.768402,
+      "question_count": 2,
+      "top1_hit_rate": 0.5
+    }
+  },
+  "evaluator_version": "0.1.0",
+  "golden_set": "data/evaluation/golden_questions.jsonl",
+  "index_dir": "data/index/dense",
+  "overall": {
+    "MRR": 0.916667,
+    "Recall@10": 0.916667,
+    "Recall@5": 0.763889,
+    "answerable_question_count": 6,
+    "nDCG@10": 0.896626,
+    "nDCG@5": 0.870059,
+    "question_count": 6,
+    "top1_hit_rate": 0.833333
+  },
+  "per_question": [
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.977543,
+        "nDCG@5": 0.946768
+      },
+      "positive_judgment_count": 3,
+      "question": "What is a PersistentVolume in Kubernetes?",
+      "question_id": "k8s-001",
+      "retrieved": [
+        {
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 1,
+          "score": 0.86928457,
+          "section_id": "stor-003-sec-002"
+        },
+        {
+          "chunk_id": "stor-002-sec-036-ch-001",
+          "document_id": "stor-002",
+          "domain": "storage",
+          "rank": 2,
+          "score": 0.84823209,
+          "section_id": "stor-002-sec-036"
+        },
+        {
+          "chunk_id": "stor-003-sec-026-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 3,
+          "score": 0.84326112,
+          "section_id": "stor-003-sec-026"
+        },
+        {
+          "chunk_id": "stor-003-sec-017-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 4,
+          "score": 0.83251178,
+          "section_id": "stor-003-sec-017"
+        },
+        {
+          "chunk_id": "sec-006-sec-010-ch-001",
+          "document_id": "sec-006",
+          "domain": "security_policies",
+          "rank": 5,
+          "score": 0.83088923,
+          "section_id": "sec-006-sec-010"
+        },
+        {
+          "chunk_id": "stor-003-sec-056-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 6,
+          "score": 0.83017373,
+          "section_id": "stor-003-sec-056"
+        },
+        {
+          "chunk_id": "work-011-sec-038-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 7,
+          "score": 0.82753378,
+          "section_id": "work-011-sec-038"
+        },
+        {
+          "chunk_id": "stor-003-sec-042-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 8,
+          "score": 0.82744169,
+          "section_id": "stor-003-sec-042"
+        },
+        {
+          "chunk_id": "stor-005-sec-007-ch-001",
+          "document_id": "stor-005",
+          "domain": "storage",
+          "rank": 9,
+          "score": 0.82178563,
+          "section_id": "stor-005-sec-007"
+        },
+        {
+          "chunk_id": "work-011-sec-014-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 10,
+          "score": 0.81588346,
+          "section_id": "work-011-sec-014"
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 0.75,
+        "nDCG@10": 0.923854,
+        "nDCG@5": 0.825122
+      },
+      "positive_judgment_count": 4,
+      "question": "How does Kubernetes expose a Service outside the cluster?",
+      "question_id": "k8s-002",
+      "retrieved": [
+        {
+          "chunk_id": "net-002-sec-018-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 1,
+          "score": 0.82766902,
+          "section_id": "net-002-sec-018"
+        },
+        {
+          "chunk_id": "net-001-sec-002-ch-001",
+          "document_id": "net-001",
+          "domain": "services_networking",
+          "rank": 2,
+          "score": 0.79281509,
+          "section_id": "net-001-sec-002"
+        },
+        {
+          "chunk_id": "net-002-sec-002-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 3,
+          "score": 0.79155183,
+          "section_id": "net-002-sec-002"
+        },
+        {
+          "chunk_id": "net-002-sec-001-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 4,
+          "score": 0.78808337,
+          "section_id": "net-002-sec-001"
+        },
+        {
+          "chunk_id": "net-002-sec-041-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 5,
+          "score": 0.78087026,
+          "section_id": "net-002-sec-041"
+        },
+        {
+          "chunk_id": "net-002-sec-049-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 6,
+          "score": 0.78019136,
+          "section_id": "net-002-sec-049"
+        },
+        {
+          "chunk_id": "net-002-sec-009-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 7,
+          "score": 0.7747907,
+          "section_id": "net-002-sec-009"
+        },
+        {
+          "chunk_id": "net-002-sec-007-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 8,
+          "score": 0.77201974,
+          "section_id": "net-002-sec-007"
+        },
+        {
+          "chunk_id": "net-002-sec-038-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 9,
+          "score": 0.77141178,
+          "section_id": "net-002-sec-038"
+        },
+        {
+          "chunk_id": "net-002-sec-044-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 10,
+          "score": 0.76197934,
+          "section_id": "net-002-sec-044"
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.955831,
+        "nDCG@5": 0.955831
+      },
+      "positive_judgment_count": 2,
+      "question": "What is a persistentVolumeClaim volume used for?",
+      "question_id": "k8s-003",
+      "retrieved": [
+        {
+          "chunk_id": "stor-002-sec-036-ch-001",
+          "document_id": "stor-002",
+          "domain": "storage",
+          "rank": 1,
+          "score": 0.87929022,
+          "section_id": "stor-002-sec-036"
+        },
+        {
+          "chunk_id": "stor-003-sec-065-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 2,
+          "score": 0.84220451,
+          "section_id": "stor-003-sec-065"
+        },
+        {
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 3,
+          "score": 0.83398432,
+          "section_id": "stor-003-sec-002"
+        },
+        {
+          "chunk_id": "stor-003-sec-067-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 4,
+          "score": 0.82656962,
+          "section_id": "stor-003-sec-067"
+        },
+        {
+          "chunk_id": "stor-003-sec-012-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 5,
+          "score": 0.82500958,
+          "section_id": "stor-003-sec-012"
+        },
+        {
+          "chunk_id": "stor-003-sec-059-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 6,
+          "score": 0.82324493,
+          "section_id": "stor-003-sec-059"
+        },
+        {
+          "chunk_id": "stor-003-sec-017-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 7,
+          "score": 0.81814724,
+          "section_id": "stor-003-sec-017"
+        },
+        {
+          "chunk_id": "stor-005-sec-007-ch-001",
+          "document_id": "stor-005",
+          "domain": "storage",
+          "rank": 8,
+          "score": 0.8163988,
+          "section_id": "stor-005-sec-007"
+        },
+        {
+          "chunk_id": "stor-008-sec-008-ch-001",
+          "document_id": "stor-008",
+          "domain": "storage",
+          "rank": 9,
+          "score": 0.80915689,
+          "section_id": "stor-008-sec-008"
+        },
+        {
+          "chunk_id": "stor-003-sec-058-ch-001",
+          "document_id": "stor-003",
+          "domain": "storage",
+          "rank": 10,
+          "score": 0.80693316,
+          "section_id": "stor-003-sec-058"
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.987933,
+        "nDCG@5": 0.958041
+      },
+      "positive_judgment_count": 3,
+      "question": "What is a Kubernetes Service?",
+      "question_id": "k8s-004",
+      "retrieved": [
+        {
+          "chunk_id": "net-002-sec-001-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 1,
+          "score": 0.88044804,
+          "section_id": "net-002-sec-001"
+        },
+        {
+          "chunk_id": "net-002-sec-002-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 2,
+          "score": 0.85889274,
+          "section_id": "net-002-sec-002"
+        },
+        {
+          "chunk_id": "net-002-sec-004-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 3,
+          "score": 0.81458229,
+          "section_id": "net-002-sec-004"
+        },
+        {
+          "chunk_id": "net-001-sec-002-ch-002",
+          "document_id": "net-001",
+          "domain": "services_networking",
+          "rank": 4,
+          "score": 0.80497009,
+          "section_id": "net-001-sec-002"
+        },
+        {
+          "chunk_id": "net-001-sec-002-ch-001",
+          "document_id": "net-001",
+          "domain": "services_networking",
+          "rank": 5,
+          "score": 0.80413043,
+          "section_id": "net-001-sec-002"
+        },
+        {
+          "chunk_id": "net-002-sec-018-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 6,
+          "score": 0.80307782,
+          "section_id": "net-002-sec-018"
+        },
+        {
+          "chunk_id": "net-001-sec-003-ch-001",
+          "document_id": "net-001",
+          "domain": "services_networking",
+          "rank": 7,
+          "score": 0.79903686,
+          "section_id": "net-001-sec-003"
+        },
+        {
+          "chunk_id": "net-002-sec-041-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 8,
+          "score": 0.79434061,
+          "section_id": "net-002-sec-041"
+        },
+        {
+          "chunk_id": "net-002-sec-051-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 9,
+          "score": 0.79364121,
+          "section_id": "net-002-sec-051"
+        },
+        {
+          "chunk_id": "net-002-sec-003-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 10,
+          "score": 0.79113507,
+          "section_id": "net-002-sec-003"
+        }
+      ],
+      "split": "test"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.955831,
+        "nDCG@5": 0.955831
+      },
+      "positive_judgment_count": 2,
+      "question": "How can external IPs be used with Kubernetes Services?",
+      "question_id": "k8s-005",
+      "retrieved": [
+        {
+          "chunk_id": "net-002-sec-049-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 1,
+          "score": 0.86261308,
+          "section_id": "net-002-sec-049"
+        },
+        {
+          "chunk_id": "net-002-sec-009-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 2,
+          "score": 0.8458544,
+          "section_id": "net-002-sec-009"
+        },
+        {
+          "chunk_id": "net-002-sec-018-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 3,
+          "score": 0.8178221,
+          "section_id": "net-002-sec-018"
+        },
+        {
+          "chunk_id": "net-002-sec-036-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 4,
+          "score": 0.80956423,
+          "section_id": "net-002-sec-036"
+        },
+        {
+          "chunk_id": "net-007-sec-001-ch-001",
+          "document_id": "net-007",
+          "domain": "services_networking",
+          "rank": 5,
+          "score": 0.80384433,
+          "section_id": "net-007-sec-001"
+        },
+        {
+          "chunk_id": "net-002-sec-020-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 6,
+          "score": 0.80092096,
+          "section_id": "net-002-sec-020"
+        },
+        {
+          "chunk_id": "net-008-sec-006-ch-001",
+          "document_id": "net-008",
+          "domain": "services_networking",
+          "rank": 7,
+          "score": 0.79725766,
+          "section_id": "net-008-sec-006"
+        },
+        {
+          "chunk_id": "net-002-sec-038-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 8,
+          "score": 0.78993767,
+          "section_id": "net-002-sec-038"
+        },
+        {
+          "chunk_id": "net-002-sec-044-ch-001",
+          "document_id": "net-002",
+          "domain": "services_networking",
+          "rank": 9,
+          "score": 0.78984368,
+          "section_id": "net-002-sec-044"
+        },
+        {
+          "chunk_id": "net-008-sec-017-ch-001",
+          "document_id": "net-008",
+          "domain": "services_networking",
+          "rank": 10,
+          "score": 0.78568208,
+          "section_id": "net-008-sec-017"
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "medium",
+      "first_relevant_rank": 2,
+      "metrics": {
+        "MRR": 0.5,
+        "Recall@10": 0.5,
+        "Recall@5": 0.5,
+        "nDCG@10": 0.578764,
+        "nDCG@5": 0.578764
+      },
+      "positive_judgment_count": 2,
+      "question": "How does a StatefulSet provide stable storage to its Pods?",
+      "question_id": "k8s-006",
+      "retrieved": [
+        {
+          "chunk_id": "work-011-sec-002-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 1,
+          "score": 0.84905136,
+          "section_id": "work-011-sec-002"
+        },
+        {
+          "chunk_id": "work-011-sec-014-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 2,
+          "score": 0.84536767,
+          "section_id": "work-011-sec-014"
+        },
+        {
+          "chunk_id": "work-011-sec-001-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 3,
+          "score": 0.83304381,
+          "section_id": "work-011-sec-001"
+        },
+        {
+          "chunk_id": "work-011-sec-003-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 4,
+          "score": 0.81369615,
+          "section_id": "work-011-sec-003"
+        },
+        {
+          "chunk_id": "work-011-sec-018-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 5,
+          "score": 0.8113901,
+          "section_id": "work-011-sec-018"
+        },
+        {
+          "chunk_id": "work-011-sec-009-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 6,
+          "score": 0.80549276,
+          "section_id": "work-011-sec-009"
+        },
+        {
+          "chunk_id": "work-011-sec-007-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 7,
+          "score": 0.80081534,
+          "section_id": "work-011-sec-007"
+        },
+        {
+          "chunk_id": "work-011-sec-038-ch-002",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 8,
+          "score": 0.79178154,
+          "section_id": "work-011-sec-038"
+        },
+        {
+          "chunk_id": "work-011-sec-040-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 9,
+          "score": 0.79105484,
+          "section_id": "work-011-sec-040"
+        },
+        {
+          "chunk_id": "work-011-sec-038-ch-001",
+          "document_id": "work-011",
+          "domain": "workloads",
+          "rank": 10,
+          "score": 0.78086269,
+          "section_id": "work-011-sec-038"
+        }
+      ],
+      "split": "test"
+    }
+  ],
+  "question_distribution": {
+    "category": {
+      "direct_factual": 5,
+      "scenario_application": 1
+    },
+    "difficulty": {
+      "easy": 4,
+      "medium": 2
+    },
+    "split": {
+      "dev": 4,
+      "test": 2
+    }
+  },
+  "retrieval_top_k_recorded": 10,
+  "retriever": {
+    "chunk_count": 1223,
+    "device": "cuda",
+    "device_description": "NVIDIA GeForce RTX 2080 Super",
+    "embedding_dimension": 384,
+    "index_type": "dense",
+    "model": "BAAI/bge-small-en-v1.5",
+    "query_prefix": "",
+    "retriever_version": "0.1.0",
+    "similarity": "cosine"
+  },
+  "run_name": "dense_prefix_off",
+  "selected_split": "all"
+}
