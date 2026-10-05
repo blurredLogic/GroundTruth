@@ -1,0 +1,170 @@
+{
+  "benchmark_size": 100,
+  "builder_version": "0.1.0",
+  "labeling_pack": "data/evaluation/golden_labeling_candidates.jsonl",
+  "questions_needing_labeling": 94,
+  "seed_questions": 6,
+  "targets": {
+    "category": {
+      "comparison": 15,
+      "direct_factual": 20,
+      "multi_hop": 20,
+      "negative_near_miss": 10,
+      "scenario_application": 20,
+      "troubleshooting": 15
+    },
+    "category_difficulty": {
+      "comparison": {
+        "easy": 2,
+        "hard": 5,
+        "medium": 8
+      },
+      "direct_factual": {
+        "easy": 12,
+        "hard": 0,
+        "medium": 8
+      },
+      "multi_hop": {
+        "easy": 2,
+        "hard": 10,
+        "medium": 8
+      },
+      "negative_near_miss": {
+        "easy": 3,
+        "hard": 3,
+        "medium": 4
+      },
+      "scenario_application": {
+        "easy": 4,
+        "hard": 6,
+        "medium": 10
+      },
+      "troubleshooting": {
+        "easy": 2,
+        "hard": 6,
+        "medium": 7
+      }
+    },
+    "category_split": {
+      "comparison": {
+        "dev": 9,
+        "test": 6
+      },
+      "direct_factual": {
+        "dev": 12,
+        "test": 8
+      },
+      "multi_hop": {
+        "dev": 12,
+        "test": 8
+      },
+      "negative_near_miss": {
+        "dev": 6,
+        "test": 4
+      },
+      "scenario_application": {
+        "dev": 12,
+        "test": 8
+      },
+      "troubleshooting": {
+        "dev": 9,
+        "test": 6
+      }
+    },
+    "difficulty": {
+      "easy": 25,
+      "hard": 30,
+      "medium": 45
+    },
+    "split": {
+      "dev": 60,
+      "test": 40
+    }
+  },
+  "validated_final_counts": {
+    "category": {
+      "comparison": 15,
+      "direct_factual": 20,
+      "multi_hop": 20,
+      "negative_near_miss": 10,
+      "scenario_application": 20,
+      "troubleshooting": 15
+    },
+    "category_difficulty": {
+      "comparison": {
+        "easy": 2,
+        "hard": 5,
+        "medium": 8
+      },
+      "direct_factual": {
+        "easy": 12,
+        "medium": 8
+      },
+      "multi_hop": {
+        "easy": 2,
+        "hard": 10,
+        "medium": 8
+      },
+      "negative_near_miss": {
+        "easy": 3,
+        "hard": 3,
+        "medium": 4
+      },
+      "scenario_application": {
+        "easy": 4,
+        "hard": 6,
+        "medium": 10
+      },
+      "troubleshooting": {
+        "easy": 2,
+        "hard": 6,
+        "medium": 7
+      }
+    },
+    "category_split": {
+      "comparison": {
+        "dev": 9,
+        "test": 6
+      },
+      "direct_factual": {
+        "dev": 12,
+        "test": 8
+      },
+      "multi_hop": {
+        "dev": 12,
+        "test": 8
+      },
+      "negative_near_miss": {
+        "dev": 6,
+        "test": 4
+      },
+      "scenario_application": {
+        "dev": 12,
+        "test": 8
+      },
+      "troubleshooting": {
+        "dev": 9,
+        "test": 6
+      }
+    },
+    "difficulty": {
+      "easy": 25,
+      "hard": 30,
+      "medium": 45
+    },
+    "split": {
+      "dev": 60,
+      "test": 40
+    }
+  },
+  "workflow": [
+    "Open each needs_labeling record.",
+    "Read anchor_context and related_context_candidates.",
+    "Write a natural question matching target category/difficulty.",
+    "Assign relevance grades 0-3 only after reading the evidence.",
+    "For multi-hop/comparison questions, label every answer-bearing chunk.",
+    "For negative_near_miss questions, keep answerable=false and no positive judgments.",
+    "Copy completed records into data/evaluation/golden_questions.jsonl.",
+    "Run groundtruth.evaluation.evaluate_retrieval after validation."
+  ]
+}

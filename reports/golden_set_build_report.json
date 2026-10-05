@@ -1,0 +1,164 @@
+{
+  "anchor_distribution": {
+    "by_document": {
+      "arch-001": 3,
+      "arch-002": 3,
+      "arch-003": 1,
+      "arch-004": 2,
+      "arch-006": 2,
+      "arch-007": 3,
+      "conf-001": 2,
+      "conf-003": 5,
+      "conf-004": 7,
+      "net-001": 1,
+      "net-002": 2,
+      "net-003": 4,
+      "net-004": 1,
+      "net-005": 1,
+      "net-006": 1,
+      "net-007": 3,
+      "sched-003": 6,
+      "sched-004": 1,
+      "sched-005": 1,
+      "sched-006": 4,
+      "sched-007": 2,
+      "sec-001": 1,
+      "sec-003": 1,
+      "sec-004": 3,
+      "sec-005": 1,
+      "sec-006": 2,
+      "sec-007": 1,
+      "sec-008": 1,
+      "sec-009": 3,
+      "stor-002": 3,
+      "stor-003": 4,
+      "stor-004": 1,
+      "stor-005": 1,
+      "stor-006": 2,
+      "stor-007": 1,
+      "stor-008": 1,
+      "work-003": 3,
+      "work-004": 1,
+      "work-009": 3,
+      "work-010": 1,
+      "work-011": 1,
+      "work-012": 1,
+      "work-013": 2,
+      "work-015": 1
+    },
+    "by_domain": {
+      "cluster_architecture": 14,
+      "configuration": 14,
+      "scheduling_resource_management": 14,
+      "security_policies": 13,
+      "services_networking": 13,
+      "storage": 13,
+      "workloads": 13
+    }
+  },
+  "builder_version": "0.1.0",
+  "inputs": {
+    "chunks": "data/index/chunks_indexable.jsonl",
+    "chunks_sha256": "sha256:6428fa415ffaa92baa0da6a54d3853b20c7e567a796244c9110d198daaf47d9d",
+    "embeddings": "data/index/dense/embeddings.npy",
+    "metadata": "data/index/dense/metadata.jsonl",
+    "seed_questions": "data/evaluation/golden_questions.jsonl",
+    "seed_questions_sha256": "sha256:14dc3e9c237ad869e80e6b57521d9411024c3e9fd3c65ca5858c6dd23c9c81bb"
+  },
+  "outputs": {
+    "labeling_pack": "data/evaluation/golden_labeling_candidates.jsonl",
+    "labeling_pack_sha256": "sha256:647ac3ce290d770da1dbc7d767dc4a6277d45aee94abbaecdea226f00377002f",
+    "plan": "data/evaluation/golden_plan.json"
+  },
+  "safety": {
+    "automatic_gold_judgments_generated": false,
+    "automatic_questions_generated": false,
+    "candidate_contexts_are_gold": false,
+    "purpose": "Create a balanced, corpus-grounded human-labeling pack for the remaining benchmark questions."
+  },
+  "status": "SUCCESS",
+  "summary": {
+    "anchor_document_count": 44,
+    "anchor_domain_count": 7,
+    "needs_labeling": 94,
+    "seed_complete": 6,
+    "total_question_slots": 100,
+    "unique_anchor_chunks": 94
+  },
+  "validated_targets": {
+    "category": {
+      "comparison": 15,
+      "direct_factual": 20,
+      "multi_hop": 20,
+      "negative_near_miss": 10,
+      "scenario_application": 20,
+      "troubleshooting": 15
+    },
+    "category_difficulty": {
+      "comparison": {
+        "easy": 2,
+        "hard": 5,
+        "medium": 8
+      },
+      "direct_factual": {
+        "easy": 12,
+        "medium": 8
+      },
+      "multi_hop": {
+        "easy": 2,
+        "hard": 10,
+        "medium": 8
+      },
+      "negative_near_miss": {
+        "easy": 3,
+        "hard": 3,
+        "medium": 4
+      },
+      "scenario_application": {
+        "easy": 4,
+        "hard": 6,
+        "medium": 10
+      },
+      "troubleshooting": {
+        "easy": 2,
+        "hard": 6,
+        "medium": 7
+      }
+    },
+    "category_split": {
+      "comparison": {
+        "dev": 9,
+        "test": 6
+      },
+      "direct_factual": {
+        "dev": 12,
+        "test": 8
+      },
+      "multi_hop": {
+        "dev": 12,
+        "test": 8
+      },
+      "negative_near_miss": {
+        "dev": 6,
+        "test": 4
+      },
+      "scenario_application": {
+        "dev": 12,
+        "test": 8
+      },
+      "troubleshooting": {
+        "dev": 9,
+        "test": 6
+      }
+    },
+    "difficulty": {
+      "easy": 25,
+      "hard": 30,
+      "medium": 45
+    },
+    "split": {
+      "dev": 60,
+      "test": 40
+    }
+  }
+}
