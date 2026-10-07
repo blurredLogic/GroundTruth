@@ -1,0 +1,394 @@
+{
+  "benchmark": {
+    "answerable_count": 90,
+    "dev_negative_count": 6,
+    "negative_count": 10,
+    "question_count": 100,
+    "test_negative_count": 4
+  },
+  "confidence_signal": "top1_retrieval_score",
+  "evaluator_version": "0.1.0",
+  "systems": {
+    "bm25_v0_1": {
+      "all_questions_at_dev_threshold": {
+        "accuracy": 0.45,
+        "answerable_recall": 0.388889,
+        "balanced_accuracy": 0.694444,
+        "fn_answerable": 55,
+        "fp_negative": 0,
+        "negative_false_positive_rate": 0.0,
+        "negative_rejection_rate": 1.0,
+        "threshold": 43.64262301636445,
+        "tn_negative": 10,
+        "tp_answerable": 35
+      },
+      "confidence_signal": "top1_retrieval_score",
+      "dev": {
+        "answerable_count": 54,
+        "auroc": 0.703704,
+        "negative_count": 6,
+        "question_count": 60,
+        "score_summary": {
+          "answerable": {
+            "max": 90.9628216,
+            "mean": 41.07014041,
+            "median": 38.46360875,
+            "min": 10.15766144
+          },
+          "negative_near_miss": {
+            "max": 43.49425094,
+            "mean": 31.17231099,
+            "median": 30.46990337,
+            "min": 22.31570132
+          }
+        },
+        "selected_threshold": {
+          "accuracy": 0.483333,
+          "answerable_recall": 0.425926,
+          "balanced_accuracy": 0.712963,
+          "fn_answerable": 31,
+          "fp_negative": 0,
+          "negative_false_positive_rate": 0.0,
+          "negative_rejection_rate": 1.0,
+          "threshold": 43.64262301636445,
+          "tn_negative": 6,
+          "tp_answerable": 23
+        }
+      },
+      "system": "bm25_v0_1",
+      "test": {
+        "answerable_count": 36,
+        "auroc": 0.6875,
+        "negative_count": 4,
+        "negative_queries": [
+          {
+            "confidence": 41.64448624,
+            "question": "Which `nodeName` option tells Kubernetes to try the named node first but automatically fall back to another node if that node does not exist or lacks resources?",
+            "question_id": "k8s-030",
+            "rejected_as_unanswerable": true,
+            "threshold": 43.64262302,
+            "top1_chunk_id": "sched-003-sec-028-ch-001",
+            "top1_document_id": "sched-003",
+            "top1_domain": "scheduling_resource_management"
+          },
+          {
+            "confidence": 30.22772262,
+            "question": "Which ConfigMap setting automatically promotes a development configuration to production after tests pass and rolls it back if the production rollout fails?",
+            "question_id": "k8s-036",
+            "rejected_as_unanswerable": true,
+            "threshold": 43.64262302,
+            "top1_chunk_id": "conf-001-sec-001-ch-001",
+            "top1_document_id": "conf-001",
+            "top1_domain": "configuration"
+          },
+          {
+            "confidence": 25.29436392,
+            "question": "Which Kubernetes controller setting globally assigns ownership priority when two unrelated controllers both try to manage the same objects of a resource kind?",
+            "question_id": "k8s-042",
+            "rejected_as_unanswerable": true,
+            "threshold": 43.64262302,
+            "top1_chunk_id": "work-013-sec-015-ch-001",
+            "top1_document_id": "work-013",
+            "top1_domain": "workloads"
+          },
+          {
+            "confidence": 24.14335971,
+            "question": "Which Pod field lets you hot-patch any arbitrary Pod specification change in place, including volumes and all scheduling fields, without recreating the Pod?",
+            "question_id": "k8s-048",
+            "rejected_as_unanswerable": true,
+            "threshold": 43.64262302,
+            "top1_chunk_id": "work-013-sec-044-ch-001",
+            "top1_document_id": "work-013",
+            "top1_domain": "workloads"
+          }
+        ],
+        "question_count": 40,
+        "score_summary": {
+          "answerable": {
+            "max": 65.06941068,
+            "mean": 38.87641551,
+            "median": 40.03272578,
+            "min": 8.8811134
+          },
+          "negative_near_miss": {
+            "max": 41.64448624,
+            "mean": 30.32748312,
+            "median": 27.76104327,
+            "min": 24.14335971
+          }
+        },
+        "threshold_from_dev": 43.6426230164,
+        "threshold_metrics": {
+          "accuracy": 0.4,
+          "answerable_recall": 0.333333,
+          "balanced_accuracy": 0.666667,
+          "fn_answerable": 24,
+          "fp_negative": 0,
+          "negative_false_positive_rate": 0.0,
+          "negative_rejection_rate": 1.0,
+          "threshold": 43.64262301636445,
+          "tn_negative": 4,
+          "tp_answerable": 12
+        }
+      }
+    },
+    "dense_v0_1": {
+      "all_questions_at_dev_threshold": {
+        "accuracy": 0.76,
+        "answerable_recall": 0.755556,
+        "balanced_accuracy": 0.777778,
+        "fn_answerable": 22,
+        "fp_negative": 2,
+        "negative_false_positive_rate": 0.2,
+        "negative_rejection_rate": 0.8,
+        "threshold": 0.8299105763435364,
+        "tn_negative": 8,
+        "tp_answerable": 68
+      },
+      "confidence_signal": "top1_retrieval_score",
+      "dev": {
+        "answerable_count": 54,
+        "auroc": 0.756173,
+        "negative_count": 6,
+        "question_count": 60,
+        "score_summary": {
+          "answerable": {
+            "max": 0.91382033,
+            "mean": 0.85263829,
+            "median": 0.85592425,
+            "min": 0.75919765
+          },
+          "negative_near_miss": {
+            "max": 0.86169678,
+            "mean": 0.82362806,
+            "median": 0.81726521,
+            "min": 0.78765821
+          }
+        },
+        "selected_threshold": {
+          "accuracy": 0.8,
+          "answerable_recall": 0.814815,
+          "balanced_accuracy": 0.740741,
+          "fn_answerable": 10,
+          "fp_negative": 2,
+          "negative_false_positive_rate": 0.333333,
+          "negative_rejection_rate": 0.666667,
+          "threshold": 0.8299105763435364,
+          "tn_negative": 4,
+          "tp_answerable": 44
+        }
+      },
+      "system": "dense_v0_1",
+      "test": {
+        "answerable_count": 36,
+        "auroc": 0.888889,
+        "negative_count": 4,
+        "negative_queries": [
+          {
+            "confidence": 0.80736649,
+            "question": "Which `nodeName` option tells Kubernetes to try the named node first but automatically fall back to another node if that node does not exist or lacks resources?",
+            "question_id": "k8s-030",
+            "rejected_as_unanswerable": true,
+            "threshold": 0.82991058,
+            "top1_chunk_id": "sched-003-sec-028-ch-001",
+            "top1_document_id": "sched-003",
+            "top1_domain": "scheduling_resource_management"
+          },
+          {
+            "confidence": 0.79268789,
+            "question": "Which Pod field lets you hot-patch any arbitrary Pod specification change in place, including volumes and all scheduling fields, without recreating the Pod?",
+            "question_id": "k8s-048",
+            "rejected_as_unanswerable": true,
+            "threshold": 0.82991058,
+            "top1_chunk_id": "work-002-sec-012-ch-001",
+            "top1_document_id": "work-002",
+            "top1_domain": "workloads"
+          },
+          {
+            "confidence": 0.76574248,
+            "question": "Which Kubernetes controller setting globally assigns ownership priority when two unrelated controllers both try to manage the same objects of a resource kind?",
+            "question_id": "k8s-042",
+            "rejected_as_unanswerable": true,
+            "threshold": 0.82991058,
+            "top1_chunk_id": "arch-004-sec-007-ch-001",
+            "top1_document_id": "arch-004",
+            "top1_domain": "cluster_architecture"
+          },
+          {
+            "confidence": 0.73186117,
+            "question": "Which ConfigMap setting automatically promotes a development configuration to production after tests pass and rolls it back if the production rollout fails?",
+            "question_id": "k8s-036",
+            "rejected_as_unanswerable": true,
+            "threshold": 0.82991058,
+            "top1_chunk_id": "conf-002-sec-003-ch-001",
+            "top1_document_id": "conf-002",
+            "top1_domain": "configuration"
+          }
+        ],
+        "question_count": 40,
+        "score_summary": {
+          "answerable": {
+            "max": 0.92257935,
+            "mean": 0.8361548,
+            "median": 0.84098366,
+            "min": 0.70997638
+          },
+          "negative_near_miss": {
+            "max": 0.80736649,
+            "mean": 0.77441451,
+            "median": 0.77921519,
+            "min": 0.73186117
+          }
+        },
+        "threshold_from_dev": 0.8299105763,
+        "threshold_metrics": {
+          "accuracy": 0.7,
+          "answerable_recall": 0.666667,
+          "balanced_accuracy": 0.833333,
+          "fn_answerable": 12,
+          "fp_negative": 0,
+          "negative_false_positive_rate": 0.0,
+          "negative_rejection_rate": 1.0,
+          "threshold": 0.8299105763435364,
+          "tn_negative": 4,
+          "tp_answerable": 24
+        }
+      }
+    },
+    "hybrid_rrf_v0_2": {
+      "all_questions_at_dev_threshold": {
+        "accuracy": 0.54,
+        "answerable_recall": 0.522222,
+        "balanced_accuracy": 0.611111,
+        "fn_answerable": 43,
+        "fp_negative": 3,
+        "negative_false_positive_rate": 0.3,
+        "negative_rejection_rate": 0.7,
+        "threshold": 0.05227272727272727,
+        "tn_negative": 7,
+        "tp_answerable": 47
+      },
+      "confidence_signal": "top1_retrieval_score",
+      "dev": {
+        "answerable_count": 54,
+        "auroc": 0.496914,
+        "negative_count": 6,
+        "question_count": 60,
+        "score_summary": {
+          "answerable": {
+            "max": 0.05238095,
+            "mean": 0.05186003,
+            "median": 0.05238095,
+            "min": 0.04761905
+          },
+          "negative_near_miss": {
+            "max": 0.05238095,
+            "mean": 0.05223665,
+            "median": 0.0521645,
+            "min": 0.0521645
+          }
+        },
+        "selected_threshold": {
+          "accuracy": 0.55,
+          "answerable_recall": 0.537037,
+          "balanced_accuracy": 0.601852,
+          "fn_answerable": 25,
+          "fp_negative": 2,
+          "negative_false_positive_rate": 0.333333,
+          "negative_rejection_rate": 0.666667,
+          "threshold": 0.05227272727272727,
+          "tn_negative": 4,
+          "tp_answerable": 29
+        }
+      },
+      "system": "hybrid_rrf_v0_2",
+      "test": {
+        "answerable_count": 36,
+        "auroc": 0.555556,
+        "negative_count": 4,
+        "negative_queries": [
+          {
+            "confidence": 0.05238095,
+            "question": "Which `nodeName` option tells Kubernetes to try the named node first but automatically fall back to another node if that node does not exist or lacks resources?",
+            "question_id": "k8s-030",
+            "rejected_as_unanswerable": false,
+            "threshold": 0.05227273,
+            "top1_chunk_id": "sched-003-sec-028-ch-001",
+            "top1_document_id": "sched-003",
+            "top1_domain": "scheduling_resource_management"
+          },
+          {
+            "confidence": 0.05196687,
+            "question": "Which Kubernetes controller setting globally assigns ownership priority when two unrelated controllers both try to manage the same objects of a resource kind?",
+            "question_id": "k8s-042",
+            "rejected_as_unanswerable": true,
+            "threshold": 0.05227273,
+            "top1_chunk_id": "arch-004-sec-007-ch-001",
+            "top1_document_id": "arch-004",
+            "top1_domain": "cluster_architecture"
+          },
+          {
+            "confidence": 0.05178571,
+            "question": "Which ConfigMap setting automatically promotes a development configuration to production after tests pass and rolls it back if the production rollout fails?",
+            "question_id": "k8s-036",
+            "rejected_as_unanswerable": true,
+            "threshold": 0.05227273,
+            "top1_chunk_id": "conf-002-sec-003-ch-001",
+            "top1_document_id": "conf-002",
+            "top1_domain": "configuration"
+          },
+          {
+            "confidence": 0.05178571,
+            "question": "Which Pod field lets you hot-patch any arbitrary Pod specification change in place, including volumes and all scheduling fields, without recreating the Pod?",
+            "question_id": "k8s-048",
+            "rejected_as_unanswerable": true,
+            "threshold": 0.05227273,
+            "top1_chunk_id": "work-002-sec-012-ch-001",
+            "top1_document_id": "work-002",
+            "top1_domain": "workloads"
+          }
+        ],
+        "question_count": 40,
+        "score_summary": {
+          "answerable": {
+            "max": 0.05238095,
+            "mean": 0.05183861,
+            "median": 0.05227273,
+            "min": 0.05021645
+          },
+          "negative_near_miss": {
+            "max": 0.05238095,
+            "mean": 0.05197981,
+            "median": 0.05187629,
+            "min": 0.05178571
+          }
+        },
+        "threshold_from_dev": 0.0522727273,
+        "threshold_metrics": {
+          "accuracy": 0.525,
+          "answerable_recall": 0.5,
+          "balanced_accuracy": 0.625,
+          "fn_answerable": 18,
+          "fp_negative": 1,
+          "negative_false_positive_rate": 0.25,
+          "negative_rejection_rate": 0.75,
+          "threshold": 0.05227272727272727,
+          "tn_negative": 3,
+          "tp_answerable": 18
+        }
+      }
+    }
+  },
+  "task": "answerability_abstention",
+  "threshold_protocol": {
+    "prediction_rule": "answerable if top1 retrieval score >= threshold",
+    "selection_metric": "balanced_accuracy",
+    "test_used_for_threshold_selection": false,
+    "threshold_selected_on": "dev",
+    "tie_breakers": [
+      "negative_rejection_rate",
+      "answerable_recall",
+      "higher_threshold"
+    ]
+  }
+}
