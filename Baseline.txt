@@ -1,0 +1,44 @@
+Dense Baseline v0.1
+────────────────────────────────────────
+Embedding model:  BAAI/bge-small-en-v1.5
+Corpus:           1,223 indexable chunks
+Chunking:         512 tokens / 64 overlap
+Embedding dim:    384
+Similarity:       cosine
+Query prefix:     OFF
+
+Benchmark:        100 questions
+Answerable:       90
+Negative:         10
+
+Recall@5:         0.665926
+Recall@10:        0.786667
+MRR:              0.864537
+nDCG@5:           0.753061
+nDCG@10:          0.789261
+Top-1 hit:        0.800000
+
+             Recall@10       MRR
+6 questions
+OFF          0.9167          0.9167
+ON           0.8611          0.8889
+
+20 questions
+OFF          0.8981          0.9444
+ON           0.8796          0.9352
+
+40 questions
+OFF          0.8433          0.9071
+ON           0.8338          0.9000
+
+60 questions
+OFF          0.8320          0.8619
+ON           0.8435          0.8585
+
+80 questions
+OFF          0.8110          0.8544
+ON           0.8205          0.8463
+
+100 questions
+OFF          0.7867          0.8645
+ON           0.8006          0.8508
