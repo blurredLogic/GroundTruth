@@ -1,0 +1,78 @@
+{
+  "model_limit_note": "BGE-small may truncate 1024 cl100k token inputs at its transformer maximum; report this confound and inspect actual encoder truncation before interpreting 1024 vs smaller chunks.",
+  "primary_metric_note": "Section metrics use baseline human labels collapsed to sections and rank positions from each top-10 chunk list (deduplicated sections; duplicate chunks consume rank budget).",
+  "protocol": "DEV only; frozen Hybrid RRF v0.2; 256/32,512/64,1024/128",
+  "results": {
+    "1024": {
+      "chunk_metrics_on_size_specific_gold": {
+        "MRR": 0.925926,
+        "Recall@10": 0.827778,
+        "Recall@5": 0.708642,
+        "answerable_question_count": 54,
+        "nDCG@10": 0.829585,
+        "nDCG@5": 0.798566,
+        "question_count": 60,
+        "top1_hit_rate": 0.888889
+      },
+      "chunk_size": 1024,
+      "gold_origin": "token-span projected; weak label",
+      "overlap_tokens": 128,
+      "report": "reports\\experiments\\chunk_sizes\\chunk_1024\\hybrid_dev.json",
+      "section_metrics_on_original_gold": {
+        "SectionMRR": 0.925926,
+        "SectionRecall@10": 0.827778,
+        "SectionRecall@5": 0.708642,
+        "SectionnDCG@10": 0.829585,
+        "SectionnDCG@5": 0.798566
+      }
+    },
+    "256": {
+      "chunk_metrics_on_size_specific_gold": {
+        "MRR": 0.918981,
+        "Recall@10": 0.748839,
+        "Recall@5": 0.602293,
+        "answerable_question_count": 54,
+        "nDCG@10": 0.781594,
+        "nDCG@5": 0.738774,
+        "question_count": 60,
+        "top1_hit_rate": 0.888889
+      },
+      "chunk_size": 256,
+      "gold_origin": "token-span projected; weak label",
+      "overlap_tokens": 32,
+      "report": "reports\\experiments\\chunk_sizes\\chunk_256\\hybrid_dev.json",
+      "section_metrics_on_original_gold": {
+        "SectionMRR": 0.931327,
+        "SectionRecall@10": 0.820988,
+        "SectionRecall@5": 0.674691,
+        "SectionnDCG@10": 0.826823,
+        "SectionnDCG@5": 0.780064
+      }
+    },
+    "512": {
+      "chunk_metrics_on_size_specific_gold": {
+        "MRR": 0.914683,
+        "Recall@10": 0.800926,
+        "Recall@5": 0.68858,
+        "answerable_question_count": 54,
+        "nDCG@10": 0.819481,
+        "nDCG@5": 0.783107,
+        "question_count": 60,
+        "top1_hit_rate": 0.888889
+      },
+      "chunk_size": 512,
+      "gold_origin": "human-reviewed",
+      "overlap_tokens": 64,
+      "report": "reports\\experiments\\chunk_sizes\\chunk_512\\hybrid_dev.json",
+      "section_metrics_on_original_gold": {
+        "SectionMRR": 0.931658,
+        "SectionRecall@10": 0.824074,
+        "SectionRecall@5": 0.685494,
+        "SectionnDCG@10": 0.831971,
+        "SectionnDCG@5": 0.786614
+      }
+    }
+  },
+  "secondary_metric_note": "Projected chunk-level relevance is approximate and may overlabel chunks: NOT direct human-reviewed evidence at new chunk sizes.",
+  "test_split_used": false
+}

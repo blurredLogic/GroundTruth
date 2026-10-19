@@ -1,0 +1,31 @@
+{
+  "baseline_id": "hybrid_rrf_v0_2_test",
+  "description": "Frozen held-out test metrics for 512/64 chunked Kubernetes corpus. Dev-only tuning. Do not tune against this gate.",
+  "golden_semantic_sha256": "sha256:038601f956f672063dafdea7eaf62409a62a1883b50f917ea751d3534ac36d1a",
+  "expected": {
+    "split": "test",
+    "question_count": 40,
+    "answerable_question_count": 36
+  },
+  "test_metrics": {
+    "Recall@5": 0.664352,
+    "Recall@10": 0.773148,
+    "MRR": 0.846561,
+    "nDCG@5": 0.755878,
+    "nDCG@10": 0.785889,
+    "top1_hit_rate": 0.777778
+  },
+  "max_absolute_regression": {
+    "Recall@5": 0.02,
+    "Recall@10": 0.01,
+    "MRR": 0.015,
+    "nDCG@5": 0.02,
+    "nDCG@10": 0.01,
+    "top1_hit_rate": 0.028
+  },
+  "notes": {
+    "thresholds": "Engineering guardrails, not statistically estimated confidence intervals.",
+    "metric_semantics": "Chunk-level metrics on 36 answerable held-out test queries; 4 negatives excluded from these retrieval aggregates.",
+    "calibration": "Answerability thresholds are not included in this retrieval quality gate."
+  }
+}

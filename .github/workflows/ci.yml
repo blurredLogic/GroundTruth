@@ -1,0 +1,27 @@
+name: GroundTruth fast CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  fast-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Compile Python source (no imports or model downloads)
+        run: python -m compileall -q groundtruth
+      - name: Validate golden set and frozen fingerprint
+        run: python -m groundtruth.ci.check_golden
+      - name: Test gate logic (no ML dependencies)
+        run: python -m unittest discover -s tests -p 'test_ci_gates.py' -v
+      - name: Native BM25 build/retrieve/integrity smoke test
+        run: python -m unittest discover -s tests -p 'test_bm25_smoke.py' -v
