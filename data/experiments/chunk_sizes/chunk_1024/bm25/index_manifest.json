@@ -1,0 +1,31 @@
+{
+  "artifacts": {
+    "index_path": "data/experiments/chunk_sizes/chunk_1024/bm25/inverted_index.json.gz",
+    "index_sha256": "sha256:c62ec1bae742507097bc075d6084b093117385dbf84eb26013b4cb6c39f3bbaf",
+    "metadata_path": "data/experiments/chunk_sizes/chunk_1024/bm25/metadata.jsonl",
+    "metadata_sha256": "sha256:e91896fe879c67ceba9edb3f1f6384c3b9045e6b5b63e2617ea83ca6e06aaa30"
+  },
+  "builder_version": "0.1.0",
+  "corpus": {
+    "average_document_length": 130.96374889478338,
+    "document_count": 1131,
+    "input_path": "data/experiments/chunk_sizes/chunk_1024/chunks_indexable.jsonl",
+    "input_sha256": "sha256:134bf79fd5d1f334fe6a4ea2c75331ee531de43a00a15aa918b2c33d729e6859",
+    "max_document_length": 679,
+    "min_document_length": 2,
+    "vocabulary_size": 7935
+  },
+  "implementation": "groundtruth_native_bm25",
+  "index_type": "bm25",
+  "scoring": {
+    "b": 0.75,
+    "formula": "BM25Okapi",
+    "idf": "log(1 + (N - df + 0.5) / (df + 0.5))",
+    "k1": 1.5
+  },
+  "tokenizer": {
+    "lowercase": true,
+    "name": "groundtruth_regex_v0.1",
+    "pattern": "[A-Za-z0-9]+(?:[._/-][A-Za-z0-9]+)*"
+  }
+}

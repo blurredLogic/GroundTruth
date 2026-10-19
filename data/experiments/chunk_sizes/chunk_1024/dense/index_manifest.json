@@ -1,0 +1,62 @@
+{
+  "corpus": {
+    "chunk_count": 1131,
+    "chunking_config_sha256": "sha256:61c02753101c9ff3aff7f3dea73e85cdaa69f38ab02c3c1c6abcc835424d9da2",
+    "corpus_version": "0.1.0",
+    "document_count": 61,
+    "embedded_field": "retrieval_text",
+    "input": "data/experiments/chunk_sizes/chunk_1024/chunks_indexable.jsonl",
+    "input_sha256": "sha256:134bf79fd5d1f334fe6a4ea2c75331ee531de43a00a15aa918b2c33d729e6859",
+    "row_order": "document_id, section_id, chunk_index, chunk_id",
+    "section_count": 1122
+  },
+  "created_at": "2026-10-16T08:16:31.106370+00:00",
+  "duration_seconds": 9.75,
+  "embedding_model": {
+    "document_instruction": null,
+    "model_max_seq_length": 512,
+    "name": "BAAI/bge-small-en-v1.5",
+    "query_instruction": "Handled by the retriever, not during corpus embedding.",
+    "sentence_embedding_dimension": 384
+  },
+  "embeddings": {
+    "dtype": "float32",
+    "normalization": {
+      "maximum_absolute_error_from_1": 1.1920928955078125e-07,
+      "maximum_norm": 1.0000001192092896,
+      "mean_norm": 1.0,
+      "minimum_norm": 0.9999999403953552
+    },
+    "path": "data/experiments/chunk_sizes/chunk_1024/dense/embeddings.npy",
+    "sha256": "sha256:f2935cfef6f396bd00acb5fd77ed4dbf0f0ec3e4fe4272e9571f3e55ab112991",
+    "shape": [
+      1131,
+      384
+    ]
+  },
+  "index_builder_version": "0.1.0",
+  "index_type": "dense",
+  "metadata": {
+    "path": "data/experiments/chunk_sizes/chunk_1024/dense/metadata.jsonl",
+    "record_count": 1131,
+    "sha256": "sha256:bbfe83cafa734b0b5bfd8c0f29a4d4666faf4433f5dc3eebe6920069e97efab6"
+  },
+  "runtime": {
+    "batch_size": 32,
+    "device": "cuda",
+    "device_description": "NVIDIA GeForce RTX 2080 Super",
+    "huggingface_hub": "1.33.0",
+    "numpy": "1.24.4",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.10.6",
+    "sentence_transformers": "6.1.0",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0"
+  },
+  "similarity": {
+    "embeddings_l2_normalized": true,
+    "metric": "cosine",
+    "retrieval_operation": "dot_product_equivalent_to_cosine_for_normalized_vectors"
+  },
+  "started_at": "2026-10-16T08:16:21.356609+00:00"
+}

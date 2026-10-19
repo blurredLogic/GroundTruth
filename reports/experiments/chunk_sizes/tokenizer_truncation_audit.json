@@ -1,0 +1,42 @@
+{
+  "auditor": "standalone tokenizers; no torch or transformers imports",
+  "embedding_tokenizer_max_length": 512,
+  "model": "BAAI/bge-small-en-v1.5",
+  "model_length_source": "C:\\Users\\ruthwik\\.cache\\huggingface\\hub\\models--BAAI--bge-small-en-v1.5\\snapshots\\5c38ec7c405ec4b44b94cc5a9bb96e735b38267a\\tokenizer_config.json",
+  "tokenizer_source": "C:\\Users\\ruthwik\\.cache\\huggingface\\hub\\models--BAAI--bge-small-en-v1.5\\snapshots\\5c38ec7c405ec4b44b94cc5a9bb96e735b38267a\\tokenizer.json",
+  "variants": {
+    "1024": {
+      "corpus_path": "data/experiments/chunk_sizes/chunk_1024/chunks_indexable.jsonl",
+      "maximum_model_tokenized_length": 1439,
+      "mean_model_tokenized_length": 257.12,
+      "median_model_tokenized_length": 197,
+      "minimum_model_tokenized_length": 8,
+      "model_tokens_lost_to_truncation": 28586,
+      "total_chunks": 1131,
+      "would_truncate_chunks": 105,
+      "would_truncate_fraction": 0.092838
+    },
+    "256": {
+      "corpus_path": "data/experiments/chunk_sizes/chunk_256/chunks_indexable.jsonl",
+      "maximum_model_tokenized_length": 441,
+      "mean_model_tokenized_length": 195.95,
+      "median_model_tokenized_length": 203.0,
+      "minimum_model_tokenized_length": 8,
+      "model_tokens_lost_to_truncation": 0,
+      "total_chunks": 1598,
+      "would_truncate_chunks": 0,
+      "would_truncate_fraction": 0.0
+    },
+    "512": {
+      "corpus_path": "data/index/chunks_indexable.jsonl",
+      "maximum_model_tokenized_length": 813,
+      "mean_model_tokenized_length": 243.55,
+      "median_model_tokenized_length": 205,
+      "minimum_model_tokenized_length": 8,
+      "model_tokens_lost_to_truncation": 6967,
+      "total_chunks": 1223,
+      "would_truncate_chunks": 105,
+      "would_truncate_fraction": 0.085854
+    }
+  }
+}

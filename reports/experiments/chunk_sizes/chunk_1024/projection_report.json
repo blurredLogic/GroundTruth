@@ -1,0 +1,4013 @@
+{
+  "additional_matches_from_one_to_many_projection": 0,
+  "answerable": 90,
+  "ignored_baseline_grade_zero_judgments": 0,
+  "inputs": {
+    "baseline_chunks_sha256": "sha256:6428fa415ffaa92baa0da6a54d3853b20c7e567a796244c9110d198daaf47d9d",
+    "golden_sha256": "sha256:9feb925c6f0e6b955e1018572f30155b8ee388817e51d85d27dd448f09b95f4d",
+    "target_chunks_sha256": "sha256:134bf79fd5d1f334fe6a4ea2c75331ee531de43a00a15aa918b2c33d729e6859"
+  },
+  "method": "same-section token span; overlap / shorter_span >= threshold; max grade on collisions",
+  "min_shorter_overlap": 0.5,
+  "negative": 10,
+  "per_question": [
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-036-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 101
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-036-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-002-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 401
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-011-sec-014-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 144
+            }
+          ],
+          "target_chunk_id": "work-011-sec-014-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-001"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 369
+            }
+          ],
+          "target_chunk_id": "net-002-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-002-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 464
+            }
+          ],
+          "target_chunk_id": "net-002-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-018-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 490
+            }
+          ],
+          "target_chunk_id": "net-002-sec-018-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-049-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 280
+            }
+          ],
+          "target_chunk_id": "net-002-sec-049-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-002"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-036-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 101
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-036-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-002-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 401
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-002-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-003"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-001-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 369
+            }
+          ],
+          "target_chunk_id": "net-002-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-002-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 464
+            }
+          ],
+          "target_chunk_id": "net-002-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-018-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 490
+            }
+          ],
+          "target_chunk_id": "net-002-sec-018-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-004"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-018-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 490
+            }
+          ],
+          "target_chunk_id": "net-002-sec-018-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-049-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 280
+            }
+          ],
+          "target_chunk_id": "net-002-sec-049-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-005"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-036-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 101
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-036-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-011-sec-014-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 144
+            }
+          ],
+          "target_chunk_id": "work-011-sec-014-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-006"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-007-sec-001-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 180
+            }
+          ],
+          "target_chunk_id": "arch-007-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-007-sec-007-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 79
+            }
+          ],
+          "target_chunk_id": "arch-007-sec-007-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-007"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-004-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 179
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 99
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-006-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-008"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 1,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-022-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 183
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-022-ch-001"
+        }
+      ],
+      "projected_positive_count": 1,
+      "question_id": "k8s-009"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-003-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 182
+            }
+          ],
+          "target_chunk_id": "sec-003-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-009-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 300
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-009-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-010"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-007-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 447
+            }
+          ],
+          "target_chunk_id": "net-003-sec-007-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-015-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 181
+            }
+          ],
+          "target_chunk_id": "net-003-sec-015-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-019-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 97
+            }
+          ],
+          "target_chunk_id": "net-003-sec-019-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-011"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-012"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-003-sec-049-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 179
+            }
+          ],
+          "target_chunk_id": "work-003-sec-049-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-015-sec-025-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 40
+            }
+          ],
+          "target_chunk_id": "work-015-sec-025-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-013"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-004-sec-008-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 172
+            }
+          ],
+          "target_chunk_id": "arch-004-sec-008-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-007-sec-001-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 180
+            }
+          ],
+          "target_chunk_id": "arch-007-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-007-sec-002-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 62
+            }
+          ],
+          "target_chunk_id": "arch-007-sec-002-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-014"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-015-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 182
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-015-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-016-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 69
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-016-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-015"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-030-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 177
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-030-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-016-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 241
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-016-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-016"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-003-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 249
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-003-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-004-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 178
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-005-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 153
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-005-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-017"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-018"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-006-sec-010-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 370
+            }
+          ],
+          "target_chunk_id": "stor-006-sec-010-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-006-sec-012-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 183
+            }
+          ],
+          "target_chunk_id": "stor-006-sec-012-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-007-sec-006-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 91
+            }
+          ],
+          "target_chunk_id": "stor-007-sec-006-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-019"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-009-sec-032-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 179
+            }
+          ],
+          "target_chunk_id": "work-009-sec-032-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-010-sec-016-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 189
+            }
+          ],
+          "target_chunk_id": "work-010-sec-016-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-010-sec-020-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 276
+            }
+          ],
+          "target_chunk_id": "work-010-sec-020-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-020"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-001-sec-004-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 192
+            }
+          ],
+          "target_chunk_id": "arch-001-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 233
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-001-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-021"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-007-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 183
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-007-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-007-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 222
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-007-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-002-sec-022-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 162
+            }
+          ],
+          "target_chunk_id": "work-002-sec-022-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-022"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 73
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-023-ch-002",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 177
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-023-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-024-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 320
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-024-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-023"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-024"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-008-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 205
+            }
+          ],
+          "target_chunk_id": "net-003-sec-008-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-009-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 175
+            }
+          ],
+          "target_chunk_id": "net-003-sec-009-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-021-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 230
+            }
+          ],
+          "target_chunk_id": "net-003-sec-021-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-025"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-006-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 237
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-006-sec-005-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 502
+            }
+          ],
+          "target_chunk_id": "stor-006-sec-005-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-007-sec-002-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 177
+            }
+          ],
+          "target_chunk_id": "stor-007-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-008-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 63
+            }
+          ],
+          "target_chunk_id": "stor-008-sec-006-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-026"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-013-sec-012-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 181
+            }
+          ],
+          "target_chunk_id": "work-013-sec-012-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-013-sec-013-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 346
+            }
+          ],
+          "target_chunk_id": "work-013-sec-013-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-013-sec-014-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 150
+            }
+          ],
+          "target_chunk_id": "work-013-sec-014-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-027"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 197
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-004-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 255
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-012-sec-012-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 186
+            }
+          ],
+          "target_chunk_id": "work-012-sec-012-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-028"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-017-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 37
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-017-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-018-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 171
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-018-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-020-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 183
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-020-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-029"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-030"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-001-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 184
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-003-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 340
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-003-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-017-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 185
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-017-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-031"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-007-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 447
+            }
+          ],
+          "target_chunk_id": "net-003-sec-007-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-015-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 181
+            }
+          ],
+          "target_chunk_id": "net-003-sec-015-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-004-sec-004-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 175
+            }
+          ],
+          "target_chunk_id": "net-004-sec-004-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-032"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-058-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 171
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-058-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-059-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 479
+            },
+            {
+              "baseline_chunk_id": "stor-002-sec-059-ch-002",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 107
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-059-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-033"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 5,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-009-sec-033-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 182
+            }
+          ],
+          "target_chunk_id": "work-009-sec-033-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-010-sec-008-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 132
+            }
+          ],
+          "target_chunk_id": "work-010-sec-008-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-011-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 52
+            }
+          ],
+          "target_chunk_id": "work-011-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-012-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 206
+            }
+          ],
+          "target_chunk_id": "work-012-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-013-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 55
+            }
+          ],
+          "target_chunk_id": "work-013-sec-006-ch-001"
+        }
+      ],
+      "projected_positive_count": 5,
+      "question_id": "k8s-034"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-001-sec-002-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 29
+            }
+          ],
+          "target_chunk_id": "arch-001-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-001-sec-003-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 205
+            }
+          ],
+          "target_chunk_id": "arch-001-sec-003-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-004-sec-003-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 368
+            }
+          ],
+          "target_chunk_id": "arch-004-sec-003-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-035"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-036"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-012-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 186
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-012-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-015-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 262
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-015-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-037"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-008-sec-004-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 170
+            }
+          ],
+          "target_chunk_id": "sec-008-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-004-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 478
+            },
+            {
+              "baseline_chunk_id": "sec-009-sec-004-ch-002",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 106
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-007-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 222
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-007-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-038"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-007-sec-011-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 164
+            }
+          ],
+          "target_chunk_id": "net-007-sec-011-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-007-sec-012-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 185
+            }
+          ],
+          "target_chunk_id": "net-007-sec-012-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-039"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-036-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 101
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-036-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-026-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 171
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-026-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-007-sec-004-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 245
+            }
+          ],
+          "target_chunk_id": "stor-007-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-008-sec-010-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 259
+            }
+          ],
+          "target_chunk_id": "stor-008-sec-010-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-040"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-011-sec-021-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 381
+            }
+          ],
+          "target_chunk_id": "work-011-sec-021-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-011-sec-022-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 149
+            }
+          ],
+          "target_chunk_id": "work-011-sec-022-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-011-sec-023-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 182
+            }
+          ],
+          "target_chunk_id": "work-011-sec-023-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-041"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-042"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-018-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 171
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-018-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-019-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 185
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-019-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-043"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-019-ch-003",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 146
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-019-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-031-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 114
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-031-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-004-sec-003-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 187
+            }
+          ],
+          "target_chunk_id": "sched-004-sec-003-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-044"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-001-sec-002-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 49
+            }
+          ],
+          "target_chunk_id": "sec-001-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-001-sec-006-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 104
+            }
+          ],
+          "target_chunk_id": "sec-001-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-001-sec-009-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 167
+            }
+          ],
+          "target_chunk_id": "sec-001-sec-009-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-045"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-001-sec-003-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 173
+            }
+          ],
+          "target_chunk_id": "net-001-sec-003-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-002-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 464
+            }
+          ],
+          "target_chunk_id": "net-002-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-052-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 103
+            }
+          ],
+          "target_chunk_id": "net-002-sec-052-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-003-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 161
+            }
+          ],
+          "target_chunk_id": "net-003-sec-003-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-046"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-010-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 281
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-010-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-014-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 100
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-014-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-015-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 190
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-015-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-047"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-048"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-006-sec-008-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 149
+            }
+          ],
+          "target_chunk_id": "arch-006-sec-008-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-006-sec-009-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 128
+            }
+          ],
+          "target_chunk_id": "arch-006-sec-009-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-006-sec-010-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 153
+            }
+          ],
+          "target_chunk_id": "arch-006-sec-010-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-049"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-027-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 191
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-027-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-028-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 189
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-028-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-050"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-007-sec-001-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 367
+            }
+          ],
+          "target_chunk_id": "sched-007-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-007-sec-003-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 172
+            }
+          ],
+          "target_chunk_id": "sched-007-sec-003-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-007-sec-022-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 286
+            }
+          ],
+          "target_chunk_id": "sched-007-sec-022-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-051"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 139
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-003-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 249
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-003-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-008-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 86
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-008-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-007-sec-004-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 194
+            }
+          ],
+          "target_chunk_id": "sec-007-sec-004-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-052"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-005-sec-002-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 394
+            }
+          ],
+          "target_chunk_id": "net-005-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-005-sec-009-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 188
+            }
+          ],
+          "target_chunk_id": "net-005-sec-009-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-005-sec-010-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 66
+            }
+          ],
+          "target_chunk_id": "net-005-sec-010-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-053"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-054"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-002-sec-026-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 109
+            }
+          ],
+          "target_chunk_id": "work-002-sec-026-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-003-sec-034-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 183
+            }
+          ],
+          "target_chunk_id": "work-003-sec-034-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-015-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 110
+            }
+          ],
+          "target_chunk_id": "work-015-sec-001-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-055"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-002-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 273
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-007-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 329
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-007-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-013-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 208
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-013-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-056"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-018-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 171
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-018-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-020-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 183
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-020-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-057"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-010-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 171
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-010-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-007-sec-032-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 90
+            }
+          ],
+          "target_chunk_id": "sched-007-sec-032-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-026-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 427
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-026-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-058"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-007-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 222
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-007-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-008-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 194
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-008-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-009-sec-009-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 291
+            }
+          ],
+          "target_chunk_id": "sec-009-sec-009-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-059"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-060"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-004-sec-011-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 168
+            }
+          ],
+          "target_chunk_id": "stor-004-sec-011-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-004-sec-012-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 107
+            }
+          ],
+          "target_chunk_id": "stor-004-sec-012-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-061"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-004-sec-004-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 184
+            }
+          ],
+          "target_chunk_id": "work-004-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-005-sec-002-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 272
+            }
+          ],
+          "target_chunk_id": "work-005-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-005-sec-005-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 345
+            }
+          ],
+          "target_chunk_id": "work-005-sec-005-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-005-sec-008-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 227
+            }
+          ],
+          "target_chunk_id": "work-005-sec-008-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-062"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-002-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 273
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-004-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 150
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 197
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-006-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-063"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-026-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 191
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-026-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-007-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 229
+            }
+          ],
+          "target_chunk_id": "sec-007-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-007-sec-003-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 80
+            }
+          ],
+          "target_chunk_id": "sec-007-sec-003-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-064"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 73
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-012-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 186
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-012-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-013-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 191
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-013-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-065"
+    },
+    {
+      "answerable": false,
+      "baseline_positive_count": 0,
+      "matches": [],
+      "projected_positive_count": 0,
+      "question_id": "k8s-066"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-007-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 104
+            }
+          ],
+          "target_chunk_id": "net-007-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-007-sec-005-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 167
+            }
+          ],
+          "target_chunk_id": "net-007-sec-005-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-007-sec-006-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 136
+            }
+          ],
+          "target_chunk_id": "net-007-sec-006-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-067"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-046-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 199
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-046-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-025-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 508
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-025-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-064-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 89
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-064-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-066-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 34
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-066-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-068"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-009-sec-031-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 199
+            }
+          ],
+          "target_chunk_id": "work-009-sec-031-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-012-sec-005-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 185
+            }
+          ],
+          "target_chunk_id": "work-012-sec-005-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-013-sec-005-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 176
+            }
+          ],
+          "target_chunk_id": "work-013-sec-005-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-069"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-006-sec-008-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 149
+            }
+          ],
+          "target_chunk_id": "arch-006-sec-008-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-007-sec-019-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 75
+            }
+          ],
+          "target_chunk_id": "sched-007-sec-019-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-007-sec-020-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 95
+            }
+          ],
+          "target_chunk_id": "sched-007-sec-020-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-003-sec-046-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 261
+            }
+          ],
+          "target_chunk_id": "work-003-sec-046-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-070"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-003-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 93
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-003-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-027-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 191
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-027-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-029-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 145
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-029-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-071"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-007-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 367
+            }
+          ],
+          "target_chunk_id": "sched-007-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-007-sec-021-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 169
+            }
+          ],
+          "target_chunk_id": "sched-007-sec-021-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-007-sec-022-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 286
+            }
+          ],
+          "target_chunk_id": "sched-007-sec-022-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-072"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-001-sec-003-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 144
+            }
+          ],
+          "target_chunk_id": "sec-001-sec-003-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-005-sec-002-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 198
+            }
+          ],
+          "target_chunk_id": "sec-005-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-015-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 90
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-015-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-073"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 46
+            }
+          ],
+          "target_chunk_id": "net-003-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-004-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 269
+            }
+          ],
+          "target_chunk_id": "net-003-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-029-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 166
+            }
+          ],
+          "target_chunk_id": "net-003-sec-029-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-074"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-048-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 512
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-048-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-049-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 72
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-049-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-031-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 161
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-031-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-075"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-009-sec-031-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 199
+            }
+          ],
+          "target_chunk_id": "work-009-sec-031-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-010-sec-007-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 130
+            }
+          ],
+          "target_chunk_id": "work-010-sec-007-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-012-sec-005-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 185
+            }
+          ],
+          "target_chunk_id": "work-012-sec-005-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-013-sec-005-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 176
+            }
+          ],
+          "target_chunk_id": "work-013-sec-005-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-076"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-011-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 286
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-011-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-007-sec-005-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 216
+            }
+          ],
+          "target_chunk_id": "arch-007-sec-005-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-007-sec-006-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 57
+            }
+          ],
+          "target_chunk_id": "arch-007-sec-006-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-077"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-018-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 171
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-018-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-019-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 185
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-019-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-023-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 191
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-023-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-024-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 383
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-024-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-078"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-005-sec-008-ch-002",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 167
+            }
+          ],
+          "target_chunk_id": "sched-005-sec-008-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-005-sec-014-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 136
+            }
+          ],
+          "target_chunk_id": "sched-005-sec-014-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-079"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-004-sec-015-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 199
+            }
+          ],
+          "target_chunk_id": "sec-004-sec-015-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-005-sec-004-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 492
+            }
+          ],
+          "target_chunk_id": "sec-005-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-016-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 29
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-016-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-080"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-007-sec-009-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 512
+            }
+          ],
+          "target_chunk_id": "net-007-sec-009-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-007-sec-011-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 164
+            }
+          ],
+          "target_chunk_id": "net-007-sec-011-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-007-sec-012-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 185
+            }
+          ],
+          "target_chunk_id": "net-007-sec-012-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-081"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-017-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 382
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-017-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-042-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 160
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-042-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-045-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 74
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-045-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-082"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-003-sec-034-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 183
+            }
+          ],
+          "target_chunk_id": "work-003-sec-034-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-003-sec-035-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 119
+            }
+          ],
+          "target_chunk_id": "work-003-sec-035-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-003-sec-036-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 123
+            }
+          ],
+          "target_chunk_id": "work-003-sec-036-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-015-sec-021-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 185
+            }
+          ],
+          "target_chunk_id": "work-015-sec-021-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-083"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-007-sec-001-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 180
+            }
+          ],
+          "target_chunk_id": "arch-007-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-007-sec-002-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 62
+            }
+          ],
+          "target_chunk_id": "arch-007-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-007-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 57
+            }
+          ],
+          "target_chunk_id": "arch-007-sec-006-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-084"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 167
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-007-sec-005-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 119
+            }
+          ],
+          "target_chunk_id": "sec-007-sec-005-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-007-sec-011-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 55
+            }
+          ],
+          "target_chunk_id": "sec-007-sec-011-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-041-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 77
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-041-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-085"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-016-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 194
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-016-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-019-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 415
+            },
+            {
+              "baseline_chunk_id": "sched-003-sec-019-ch-002",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 454
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-019-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-027-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 440
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-027-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-086"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-004-sec-002-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 404
+            }
+          ],
+          "target_chunk_id": "sec-004-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-004-sec-003-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 202
+            }
+          ],
+          "target_chunk_id": "sec-004-sec-003-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-087"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-012-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 163
+            }
+          ],
+          "target_chunk_id": "net-002-sec-012-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-005-sec-002-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 394
+            }
+          ],
+          "target_chunk_id": "net-005-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-005-sec-011-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 406
+            }
+          ],
+          "target_chunk_id": "net-005-sec-011-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-005-sec-012-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 54
+            }
+          ],
+          "target_chunk_id": "net-005-sec-012-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-088"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-003-sec-038-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 103
+            }
+          ],
+          "target_chunk_id": "stor-003-sec-038-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-006-sec-011-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 200
+            }
+          ],
+          "target_chunk_id": "stor-006-sec-011-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-089"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-009-sec-016-ch-002",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 421
+            }
+          ],
+          "target_chunk_id": "work-009-sec-016-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-009-sec-040-ch-002",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 186
+            }
+          ],
+          "target_chunk_id": "work-009-sec-040-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-090"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-003-sec-001-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 101
+            }
+          ],
+          "target_chunk_id": "arch-003-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-003-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 110
+            }
+          ],
+          "target_chunk_id": "arch-003-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-003-sec-008-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 143
+            }
+          ],
+          "target_chunk_id": "arch-003-sec-008-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-091"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 2,
+      "matches": [
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-016-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 499
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-016-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-041-ch-002",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 164
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-041-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-092"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-009-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 165
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-009-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-020-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 58
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-020-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-006-sec-021-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 149
+            }
+          ],
+          "target_chunk_id": "sched-006-sec-021-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-093"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-004-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 178
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-004-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-007-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 81
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-007-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-009-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 300
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-009-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sec-006-sec-010-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 202
+            }
+          ],
+          "target_chunk_id": "sec-006-sec-010-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-094"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-001-sec-002-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 481
+            }
+          ],
+          "target_chunk_id": "net-001-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-001-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 369
+            }
+          ],
+          "target_chunk_id": "net-002-sec-001-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-002-sec-002-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 464
+            }
+          ],
+          "target_chunk_id": "net-002-sec-002-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "net-003-sec-003-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 161
+            }
+          ],
+          "target_chunk_id": "net-003-sec-003-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-095"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-048-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 512
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-048-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-002-sec-050-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 105
+            }
+          ],
+          "target_chunk_id": "stor-002-sec-050-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "stor-005-sec-005-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 159
+            }
+          ],
+          "target_chunk_id": "stor-005-sec-005-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-096"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-010-sec-012-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 186
+            }
+          ],
+          "target_chunk_id": "work-010-sec-012-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "work-011-sec-038-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 498
+            },
+            {
+              "baseline_chunk_id": "work-011-sec-038-ch-002",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 503
+            }
+          ],
+          "target_chunk_id": "work-011-sec-038-ch-001"
+        }
+      ],
+      "projected_positive_count": 2,
+      "question_id": "k8s-097"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 3,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-001-sec-003-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 205
+            }
+          ],
+          "target_chunk_id": "arch-001-sec-003-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-001-sec-005-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 141
+            }
+          ],
+          "target_chunk_id": "arch-001-sec-005-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "arch-002-sec-013-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 208
+            }
+          ],
+          "target_chunk_id": "arch-002-sec-013-ch-001"
+        }
+      ],
+      "projected_positive_count": 3,
+      "question_id": "k8s-098"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 5,
+      "matches": [
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-001-sec-011-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 163
+            }
+          ],
+          "target_chunk_id": "conf-001-sec-011-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-002-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 73
+            }
+          ],
+          "target_chunk_id": "conf-002-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-002-sec-014-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 52
+            }
+          ],
+          "target_chunk_id": "conf-002-sec-014-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-003-sec-043-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 64
+            }
+          ],
+          "target_chunk_id": "conf-003-sec-043-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "conf-004-sec-042-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 90
+            }
+          ],
+          "target_chunk_id": "conf-004-sec-042-ch-001"
+        }
+      ],
+      "projected_positive_count": 5,
+      "question_id": "k8s-099"
+    },
+    {
+      "answerable": true,
+      "baseline_positive_count": 4,
+      "matches": [
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-003-sec-032-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 195
+            }
+          ],
+          "target_chunk_id": "sched-003-sec-032-ch-001"
+        },
+        {
+          "assigned_grade": 3,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-004-sec-006-ch-001",
+              "baseline_grade": 3,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 69
+            }
+          ],
+          "target_chunk_id": "sched-004-sec-006-ch-001"
+        },
+        {
+          "assigned_grade": 2,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-004-sec-007-ch-001",
+              "baseline_grade": 2,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 414
+            }
+          ],
+          "target_chunk_id": "sched-004-sec-007-ch-001"
+        },
+        {
+          "assigned_grade": 1,
+          "sources": [
+            {
+              "baseline_chunk_id": "sched-004-sec-014-ch-001",
+              "baseline_grade": 1,
+              "fraction_of_shorter_span": 1.0,
+              "token_overlap": 498
+            }
+          ],
+          "target_chunk_id": "sched-004-sec-014-ch-001"
+        }
+      ],
+      "projected_positive_count": 4,
+      "question_id": "k8s-100"
+    }
+  ],
+  "projection_version": "0.1.0",
+  "questions": 100,
+  "status": "SUCCESS",
+  "warning": "Weak labels only: token-span overlap with an older judged chunk is not proof that a different chunk contains the exact answer. Use section-level evaluation as the more annotation-invariant primary comparison; manually audit before publishing."
+}

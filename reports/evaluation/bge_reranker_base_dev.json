@@ -1,0 +1,4835 @@
+{
+  "by_category": {
+    "comparison": {
+      "MRR": 0.805556,
+      "Recall@10": 0.768519,
+      "Recall@5": 0.537037,
+      "answerable_question_count": 9,
+      "nDCG@10": 0.717717,
+      "nDCG@5": 0.654994,
+      "question_count": 9,
+      "top1_hit_rate": 0.666667
+    },
+    "direct_factual": {
+      "MRR": 1.0,
+      "Recall@10": 0.819445,
+      "Recall@5": 0.791667,
+      "answerable_question_count": 12,
+      "nDCG@10": 0.942686,
+      "nDCG@5": 0.939035,
+      "question_count": 12,
+      "top1_hit_rate": 1.0
+    },
+    "multi_hop": {
+      "MRR": 0.727083,
+      "Recall@10": 0.686111,
+      "Recall@5": 0.5625,
+      "answerable_question_count": 12,
+      "nDCG@10": 0.634836,
+      "nDCG@5": 0.595522,
+      "question_count": 12,
+      "top1_hit_rate": 0.583333
+    },
+    "negative_near_miss": {
+      "MRR": null,
+      "Recall@10": null,
+      "Recall@5": null,
+      "answerable_question_count": 0,
+      "nDCG@10": null,
+      "nDCG@5": null,
+      "question_count": 6,
+      "top1_hit_rate": null
+    },
+    "scenario_application": {
+      "MRR": 1.0,
+      "Recall@10": 0.840278,
+      "Recall@5": 0.8125,
+      "answerable_question_count": 12,
+      "nDCG@10": 0.909259,
+      "nDCG@5": 0.907053,
+      "question_count": 12,
+      "top1_hit_rate": 1.0
+    },
+    "troubleshooting": {
+      "MRR": 1.0,
+      "Recall@10": 0.759259,
+      "Recall@5": 0.722222,
+      "answerable_question_count": 9,
+      "nDCG@10": 0.882904,
+      "nDCG@5": 0.872786,
+      "question_count": 9,
+      "top1_hit_rate": 1.0
+    }
+  },
+  "by_difficulty": {
+    "easy": {
+      "MRR": 1.0,
+      "Recall@10": 0.885417,
+      "Recall@5": 0.833333,
+      "answerable_question_count": 16,
+      "nDCG@10": 0.948376,
+      "nDCG@5": 0.939211,
+      "question_count": 19,
+      "top1_hit_rate": 1.0
+    },
+    "hard": {
+      "MRR": 0.839773,
+      "Recall@10": 0.648485,
+      "Recall@5": 0.571212,
+      "answerable_question_count": 22,
+      "nDCG@10": 0.706458,
+      "nDCG@5": 0.682295,
+      "question_count": 25,
+      "top1_hit_rate": 0.772727
+    },
+    "medium": {
+      "MRR": 0.90625,
+      "Recall@10": 0.841667,
+      "Recall@5": 0.714583,
+      "answerable_question_count": 16,
+      "nDCG@10": 0.845679,
+      "nDCG@5": 0.813217,
+      "question_count": 16,
+      "top1_hit_rate": 0.8125
+    }
+  },
+  "evaluator_version": "0.1.0",
+  "overall": {
+    "MRR": 0.906944,
+    "Recall@10": 0.775926,
+    "Recall@5": 0.691358,
+    "answerable_question_count": 54,
+    "nDCG@10": 0.819388,
+    "nDCG@5": 0.79721,
+    "question_count": 60,
+    "top1_hit_rate": 0.851852
+  },
+  "per_question": [
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.789596,
+        "nDCG@5": 0.789596
+      },
+      "question": "What is a PersistentVolume in Kubernetes?",
+      "question_id": "k8s-001",
+      "retrieved": [
+        {
+          "chunk_id": "stor-002-sec-036-ch-001",
+          "hybrid_rank": 2,
+          "rank": 1,
+          "reranker_score": 0.99400324
+        },
+        {
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.9907741
+        },
+        {
+          "chunk_id": "sec-006-sec-010-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.97766978
+        },
+        {
+          "chunk_id": "stor-003-sec-056-ch-001",
+          "hybrid_rank": 6,
+          "rank": 4,
+          "reranker_score": 0.97124881
+        },
+        {
+          "chunk_id": "stor-003-sec-030-ch-001",
+          "hybrid_rank": 18,
+          "rank": 5,
+          "reranker_score": 0.96235234
+        },
+        {
+          "chunk_id": "stor-005-sec-001-ch-001",
+          "hybrid_rank": 16,
+          "rank": 6,
+          "reranker_score": 0.88654816
+        },
+        {
+          "chunk_id": "stor-003-sec-026-ch-001",
+          "hybrid_rank": 4,
+          "rank": 7,
+          "reranker_score": 0.82110178
+        },
+        {
+          "chunk_id": "stor-008-sec-008-ch-001",
+          "hybrid_rank": 14,
+          "rank": 8,
+          "reranker_score": 0.78478312
+        },
+        {
+          "chunk_id": "stor-003-sec-035-ch-001",
+          "hybrid_rank": 17,
+          "rank": 9,
+          "reranker_score": 0.66356444
+        },
+        {
+          "chunk_id": "stor-003-sec-016-ch-001",
+          "hybrid_rank": 12,
+          "rank": 10,
+          "reranker_score": 0.65429837
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "How does Kubernetes expose a Service outside the cluster?",
+      "question_id": "k8s-002",
+      "retrieved": [
+        {
+          "chunk_id": "net-002-sec-018-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99340159
+        },
+        {
+          "chunk_id": "net-002-sec-002-ch-001",
+          "hybrid_rank": 3,
+          "rank": 2,
+          "reranker_score": 0.91546619
+        },
+        {
+          "chunk_id": "net-002-sec-049-ch-001",
+          "hybrid_rank": 6,
+          "rank": 3,
+          "reranker_score": 0.89996618
+        },
+        {
+          "chunk_id": "net-002-sec-001-ch-001",
+          "hybrid_rank": 4,
+          "rank": 4,
+          "reranker_score": 0.81404132
+        },
+        {
+          "chunk_id": "net-002-sec-007-ch-001",
+          "hybrid_rank": 7,
+          "rank": 5,
+          "reranker_score": 0.76946151
+        },
+        {
+          "chunk_id": "conf-003-sec-007-ch-001",
+          "hybrid_rank": 15,
+          "rank": 6,
+          "reranker_score": 0.56720567
+        },
+        {
+          "chunk_id": "net-002-sec-044-ch-001",
+          "hybrid_rank": 11,
+          "rank": 7,
+          "reranker_score": 0.29510719
+        },
+        {
+          "chunk_id": "net-002-sec-004-ch-001",
+          "hybrid_rank": 19,
+          "rank": 8,
+          "reranker_score": 0.29127377
+        },
+        {
+          "chunk_id": "net-002-sec-041-ch-001",
+          "hybrid_rank": 5,
+          "rank": 9,
+          "reranker_score": 0.18564318
+        },
+        {
+          "chunk_id": "net-001-sec-003-ch-001",
+          "hybrid_rank": 10,
+          "rank": 10,
+          "reranker_score": 0.15205841
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "What is a persistentVolumeClaim volume used for?",
+      "question_id": "k8s-003",
+      "retrieved": [
+        {
+          "chunk_id": "stor-002-sec-036-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99985182
+        },
+        {
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.99758828
+        },
+        {
+          "chunk_id": "stor-008-sec-008-ch-001",
+          "hybrid_rank": 8,
+          "rank": 3,
+          "reranker_score": 0.99147147
+        },
+        {
+          "chunk_id": "stor-003-sec-009-ch-001",
+          "hybrid_rank": 16,
+          "rank": 4,
+          "reranker_score": 0.98893869
+        },
+        {
+          "chunk_id": "stor-003-sec-007-ch-001",
+          "hybrid_rank": 12,
+          "rank": 5,
+          "reranker_score": 0.98271644
+        },
+        {
+          "chunk_id": "stor-003-sec-045-ch-001",
+          "hybrid_rank": 19,
+          "rank": 6,
+          "reranker_score": 0.96059918
+        },
+        {
+          "chunk_id": "stor-005-sec-007-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.93123132
+        },
+        {
+          "chunk_id": "stor-003-sec-022-ch-001",
+          "hybrid_rank": 18,
+          "rank": 8,
+          "reranker_score": 0.91876286
+        },
+        {
+          "chunk_id": "work-011-sec-014-ch-001",
+          "hybrid_rank": 13,
+          "rank": 9,
+          "reranker_score": 0.91179729
+        },
+        {
+          "chunk_id": "stor-003-sec-017-ch-001",
+          "hybrid_rank": 9,
+          "rank": 10,
+          "reranker_score": 0.87324917
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "How can external IPs be used with Kubernetes Services?",
+      "question_id": "k8s-005",
+      "retrieved": [
+        {
+          "chunk_id": "net-002-sec-049-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99947649
+        },
+        {
+          "chunk_id": "net-002-sec-018-ch-001",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.90056598
+        },
+        {
+          "chunk_id": "net-002-sec-036-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.65057874
+        },
+        {
+          "chunk_id": "net-002-sec-044-ch-001",
+          "hybrid_rank": 9,
+          "rank": 4,
+          "reranker_score": 0.39567202
+        },
+        {
+          "chunk_id": "net-002-sec-020-ch-001",
+          "hybrid_rank": 6,
+          "rank": 5,
+          "reranker_score": 0.39312029
+        },
+        {
+          "chunk_id": "net-007-sec-001-ch-001",
+          "hybrid_rank": 3,
+          "rank": 6,
+          "reranker_score": 0.37592337
+        },
+        {
+          "chunk_id": "net-002-sec-009-ch-001",
+          "hybrid_rank": 2,
+          "rank": 7,
+          "reranker_score": 0.20557082
+        },
+        {
+          "chunk_id": "net-002-sec-043-ch-001",
+          "hybrid_rank": 20,
+          "rank": 8,
+          "reranker_score": 0.08492101
+        },
+        {
+          "chunk_id": "net-002-sec-045-ch-001",
+          "hybrid_rank": 15,
+          "rank": 9,
+          "reranker_score": 0.06056443
+        },
+        {
+          "chunk_id": "net-002-sec-019-ch-001",
+          "hybrid_rank": 17,
+          "rank": 10,
+          "reranker_score": 0.04253287
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.982842,
+        "nDCG@5": 0.982842
+      },
+      "question": "What is the role of the Kubernetes cloud-controller-manager?",
+      "question_id": "k8s-007",
+      "retrieved": [
+        {
+          "chunk_id": "arch-007-sec-001-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99941218
+        },
+        {
+          "chunk_id": "arch-007-sec-002-ch-001",
+          "hybrid_rank": 3,
+          "rank": 2,
+          "reranker_score": 0.99820685
+        },
+        {
+          "chunk_id": "arch-007-sec-007-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.99549365
+        },
+        {
+          "chunk_id": "arch-007-sec-006-ch-001",
+          "hybrid_rank": 4,
+          "rank": 4,
+          "reranker_score": 0.99543589
+        },
+        {
+          "chunk_id": "arch-007-sec-012-ch-001",
+          "hybrid_rank": 7,
+          "rank": 5,
+          "reranker_score": 0.99059629
+        },
+        {
+          "chunk_id": "arch-007-sec-005-ch-001",
+          "hybrid_rank": 6,
+          "rank": 6,
+          "reranker_score": 0.98316646
+        },
+        {
+          "chunk_id": "arch-007-sec-013-ch-001",
+          "hybrid_rank": 2,
+          "rank": 7,
+          "reranker_score": 0.976542
+        },
+        {
+          "chunk_id": "arch-001-sec-003-ch-001",
+          "hybrid_rank": 10,
+          "rank": 8,
+          "reranker_score": 0.85587937
+        },
+        {
+          "chunk_id": "arch-004-sec-008-ch-001",
+          "hybrid_rank": 13,
+          "rank": 9,
+          "reranker_score": 0.79377133
+        },
+        {
+          "chunk_id": "arch-002-sec-011-ch-001",
+          "hybrid_rank": 12,
+          "rank": 10,
+          "reranker_score": 0.60980093
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "comparison",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 0.5,
+        "nDCG@10": 0.907322,
+        "nDCG@5": 0.787155
+      },
+      "question": "How are Kubernetes compute resource types such as CPU and memory different from API resources such as Pods and Services?",
+      "question_id": "k8s-008",
+      "retrieved": [
+        {
+          "chunk_id": "conf-004-sec-006-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99885452
+        },
+        {
+          "chunk_id": "conf-004-sec-015-ch-001",
+          "hybrid_rank": 3,
+          "rank": 2,
+          "reranker_score": 0.78095925
+        },
+        {
+          "chunk_id": "work-002-sec-022-ch-001",
+          "hybrid_rank": 13,
+          "rank": 3,
+          "reranker_score": 0.63162035
+        },
+        {
+          "chunk_id": "conf-004-sec-008-ch-001",
+          "hybrid_rank": 4,
+          "rank": 4,
+          "reranker_score": 0.56785876
+        },
+        {
+          "chunk_id": "net-002-sec-002-ch-001",
+          "hybrid_rank": 19,
+          "rank": 5,
+          "reranker_score": 0.54682553
+        },
+        {
+          "chunk_id": "conf-004-sec-004-ch-001",
+          "hybrid_rank": 2,
+          "rank": 6,
+          "reranker_score": 0.52656269
+        },
+        {
+          "chunk_id": "conf-004-sec-017-ch-001",
+          "hybrid_rank": 7,
+          "rank": 7,
+          "reranker_score": 0.46236852
+        },
+        {
+          "chunk_id": "conf-004-sec-040-ch-003",
+          "hybrid_rank": 10,
+          "rank": 8,
+          "reranker_score": 0.42184335
+        },
+        {
+          "chunk_id": "conf-004-sec-001-ch-001",
+          "hybrid_rank": 8,
+          "rank": 9,
+          "reranker_score": 0.29406774
+        },
+        {
+          "chunk_id": "sec-009-sec-007-ch-001",
+          "hybrid_rank": 9,
+          "rank": 10,
+          "reranker_score": 0.28388417
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "You want Pod affinity to match existing Pods using the value of a label on the incoming Pod, without hard-coding that label value in the selector. Which field should you use and how is it applied?",
+      "question_id": "k8s-009",
+      "retrieved": [
+        {
+          "chunk_id": "sched-003-sec-022-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99559194
+        },
+        {
+          "chunk_id": "sched-003-sec-019-ch-003",
+          "hybrid_rank": 17,
+          "rank": 2,
+          "reranker_score": 0.98079026
+        },
+        {
+          "chunk_id": "sched-003-sec-020-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.97602046
+        },
+        {
+          "chunk_id": "sched-003-sec-026-ch-001",
+          "hybrid_rank": 8,
+          "rank": 4,
+          "reranker_score": 0.89701098
+        },
+        {
+          "chunk_id": "sched-003-sec-025-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.88591456
+        },
+        {
+          "chunk_id": "sched-003-sec-023-ch-001",
+          "hybrid_rank": 3,
+          "rank": 6,
+          "reranker_score": 0.88113809
+        },
+        {
+          "chunk_id": "sched-003-sec-008-ch-001",
+          "hybrid_rank": 9,
+          "rank": 7,
+          "reranker_score": 0.87924582
+        },
+        {
+          "chunk_id": "sched-003-sec-019-ch-002",
+          "hybrid_rank": 20,
+          "rank": 8,
+          "reranker_score": 0.79497349
+        },
+        {
+          "chunk_id": "sched-003-sec-006-ch-001",
+          "hybrid_rank": 12,
+          "rank": 9,
+          "reranker_score": 0.78393924
+        },
+        {
+          "chunk_id": "work-011-sec-006-ch-001",
+          "hybrid_rank": 10,
+          "rank": 10,
+          "reranker_score": 0.75490266
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "If a namespace is exempted from Pod Security Admission, what checks are skipped, and why should administrators still be cautious about who can create workloads in that namespace?",
+      "question_id": "k8s-010",
+      "retrieved": [
+        {
+          "chunk_id": "sec-003-sec-006-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.98948842
+        },
+        {
+          "chunk_id": "sec-006-sec-009-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.89538395
+        },
+        {
+          "chunk_id": "sec-003-sec-007-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.74902779
+        },
+        {
+          "chunk_id": "sec-002-sec-014-ch-001",
+          "hybrid_rank": 3,
+          "rank": 4,
+          "reranker_score": 0.28757316
+        },
+        {
+          "chunk_id": "sec-003-sec-001-ch-001",
+          "hybrid_rank": 7,
+          "rank": 5,
+          "reranker_score": 0.16002332
+        },
+        {
+          "chunk_id": "sec-003-sec-004-ch-001",
+          "hybrid_rank": 4,
+          "rank": 6,
+          "reranker_score": 0.0931861
+        },
+        {
+          "chunk_id": "sec-006-sec-018-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.07050829
+        },
+        {
+          "chunk_id": "sec-008-sec-002-ch-001",
+          "hybrid_rank": 10,
+          "rank": 8,
+          "reranker_score": 0.04771847
+        },
+        {
+          "chunk_id": "sec-002-sec-005-ch-001",
+          "hybrid_rank": 11,
+          "rank": 9,
+          "reranker_score": 0.01484055
+        },
+        {
+          "chunk_id": "sec-002-sec-005-ch-002",
+          "hybrid_rank": 16,
+          "rank": 10,
+          "reranker_score": 0.0109692
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "troubleshooting",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.950801,
+        "nDCG@5": 0.950801
+      },
+      "question": "An Ingress is being handled by the wrong controller. What should you check in the Ingress and IngressClass configuration?",
+      "question_id": "k8s-011",
+      "retrieved": [
+        {
+          "chunk_id": "net-003-sec-015-ch-001",
+          "hybrid_rank": 2,
+          "rank": 1,
+          "reranker_score": 0.89108253
+        },
+        {
+          "chunk_id": "net-003-sec-016-ch-002",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.75261205
+        },
+        {
+          "chunk_id": "net-003-sec-007-ch-001",
+          "hybrid_rank": 11,
+          "rank": 3,
+          "reranker_score": 0.69889098
+        },
+        {
+          "chunk_id": "net-003-sec-019-ch-001",
+          "hybrid_rank": 1,
+          "rank": 4,
+          "reranker_score": 0.66636586
+        },
+        {
+          "chunk_id": "net-003-sec-004-ch-001",
+          "hybrid_rank": 16,
+          "rank": 5,
+          "reranker_score": 0.58305842
+        },
+        {
+          "chunk_id": "net-003-sec-016-ch-001",
+          "hybrid_rank": 6,
+          "rank": 6,
+          "reranker_score": 0.47423527
+        },
+        {
+          "chunk_id": "net-003-sec-017-ch-001",
+          "hybrid_rank": 7,
+          "rank": 7,
+          "reranker_score": 0.39397845
+        },
+        {
+          "chunk_id": "net-003-sec-009-ch-001",
+          "hybrid_rank": 5,
+          "rank": 8,
+          "reranker_score": 0.21624471
+        },
+        {
+          "chunk_id": "net-003-sec-005-ch-001",
+          "hybrid_rank": 3,
+          "rank": 9,
+          "reranker_score": 0.18431579
+        },
+        {
+          "chunk_id": "net-003-sec-018-ch-001",
+          "hybrid_rank": 9,
+          "rank": 10,
+          "reranker_score": 0.17698395
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": false,
+      "category": "negative_near_miss",
+      "difficulty": "easy",
+      "first_relevant_rank": null,
+      "metrics": {
+        "MRR": null,
+        "Recall@10": null,
+        "Recall@5": null,
+        "nDCG@10": null,
+        "nDCG@5": null
+      },
+      "question": "Which Kubernetes VolumeSnapshot field automatically replicates snapshot data to every availability zone before a restore?",
+      "question_id": "k8s-012",
+      "retrieved": [
+        {
+          "chunk_id": "stor-008-sec-011-ch-002",
+          "hybrid_rank": 10,
+          "rank": 1,
+          "reranker_score": 0.81343377
+        },
+        {
+          "chunk_id": "stor-008-sec-002-ch-002",
+          "hybrid_rank": 16,
+          "rank": 2,
+          "reranker_score": 0.73081976
+        },
+        {
+          "chunk_id": "stor-008-sec-013-ch-001",
+          "hybrid_rank": 14,
+          "rank": 3,
+          "reranker_score": 0.64919859
+        },
+        {
+          "chunk_id": "stor-008-sec-014-ch-001",
+          "hybrid_rank": 1,
+          "rank": 4,
+          "reranker_score": 0.60954797
+        },
+        {
+          "chunk_id": "stor-008-sec-002-ch-001",
+          "hybrid_rank": 2,
+          "rank": 5,
+          "reranker_score": 0.44005597
+        },
+        {
+          "chunk_id": "stor-008-sec-001-ch-001",
+          "hybrid_rank": 9,
+          "rank": 6,
+          "reranker_score": 0.33057356
+        },
+        {
+          "chunk_id": "stor-008-sec-010-ch-001",
+          "hybrid_rank": 3,
+          "rank": 7,
+          "reranker_score": 0.29849035
+        },
+        {
+          "chunk_id": "stor-008-sec-012-ch-001",
+          "hybrid_rank": 12,
+          "rank": 8,
+          "reranker_score": 0.29691246
+        },
+        {
+          "chunk_id": "stor-008-sec-005-ch-001",
+          "hybrid_rank": 6,
+          "rank": 9,
+          "reranker_score": 0.24917917
+        },
+        {
+          "chunk_id": "stor-003-sec-068-ch-001",
+          "hybrid_rank": 4,
+          "rank": 10,
+          "reranker_score": 0.18968223
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.5,
+        "Recall@5": 0.5,
+        "nDCG@10": 0.917319,
+        "nDCG@5": 0.917319
+      },
+      "question": "Which three probe types does the Pod Lifecycle documentation recommend configuring for hands-on experience?",
+      "question_id": "k8s-013",
+      "retrieved": [
+        {
+          "chunk_id": "work-003-sec-049-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.97485876
+        },
+        {
+          "chunk_id": "work-003-sec-035-ch-001",
+          "hybrid_rank": 5,
+          "rank": 2,
+          "reranker_score": 0.73563224
+        },
+        {
+          "chunk_id": "work-015-sec-006-ch-001",
+          "hybrid_rank": 8,
+          "rank": 3,
+          "reranker_score": 0.63474435
+        },
+        {
+          "chunk_id": "work-003-sec-036-ch-001",
+          "hybrid_rank": 12,
+          "rank": 4,
+          "reranker_score": 0.47305667
+        },
+        {
+          "chunk_id": "work-003-sec-037-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.44844157
+        },
+        {
+          "chunk_id": "work-003-sec-034-ch-001",
+          "hybrid_rank": 7,
+          "rank": 6,
+          "reranker_score": 0.42327279
+        },
+        {
+          "chunk_id": "work-015-sec-003-ch-001",
+          "hybrid_rank": 11,
+          "rank": 7,
+          "reranker_score": 0.41636232
+        },
+        {
+          "chunk_id": "work-002-sec-026-ch-001",
+          "hybrid_rank": 9,
+          "rank": 8,
+          "reranker_score": 0.30753106
+        },
+        {
+          "chunk_id": "work-005-sec-011-ch-001",
+          "hybrid_rank": 15,
+          "rank": 9,
+          "reranker_score": 0.12395532
+        },
+        {
+          "chunk_id": "work-003-sec-001-ch-001",
+          "hybrid_rank": 19,
+          "rank": 10,
+          "reranker_score": 0.0790685
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "comparison",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "How do Kubernetes built-in controllers differ from the cloud-controller-manager in where they run and what responsibilities they provide?",
+      "question_id": "k8s-014",
+      "retrieved": [
+        {
+          "chunk_id": "arch-004-sec-008-ch-001",
+          "hybrid_rank": 3,
+          "rank": 1,
+          "reranker_score": 0.9866187
+        },
+        {
+          "chunk_id": "arch-007-sec-001-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.98486543
+        },
+        {
+          "chunk_id": "arch-007-sec-002-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.98055935
+        },
+        {
+          "chunk_id": "arch-004-sec-003-ch-001",
+          "hybrid_rank": 7,
+          "rank": 4,
+          "reranker_score": 0.83535939
+        },
+        {
+          "chunk_id": "arch-007-sec-013-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.77028918
+        },
+        {
+          "chunk_id": "arch-007-sec-005-ch-001",
+          "hybrid_rank": 8,
+          "rank": 6,
+          "reranker_score": 0.74402499
+        },
+        {
+          "chunk_id": "arch-007-sec-006-ch-001",
+          "hybrid_rank": 5,
+          "rank": 7,
+          "reranker_score": 0.73761415
+        },
+        {
+          "chunk_id": "arch-007-sec-007-ch-001",
+          "hybrid_rank": 6,
+          "rank": 8,
+          "reranker_score": 0.68963552
+        },
+        {
+          "chunk_id": "arch-007-sec-012-ch-001",
+          "hybrid_rank": 12,
+          "rank": 9,
+          "reranker_score": 0.49668652
+        },
+        {
+          "chunk_id": "arch-001-sec-003-ch-001",
+          "hybrid_rank": 13,
+          "rank": 10,
+          "reranker_score": 0.38865116
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "You need to store a username and password for HTTP basic authentication in a Kubernetes Secret. Which Secret type and keys should you use?",
+      "question_id": "k8s-015",
+      "retrieved": [
+        {
+          "chunk_id": "conf-003-sec-015-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99455833
+        },
+        {
+          "chunk_id": "conf-003-sec-016-ch-001",
+          "hybrid_rank": 3,
+          "rank": 2,
+          "reranker_score": 0.99055278
+        },
+        {
+          "chunk_id": "conf-003-sec-017-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.97876328
+        },
+        {
+          "chunk_id": "conf-003-sec-019-ch-001",
+          "hybrid_rank": 8,
+          "rank": 4,
+          "reranker_score": 0.92596769
+        },
+        {
+          "chunk_id": "conf-003-sec-011-ch-001",
+          "hybrid_rank": 9,
+          "rank": 5,
+          "reranker_score": 0.91287875
+        },
+        {
+          "chunk_id": "conf-003-sec-008-ch-001",
+          "hybrid_rank": 5,
+          "rank": 6,
+          "reranker_score": 0.89365631
+        },
+        {
+          "chunk_id": "conf-003-sec-020-ch-001",
+          "hybrid_rank": 17,
+          "rank": 7,
+          "reranker_score": 0.81035143
+        },
+        {
+          "chunk_id": "sec-007-sec-001-ch-001",
+          "hybrid_rank": 10,
+          "rank": 8,
+          "reranker_score": 0.6629023
+        },
+        {
+          "chunk_id": "conf-003-sec-012-ch-001",
+          "hybrid_rank": 13,
+          "rank": 9,
+          "reranker_score": 0.64213914
+        },
+        {
+          "chunk_id": "conf-003-sec-014-ch-001",
+          "hybrid_rank": 14,
+          "rank": 10,
+          "reranker_score": 0.54196656
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "A high-priority pending Pod preempts lower-priority Pods on a node and gets a `nominatedNodeName`. Is it guaranteed to run on that node, and what can change the nomination?",
+      "question_id": "k8s-016",
+      "retrieved": [
+        {
+          "chunk_id": "sched-006-sec-016-ch-001",
+          "hybrid_rank": 2,
+          "rank": 1,
+          "reranker_score": 0.99060011
+        },
+        {
+          "chunk_id": "sched-003-sec-030-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.93299681
+        },
+        {
+          "chunk_id": "sched-006-sec-020-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.93178779
+        },
+        {
+          "chunk_id": "sched-006-sec-028-ch-001",
+          "hybrid_rank": 3,
+          "rank": 4,
+          "reranker_score": 0.90181923
+        },
+        {
+          "chunk_id": "sched-006-sec-021-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.82598984
+        },
+        {
+          "chunk_id": "sched-006-sec-014-ch-001",
+          "hybrid_rank": 12,
+          "rank": 6,
+          "reranker_score": 0.69572014
+        },
+        {
+          "chunk_id": "sched-006-sec-026-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.56657308
+        },
+        {
+          "chunk_id": "sched-006-sec-023-ch-001",
+          "hybrid_rank": 10,
+          "rank": 8,
+          "reranker_score": 0.46280566
+        },
+        {
+          "chunk_id": "sched-003-sec-028-ch-001",
+          "hybrid_rank": 11,
+          "rank": 9,
+          "reranker_score": 0.27260399
+        },
+        {
+          "chunk_id": "sched-006-sec-022-ch-001",
+          "hybrid_rank": 9,
+          "rank": 10,
+          "reranker_score": 0.1956462
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "troubleshooting",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.797864,
+        "nDCG@5": 0.797864
+      },
+      "question": "A security review finds powerful service-account credentials available to privileged workloads that share nodes with untrusted Pods. What changes can reduce the blast radius?",
+      "question_id": "k8s-017",
+      "retrieved": [
+        {
+          "chunk_id": "sec-006-sec-004-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.79437846
+        },
+        {
+          "chunk_id": "sec-006-sec-009-ch-001",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.01962065
+        },
+        {
+          "chunk_id": "conf-003-sec-040-ch-001",
+          "hybrid_rank": 17,
+          "rank": 3,
+          "reranker_score": 0.01753327
+        },
+        {
+          "chunk_id": "sec-006-sec-005-ch-001",
+          "hybrid_rank": 2,
+          "rank": 4,
+          "reranker_score": 0.01042311
+        },
+        {
+          "chunk_id": "conf-003-sec-007-ch-001",
+          "hybrid_rank": 5,
+          "rank": 5,
+          "reranker_score": 0.00906121
+        },
+        {
+          "chunk_id": "sec-004-sec-004-ch-001",
+          "hybrid_rank": 20,
+          "rank": 6,
+          "reranker_score": 0.00782406
+        },
+        {
+          "chunk_id": "arch-003-sec-005-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.00552941
+        },
+        {
+          "chunk_id": "sec-004-sec-013-ch-001",
+          "hybrid_rank": 7,
+          "rank": 8,
+          "reranker_score": 0.00547723
+        },
+        {
+          "chunk_id": "sec-002-sec-005-ch-001",
+          "hybrid_rank": 9,
+          "rank": 9,
+          "reranker_score": 0.00332337
+        },
+        {
+          "chunk_id": "sec-001-sec-005-ch-001",
+          "hybrid_rank": 3,
+          "rank": 10,
+          "reranker_score": 0.00203433
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": false,
+      "category": "negative_near_miss",
+      "difficulty": "easy",
+      "first_relevant_rank": null,
+      "metrics": {
+        "MRR": null,
+        "Recall@10": null,
+        "Recall@5": null,
+        "nDCG@10": null,
+        "nDCG@5": null
+      },
+      "question": "How can a NetworkPolicy select every namespace that was created after a particular date without adding any labels to those namespaces?",
+      "question_id": "k8s-018",
+      "retrieved": [
+        {
+          "chunk_id": "net-006-sec-008-ch-001",
+          "hybrid_rank": 9,
+          "rank": 1,
+          "reranker_score": 0.92526692
+        },
+        {
+          "chunk_id": "net-006-sec-018-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.9029761
+        },
+        {
+          "chunk_id": "net-006-sec-010-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.88942063
+        },
+        {
+          "chunk_id": "net-006-sec-005-ch-001",
+          "hybrid_rank": 15,
+          "rank": 4,
+          "reranker_score": 0.85626316
+        },
+        {
+          "chunk_id": "net-006-sec-006-ch-001",
+          "hybrid_rank": 8,
+          "rank": 5,
+          "reranker_score": 0.84470481
+        },
+        {
+          "chunk_id": "net-006-sec-020-ch-001",
+          "hybrid_rank": 2,
+          "rank": 6,
+          "reranker_score": 0.759
+        },
+        {
+          "chunk_id": "net-006-sec-013-ch-001",
+          "hybrid_rank": 7,
+          "rank": 7,
+          "reranker_score": 0.53436333
+        },
+        {
+          "chunk_id": "net-006-sec-005-ch-002",
+          "hybrid_rank": 19,
+          "rank": 8,
+          "reranker_score": 0.45911029
+        },
+        {
+          "chunk_id": "sec-006-sec-018-ch-001",
+          "hybrid_rank": 3,
+          "rank": 9,
+          "reranker_score": 0.37176189
+        },
+        {
+          "chunk_id": "net-006-sec-025-ch-001",
+          "hybrid_rank": 6,
+          "rank": 10,
+          "reranker_score": 0.33202627
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.333333,
+        "Recall@5": 0.333333,
+        "nDCG@10": 0.86091,
+        "nDCG@5": 0.86091
+      },
+      "question": "What does `allowedTopologies` do in a StorageClass using `WaitForFirstConsumer`, and when is it usually unnecessary?",
+      "question_id": "k8s-019",
+      "retrieved": [
+        {
+          "chunk_id": "stor-006-sec-012-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.97128534
+        },
+        {
+          "chunk_id": "stor-006-sec-025-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.38015816
+        },
+        {
+          "chunk_id": "stor-006-sec-002-ch-001",
+          "hybrid_rank": 7,
+          "rank": 3,
+          "reranker_score": 0.35416406
+        },
+        {
+          "chunk_id": "stor-006-sec-011-ch-001",
+          "hybrid_rank": 14,
+          "rank": 4,
+          "reranker_score": 0.06247985
+        },
+        {
+          "chunk_id": "stor-003-sec-049-ch-001",
+          "hybrid_rank": 3,
+          "rank": 5,
+          "reranker_score": 0.05281178
+        },
+        {
+          "chunk_id": "stor-005-sec-007-ch-001",
+          "hybrid_rank": 9,
+          "rank": 6,
+          "reranker_score": 0.05060355
+        },
+        {
+          "chunk_id": "stor-007-sec-005-ch-001",
+          "hybrid_rank": 8,
+          "rank": 7,
+          "reranker_score": 0.03915267
+        },
+        {
+          "chunk_id": "stor-006-sec-004-ch-001",
+          "hybrid_rank": 5,
+          "rank": 8,
+          "reranker_score": 0.02475762
+        },
+        {
+          "chunk_id": "stor-003-sec-051-ch-001",
+          "hybrid_rank": 4,
+          "rank": 9,
+          "reranker_score": 0.01951575
+        },
+        {
+          "chunk_id": "work-011-sec-014-ch-001",
+          "hybrid_rank": 11,
+          "rank": 10,
+          "reranker_score": 0.00487942
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "comparison",
+      "difficulty": "medium",
+      "first_relevant_rank": 2,
+      "metrics": {
+        "MRR": 0.5,
+        "Recall@10": 1.0,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.690804,
+        "nDCG@5": 0.664331
+      },
+      "question": "How should replica counts be managed differently when a Deployment is controlled by a HorizontalPodAutoscaler versus when you manually scale a ReplicaSet?",
+      "question_id": "k8s-020",
+      "retrieved": [
+        {
+          "chunk_id": "work-011-sec-039-ch-001",
+          "hybrid_rank": 3,
+          "rank": 1,
+          "reranker_score": 0.96439415
+        },
+        {
+          "chunk_id": "work-009-sec-032-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.88265914
+        },
+        {
+          "chunk_id": "work-010-sec-016-ch-001",
+          "hybrid_rank": 4,
+          "rank": 3,
+          "reranker_score": 0.84721708
+        },
+        {
+          "chunk_id": "work-009-sec-018-ch-002",
+          "hybrid_rank": 8,
+          "rank": 4,
+          "reranker_score": 0.51512194
+        },
+        {
+          "chunk_id": "work-009-sec-009-ch-004",
+          "hybrid_rank": 7,
+          "rank": 5,
+          "reranker_score": 0.49784982
+        },
+        {
+          "chunk_id": "work-009-sec-018-ch-001",
+          "hybrid_rank": 11,
+          "rank": 6,
+          "reranker_score": 0.3841317
+        },
+        {
+          "chunk_id": "work-010-sec-003-ch-001",
+          "hybrid_rank": 5,
+          "rank": 7,
+          "reranker_score": 0.37001526
+        },
+        {
+          "chunk_id": "work-010-sec-020-ch-001",
+          "hybrid_rank": 2,
+          "rank": 8,
+          "reranker_score": 0.33002236
+        },
+        {
+          "chunk_id": "work-009-sec-011-ch-001",
+          "hybrid_rank": 10,
+          "rank": 9,
+          "reranker_score": 0.31938794
+        },
+        {
+          "chunk_id": "work-009-sec-003-ch-001",
+          "hybrid_rank": 6,
+          "rank": 10,
+          "reranker_score": 0.28362268
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.982842,
+        "nDCG@5": 0.982842
+      },
+      "question": "A worker node is running Pods, but the node is not programming the network rules needed to implement Kubernetes Services. Which node component is responsible for that function?",
+      "question_id": "k8s-021",
+      "retrieved": [
+        {
+          "chunk_id": "arch-001-sec-004-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.91921389
+        },
+        {
+          "chunk_id": "arch-002-sec-011-ch-001",
+          "hybrid_rank": 10,
+          "rank": 2,
+          "reranker_score": 0.85663128
+        },
+        {
+          "chunk_id": "arch-002-sec-001-ch-001",
+          "hybrid_rank": 4,
+          "rank": 3,
+          "reranker_score": 0.63266999
+        },
+        {
+          "chunk_id": "net-006-sec-024-ch-001",
+          "hybrid_rank": 13,
+          "rank": 4,
+          "reranker_score": 0.59825414
+        },
+        {
+          "chunk_id": "arch-003-sec-002-ch-001",
+          "hybrid_rank": 18,
+          "rank": 5,
+          "reranker_score": 0.36437082
+        },
+        {
+          "chunk_id": "arch-002-sec-002-ch-001",
+          "hybrid_rank": 6,
+          "rank": 6,
+          "reranker_score": 0.3564471
+        },
+        {
+          "chunk_id": "net-001-sec-002-ch-001",
+          "hybrid_rank": 2,
+          "rank": 7,
+          "reranker_score": 0.32520536
+        },
+        {
+          "chunk_id": "net-001-sec-002-ch-002",
+          "hybrid_rank": 5,
+          "rank": 8,
+          "reranker_score": 0.32152781
+        },
+        {
+          "chunk_id": "sched-002-sec-003-ch-001",
+          "hybrid_rank": 8,
+          "rank": 9,
+          "reranker_score": 0.27372611
+        },
+        {
+          "chunk_id": "arch-002-sec-007-ch-001",
+          "hybrid_rank": 12,
+          "rank": 10,
+          "reranker_score": 0.22422652
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.814666,
+        "nDCG@5": 0.814666
+      },
+      "question": "How do container resource requests and limits contribute to a Pod's overall resource values, and how are requests and limits used differently while the Pod is scheduled and running?",
+      "question_id": "k8s-022",
+      "retrieved": [
+        {
+          "chunk_id": "work-002-sec-022-ch-001",
+          "hybrid_rank": 2,
+          "rank": 1,
+          "reranker_score": 0.99653542
+        },
+        {
+          "chunk_id": "conf-004-sec-002-ch-001",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.99607676
+        },
+        {
+          "chunk_id": "conf-004-sec-015-ch-001",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.99136668
+        },
+        {
+          "chunk_id": "conf-004-sec-008-ch-001",
+          "hybrid_rank": 5,
+          "rank": 4,
+          "reranker_score": 0.98826373
+        },
+        {
+          "chunk_id": "conf-004-sec-007-ch-001",
+          "hybrid_rank": 1,
+          "rank": 5,
+          "reranker_score": 0.98825115
+        },
+        {
+          "chunk_id": "work-004-sec-009-ch-001",
+          "hybrid_rank": 17,
+          "rank": 6,
+          "reranker_score": 0.98627859
+        },
+        {
+          "chunk_id": "work-005-sec-009-ch-001",
+          "hybrid_rank": 9,
+          "rank": 7,
+          "reranker_score": 0.98290908
+        },
+        {
+          "chunk_id": "conf-004-sec-013-ch-001",
+          "hybrid_rank": 11,
+          "rank": 8,
+          "reranker_score": 0.97411239
+        },
+        {
+          "chunk_id": "conf-004-sec-016-ch-001",
+          "hybrid_rank": 6,
+          "rank": 9,
+          "reranker_score": 0.9695546
+        },
+        {
+          "chunk_id": "conf-004-sec-014-ch-001",
+          "hybrid_rank": 8,
+          "rank": 10,
+          "reranker_score": 0.96845144
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "troubleshooting",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.814666,
+        "nDCG@5": 0.814666
+      },
+      "question": "A running Pod requests an in-place resize, but an operator does not want the scheduler to evict lower-priority Pods on a particular node just to make room for that resize. What can the operator configure, and who performs the resize once capacity is available?",
+      "question_id": "k8s-023",
+      "retrieved": [
+        {
+          "chunk_id": "sched-006-sec-023-ch-002",
+          "hybrid_rank": 5,
+          "rank": 1,
+          "reranker_score": 0.97955757
+        },
+        {
+          "chunk_id": "sched-006-sec-023-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.97449285
+        },
+        {
+          "chunk_id": "work-003-sec-032-ch-001",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.97400111
+        },
+        {
+          "chunk_id": "conf-004-sec-018-ch-001",
+          "hybrid_rank": 6,
+          "rank": 4,
+          "reranker_score": 0.96751225
+        },
+        {
+          "chunk_id": "sched-006-sec-024-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.8965044
+        },
+        {
+          "chunk_id": "conf-004-sec-019-ch-001",
+          "hybrid_rank": 2,
+          "rank": 6,
+          "reranker_score": 0.63490564
+        },
+        {
+          "chunk_id": "conf-004-sec-015-ch-001",
+          "hybrid_rank": 14,
+          "rank": 7,
+          "reranker_score": 0.44253787
+        },
+        {
+          "chunk_id": "sched-006-sec-028-ch-001",
+          "hybrid_rank": 12,
+          "rank": 8,
+          "reranker_score": 0.33595559
+        },
+        {
+          "chunk_id": "conf-004-sec-020-ch-001",
+          "hybrid_rank": 10,
+          "rank": 9,
+          "reranker_score": 0.29952148
+        },
+        {
+          "chunk_id": "stor-002-sec-015-ch-001",
+          "hybrid_rank": 9,
+          "rank": 10,
+          "reranker_score": 0.22390577
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": false,
+      "category": "negative_near_miss",
+      "difficulty": "easy",
+      "first_relevant_rank": null,
+      "metrics": {
+        "MRR": null,
+        "Recall@10": null,
+        "Recall@5": null,
+        "nDCG@10": null,
+        "nDCG@5": null
+      },
+      "question": "Which ResourceQuota field lets a namespace reserve a fixed percentage of total cluster CPU and automatically increases that namespace's quota whenever new nodes are added?",
+      "question_id": "k8s-024",
+      "retrieved": [
+        {
+          "chunk_id": "sec-009-sec-017-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.98626637
+        },
+        {
+          "chunk_id": "conf-004-sec-040-ch-003",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.88252145
+        },
+        {
+          "chunk_id": "sec-009-sec-001-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.71182638
+        },
+        {
+          "chunk_id": "sec-009-sec-004-ch-001",
+          "hybrid_rank": 3,
+          "rank": 4,
+          "reranker_score": 0.69717228
+        },
+        {
+          "chunk_id": "sec-009-sec-004-ch-002",
+          "hybrid_rank": 2,
+          "rank": 5,
+          "reranker_score": 0.60032374
+        },
+        {
+          "chunk_id": "sec-009-sec-003-ch-001",
+          "hybrid_rank": 9,
+          "rank": 6,
+          "reranker_score": 0.42933524
+        },
+        {
+          "chunk_id": "sec-009-sec-005-ch-001",
+          "hybrid_rank": 14,
+          "rank": 7,
+          "reranker_score": 0.32081494
+        },
+        {
+          "chunk_id": "sec-009-sec-016-ch-001",
+          "hybrid_rank": 6,
+          "rank": 8,
+          "reranker_score": 0.24565174
+        },
+        {
+          "chunk_id": "sec-009-sec-015-ch-001",
+          "hybrid_rank": 8,
+          "rank": 9,
+          "reranker_score": 0.19370846
+        },
+        {
+          "chunk_id": "sec-009-sec-010-ch-001",
+          "hybrid_rank": 16,
+          "rank": 10,
+          "reranker_score": 0.18407249
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "comparison",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.75,
+        "Recall@5": 0.25,
+        "nDCG@10": 0.718459,
+        "nDCG@5": 0.492662
+      },
+      "question": "How does dynamic provisioning of a PersistentVolume differ from dynamically creating a VolumeSnapshot in terms of the class object that supplies provider-specific provisioning information?",
+      "question_id": "k8s-026",
+      "retrieved": [
+        {
+          "chunk_id": "stor-008-sec-006-ch-001",
+          "hybrid_rank": 2,
+          "rank": 1,
+          "reranker_score": 0.98796159
+        },
+        {
+          "chunk_id": "stor-007-sec-004-ch-001",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.90017885
+        },
+        {
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "hybrid_rank": 6,
+          "rank": 3,
+          "reranker_score": 0.89323002
+        },
+        {
+          "chunk_id": "stor-007-sec-001-ch-001",
+          "hybrid_rank": 1,
+          "rank": 4,
+          "reranker_score": 0.8854298
+        },
+        {
+          "chunk_id": "stor-007-sec-005-ch-001",
+          "hybrid_rank": 8,
+          "rank": 5,
+          "reranker_score": 0.87939298
+        },
+        {
+          "chunk_id": "stor-006-sec-009-ch-001",
+          "hybrid_rank": 19,
+          "rank": 6,
+          "reranker_score": 0.8547771
+        },
+        {
+          "chunk_id": "stor-003-sec-006-ch-001",
+          "hybrid_rank": 3,
+          "rank": 7,
+          "reranker_score": 0.83400148
+        },
+        {
+          "chunk_id": "stor-007-sec-002-ch-001",
+          "hybrid_rank": 5,
+          "rank": 8,
+          "reranker_score": 0.74957502
+        },
+        {
+          "chunk_id": "stor-008-sec-002-ch-001",
+          "hybrid_rank": 12,
+          "rank": 9,
+          "reranker_score": 0.49867505
+        },
+        {
+          "chunk_id": "stor-007-sec-003-ch-001",
+          "hybrid_rank": 16,
+          "rank": 10,
+          "reranker_score": 0.4544853
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "easy",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.984514,
+        "nDCG@5": 0.958041
+      },
+      "question": "You are defining an eight-Pod distributed training Job where all eight Pods must be schedulable together, should be co-located in one zone, and should be disrupted as a group. How should the Job's scheduling configuration express those requirements?",
+      "question_id": "k8s-027",
+      "retrieved": [
+        {
+          "chunk_id": "work-013-sec-013-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.96538562
+        },
+        {
+          "chunk_id": "work-013-sec-012-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.86932147
+        },
+        {
+          "chunk_id": "work-001-sec-002-ch-001",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.05939912
+        },
+        {
+          "chunk_id": "work-002-sec-010-ch-001",
+          "hybrid_rank": 4,
+          "rank": 4,
+          "reranker_score": 0.05756663
+        },
+        {
+          "chunk_id": "work-013-sec-053-ch-001",
+          "hybrid_rank": 14,
+          "rank": 5,
+          "reranker_score": 0.0274168
+        },
+        {
+          "chunk_id": "work-013-sec-037-ch-001",
+          "hybrid_rank": 12,
+          "rank": 6,
+          "reranker_score": 0.01908871
+        },
+        {
+          "chunk_id": "sched-003-sec-017-ch-001",
+          "hybrid_rank": 19,
+          "rank": 7,
+          "reranker_score": 0.01695234
+        },
+        {
+          "chunk_id": "work-013-sec-014-ch-001",
+          "hybrid_rank": 11,
+          "rank": 8,
+          "reranker_score": 0.01385436
+        },
+        {
+          "chunk_id": "sched-004-sec-010-ch-001",
+          "hybrid_rank": 18,
+          "rank": 9,
+          "reranker_score": 0.00721788
+        },
+        {
+          "chunk_id": "sched-001-sec-002-ch-001",
+          "hybrid_rank": 7,
+          "rank": 10,
+          "reranker_score": 0.00701204
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.983303,
+        "nDCG@5": 0.958041
+      },
+      "question": "Why is re-registering a Node recommended when restarting its kubelet with a new set of node labels, and how can those label changes affect a DaemonSet?",
+      "question_id": "k8s-028",
+      "retrieved": [
+        {
+          "chunk_id": "arch-002-sec-006-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99454898
+        },
+        {
+          "chunk_id": "work-012-sec-012-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.97923249
+        },
+        {
+          "chunk_id": "arch-002-sec-007-ch-001",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.19630468
+        },
+        {
+          "chunk_id": "arch-002-sec-005-ch-001",
+          "hybrid_rank": 9,
+          "rank": 4,
+          "reranker_score": 0.16958395
+        },
+        {
+          "chunk_id": "work-012-sec-010-ch-001",
+          "hybrid_rank": 11,
+          "rank": 5,
+          "reranker_score": 0.06530403
+        },
+        {
+          "chunk_id": "arch-002-sec-002-ch-001",
+          "hybrid_rank": 10,
+          "rank": 6,
+          "reranker_score": 0.05264744
+        },
+        {
+          "chunk_id": "work-012-sec-010-ch-002",
+          "hybrid_rank": 14,
+          "rank": 7,
+          "reranker_score": 0.04690795
+        },
+        {
+          "chunk_id": "arch-002-sec-005-ch-002",
+          "hybrid_rank": 12,
+          "rank": 8,
+          "reranker_score": 0.04651048
+        },
+        {
+          "chunk_id": "sched-003-sec-004-ch-001",
+          "hybrid_rank": 6,
+          "rank": 9,
+          "reranker_score": 0.04004521
+        },
+        {
+          "chunk_id": "sched-007-sec-032-ch-001",
+          "hybrid_rank": 17,
+          "rank": 10,
+          "reranker_score": 0.03221558
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "troubleshooting",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.888926,
+        "nDCG@5": 0.797864
+      },
+      "question": "A workload needs a Pod specification change that cannot be handled by changing only the running containers' CPU or memory requests and limits. What is the portable Kubernetes approach to applying the change?",
+      "question_id": "k8s-029",
+      "retrieved": [
+        {
+          "chunk_id": "conf-004-sec-020-ch-001",
+          "hybrid_rank": 2,
+          "rank": 1,
+          "reranker_score": 0.9594245
+        },
+        {
+          "chunk_id": "conf-004-sec-016-ch-001",
+          "hybrid_rank": 6,
+          "rank": 2,
+          "reranker_score": 0.72791493
+        },
+        {
+          "chunk_id": "conf-004-sec-002-ch-001",
+          "hybrid_rank": 9,
+          "rank": 3,
+          "reranker_score": 0.65489972
+        },
+        {
+          "chunk_id": "conf-004-sec-017-ch-001",
+          "hybrid_rank": 5,
+          "rank": 4,
+          "reranker_score": 0.6308496
+        },
+        {
+          "chunk_id": "work-002-sec-022-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.62790751
+        },
+        {
+          "chunk_id": "work-003-sec-032-ch-001",
+          "hybrid_rank": 8,
+          "rank": 6,
+          "reranker_score": 0.54764968
+        },
+        {
+          "chunk_id": "work-003-sec-033-ch-001",
+          "hybrid_rank": 1,
+          "rank": 7,
+          "reranker_score": 0.54375237
+        },
+        {
+          "chunk_id": "conf-004-sec-018-ch-001",
+          "hybrid_rank": 15,
+          "rank": 8,
+          "reranker_score": 0.52181542
+        },
+        {
+          "chunk_id": "conf-004-sec-008-ch-001",
+          "hybrid_rank": 3,
+          "rank": 9,
+          "reranker_score": 0.37324241
+        },
+        {
+          "chunk_id": "conf-004-sec-023-ch-001",
+          "hybrid_rank": 13,
+          "rank": 10,
+          "reranker_score": 0.25737864
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.934076,
+        "nDCG@5": 0.934076
+      },
+      "question": "A Linux container mounts `/mnt` from the host with `readOnly: true`, but a separate filesystem mounted underneath `/mnt` is still writable from the container. How can you request that the whole mount tree be read-only?",
+      "question_id": "k8s-033",
+      "retrieved": [
+        {
+          "chunk_id": "stor-002-sec-058-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.96611428
+        },
+        {
+          "chunk_id": "stor-002-sec-059-ch-002",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.74413764
+        },
+        {
+          "chunk_id": "stor-002-sec-059-ch-001",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.47829011
+        },
+        {
+          "chunk_id": "stor-002-sec-026-ch-001",
+          "hybrid_rank": 7,
+          "rank": 4,
+          "reranker_score": 0.41856527
+        },
+        {
+          "chunk_id": "stor-002-sec-063-ch-001",
+          "hybrid_rank": 6,
+          "rank": 5,
+          "reranker_score": 0.14374785
+        },
+        {
+          "chunk_id": "sched-007-sec-009-ch-001",
+          "hybrid_rank": 16,
+          "rank": 6,
+          "reranker_score": 0.09219654
+        },
+        {
+          "chunk_id": "stor-002-sec-023-ch-001",
+          "hybrid_rank": 12,
+          "rank": 7,
+          "reranker_score": 0.07066613
+        },
+        {
+          "chunk_id": "stor-002-sec-006-ch-001",
+          "hybrid_rank": 8,
+          "rank": 8,
+          "reranker_score": 0.06171531
+        },
+        {
+          "chunk_id": "stor-002-sec-025-ch-001",
+          "hybrid_rank": 13,
+          "rank": 9,
+          "reranker_score": 0.03180933
+        },
+        {
+          "chunk_id": "stor-002-sec-057-ch-001",
+          "hybrid_rank": 5,
+          "rank": 10,
+          "reranker_score": 0.00864958
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "medium",
+      "first_relevant_rank": 2,
+      "metrics": {
+        "MRR": 0.5,
+        "Recall@10": 0.8,
+        "Recall@5": 0.6,
+        "nDCG@10": 0.636628,
+        "nDCG@5": 0.529635
+      },
+      "question": "When authoring Deployment, ReplicaSet, DaemonSet, StatefulSet, and Job manifests, how do their Pod selector requirements differ?",
+      "question_id": "k8s-034",
+      "retrieved": [
+        {
+          "chunk_id": "work-013-sec-040-ch-002",
+          "hybrid_rank": 6,
+          "rank": 1,
+          "reranker_score": 0.8271271
+        },
+        {
+          "chunk_id": "work-010-sec-008-ch-001",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.55461907
+        },
+        {
+          "chunk_id": "work-011-sec-006-ch-001",
+          "hybrid_rank": 7,
+          "rank": 3,
+          "reranker_score": 0.55053443
+        },
+        {
+          "chunk_id": "work-012-sec-006-ch-001",
+          "hybrid_rank": 1,
+          "rank": 4,
+          "reranker_score": 0.49439007
+        },
+        {
+          "chunk_id": "sched-003-sec-027-ch-001",
+          "hybrid_rank": 20,
+          "rank": 5,
+          "reranker_score": 0.34456712
+        },
+        {
+          "chunk_id": "work-009-sec-031-ch-001",
+          "hybrid_rank": 5,
+          "rank": 6,
+          "reranker_score": 0.21490952
+        },
+        {
+          "chunk_id": "work-010-sec-003-ch-001",
+          "hybrid_rank": 10,
+          "rank": 7,
+          "reranker_score": 0.18931697
+        },
+        {
+          "chunk_id": "work-013-sec-006-ch-001",
+          "hybrid_rank": 14,
+          "rank": 8,
+          "reranker_score": 0.17803255
+        },
+        {
+          "chunk_id": "work-013-sec-040-ch-001",
+          "hybrid_rank": 2,
+          "rank": 9,
+          "reranker_score": 0.17149819
+        },
+        {
+          "chunk_id": "work-010-sec-005-ch-001",
+          "hybrid_rank": 9,
+          "rank": 10,
+          "reranker_score": 0.11953958
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "A Linux Pod uses `setHostnameAsFQDN: true` and stays in `Pending` / `ContainerCreating` with an event saying its FQDN is longer than 64 characters. What is causing the failure, and what preventive control does the documentation suggest?",
+      "question_id": "k8s-039",
+      "retrieved": [
+        {
+          "chunk_id": "net-007-sec-012-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99936968
+        },
+        {
+          "chunk_id": "net-007-sec-011-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.66076684
+        },
+        {
+          "chunk_id": "net-007-sec-009-ch-002",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.05853701
+        },
+        {
+          "chunk_id": "conf-004-sec-040-ch-001",
+          "hybrid_rank": 7,
+          "rank": 4,
+          "reranker_score": 0.03345737
+        },
+        {
+          "chunk_id": "net-007-sec-014-ch-001",
+          "hybrid_rank": 8,
+          "rank": 5,
+          "reranker_score": 0.00839894
+        },
+        {
+          "chunk_id": "net-007-sec-009-ch-001",
+          "hybrid_rank": 10,
+          "rank": 6,
+          "reranker_score": 0.00783906
+        },
+        {
+          "chunk_id": "net-007-sec-018-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.00708866
+        },
+        {
+          "chunk_id": "net-007-sec-017-ch-001",
+          "hybrid_rank": 4,
+          "rank": 8,
+          "reranker_score": 0.0029277
+        },
+        {
+          "chunk_id": "work-007-sec-004-ch-001",
+          "hybrid_rank": 12,
+          "rank": 9,
+          "reranker_score": 0.00265708
+        },
+        {
+          "chunk_id": "net-007-sec-015-ch-001",
+          "hybrid_rank": 16,
+          "rank": 10,
+          "reranker_score": 0.00220107
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "medium",
+      "first_relevant_rank": 2,
+      "metrics": {
+        "MRR": 0.5,
+        "Recall@10": 0.25,
+        "Recall@5": 0.25,
+        "nDCG@10": 0.287773,
+        "nDCG@5": 0.287773
+      },
+      "question": "An application needs dynamically provisioned persistent storage, must mount that storage into a Pod, and later needs a dynamically created snapshot of it. Which Kubernetes objects and fields connect those three steps?",
+      "question_id": "k8s-040",
+      "retrieved": [
+        {
+          "chunk_id": "stor-008-sec-006-ch-001",
+          "hybrid_rank": 3,
+          "rank": 1,
+          "reranker_score": 0.85240853
+        },
+        {
+          "chunk_id": "stor-007-sec-004-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.73284197
+        },
+        {
+          "chunk_id": "stor-007-sec-001-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.56378597
+        },
+        {
+          "chunk_id": "stor-007-sec-005-ch-001",
+          "hybrid_rank": 20,
+          "rank": 4,
+          "reranker_score": 0.4894163
+        },
+        {
+          "chunk_id": "stor-006-sec-010-ch-001",
+          "hybrid_rank": 14,
+          "rank": 5,
+          "reranker_score": 0.38562354
+        },
+        {
+          "chunk_id": "stor-003-sec-006-ch-001",
+          "hybrid_rank": 6,
+          "rank": 6,
+          "reranker_score": 0.22948748
+        },
+        {
+          "chunk_id": "sec-006-sec-010-ch-001",
+          "hybrid_rank": 8,
+          "rank": 7,
+          "reranker_score": 0.19802891
+        },
+        {
+          "chunk_id": "stor-007-sec-003-ch-001",
+          "hybrid_rank": 4,
+          "rank": 8,
+          "reranker_score": 0.19637951
+        },
+        {
+          "chunk_id": "stor-005-sec-007-ch-001",
+          "hybrid_rank": 12,
+          "rank": 9,
+          "reranker_score": 0.14924246
+        },
+        {
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "hybrid_rank": 5,
+          "rank": 10,
+          "reranker_score": 0.09970047
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": false,
+      "category": "negative_near_miss",
+      "difficulty": "hard",
+      "first_relevant_rank": null,
+      "metrics": {
+        "MRR": null,
+        "Recall@10": null,
+        "Recall@5": null,
+        "nDCG@10": null,
+        "nDCG@5": null
+      },
+      "question": "Which PersistentVolumeClaim field tells Kubernetes to automatically convert an existing `Filesystem` PersistentVolume into raw `Block` mode when the requested `volumeMode` does not match?",
+      "question_id": "k8s-054",
+      "retrieved": [
+        {
+          "chunk_id": "stor-003-sec-029-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.97195506
+        },
+        {
+          "chunk_id": "stor-003-sec-044-ch-001",
+          "hybrid_rank": 6,
+          "rank": 2,
+          "reranker_score": 0.95816249
+        },
+        {
+          "chunk_id": "stor-003-sec-062-ch-001",
+          "hybrid_rank": 15,
+          "rank": 3,
+          "reranker_score": 0.93359429
+        },
+        {
+          "chunk_id": "stor-003-sec-059-ch-001",
+          "hybrid_rank": 2,
+          "rank": 4,
+          "reranker_score": 0.86603606
+        },
+        {
+          "chunk_id": "stor-003-sec-045-ch-001",
+          "hybrid_rank": 8,
+          "rank": 5,
+          "reranker_score": 0.83606815
+        },
+        {
+          "chunk_id": "stor-007-sec-004-ch-001",
+          "hybrid_rank": 13,
+          "rank": 6,
+          "reranker_score": 0.78387201
+        },
+        {
+          "chunk_id": "stor-003-sec-058-ch-001",
+          "hybrid_rank": 5,
+          "rank": 7,
+          "reranker_score": 0.67506468
+        },
+        {
+          "chunk_id": "stor-008-sec-012-ch-001",
+          "hybrid_rank": 9,
+          "rank": 8,
+          "reranker_score": 0.59725499
+        },
+        {
+          "chunk_id": "stor-003-sec-043-ch-001",
+          "hybrid_rank": 18,
+          "rank": 9,
+          "reranker_score": 0.58059633
+        },
+        {
+          "chunk_id": "stor-002-sec-036-ch-001",
+          "hybrid_rank": 3,
+          "rank": 10,
+          "reranker_score": 0.46762976
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": false,
+      "category": "negative_near_miss",
+      "difficulty": "hard",
+      "first_relevant_rank": null,
+      "metrics": {
+        "MRR": null,
+        "Recall@10": null,
+        "Recall@5": null,
+        "nDCG@10": null,
+        "nDCG@5": null
+      },
+      "question": "Which Kubernetes setting retroactively injects Service environment variables into Pods that were already running before the Service was created?",
+      "question_id": "k8s-060",
+      "retrieved": [
+        {
+          "chunk_id": "net-002-sec-043-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.91393518
+        },
+        {
+          "chunk_id": "net-002-sec-042-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.77124441
+        },
+        {
+          "chunk_id": "conf-003-sec-031-ch-001",
+          "hybrid_rank": 8,
+          "rank": 3,
+          "reranker_score": 0.34233841
+        },
+        {
+          "chunk_id": "conf-002-sec-012-ch-001",
+          "hybrid_rank": 3,
+          "rank": 4,
+          "reranker_score": 0.11057036
+        },
+        {
+          "chunk_id": "work-011-sec-027-ch-001",
+          "hybrid_rank": 13,
+          "rank": 5,
+          "reranker_score": 0.10225677
+        },
+        {
+          "chunk_id": "net-002-sec-007-ch-001",
+          "hybrid_rank": 12,
+          "rank": 6,
+          "reranker_score": 0.08332375
+        },
+        {
+          "chunk_id": "sec-004-sec-008-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.06355555
+        },
+        {
+          "chunk_id": "work-013-sec-040-ch-001",
+          "hybrid_rank": 7,
+          "rank": 8,
+          "reranker_score": 0.04212811
+        },
+        {
+          "chunk_id": "net-002-sec-002-ch-001",
+          "hybrid_rank": 5,
+          "rank": 9,
+          "reranker_score": 0.03826604
+        },
+        {
+          "chunk_id": "work-009-sec-009-ch-002",
+          "hybrid_rank": 14,
+          "rank": 10,
+          "reranker_score": 0.0085213
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": false,
+      "category": "negative_near_miss",
+      "difficulty": "hard",
+      "first_relevant_rank": null,
+      "metrics": {
+        "MRR": null,
+        "Recall@10": null,
+        "Recall@5": null,
+        "nDCG@10": null,
+        "nDCG@5": null
+      },
+      "question": "Which ServiceAccount field automatically grants that account read access to every Secret in every namespace without creating any RBAC role or binding?",
+      "question_id": "k8s-066",
+      "retrieved": [
+        {
+          "chunk_id": "sec-004-sec-003-ch-001",
+          "hybrid_rank": 3,
+          "rank": 1,
+          "reranker_score": 0.99271458
+        },
+        {
+          "chunk_id": "sec-006-sec-009-ch-001",
+          "hybrid_rank": 10,
+          "rank": 2,
+          "reranker_score": 0.88743126
+        },
+        {
+          "chunk_id": "sec-004-sec-006-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.85626304
+        },
+        {
+          "chunk_id": "sec-004-sec-013-ch-001",
+          "hybrid_rank": 5,
+          "rank": 4,
+          "reranker_score": 0.77499902
+        },
+        {
+          "chunk_id": "sec-004-sec-007-ch-001",
+          "hybrid_rank": 1,
+          "rank": 5,
+          "reranker_score": 0.67091948
+        },
+        {
+          "chunk_id": "sec-004-sec-004-ch-001",
+          "hybrid_rank": 18,
+          "rank": 6,
+          "reranker_score": 0.64216268
+        },
+        {
+          "chunk_id": "sec-004-sec-002-ch-001",
+          "hybrid_rank": 4,
+          "rank": 7,
+          "reranker_score": 0.3620699
+        },
+        {
+          "chunk_id": "stor-006-sec-023-ch-001",
+          "hybrid_rank": 14,
+          "rank": 8,
+          "reranker_score": 0.35588536
+        },
+        {
+          "chunk_id": "sec-004-sec-008-ch-001",
+          "hybrid_rank": 7,
+          "rank": 9,
+          "reranker_score": 0.29470286
+        },
+        {
+          "chunk_id": "conf-003-sec-011-ch-001",
+          "hybrid_rank": 6,
+          "rank": 10,
+          "reranker_score": 0.25151905
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.333333,
+        "nDCG@10": 0.904719,
+        "nDCG@5": 0.86091
+      },
+      "question": "What does the DNS A or AAAA record for a headless Service resolve to, and how does that differ from a normal Service?",
+      "question_id": "k8s-067",
+      "retrieved": [
+        {
+          "chunk_id": "net-007-sec-005-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99922347
+        },
+        {
+          "chunk_id": "net-002-sec-040-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.98829961
+        },
+        {
+          "chunk_id": "net-007-sec-008-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.90383786
+        },
+        {
+          "chunk_id": "net-002-sec-039-ch-001",
+          "hybrid_rank": 3,
+          "rank": 4,
+          "reranker_score": 0.76242316
+        },
+        {
+          "chunk_id": "net-002-sec-038-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.41786858
+        },
+        {
+          "chunk_id": "net-007-sec-006-ch-001",
+          "hybrid_rank": 10,
+          "rank": 6,
+          "reranker_score": 0.39361909
+        },
+        {
+          "chunk_id": "net-002-sec-036-ch-001",
+          "hybrid_rank": 8,
+          "rank": 7,
+          "reranker_score": 0.27713889
+        },
+        {
+          "chunk_id": "work-011-sec-012-ch-001",
+          "hybrid_rank": 6,
+          "rank": 8,
+          "reranker_score": 0.06340028
+        },
+        {
+          "chunk_id": "work-011-sec-005-ch-001",
+          "hybrid_rank": 16,
+          "rank": 9,
+          "reranker_score": 0.05258647
+        },
+        {
+          "chunk_id": "work-011-sec-012-ch-002",
+          "hybrid_rank": 7,
+          "rank": 10,
+          "reranker_score": 0.01403844
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "comparison",
+      "difficulty": "hard",
+      "first_relevant_rank": 4,
+      "metrics": {
+        "MRR": 0.25,
+        "Recall@10": 0.5,
+        "Recall@5": 0.25,
+        "nDCG@10": 0.340322,
+        "nDCG@5": 0.196436
+      },
+      "question": "How do out-of-tree CSI volume plugins differ from legacy in-tree volume plugins, and which advanced storage operations in the supplied documentation depend on CSI?",
+      "question_id": "k8s-068",
+      "retrieved": [
+        {
+          "chunk_id": "stor-002-sec-052-ch-001",
+          "hybrid_rank": 3,
+          "rank": 1,
+          "reranker_score": 0.9590919
+        },
+        {
+          "chunk_id": "stor-002-sec-053-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.93404096
+        },
+        {
+          "chunk_id": "stor-002-sec-051-ch-001",
+          "hybrid_rank": 11,
+          "rank": 3,
+          "reranker_score": 0.92939842
+        },
+        {
+          "chunk_id": "stor-002-sec-046-ch-001",
+          "hybrid_rank": 1,
+          "rank": 4,
+          "reranker_score": 0.84896469
+        },
+        {
+          "chunk_id": "stor-002-sec-055-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.80067807
+        },
+        {
+          "chunk_id": "stor-002-sec-048-ch-001",
+          "hybrid_rank": 7,
+          "rank": 6,
+          "reranker_score": 0.7752406
+        },
+        {
+          "chunk_id": "stor-002-sec-048-ch-002",
+          "hybrid_rank": 15,
+          "rank": 7,
+          "reranker_score": 0.76588118
+        },
+        {
+          "chunk_id": "stor-003-sec-064-ch-001",
+          "hybrid_rank": 9,
+          "rank": 8,
+          "reranker_score": 0.65585238
+        },
+        {
+          "chunk_id": "stor-002-sec-047-ch-001",
+          "hybrid_rank": 5,
+          "rank": 9,
+          "reranker_score": 0.53944105
+        },
+        {
+          "chunk_id": "stor-002-sec-050-ch-001",
+          "hybrid_rank": 10,
+          "rank": 10,
+          "reranker_score": 0.35134861
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "troubleshooting",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.333333,
+        "Recall@5": 0.333333,
+        "nDCG@10": 0.86091,
+        "nDCG@5": 0.86091
+      },
+      "question": "A Pod will not start because a referenced Secret cannot be fetched. What should you verify first, and where should you look for details while Kubernetes retries?",
+      "question_id": "k8s-071",
+      "retrieved": [
+        {
+          "chunk_id": "conf-003-sec-027-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.98372632
+        },
+        {
+          "chunk_id": "conf-003-sec-028-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.60434383
+        },
+        {
+          "chunk_id": "conf-003-sec-031-ch-001",
+          "hybrid_rank": 9,
+          "rank": 3,
+          "reranker_score": 0.34103915
+        },
+        {
+          "chunk_id": "sec-004-sec-013-ch-001",
+          "hybrid_rank": 10,
+          "rank": 4,
+          "reranker_score": 0.17326981
+        },
+        {
+          "chunk_id": "conf-003-sec-002-ch-001",
+          "hybrid_rank": 3,
+          "rank": 5,
+          "reranker_score": 0.16348709
+        },
+        {
+          "chunk_id": "conf-003-sec-040-ch-001",
+          "hybrid_rank": 5,
+          "rank": 6,
+          "reranker_score": 0.15670647
+        },
+        {
+          "chunk_id": "conf-003-sec-001-ch-001",
+          "hybrid_rank": 17,
+          "rank": 7,
+          "reranker_score": 0.08151304
+        },
+        {
+          "chunk_id": "sec-007-sec-001-ch-001",
+          "hybrid_rank": 7,
+          "rank": 8,
+          "reranker_score": 0.05307348
+        },
+        {
+          "chunk_id": "conf-003-sec-030-ch-001",
+          "hybrid_rank": 13,
+          "rank": 9,
+          "reranker_score": 0.04213976
+        },
+        {
+          "chunk_id": "stor-002-sec-042-ch-001",
+          "hybrid_rank": 14,
+          "rank": 10,
+          "reranker_score": 0.0362431
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.986084,
+        "nDCG@5": 0.986084
+      },
+      "question": "Which factors does kubelet use to order end-user Pods for node-pressure eviction after node-level reclamation has failed?",
+      "question_id": "k8s-072",
+      "retrieved": [
+        {
+          "chunk_id": "sched-007-sec-021-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99587339
+        },
+        {
+          "chunk_id": "sched-007-sec-022-ch-001",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.95195991
+        },
+        {
+          "chunk_id": "sched-007-sec-017-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.9433254
+        },
+        {
+          "chunk_id": "sched-007-sec-032-ch-001",
+          "hybrid_rank": 6,
+          "rank": 4,
+          "reranker_score": 0.91382509
+        },
+        {
+          "chunk_id": "sched-007-sec-001-ch-001",
+          "hybrid_rank": 5,
+          "rank": 5,
+          "reranker_score": 0.88790464
+        },
+        {
+          "chunk_id": "sched-007-sec-018-ch-001",
+          "hybrid_rank": 15,
+          "rank": 6,
+          "reranker_score": 0.88132107
+        },
+        {
+          "chunk_id": "sched-007-sec-024-ch-001",
+          "hybrid_rank": 19,
+          "rank": 7,
+          "reranker_score": 0.87563747
+        },
+        {
+          "chunk_id": "sched-007-sec-002-ch-001",
+          "hybrid_rank": 3,
+          "rank": 8,
+          "reranker_score": 0.85989171
+        },
+        {
+          "chunk_id": "sched-007-sec-019-ch-001",
+          "hybrid_rank": 12,
+          "rank": 9,
+          "reranker_score": 0.81427413
+        },
+        {
+          "chunk_id": "sched-007-sec-025-ch-001",
+          "hybrid_rank": 10,
+          "rank": 10,
+          "reranker_score": 0.78312105
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "comparison",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.88387,
+        "nDCG@5": 0.88387
+      },
+      "question": "How does the API server's TLS server certificate protect an API connection differently from a Kubernetes client certificate issued through the CSR API?",
+      "question_id": "k8s-073",
+      "retrieved": [
+        {
+          "chunk_id": "sec-005-sec-002-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.92057198
+        },
+        {
+          "chunk_id": "sec-006-sec-015-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.86182493
+        },
+        {
+          "chunk_id": "arch-003-sec-002-ch-001",
+          "hybrid_rank": 6,
+          "rank": 3,
+          "reranker_score": 0.65304565
+        },
+        {
+          "chunk_id": "arch-003-sec-004-ch-001",
+          "hybrid_rank": 3,
+          "rank": 4,
+          "reranker_score": 0.34869167
+        },
+        {
+          "chunk_id": "sec-005-sec-003-ch-001",
+          "hybrid_rank": 8,
+          "rank": 5,
+          "reranker_score": 0.05164986
+        },
+        {
+          "chunk_id": "conf-003-sec-019-ch-001",
+          "hybrid_rank": 4,
+          "rank": 6,
+          "reranker_score": 0.04697577
+        },
+        {
+          "chunk_id": "sec-005-sec-007-ch-001",
+          "hybrid_rank": 9,
+          "rank": 7,
+          "reranker_score": 0.03873927
+        },
+        {
+          "chunk_id": "arch-003-sec-005-ch-001",
+          "hybrid_rank": 7,
+          "rank": 8,
+          "reranker_score": 0.03804127
+        },
+        {
+          "chunk_id": "sec-004-sec-016-ch-001",
+          "hybrid_rank": 12,
+          "rank": 9,
+          "reranker_score": 0.02817648
+        },
+        {
+          "chunk_id": "net-003-sec-026-ch-001",
+          "hybrid_rank": 5,
+          "rank": 10,
+          "reranker_score": 0.01711768
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "troubleshooting",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.5,
+        "Recall@5": 0.5,
+        "nDCG@10": 0.78625,
+        "nDCG@5": 0.78625
+      },
+      "question": "A DaemonSet was copied from a Job manifest and its Pod template still uses `restartPolicy: OnFailure`. Why is that invalid, and what value should the DaemonSet use?",
+      "question_id": "k8s-076",
+      "retrieved": [
+        {
+          "chunk_id": "work-012-sec-005-ch-001",
+          "hybrid_rank": 7,
+          "rank": 1,
+          "reranker_score": 0.44837344
+        },
+        {
+          "chunk_id": "work-003-sec-017-ch-001",
+          "hybrid_rank": 5,
+          "rank": 2,
+          "reranker_score": 0.38726115
+        },
+        {
+          "chunk_id": "work-003-sec-015-ch-001",
+          "hybrid_rank": 1,
+          "rank": 3,
+          "reranker_score": 0.26639804
+        },
+        {
+          "chunk_id": "work-013-sec-019-ch-001",
+          "hybrid_rank": 17,
+          "rank": 4,
+          "reranker_score": 0.24278538
+        },
+        {
+          "chunk_id": "work-013-sec-005-ch-001",
+          "hybrid_rank": 10,
+          "rank": 5,
+          "reranker_score": 0.20871221
+        },
+        {
+          "chunk_id": "work-013-sec-024-ch-001",
+          "hybrid_rank": 2,
+          "rank": 6,
+          "reranker_score": 0.18080795
+        },
+        {
+          "chunk_id": "work-013-sec-018-ch-001",
+          "hybrid_rank": 11,
+          "rank": 7,
+          "reranker_score": 0.16867924
+        },
+        {
+          "chunk_id": "work-003-sec-021-ch-001",
+          "hybrid_rank": 13,
+          "rank": 8,
+          "reranker_score": 0.15260601
+        },
+        {
+          "chunk_id": "work-013-sec-028-ch-002",
+          "hybrid_rank": 6,
+          "rank": 9,
+          "reranker_score": 0.13644157
+        },
+        {
+          "chunk_id": "work-003-sec-018-ch-001",
+          "hybrid_rank": 14,
+          "rank": 10,
+          "reranker_score": 0.12852795
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.987954,
+        "nDCG@5": 0.987954
+      },
+      "question": "What cloud-specific information and lifecycle checks does the cloud-controller-manager's Node controller perform for Kubernetes Nodes?",
+      "question_id": "k8s-077",
+      "retrieved": [
+        {
+          "chunk_id": "arch-007-sec-005-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99936908
+        },
+        {
+          "chunk_id": "arch-002-sec-011-ch-001",
+          "hybrid_rank": 3,
+          "rank": 2,
+          "reranker_score": 0.98828739
+        },
+        {
+          "chunk_id": "arch-007-sec-001-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.80066097
+        },
+        {
+          "chunk_id": "arch-007-sec-007-ch-001",
+          "hybrid_rank": 5,
+          "rank": 4,
+          "reranker_score": 0.77040279
+        },
+        {
+          "chunk_id": "arch-007-sec-006-ch-001",
+          "hybrid_rank": 7,
+          "rank": 5,
+          "reranker_score": 0.53714973
+        },
+        {
+          "chunk_id": "arch-007-sec-009-ch-001",
+          "hybrid_rank": 14,
+          "rank": 6,
+          "reranker_score": 0.50975364
+        },
+        {
+          "chunk_id": "arch-007-sec-002-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.47922811
+        },
+        {
+          "chunk_id": "arch-007-sec-013-ch-001",
+          "hybrid_rank": 4,
+          "rank": 8,
+          "reranker_score": 0.41119385
+        },
+        {
+          "chunk_id": "arch-007-sec-012-ch-001",
+          "hybrid_rank": 11,
+          "rank": 9,
+          "reranker_score": 0.30786201
+        },
+        {
+          "chunk_id": "arch-001-sec-003-ch-001",
+          "hybrid_rank": 10,
+          "rank": 10,
+          "reranker_score": 0.25169072
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "comparison",
+      "difficulty": "hard",
+      "first_relevant_rank": 2,
+      "metrics": {
+        "MRR": 0.5,
+        "Recall@10": 0.75,
+        "Recall@5": 0.5,
+        "nDCG@10": 0.558755,
+        "nDCG@5": 0.533781
+      },
+      "question": "How does resizing CPU or memory for a running container differ from resizing the `sizeLimit` of a memory-backed `emptyDir`, particularly in feature-gate requirements and what is being changed?",
+      "question_id": "k8s-078",
+      "retrieved": [
+        {
+          "chunk_id": "stor-002-sec-015-ch-001",
+          "hybrid_rank": 2,
+          "rank": 1,
+          "reranker_score": 0.9772464
+        },
+        {
+          "chunk_id": "conf-004-sec-023-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.94847339
+        },
+        {
+          "chunk_id": "work-003-sec-032-ch-001",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.84840125
+        },
+        {
+          "chunk_id": "stor-002-sec-010-ch-001",
+          "hybrid_rank": 11,
+          "rank": 4,
+          "reranker_score": 0.74076903
+        },
+        {
+          "chunk_id": "conf-004-sec-018-ch-001",
+          "hybrid_rank": 5,
+          "rank": 5,
+          "reranker_score": 0.57026273
+        },
+        {
+          "chunk_id": "conf-004-sec-016-ch-001",
+          "hybrid_rank": 8,
+          "rank": 6,
+          "reranker_score": 0.47755453
+        },
+        {
+          "chunk_id": "conf-004-sec-024-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.34854859
+        },
+        {
+          "chunk_id": "conf-004-sec-002-ch-001",
+          "hybrid_rank": 14,
+          "rank": 8,
+          "reranker_score": 0.33170244
+        },
+        {
+          "chunk_id": "work-002-sec-022-ch-001",
+          "hybrid_rank": 13,
+          "rank": 9,
+          "reranker_score": 0.29167891
+        },
+        {
+          "chunk_id": "conf-004-sec-017-ch-001",
+          "hybrid_rank": 7,
+          "rank": 10,
+          "reranker_score": 0.28807437
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "troubleshooting",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "Inside a Linux Pod, `hostname --fqdn` returns the full DNS name but `hostname` returns only the short name. How can you make `hostname` return the FQDN too, and what Linux limit can then prevent the Pod from starting?",
+      "question_id": "k8s-081",
+      "retrieved": [
+        {
+          "chunk_id": "net-007-sec-011-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99780816
+        },
+        {
+          "chunk_id": "net-007-sec-012-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.99358046
+        },
+        {
+          "chunk_id": "net-007-sec-009-ch-001",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.62460506
+        },
+        {
+          "chunk_id": "net-007-sec-009-ch-002",
+          "hybrid_rank": 4,
+          "rank": 4,
+          "reranker_score": 0.58776581
+        },
+        {
+          "chunk_id": "net-007-sec-018-ch-001",
+          "hybrid_rank": 5,
+          "rank": 5,
+          "reranker_score": 0.16011435
+        },
+        {
+          "chunk_id": "work-002-sec-007-ch-001",
+          "hybrid_rank": 8,
+          "rank": 6,
+          "reranker_score": 0.12175956
+        },
+        {
+          "chunk_id": "work-011-sec-012-ch-001",
+          "hybrid_rank": 7,
+          "rank": 7,
+          "reranker_score": 0.05394937
+        },
+        {
+          "chunk_id": "net-007-sec-014-ch-001",
+          "hybrid_rank": 10,
+          "rank": 8,
+          "reranker_score": 0.05376637
+        },
+        {
+          "chunk_id": "net-007-sec-016-ch-001",
+          "hybrid_rank": 13,
+          "rank": 9,
+          "reranker_score": 0.04949567
+        },
+        {
+          "chunk_id": "net-002-sec-036-ch-001",
+          "hybrid_rank": 16,
+          "rank": 10,
+          "reranker_score": 0.0485814
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.882808,
+        "nDCG@5": 0.882808
+      },
+      "question": "Which PersistentVolumeClaim field explicitly binds a claim to a particular PersistentVolume, and what happens if that PersistentVolume is already bound to another claim?",
+      "question_id": "k8s-082",
+      "retrieved": [
+        {
+          "chunk_id": "stor-003-sec-045-ch-001",
+          "hybrid_rank": 3,
+          "rank": 1,
+          "reranker_score": 0.9998467
+        },
+        {
+          "chunk_id": "stor-003-sec-007-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.99439079
+        },
+        {
+          "chunk_id": "stor-003-sec-055-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.99237204
+        },
+        {
+          "chunk_id": "stor-003-sec-017-ch-001",
+          "hybrid_rank": 1,
+          "rank": 4,
+          "reranker_score": 0.9890027
+        },
+        {
+          "chunk_id": "stor-003-sec-012-ch-001",
+          "hybrid_rank": 12,
+          "rank": 5,
+          "reranker_score": 0.98435301
+        },
+        {
+          "chunk_id": "stor-003-sec-048-ch-001",
+          "hybrid_rank": 20,
+          "rank": 6,
+          "reranker_score": 0.98078078
+        },
+        {
+          "chunk_id": "stor-003-sec-040-ch-001",
+          "hybrid_rank": 10,
+          "rank": 7,
+          "reranker_score": 0.92947596
+        },
+        {
+          "chunk_id": "stor-003-sec-008-ch-001",
+          "hybrid_rank": 14,
+          "rank": 8,
+          "reranker_score": 0.92140484
+        },
+        {
+          "chunk_id": "stor-003-sec-054-ch-001",
+          "hybrid_rank": 15,
+          "rank": 9,
+          "reranker_score": 0.87026727
+        },
+        {
+          "chunk_id": "stor-002-sec-036-ch-001",
+          "hybrid_rank": 4,
+          "rank": 10,
+          "reranker_score": 0.82413906
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "comparison",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.25,
+        "Recall@5": 0.25,
+        "nDCG@10": 0.45611,
+        "nDCG@5": 0.45611
+      },
+      "question": "How can an HTTP probe be reported as successful while the application logs a `connection reset by peer` or `broken pipe`, and how is that behavior different from a failing liveness probe or an unfinished startup probe?",
+      "question_id": "k8s-083",
+      "retrieved": [
+        {
+          "chunk_id": "work-015-sec-021-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99907315
+        },
+        {
+          "chunk_id": "work-015-sec-020-ch-001",
+          "hybrid_rank": 13,
+          "rank": 2,
+          "reranker_score": 0.84759134
+        },
+        {
+          "chunk_id": "work-015-sec-012-ch-001",
+          "hybrid_rank": 15,
+          "rank": 3,
+          "reranker_score": 0.73500836
+        },
+        {
+          "chunk_id": "work-015-sec-024-ch-001",
+          "hybrid_rank": 16,
+          "rank": 4,
+          "reranker_score": 0.63015628
+        },
+        {
+          "chunk_id": "work-015-sec-005-ch-001",
+          "hybrid_rank": 2,
+          "rank": 5,
+          "reranker_score": 0.60058516
+        },
+        {
+          "chunk_id": "work-015-sec-003-ch-001",
+          "hybrid_rank": 8,
+          "rank": 6,
+          "reranker_score": 0.55292243
+        },
+        {
+          "chunk_id": "work-015-sec-015-ch-002",
+          "hybrid_rank": 14,
+          "rank": 7,
+          "reranker_score": 0.54275453
+        },
+        {
+          "chunk_id": "work-015-sec-015-ch-001",
+          "hybrid_rank": 11,
+          "rank": 8,
+          "reranker_score": 0.50726205
+        },
+        {
+          "chunk_id": "work-015-sec-019-ch-001",
+          "hybrid_rank": 18,
+          "rank": 9,
+          "reranker_score": 0.32779774
+        },
+        {
+          "chunk_id": "work-015-sec-004-ch-001",
+          "hybrid_rank": 3,
+          "rank": 10,
+          "reranker_score": 0.28681082
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.983899,
+        "nDCG@5": 0.983899
+      },
+      "question": "In a cloud-hosted Kubernetes cluster, Pods on different nodes cannot communicate because the cloud network routes are not being configured. Which cloud-controller-manager function should you investigate, and where does that controller run?",
+      "question_id": "k8s-084",
+      "retrieved": [
+        {
+          "chunk_id": "arch-007-sec-002-ch-001",
+          "hybrid_rank": 3,
+          "rank": 1,
+          "reranker_score": 0.99647385
+        },
+        {
+          "chunk_id": "arch-007-sec-006-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.98275858
+        },
+        {
+          "chunk_id": "arch-007-sec-005-ch-001",
+          "hybrid_rank": 7,
+          "rank": 3,
+          "reranker_score": 0.980232
+        },
+        {
+          "chunk_id": "arch-007-sec-001-ch-001",
+          "hybrid_rank": 2,
+          "rank": 4,
+          "reranker_score": 0.97714555
+        },
+        {
+          "chunk_id": "arch-007-sec-013-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.88000751
+        },
+        {
+          "chunk_id": "arch-007-sec-007-ch-001",
+          "hybrid_rank": 6,
+          "rank": 6,
+          "reranker_score": 0.86736
+        },
+        {
+          "chunk_id": "arch-004-sec-008-ch-001",
+          "hybrid_rank": 8,
+          "rank": 7,
+          "reranker_score": 0.80398297
+        },
+        {
+          "chunk_id": "arch-007-sec-012-ch-001",
+          "hybrid_rank": 10,
+          "rank": 8,
+          "reranker_score": 0.72356623
+        },
+        {
+          "chunk_id": "arch-002-sec-011-ch-001",
+          "hybrid_rank": 9,
+          "rank": 9,
+          "reranker_score": 0.67464203
+        },
+        {
+          "chunk_id": "arch-001-sec-003-ch-001",
+          "hybrid_rank": 15,
+          "rank": 10,
+          "reranker_score": 0.53351563
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "troubleshooting",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.888674,
+        "nDCG@5": 0.888674
+      },
+      "question": "A Pod has `requiredDuringSchedulingIgnoredDuringExecution` inter-Pod affinity to Pods labeled `security=S1` in the same zone, but no matching Pod exists in the candidate zone. Why can the Pod remain unschedulable, and how would using the preferred form change the rule?",
+      "question_id": "k8s-086",
+      "retrieved": [
+        {
+          "chunk_id": "sched-003-sec-019-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.8358891
+        },
+        {
+          "chunk_id": "sched-003-sec-017-ch-001",
+          "hybrid_rank": 3,
+          "rank": 2,
+          "reranker_score": 0.79554242
+        },
+        {
+          "chunk_id": "sched-003-sec-019-ch-002",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.38844326
+        },
+        {
+          "chunk_id": "sched-003-sec-027-ch-001",
+          "hybrid_rank": 11,
+          "rank": 4,
+          "reranker_score": 0.32618067
+        },
+        {
+          "chunk_id": "sched-003-sec-016-ch-001",
+          "hybrid_rank": 6,
+          "rank": 5,
+          "reranker_score": 0.30642575
+        },
+        {
+          "chunk_id": "sched-003-sec-027-ch-002",
+          "hybrid_rank": 8,
+          "rank": 6,
+          "reranker_score": 0.30066869
+        },
+        {
+          "chunk_id": "sched-003-sec-026-ch-001",
+          "hybrid_rank": 5,
+          "rank": 7,
+          "reranker_score": 0.25314549
+        },
+        {
+          "chunk_id": "sched-003-sec-019-ch-003",
+          "hybrid_rank": 7,
+          "rank": 8,
+          "reranker_score": 0.24548471
+        },
+        {
+          "chunk_id": "sched-003-sec-008-ch-001",
+          "hybrid_rank": 15,
+          "rank": 9,
+          "reranker_score": 0.12726943
+        },
+        {
+          "chunk_id": "sched-003-sec-023-ch-001",
+          "hybrid_rank": 14,
+          "rank": 10,
+          "reranker_score": 0.11187336
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "direct_factual",
+      "difficulty": "medium",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 1.0,
+        "nDCG@5": 1.0
+      },
+      "question": "What `default` ServiceAccount does Kubernetes create in each namespace, what permissions does it have by default under RBAC, and what happens if it is deleted?",
+      "question_id": "k8s-087",
+      "retrieved": [
+        {
+          "chunk_id": "sec-004-sec-003-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99961168
+        },
+        {
+          "chunk_id": "sec-004-sec-002-ch-001",
+          "hybrid_rank": 3,
+          "rank": 2,
+          "reranker_score": 0.98903507
+        },
+        {
+          "chunk_id": "conf-003-sec-010-ch-001",
+          "hybrid_rank": 15,
+          "rank": 3,
+          "reranker_score": 0.80568844
+        },
+        {
+          "chunk_id": "sec-004-sec-006-ch-001",
+          "hybrid_rank": 2,
+          "rank": 4,
+          "reranker_score": 0.68154556
+        },
+        {
+          "chunk_id": "sec-006-sec-009-ch-001",
+          "hybrid_rank": 7,
+          "rank": 5,
+          "reranker_score": 0.58788264
+        },
+        {
+          "chunk_id": "sec-004-sec-008-ch-001",
+          "hybrid_rank": 5,
+          "rank": 6,
+          "reranker_score": 0.55542177
+        },
+        {
+          "chunk_id": "sec-004-sec-015-ch-001",
+          "hybrid_rank": 19,
+          "rank": 7,
+          "reranker_score": 0.53310317
+        },
+        {
+          "chunk_id": "sec-004-sec-005-ch-001",
+          "hybrid_rank": 4,
+          "rank": 8,
+          "reranker_score": 0.49306306
+        },
+        {
+          "chunk_id": "sec-006-sec-005-ch-001",
+          "hybrid_rank": 11,
+          "rank": 9,
+          "reranker_score": 0.4445509
+        },
+        {
+          "chunk_id": "arch-007-sec-012-ch-001",
+          "hybrid_rank": 18,
+          "rank": 10,
+          "reranker_score": 0.27685517
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "comparison",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 0.75,
+        "nDCG@10": 0.90381,
+        "nDCG@5": 0.8806
+      },
+      "question": "How does a Kubernetes Service differ from EndpointSlices in representing a changing set of backends, and why can the same endpoint temporarily appear in more than one EndpointSlice?",
+      "question_id": "k8s-088",
+      "retrieved": [
+        {
+          "chunk_id": "net-005-sec-012-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99925488
+        },
+        {
+          "chunk_id": "net-002-sec-014-ch-001",
+          "hybrid_rank": 6,
+          "rank": 2,
+          "reranker_score": 0.98737317
+        },
+        {
+          "chunk_id": "net-005-sec-002-ch-001",
+          "hybrid_rank": 4,
+          "rank": 3,
+          "reranker_score": 0.93859613
+        },
+        {
+          "chunk_id": "net-002-sec-012-ch-001",
+          "hybrid_rank": 2,
+          "rank": 4,
+          "reranker_score": 0.92364687
+        },
+        {
+          "chunk_id": "net-005-sec-014-ch-001",
+          "hybrid_rank": 7,
+          "rank": 5,
+          "reranker_score": 0.91848421
+        },
+        {
+          "chunk_id": "net-005-sec-011-ch-001",
+          "hybrid_rank": 3,
+          "rank": 6,
+          "reranker_score": 0.89355952
+        },
+        {
+          "chunk_id": "net-001-sec-002-ch-001",
+          "hybrid_rank": 16,
+          "rank": 7,
+          "reranker_score": 0.88915348
+        },
+        {
+          "chunk_id": "net-002-sec-013-ch-001",
+          "hybrid_rank": 9,
+          "rank": 8,
+          "reranker_score": 0.79992723
+        },
+        {
+          "chunk_id": "net-002-sec-007-ch-001",
+          "hybrid_rank": 14,
+          "rank": 9,
+          "reranker_score": 0.75528389
+        },
+        {
+          "chunk_id": "net-009-sec-010-ch-001",
+          "hybrid_rank": 17,
+          "rank": 10,
+          "reranker_score": 0.74690443
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.5,
+        "Recall@5": 0.5,
+        "nDCG@10": 0.787155,
+        "nDCG@5": 0.787155
+      },
+      "question": "A StorageClass uses `WaitForFirstConsumer`, but its Pod sets `spec.nodeName` and the PVC remains Pending. Why does that happen, and how should the Pod express the same node preference instead?",
+      "question_id": "k8s-089",
+      "retrieved": [
+        {
+          "chunk_id": "stor-006-sec-011-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.9926731
+        },
+        {
+          "chunk_id": "stor-006-sec-002-ch-001",
+          "hybrid_rank": 16,
+          "rank": 2,
+          "reranker_score": 0.85162675
+        },
+        {
+          "chunk_id": "stor-006-sec-004-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.40251523
+        },
+        {
+          "chunk_id": "stor-006-sec-025-ch-001",
+          "hybrid_rank": 6,
+          "rank": 4,
+          "reranker_score": 0.38350889
+        },
+        {
+          "chunk_id": "stor-003-sec-049-ch-001",
+          "hybrid_rank": 3,
+          "rank": 5,
+          "reranker_score": 0.30311033
+        },
+        {
+          "chunk_id": "stor-003-sec-051-ch-001",
+          "hybrid_rank": 5,
+          "rank": 6,
+          "reranker_score": 0.26888973
+        },
+        {
+          "chunk_id": "stor-005-sec-007-ch-001",
+          "hybrid_rank": 4,
+          "rank": 7,
+          "reranker_score": 0.24074021
+        },
+        {
+          "chunk_id": "stor-006-sec-003-ch-001",
+          "hybrid_rank": 12,
+          "rank": 8,
+          "reranker_score": 0.1497539
+        },
+        {
+          "chunk_id": "sched-003-sec-026-ch-001",
+          "hybrid_rank": 18,
+          "rank": 9,
+          "reranker_score": 0.03751586
+        },
+        {
+          "chunk_id": "stor-003-sec-017-ch-001",
+          "hybrid_rank": 7,
+          "rank": 10,
+          "reranker_score": 0.02762122
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "hard",
+      "first_relevant_rank": 10,
+      "metrics": {
+        "MRR": 0.1,
+        "Recall@10": 0.5,
+        "Recall@5": 0.0,
+        "nDCG@10": 0.177239,
+        "nDCG@5": 0.0
+      },
+      "question": "A three-replica Deployment manifest uses `RollingUpdate` with `maxSurge: 1` and `maxUnavailable: 1`. After a bad release, which rollout settings are present in the manifest, and what event in the supplied Deployment history confirms that Kubernetes rolled the Deployment back?",
+      "question_id": "k8s-090",
+      "retrieved": [
+        {
+          "chunk_id": "work-009-sec-014-ch-002",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.95511883
+        },
+        {
+          "chunk_id": "work-009-sec-014-ch-001",
+          "hybrid_rank": 3,
+          "rank": 2,
+          "reranker_score": 0.63771033
+        },
+        {
+          "chunk_id": "work-009-sec-016-ch-001",
+          "hybrid_rank": 6,
+          "rank": 3,
+          "reranker_score": 0.61163068
+        },
+        {
+          "chunk_id": "work-009-sec-015-ch-001",
+          "hybrid_rank": 4,
+          "rank": 4,
+          "reranker_score": 0.60219067
+        },
+        {
+          "chunk_id": "work-009-sec-025-ch-002",
+          "hybrid_rank": 5,
+          "rank": 5,
+          "reranker_score": 0.57857978
+        },
+        {
+          "chunk_id": "work-009-sec-038-ch-001",
+          "hybrid_rank": 2,
+          "rank": 6,
+          "reranker_score": 0.46325159
+        },
+        {
+          "chunk_id": "work-009-sec-039-ch-001",
+          "hybrid_rank": 9,
+          "rank": 7,
+          "reranker_score": 0.41046622
+        },
+        {
+          "chunk_id": "work-009-sec-040-ch-001",
+          "hybrid_rank": 8,
+          "rank": 8,
+          "reranker_score": 0.40088886
+        },
+        {
+          "chunk_id": "work-009-sec-023-ch-001",
+          "hybrid_rank": 11,
+          "rank": 9,
+          "reranker_score": 0.35257927
+        },
+        {
+          "chunk_id": "work-009-sec-016-ch-002",
+          "hybrid_rank": 13,
+          "rank": 10,
+          "reranker_score": 0.27835009
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "troubleshooting",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.958041,
+        "nDCG@5": 0.958041
+      },
+      "question": "After enabling Konnectivity, control-plane requests to kubelets, Pods, and Services stop reaching nodes. Which Konnectivity components and connection direction should you check, and how is this architecture different from the older SSH-tunnel approach?",
+      "question_id": "k8s-091",
+      "retrieved": [
+        {
+          "chunk_id": "arch-003-sec-008-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.85746402
+        },
+        {
+          "chunk_id": "arch-003-sec-006-ch-001",
+          "hybrid_rank": 3,
+          "rank": 2,
+          "reranker_score": 0.12497854
+        },
+        {
+          "chunk_id": "arch-003-sec-009-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.07736409
+        },
+        {
+          "chunk_id": "arch-003-sec-004-ch-001",
+          "hybrid_rank": 5,
+          "rank": 4,
+          "reranker_score": 0.03742135
+        },
+        {
+          "chunk_id": "arch-003-sec-002-ch-001",
+          "hybrid_rank": 4,
+          "rank": 5,
+          "reranker_score": 0.03713395
+        },
+        {
+          "chunk_id": "arch-003-sec-003-ch-001",
+          "hybrid_rank": 10,
+          "rank": 6,
+          "reranker_score": 0.01106583
+        },
+        {
+          "chunk_id": "work-003-sec-048-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.01082848
+        },
+        {
+          "chunk_id": "sched-005-sec-011-ch-001",
+          "hybrid_rank": 19,
+          "rank": 8,
+          "reranker_score": 0.00217665
+        },
+        {
+          "chunk_id": "net-002-sec-009-ch-001",
+          "hybrid_rank": 12,
+          "rank": 9,
+          "reranker_score": 0.00205293
+        },
+        {
+          "chunk_id": "net-009-sec-013-ch-001",
+          "hybrid_rank": 7,
+          "rank": 10,
+          "reranker_score": 0.0018245
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.5,
+        "Recall@5": 0.5,
+        "nDCG@10": 0.787155,
+        "nDCG@5": 0.787155
+      },
+      "question": "A container has restarted repeatedly and `kubectl describe pod` reports `Reason: OOMKilled`. What does that indicate, and what resource change should you consider if the application is otherwise behaving as expected?",
+      "question_id": "k8s-092",
+      "retrieved": [
+        {
+          "chunk_id": "conf-004-sec-041-ch-002",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.98793519
+        },
+        {
+          "chunk_id": "work-003-sec-012-ch-001",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.7609356
+        },
+        {
+          "chunk_id": "work-004-sec-011-ch-001",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.71667325
+        },
+        {
+          "chunk_id": "conf-004-sec-041-ch-001",
+          "hybrid_rank": 2,
+          "rank": 4,
+          "reranker_score": 0.68913198
+        },
+        {
+          "chunk_id": "work-003-sec-023-ch-001",
+          "hybrid_rank": 14,
+          "rank": 5,
+          "reranker_score": 0.56149411
+        },
+        {
+          "chunk_id": "work-004-sec-008-ch-001",
+          "hybrid_rank": 8,
+          "rank": 6,
+          "reranker_score": 0.30492505
+        },
+        {
+          "chunk_id": "work-003-sec-007-ch-001",
+          "hybrid_rank": 9,
+          "rank": 7,
+          "reranker_score": 0.23332472
+        },
+        {
+          "chunk_id": "work-003-sec-021-ch-002",
+          "hybrid_rank": 15,
+          "rank": 8,
+          "reranker_score": 0.21603785
+        },
+        {
+          "chunk_id": "work-003-sec-013-ch-001",
+          "hybrid_rank": 17,
+          "rank": 9,
+          "reranker_score": 0.1660002
+        },
+        {
+          "chunk_id": "work-003-sec-012-ch-002",
+          "hybrid_rank": 5,
+          "rank": 10,
+          "reranker_score": 0.16209505
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.703918,
+        "nDCG@5": 0.703918
+      },
+      "question": "A high-priority pending Pod satisfies its `nodeSelector` and required node-affinity rules only on Node N, but it also has inter-Pod affinity to a lower-priority Pod currently running on N. Why might preempting that lower-priority Pod fail to make Node N usable, even though the pending Pod has higher priority?",
+      "question_id": "k8s-093",
+      "retrieved": [
+        {
+          "chunk_id": "sched-006-sec-021-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99653095
+        },
+        {
+          "chunk_id": "sched-006-sec-028-ch-001",
+          "hybrid_rank": 4,
+          "rank": 2,
+          "reranker_score": 0.99211544
+        },
+        {
+          "chunk_id": "sched-006-sec-020-ch-001",
+          "hybrid_rank": 2,
+          "rank": 3,
+          "reranker_score": 0.98423868
+        },
+        {
+          "chunk_id": "sched-006-sec-014-ch-001",
+          "hybrid_rank": 8,
+          "rank": 4,
+          "reranker_score": 0.92465746
+        },
+        {
+          "chunk_id": "sched-006-sec-016-ch-001",
+          "hybrid_rank": 7,
+          "rank": 5,
+          "reranker_score": 0.69162458
+        },
+        {
+          "chunk_id": "sched-006-sec-022-ch-001",
+          "hybrid_rank": 3,
+          "rank": 6,
+          "reranker_score": 0.63620234
+        },
+        {
+          "chunk_id": "sched-006-sec-023-ch-001",
+          "hybrid_rank": 16,
+          "rank": 7,
+          "reranker_score": 0.48831192
+        },
+        {
+          "chunk_id": "sched-003-sec-017-ch-001",
+          "hybrid_rank": 5,
+          "rank": 8,
+          "reranker_score": 0.34443951
+        },
+        {
+          "chunk_id": "sched-003-sec-010-ch-001",
+          "hybrid_rank": 13,
+          "rank": 9,
+          "reranker_score": 0.1942963
+        },
+        {
+          "chunk_id": "sched-003-sec-019-ch-001",
+          "hybrid_rank": 11,
+          "rank": 10,
+          "reranker_score": 0.11682149
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.75,
+        "Recall@5": 0.75,
+        "nDCG@10": 0.887617,
+        "nDCG@5": 0.887617
+      },
+      "question": "You are designing RBAC for an application team that can create ordinary workloads but should not be able to gain host-level access. Why is granting arbitrary PersistentVolume creation especially dangerous, and what permissions should remain tightly restricted?",
+      "question_id": "k8s-094",
+      "retrieved": [
+        {
+          "chunk_id": "sec-006-sec-010-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.96078843
+        },
+        {
+          "chunk_id": "sec-006-sec-009-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.45931825
+        },
+        {
+          "chunk_id": "sec-006-sec-001-ch-001",
+          "hybrid_rank": 9,
+          "rank": 3,
+          "reranker_score": 0.09122232
+        },
+        {
+          "chunk_id": "sec-006-sec-004-ch-001",
+          "hybrid_rank": 5,
+          "rank": 4,
+          "reranker_score": 0.06310817
+        },
+        {
+          "chunk_id": "sec-006-sec-003-ch-001",
+          "hybrid_rank": 3,
+          "rank": 5,
+          "reranker_score": 0.0380071
+        },
+        {
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "hybrid_rank": 12,
+          "rank": 6,
+          "reranker_score": 0.02921578
+        },
+        {
+          "chunk_id": "stor-003-sec-069-ch-001",
+          "hybrid_rank": 18,
+          "rank": 7,
+          "reranker_score": 0.01365904
+        },
+        {
+          "chunk_id": "stor-003-sec-067-ch-001",
+          "hybrid_rank": 14,
+          "rank": 8,
+          "reranker_score": 0.00711855
+        },
+        {
+          "chunk_id": "sec-006-sec-020-ch-001",
+          "hybrid_rank": 4,
+          "rank": 9,
+          "reranker_score": 0.00646516
+        },
+        {
+          "chunk_id": "stor-003-sec-009-ch-001",
+          "hybrid_rank": 16,
+          "rank": 10,
+          "reranker_score": 0.00213797
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.5,
+        "Recall@5": 0.5,
+        "nDCG@10": 0.555661,
+        "nDCG@5": 0.555661
+      },
+      "question": "Backend Pods are frequently replaced and their IP addresses change. Why should a frontend avoid tracking those Pod IPs directly, and how do the Kubernetes network model and Service abstraction allow the frontend to keep reaching the backend?",
+      "question_id": "k8s-095",
+      "retrieved": [
+        {
+          "chunk_id": "net-002-sec-001-ch-001",
+          "hybrid_rank": 12,
+          "rank": 1,
+          "reranker_score": 0.93087065
+        },
+        {
+          "chunk_id": "net-001-sec-002-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.67977649
+        },
+        {
+          "chunk_id": "net-001-sec-002-ch-002",
+          "hybrid_rank": 7,
+          "rank": 3,
+          "reranker_score": 0.10300327
+        },
+        {
+          "chunk_id": "net-002-sec-009-ch-001",
+          "hybrid_rank": 2,
+          "rank": 4,
+          "reranker_score": 0.09996409
+        },
+        {
+          "chunk_id": "work-002-sec-012-ch-001",
+          "hybrid_rank": 16,
+          "rank": 5,
+          "reranker_score": 0.04402296
+        },
+        {
+          "chunk_id": "net-002-sec-046-ch-001",
+          "hybrid_rank": 18,
+          "rank": 6,
+          "reranker_score": 0.04106947
+        },
+        {
+          "chunk_id": "net-002-sec-038-ch-001",
+          "hybrid_rank": 13,
+          "rank": 7,
+          "reranker_score": 0.0330678
+        },
+        {
+          "chunk_id": "net-007-sec-001-ch-001",
+          "hybrid_rank": 4,
+          "rank": 8,
+          "reranker_score": 0.02032367
+        },
+        {
+          "chunk_id": "net-002-sec-043-ch-001",
+          "hybrid_rank": 11,
+          "rank": 9,
+          "reranker_score": 0.01511797
+        },
+        {
+          "chunk_id": "net-006-sec-024-ch-001",
+          "hybrid_rank": 10,
+          "rank": 10,
+          "reranker_score": 0.01222675
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.798485,
+        "nDCG@5": 0.798485
+      },
+      "question": "A CSI driver exposes administrator-only storage parameters through inline ephemeral-volume `volumeAttributes`, letting ordinary Pod authors supply them. Why is that unsafe, and what two controls can a cluster administrator use?",
+      "question_id": "k8s-096",
+      "retrieved": [
+        {
+          "chunk_id": "stor-005-sec-005-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.95083678
+        },
+        {
+          "chunk_id": "stor-005-sec-004-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.64034963
+        },
+        {
+          "chunk_id": "stor-002-sec-048-ch-001",
+          "hybrid_rank": 3,
+          "rank": 3,
+          "reranker_score": 0.55412608
+        },
+        {
+          "chunk_id": "stor-008-sec-002-ch-001",
+          "hybrid_rank": 13,
+          "rank": 4,
+          "reranker_score": 0.19977322
+        },
+        {
+          "chunk_id": "stor-005-sec-010-ch-001",
+          "hybrid_rank": 6,
+          "rank": 5,
+          "reranker_score": 0.15256964
+        },
+        {
+          "chunk_id": "sec-007-sec-008-ch-001",
+          "hybrid_rank": 17,
+          "rank": 6,
+          "reranker_score": 0.13773318
+        },
+        {
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "hybrid_rank": 12,
+          "rank": 7,
+          "reranker_score": 0.05874095
+        },
+        {
+          "chunk_id": "stor-002-sec-062-ch-001",
+          "hybrid_rank": 20,
+          "rank": 8,
+          "reranker_score": 0.03902849
+        },
+        {
+          "chunk_id": "sec-006-sec-010-ch-001",
+          "hybrid_rank": 8,
+          "rank": 9,
+          "reranker_score": 0.03642154
+        },
+        {
+          "chunk_id": "stor-002-sec-048-ch-002",
+          "hybrid_rank": 14,
+          "rank": 10,
+          "reranker_score": 0.02893801
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 1.0,
+        "Recall@5": 1.0,
+        "nDCG@10": 0.967468,
+        "nDCG@5": 0.967468
+      },
+      "question": "How does Kubernetes garbage collection behave differently when deleting a ReplicaSet with its dependent Pods versus deleting or scaling a StatefulSet whose PVC retention policy is configured?",
+      "question_id": "k8s-097",
+      "retrieved": [
+        {
+          "chunk_id": "work-011-sec-038-ch-002",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.99513078
+        },
+        {
+          "chunk_id": "work-011-sec-038-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.99411893
+        },
+        {
+          "chunk_id": "arch-006-sec-004-ch-001",
+          "hybrid_rank": 11,
+          "rank": 3,
+          "reranker_score": 0.96327233
+        },
+        {
+          "chunk_id": "work-010-sec-012-ch-001",
+          "hybrid_rank": 3,
+          "rank": 4,
+          "reranker_score": 0.84630847
+        },
+        {
+          "chunk_id": "work-011-sec-003-ch-001",
+          "hybrid_rank": 7,
+          "rank": 5,
+          "reranker_score": 0.81237352
+        },
+        {
+          "chunk_id": "stor-005-sec-007-ch-001",
+          "hybrid_rank": 8,
+          "rank": 6,
+          "reranker_score": 0.70048195
+        },
+        {
+          "chunk_id": "work-011-sec-017-ch-001",
+          "hybrid_rank": 6,
+          "rank": 7,
+          "reranker_score": 0.51084095
+        },
+        {
+          "chunk_id": "work-010-sec-013-ch-001",
+          "hybrid_rank": 9,
+          "rank": 8,
+          "reranker_score": 0.47310475
+        },
+        {
+          "chunk_id": "work-011-sec-027-ch-001",
+          "hybrid_rank": 10,
+          "rank": 9,
+          "reranker_score": 0.36884519
+        },
+        {
+          "chunk_id": "work-011-sec-039-ch-001",
+          "hybrid_rank": 4,
+          "rank": 10,
+          "reranker_score": 0.35149059
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "scenario_application",
+      "difficulty": "hard",
+      "first_relevant_rank": 1,
+      "metrics": {
+        "MRR": 1.0,
+        "Recall@10": 0.666667,
+        "Recall@5": 0.666667,
+        "nDCG@10": 0.765361,
+        "nDCG@5": 0.765361
+      },
+      "question": "You are designing a new cluster that needs cluster-wide DNS, container metrics, centralized container logs, and resource-aware Pod placement. Which needs are Kubernetes addons, and which core control-plane component uses Node capacity to place Pods?",
+      "question_id": "k8s-098",
+      "retrieved": [
+        {
+          "chunk_id": "arch-001-sec-005-ch-001",
+          "hybrid_rank": 1,
+          "rank": 1,
+          "reranker_score": 0.73782718
+        },
+        {
+          "chunk_id": "arch-001-sec-003-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.68025994
+        },
+        {
+          "chunk_id": "arch-002-sec-002-ch-001",
+          "hybrid_rank": 7,
+          "rank": 3,
+          "reranker_score": 0.2898359
+        },
+        {
+          "chunk_id": "arch-001-sec-002-ch-001",
+          "hybrid_rank": 5,
+          "rank": 4,
+          "reranker_score": 0.23215854
+        },
+        {
+          "chunk_id": "arch-003-sec-009-ch-001",
+          "hybrid_rank": 9,
+          "rank": 5,
+          "reranker_score": 0.17645241
+        },
+        {
+          "chunk_id": "arch-004-sec-006-ch-001",
+          "hybrid_rank": 15,
+          "rank": 6,
+          "reranker_score": 0.14178641
+        },
+        {
+          "chunk_id": "net-002-sec-044-ch-001",
+          "hybrid_rank": 4,
+          "rank": 7,
+          "reranker_score": 0.12042581
+        },
+        {
+          "chunk_id": "net-007-sec-013-ch-001",
+          "hybrid_rank": 20,
+          "rank": 8,
+          "reranker_score": 0.08499602
+        },
+        {
+          "chunk_id": "conf-004-sec-019-ch-001",
+          "hybrid_rank": 13,
+          "rank": 9,
+          "reranker_score": 0.08310308
+        },
+        {
+          "chunk_id": "net-007-sec-001-ch-001",
+          "hybrid_rank": 10,
+          "rank": 10,
+          "reranker_score": 0.08288839
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "hard",
+      "first_relevant_rank": 2,
+      "metrics": {
+        "MRR": 0.5,
+        "Recall@10": 0.6,
+        "Recall@5": 0.4,
+        "nDCG@10": 0.467738,
+        "nDCG@5": 0.329101
+      },
+      "question": "A developer needs to configure a Pod from a ConfigMap, later update that configuration, review Secret-management guidance, and then learn about assigning CPU and memory resources. Which documentation paths in the supplied Configuration section address those tasks, and what namespace rule applies to the Pod's ConfigMap?",
+      "question_id": "k8s-099",
+      "retrieved": [
+        {
+          "chunk_id": "conf-002-sec-007-ch-001",
+          "hybrid_rank": 4,
+          "rank": 1,
+          "reranker_score": 0.93189353
+        },
+        {
+          "chunk_id": "conf-002-sec-006-ch-001",
+          "hybrid_rank": 1,
+          "rank": 2,
+          "reranker_score": 0.86757118
+        },
+        {
+          "chunk_id": "conf-002-sec-009-ch-001",
+          "hybrid_rank": 7,
+          "rank": 3,
+          "reranker_score": 0.81982017
+        },
+        {
+          "chunk_id": "conf-002-sec-008-ch-001",
+          "hybrid_rank": 8,
+          "rank": 4,
+          "reranker_score": 0.66132528
+        },
+        {
+          "chunk_id": "conf-001-sec-011-ch-001",
+          "hybrid_rank": 11,
+          "rank": 5,
+          "reranker_score": 0.64608288
+        },
+        {
+          "chunk_id": "stor-002-sec-005-ch-001",
+          "hybrid_rank": 2,
+          "rank": 6,
+          "reranker_score": 0.5263586
+        },
+        {
+          "chunk_id": "conf-002-sec-007-ch-002",
+          "hybrid_rank": 5,
+          "rank": 7,
+          "reranker_score": 0.46001768
+        },
+        {
+          "chunk_id": "conf-002-sec-012-ch-001",
+          "hybrid_rank": 10,
+          "rank": 8,
+          "reranker_score": 0.39489666
+        },
+        {
+          "chunk_id": "conf-001-sec-003-ch-001",
+          "hybrid_rank": 3,
+          "rank": 9,
+          "reranker_score": 0.29629689
+        },
+        {
+          "chunk_id": "conf-002-sec-014-ch-001",
+          "hybrid_rank": 9,
+          "rank": 10,
+          "reranker_score": 0.22899602
+        }
+      ],
+      "split": "dev"
+    },
+    {
+      "answerable": true,
+      "category": "multi_hop",
+      "difficulty": "hard",
+      "first_relevant_rank": 8,
+      "metrics": {
+        "MRR": 0.125,
+        "Recall@10": 0.25,
+        "Recall@5": 0.0,
+        "nDCG@10": 0.023635,
+        "nDCG@5": 0.0
+      },
+      "question": "How can Kubernetes both spread replicas across topology domains such as zones and let each scheduled Pod discover the zone and region it actually landed in?",
+      "question_id": "k8s-100",
+      "retrieved": [
+        {
+          "chunk_id": "stor-007-sec-006-ch-001",
+          "hybrid_rank": 3,
+          "rank": 1,
+          "reranker_score": 0.97769141
+        },
+        {
+          "chunk_id": "sched-004-sec-001-ch-001",
+          "hybrid_rank": 2,
+          "rank": 2,
+          "reranker_score": 0.93692005
+        },
+        {
+          "chunk_id": "sched-004-sec-002-ch-001",
+          "hybrid_rank": 5,
+          "rank": 3,
+          "reranker_score": 0.87123835
+        },
+        {
+          "chunk_id": "sched-004-sec-019-ch-001",
+          "hybrid_rank": 7,
+          "rank": 4,
+          "reranker_score": 0.84240359
+        },
+        {
+          "chunk_id": "sched-003-sec-031-ch-001",
+          "hybrid_rank": 1,
+          "rank": 5,
+          "reranker_score": 0.78600585
+        },
+        {
+          "chunk_id": "sched-004-sec-020-ch-001",
+          "hybrid_rank": 8,
+          "rank": 6,
+          "reranker_score": 0.59906042
+        },
+        {
+          "chunk_id": "sched-004-sec-005-ch-001",
+          "hybrid_rank": 9,
+          "rank": 7,
+          "reranker_score": 0.52536035
+        },
+        {
+          "chunk_id": "sched-004-sec-014-ch-001",
+          "hybrid_rank": 16,
+          "rank": 8,
+          "reranker_score": 0.49678853
+        },
+        {
+          "chunk_id": "sched-004-sec-005-ch-002",
+          "hybrid_rank": 14,
+          "rank": 9,
+          "reranker_score": 0.45263782
+        },
+        {
+          "chunk_id": "sched-004-sec-012-ch-001",
+          "hybrid_rank": 13,
+          "rank": 10,
+          "reranker_score": 0.44450295
+        }
+      ],
+      "split": "dev"
+    }
+  ],
+  "reranker": {
+    "architecture": "cross_encoder",
+    "batch_size": 8,
+    "candidate_generator": {
+      "bm25": {
+        "average_document_length": 124.04415372035977,
+        "b": 0.75,
+        "document_count": 1223,
+        "implementation": "groundtruth_native_bm25",
+        "index_type": "bm25",
+        "k1": 1.5,
+        "tokenizer": {
+          "lowercase": true,
+          "name": "groundtruth_regex_v0.1",
+          "pattern": "[A-Za-z0-9]+(?:[._/-][A-Za-z0-9]+)*"
+        },
+        "vocabulary_size": 7954
+      },
+      "bm25_weight": 0.1,
+      "candidate_k": 20,
+      "chunk_count": 1223,
+      "dense": {
+        "chunk_count": 1223,
+        "device": "cuda",
+        "device_description": "NVIDIA GeForce RTX 2080 Super",
+        "embedding_dimension": 384,
+        "index_type": "dense",
+        "model": "BAAI/bge-small-en-v1.5",
+        "query_prefix": "",
+        "retriever_version": "0.1.0",
+        "similarity": "cosine"
+      },
+      "dense_weight": 1.0,
+      "fusion": "reciprocal_rank_fusion",
+      "index_type": "hybrid_rrf",
+      "retriever_version": "0.1.0",
+      "rrf_k": 20.0
+    },
+    "candidate_k": 20,
+    "device": "cuda",
+    "max_length": 512,
+    "model": "BAAI/bge-reranker-base",
+    "reranker_version": "0.1.0"
+  },
+  "run_name": "bge_reranker_base_dev",
+  "split": "dev"
+}
