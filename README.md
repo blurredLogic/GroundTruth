@@ -149,7 +149,7 @@ The commands below assume the complete GroundTruth repository is present. **This
 
 ```powershell
 # Replace with the actual URL of this GitHub repository.
-git clone https://github.com/OWNER/GroundTruth.git
+git clone https://github.com/blurredLogic/GroundTruth.git
 cd GroundTruth
 ```
 
