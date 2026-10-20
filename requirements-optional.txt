@@ -1,0 +1,9 @@
+# Optional diagnostic and ingestion compatibility extras.
+# The truncation diagnostic imports huggingface_hub and tokenizers directly;
+# both are typically already transitive dependencies of sentence-transformers.
+# 'requests' may be needed by additional ingestion implementations; the exact
+# fetch_documents.py source was unavailable for static verification.
+-r requirements.txt
+huggingface-hub
+tokenizers
+requests>=2.31

@@ -1,0 +1,11 @@
+﻿question_id,answerable_gold_for_aggregation_only,evidence_status,review_relation,review_confidence_0_2,notes,followup_needed
+k8s-001,True,evidence_available,supported,2,,
+k8s-012,False,evidence_available,supported,2,,
+k8s-018,False,evidence_available,insufficient,1,,
+k8s-020,True,evidence_available,partial,1,,
+k8s-024,False,evidence_available,partial,1,,
+k8s-054,False,evidence_available,supported,2,,
+k8s-060,False,evidence_available,supported,2,,
+k8s-066,False,evidence_available,supported,2,,
+k8s-073,True,evidence_available,partial,1,,
+k8s-078,True,evidence_available,supported,2,,

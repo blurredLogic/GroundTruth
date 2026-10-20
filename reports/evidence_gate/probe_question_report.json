@@ -1,0 +1,218 @@
+{
+  "schema": "evidence_gate_shadow_v0.1",
+  "mode": "ollama",
+  "stage": "question",
+  "shadow_only": true,
+  "source_report_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "partial_sample": true,
+  "model": "llama3.2:3b",
+  "summary": {
+    "questions": 10,
+    "answerable": 4,
+    "negative": 6,
+    "negative_false_answers_before": 5,
+    "negative_false_answers_after_shadow_gate": 0,
+    "negative_false_answer_rate_before": 0.833333,
+    "negative_false_answer_rate_after_shadow_gate": 0.0,
+    "answerable_answers_before": 4,
+    "answerable_answers_after_shadow_gate": 2,
+    "answerable_answer_rate_before": 1.0,
+    "answerable_answer_rate_after_shadow_gate": 0.5,
+    "newly_blocked_answerable": 2,
+    "newly_blocked_negative": 5,
+    "verifier_errors": 0,
+    "uncertain_verdicts": 0,
+    "original_generation_errors_unchanged": 0,
+    "factually_correct_answers_verified": false
+  },
+  "per_question": [
+    {
+      "question_id": "k8s-001",
+      "answerable": true,
+      "original_status": "answered",
+      "hard_flags": [],
+      "review_flags": [],
+      "verdict": "supported",
+      "would_block": false,
+      "verifier_reason": "A PersistentVolume is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.",
+      "verified_quotes": [
+        {
+          "id": "C1",
+          "quote": "A *PersistentVolume* (PV) is a piece of storage in the cluster that has been\nprovisioned by an administrator or dynamically provisioned using\n[Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)."
+        }
+      ],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [],
+      "error": null
+    },
+    {
+      "question_id": "k8s-012",
+      "answerable": false,
+      "original_status": "answered",
+      "hard_flags": [],
+      "review_flags": [
+        "unmatched_technical_identifier:VolumeSnapshot",
+        "unmatched_technical_identifier:volumeSnapshotContent"
+      ],
+      "verdict": "unsupported",
+      "would_block": true,
+      "verifier_reason": "The passages do not establish a specific requested fact or operation regarding the replication of snapshot data to every availability zone before a restore.",
+      "verified_quotes": [],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [
+        "missing or false presupposition",
+        "replication of snapshot data to every availability zone before a restore"
+      ],
+      "error": null
+    },
+    {
+      "question_id": "k8s-018",
+      "answerable": false,
+      "original_status": "abstained",
+      "hard_flags": [],
+      "review_flags": [],
+      "verdict": "not_applicable",
+      "would_block": false,
+      "verifier_reason": "",
+      "verified_quotes": [],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [],
+      "error": null
+    },
+    {
+      "question_id": "k8s-020",
+      "answerable": true,
+      "original_status": "answered",
+      "hard_flags": [],
+      "review_flags": [],
+      "verdict": "unsupported",
+      "would_block": true,
+      "verifier_reason": "The passages do not establish a specific requested fact or operation regarding replica counts management for Deployments controlled by HorizontalPodAutoscalers versus manual scaling of ReplicaSets. The passages provide general information about Deployments, ReplicaSets, and HorizontalPodAutoscalers but do not address the specific question.",
+      "verified_quotes": [],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [
+        "missing or false presupposition"
+      ],
+      "error": null
+    },
+    {
+      "question_id": "k8s-024",
+      "answerable": false,
+      "original_status": "answered",
+      "hard_flags": [
+        "placeholder_answer"
+      ],
+      "review_flags": [
+        "unmatched_technical_identifier:reserved",
+        "unmatched_technical_identifier:adjustmentFactor"
+      ],
+      "verdict": "unsupported",
+      "would_block": true,
+      "verifier_reason": "The passages do not establish a specific requested fact or operation regarding a ResourceQuota field that automatically increases a namespace's quota whenever new nodes are added.",
+      "verified_quotes": [],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [
+        "missing or false presupposition"
+      ],
+      "error": null
+    },
+    {
+      "question_id": "k8s-054",
+      "answerable": false,
+      "original_status": "answered",
+      "hard_flags": [],
+      "review_flags": [],
+      "verdict": "unsupported",
+      "would_block": true,
+      "verifier_reason": "The passages do not establish a specific requested fact or operation regarding the conversion of an existing `Filesystem` PersistentVolume into raw `Block` mode when the requested `volumeMode` does not match.",
+      "verified_quotes": [],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [
+        "missing or false presupposition"
+      ],
+      "error": null
+    },
+    {
+      "question_id": "k8s-060",
+      "answerable": false,
+      "original_status": "answered",
+      "hard_flags": [
+        "placeholder_answer"
+      ],
+      "review_flags": [],
+      "verdict": "unsupported",
+      "would_block": true,
+      "verifier_reason": "The passages do not establish a specific requested fact or operation regarding retroactive injection of Service environment variables into Pods. They discuss environment variables in general, but do not provide information on retroactive injection.",
+      "verified_quotes": [],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [
+        "missing or false presupposition"
+      ],
+      "error": null
+    },
+    {
+      "question_id": "k8s-066",
+      "answerable": false,
+      "original_status": "answered",
+      "hard_flags": [
+        "placeholder_answer"
+      ],
+      "review_flags": [
+        "unmatched_technical_identifier:default"
+      ],
+      "verdict": "unsupported",
+      "would_block": true,
+      "verifier_reason": "The passages do not establish a specific requested fact or operation. The concept of a ServiceAccount granting read access to every Secret in every namespace without creating any RBAC role or binding is not explicitly mentioned.",
+      "verified_quotes": [],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [
+        "missing or false presupposition"
+      ],
+      "error": null
+    },
+    {
+      "question_id": "k8s-073",
+      "answerable": true,
+      "original_status": "answered",
+      "hard_flags": [],
+      "review_flags": [],
+      "verdict": "unsupported",
+      "would_block": true,
+      "verifier_reason": "The passages do not establish a specific requested fact or operation regarding how the API server's TLS server certificate protects an API connection differently from a Kubernetes client certificate issued through the CSR API.",
+      "verified_quotes": [],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [
+        "missing or false presupposition"
+      ],
+      "error": null
+    },
+    {
+      "question_id": "k8s-078",
+      "answerable": true,
+      "original_status": "answered",
+      "hard_flags": [],
+      "review_flags": [],
+      "verdict": "supported",
+      "would_block": false,
+      "verifier_reason": "The passages directly establish that resizing CPU or memory for a running container differs from resizing the `sizeLimit` of a memory-backed `emptyDir` in that the former can be done in-place without Pod recreation or container restarts, while the latter requires enabling the `InPlacePodVerticalScalingMemoryBackedVolumes` feature gate and updating the Pod's desired state using the `/resize` subresource.",
+      "verified_quotes": [
+        {
+          "id": "C1",
+          "quote": "When the `InPlacePodVerticalScalingMemoryBackedVolumes` feature gate is enabled, you can dynamically adjust the `sizeLimit` of a memory-backed (`medium: Memory`) `emptyDir` volume on a running Pod without requiring Pod recreation or container restarts."
+        }
+      ],
+      "rejected_quote_problems": [],
+      "unsupported_claims": [],
+      "error": null
+    }
+  ],
+  "limitations": [
+    "This is a SHADOW replay of recorded answers; live answers are unchanged.",
+    "Gold answerable labels are used for reporting only; never for verifier decisions.",
+    "Rules detect structural defects only; unmatched identifiers are review hints, not proof.",
+    "The same small local LLM auditing its own answers is not an independent factual guarantee.",
+    "Verifier quotes are checked for source presence; this does not prove semantic entailment.",
+    "Six DEV negative examples are not enough to establish a robust calibrated production gate.",
+    "No TEST examples are read by this program."
+  ]
+}

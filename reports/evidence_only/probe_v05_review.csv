@@ -1,0 +1,11 @@
+﻿question_id,question,evidence_status,evidence_ids,review_relation,review_confidence_0_2,review_notes,followup_needed
+k8s-001,What is a PersistentVolume in Kubernetes?,evidence_available,E1; E2; E3; E4; E5; E6,supported,2,,
+k8s-012,Which Kubernetes VolumeSnapshot field automatically replicates snapshot data to every availability zone before a restore?,evidence_available,E1; E2; E3; E4; E5; E6,supported,2,,
+k8s-018,How can a NetworkPolicy select every namespace that was created after a particular date without adding any labels to those namespaces?,evidence_available,E1; E2; E3; E4; E5; E6,insufficient,1,,
+k8s-020,How should replica counts be managed differently when a Deployment is controlled by a HorizontalPodAutoscaler versus when you manually scale a ReplicaSet?,evidence_available,E1; E2; E3; E4; E5; E6,partial,1,,
+k8s-024,Which ResourceQuota field lets a namespace reserve a fixed percentage of total cluster CPU and automatically increases that namespace's quota whenever new nodes are added?,evidence_available,E1; E2; E3; E4; E5; E6,partial,1,,
+k8s-054,Which PersistentVolumeClaim field tells Kubernetes to automatically convert an existing `Filesystem` PersistentVolume into raw `Block` mode when the requested `volumeMode` does not match?,evidence_available,E1; E2; E3; E4; E5; E6,supported,2,,
+k8s-060,Which Kubernetes setting retroactively injects Service environment variables into Pods that were already running before the Service was created?,evidence_available,E1; E2; E3; E4; E5; E6,supported,2,,
+k8s-066,Which ServiceAccount field automatically grants that account read access to every Secret in every namespace without creating any RBAC role or binding?,evidence_available,E1; E2; E3; E4; E5; E6,supported,2,,
+k8s-073,How does the API server's TLS server certificate protect an API connection differently from a Kubernetes client certificate issued through the CSR API?,evidence_available,E1; E2; E3; E4; E5; E6,partial,1,,
+k8s-078,"How does resizing CPU or memory for a running container differ from resizing the `sizeLimit` of a memory-backed `emptyDir`, particularly in feature-gate requirements and what is being changed?",evidence_available,E1; E2; E3; E4; E5; E6,supported,2,,

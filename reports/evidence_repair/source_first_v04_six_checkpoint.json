@@ -1,0 +1,131 @@
+{
+  "schema": "source_first_shadow_v0.4",
+  "fingerprint": "7718788081476d5d33308c9001d478b1d9a733e33134c25aa5200f71ff7bf0f5",
+  "per_question": [
+    {
+      "question_id": "k8s-024",
+      "original_status": "answered",
+      "final_status": "regeneration_error",
+      "candidate_answer": null,
+      "candidate_citations": [],
+      "format_retry_attempts": 1,
+      "model_requests": 2,
+      "verifier_attempts": 0,
+      "verifier_verdict": null,
+      "verifier_reason": null,
+      "verified_quotes": [],
+      "unsupported_claims": [],
+      "format_errors": [
+        "Non-abstaining answer must cite evidence, e.g. [C1]"
+      ],
+      "error": "Non-abstaining answer must cite evidence, e.g. [C1]",
+      "manual_review_required": true
+    },
+    {
+      "question_id": "k8s-054",
+      "original_status": "answered",
+      "final_status": "accepted_regenerated_provisional",
+      "candidate_answer": "spec.volumeMode [C1]",
+      "candidate_citations": [
+        "C1"
+      ],
+      "format_retry_attempts": 0,
+      "model_requests": 1,
+      "verifier_attempts": 1,
+      "verifier_verdict": "supported",
+      "verifier_reason": "The spec.volumeMode field determines the volume mode of a PersistentVolumeClaim, and setting it to Block will convert an existing Filesystem PersistentVolume to raw Block mode when the requested volumeMode does not match.",
+      "verified_quotes": [
+        {
+          "id": "C1",
+          "quote": "You can set the value of `volumeMode` to `Block` to use a volume as a raw block device."
+        }
+      ],
+      "unsupported_claims": [],
+      "format_errors": [],
+      "error": null,
+      "manual_review_required": true
+    },
+    {
+      "question_id": "k8s-060",
+      "original_status": "answered",
+      "final_status": "regeneration_error",
+      "candidate_answer": null,
+      "candidate_citations": [],
+      "format_retry_attempts": 1,
+      "model_requests": 2,
+      "verifier_attempts": 0,
+      "verifier_verdict": null,
+      "verifier_reason": null,
+      "verified_quotes": [],
+      "unsupported_claims": [],
+      "format_errors": [
+        "Non-abstaining answer must cite evidence, e.g. [C1]"
+      ],
+      "error": "Expected JSON object with abstain:boolean and answer:string",
+      "manual_review_required": true
+    },
+    {
+      "question_id": "k8s-066",
+      "original_status": "answered",
+      "final_status": "blocked_after_regeneration",
+      "candidate_answer": "The `default` ServiceAccount object in each namespace automatically grants read access to every Secret in that namespace without creating any RBAC role or binding.[C3]",
+      "candidate_citations": [
+        "C3"
+      ],
+      "format_retry_attempts": 0,
+      "model_requests": 1,
+      "verifier_attempts": 1,
+      "verifier_verdict": "unsupported",
+      "verifier_reason": "The answer claims the `default` ServiceAccount grants read access to every Secret in every namespace without creating any RBAC role or binding, but the passage only mentions that it grants default API discovery permissions, which may not be sufficient for accessing all Secrets.",
+      "verified_quotes": [],
+      "unsupported_claims": [
+        "The `default` ServiceAccount object automatically grants read access to every Secret in every namespace without creating any RBAC role or binding."
+      ],
+      "format_errors": [],
+      "error": null,
+      "manual_review_required": true
+    },
+    {
+      "question_id": "k8s-073",
+      "original_status": "answered",
+      "final_status": "regenerated_abstained",
+      "candidate_answer": "I couldn't find enough evidence in the indexed documentation to answer that.",
+      "candidate_citations": [],
+      "format_retry_attempts": 0,
+      "model_requests": 1,
+      "verifier_attempts": 0,
+      "verifier_verdict": null,
+      "verifier_reason": null,
+      "verified_quotes": [],
+      "unsupported_claims": [],
+      "format_errors": [],
+      "error": null,
+      "manual_review_required": true
+    },
+    {
+      "question_id": "k8s-078",
+      "original_status": "answered",
+      "final_status": "accepted_regenerated_provisional",
+      "candidate_answer": "Resizing CPU or memory for a running container differs from resizing the `sizeLimit` of a memory-backed `emptyDir` in that the former requires in-place Pod vertical scaling, while the latter allows dynamic adjustment of `sizeLimit` without requiring Pod recreation or container restarts, and is enabled by the `InPlacePodVerticalScalingMemoryBackedVolumes` feature gate.[C1], [C2]",
+      "candidate_citations": [
+        "C1",
+        "C2"
+      ],
+      "format_retry_attempts": 0,
+      "model_requests": 1,
+      "verifier_attempts": 1,
+      "verifier_verdict": "supported",
+      "verifier_reason": "The answer correctly states that resizing CPU or memory for a running container requires in-place Pod vertical scaling, while resizing the `sizeLimit` of a memory-backed `emptyDir` allows dynamic adjustment without requiring Pod recreation or container restarts, and is enabled by the `InPlacePodVerticalScalingMemoryBackedVolumes` feature gate.",
+      "verified_quotes": [
+        {
+          "id": "C1",
+          "quote": "When the `InPlacePodVerticalScalingMemoryBackedVolumes` feature gate is enabled, you can dynamically adjust the `sizeLimit` of a memory-backed (`medium: Memory`) `emptyDir` volume on a running Pod without requiring Pod recreation or container restarts."
+        }
+      ],
+      "unsupported_claims": [],
+      "format_errors": [],
+      "error": null,
+      "manual_review_required": true
+    }
+  ]
+}

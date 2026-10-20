@@ -1,0 +1,28 @@
+{
+  "review_status": "assistant_reviewed_not_independent_human_adjudication",
+  "dataset_split": "dev",
+  "questions_reviewed": 10,
+  "source_generation_report_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "submitted_review_sha256": "f8be0d9da6877c57df05e9a87533e83c55352140e5d9350d38d55e547cfdafb1",
+  "modified_fields": [
+    "review_relation",
+    "review_confidence_0_2",
+    "review_notes",
+    "followup_needed"
+  ],
+  "supersedes_original_annotations": false,
+  "scorer_field_warning": "The bundled v0.5 scorer uses human_judgments and a human_score schema for any populated CSV; here these are assistant-reviewed labels, not independent human validation.",
+  "not_measured": [
+    "answer_correctness",
+    "generation_groundedness",
+    "production_answerability",
+    "held_out_test_performance"
+  ],
+  "method": "Model-assisted interpretation of six extracted verbatim passages per question, with provenance E1-E6; previously submitted labels were retained separately; no holdout TEST accessed.",
+  "limits": [
+    "Only 10 DEV questions, purposefully selected",
+    "k8s-020 undercovered by excerpt selection",
+    "insufficient does not prove global nonexistence",
+    "same assistant suggested and applied labels; cannot claim inter-annotator reliability"
+  ]
+}

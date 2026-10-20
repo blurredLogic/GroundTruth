@@ -1,0 +1,118 @@
+{
+  "schema": "groundtruth_multihop_closure_v0.7.1",
+  "scope": "DEV diagnostic only; frozen original retrieval and 3 original generation errors unchanged",
+  "source_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "diagnostic_sha256": "fb9257ef8696bf08650da7b4da3a351a82239e8bc50a3197fc01aa18fd1d5e1e",
+  "retriever_params": {
+    "fusion": "reciprocal_rank_fusion",
+    "rrf_k": 20.0,
+    "candidate_k": 20,
+    "dense_weight": 1.0,
+    "bm25_weight": 0.1,
+    "chunk_count": 1223
+  },
+  "all_facets_present": true,
+  "cases": [
+    {
+      "question_id": "k8s-034",
+      "manual_subqueries": 3,
+      "retrieved_hits_including_duplicates": 12,
+      "unique_chunks": 8,
+      "facet_count": 5,
+      "facets_present": 5,
+      "diagnostic_facets_all_present": true,
+      "facets": [
+        {
+          "facet": "deployment_selector",
+          "chunk_id": "work-009-sec-033-ch-001",
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+          "anchor": "`.spec.selector` is a required field",
+          "evidence_present": true
+        },
+        {
+          "facet": "replicaset_template_match",
+          "chunk_id": "work-010-sec-008-ch-001",
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
+          "anchor": "`.spec.template.metadata.labels` must match `spec.selector`",
+          "evidence_present": true
+        },
+        {
+          "facet": "daemonset_explicit_selector",
+          "chunk_id": "work-012-sec-006-ch-001",
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+          "anchor": "You must specify a pod selector that matches the labels",
+          "evidence_present": true
+        },
+        {
+          "facet": "statefulset_matching_selector",
+          "chunk_id": "work-011-sec-006-ch-001",
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+          "anchor": "You must set the `.spec.selector` field of a StatefulSet",
+          "evidence_present": true
+        },
+        {
+          "facet": "job_auto_selector",
+          "chunk_id": "work-013-sec-040-ch-001",
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/",
+          "anchor": "The system defaulting logic adds this field when the Job is created",
+          "evidence_present": true
+        }
+      ],
+      "interpretation": "Targeted, manually decomposed subqueries surface all pre-specified source facets. Not a single-query retrieval or answer-correctness result."
+    },
+    {
+      "question_id": "k8s-068",
+      "manual_subqueries": 3,
+      "retrieved_hits_including_duplicates": 12,
+      "unique_chunks": 10,
+      "facet_count": 5,
+      "facets_present": 5,
+      "diagnostic_facets_all_present": true,
+      "facets": [
+        {
+          "facet": "external_plugin_architecture",
+          "chunk_id": "stor-002-sec-046-ch-001",
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "anchor": "without adding their plugin source code to the Kubernetes repository",
+          "evidence_present": true
+        },
+        {
+          "facet": "migration_to_csi",
+          "chunk_id": "stor-002-sec-052-ch-001",
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "anchor": "The `CSIMigration` feature directs operations against existing in-tree",
+          "evidence_present": true
+        },
+        {
+          "facet": "snapshots_require_csi",
+          "chunk_id": "stor-008-sec-002-ch-001",
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+          "anchor": "VolumeSnapshot support is only available for CSI drivers",
+          "evidence_present": true
+        },
+        {
+          "facet": "snapshot_driver_support_varies",
+          "chunk_id": "stor-008-sec-002-ch-002",
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+          "anchor": "CSI drivers may or may not have implemented the volume snapshot functionality",
+          "evidence_present": true
+        },
+        {
+          "facet": "volume_cloning_requires_csi",
+          "chunk_id": "stor-003-sec-066-ch-001",
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "anchor": "only available for CSI volume plugins",
+          "evidence_present": true
+        }
+      ],
+      "interpretation": "Targeted, manually decomposed subqueries surface all pre-specified source facets. Not a single-query retrieval or answer-correctness result."
+    }
+  ],
+  "release_implication": "Improved coverage is possible through manual question decomposition; no change to baseline MRR/Recall or original generation outcome",
+  "limitations": [
+    "Manually crafted subqueries are diagnostic, not a measured general-purpose multi-hop strategy.",
+    "String anchors confirm that evidence is present, not that claims are fully entailed.",
+    "Generation errors for k8s-034 and k8s-068 remain in the DEV baseline.",
+    "No TEST queries, new answer generations, or gold/reference answers used."
+  ]
+}

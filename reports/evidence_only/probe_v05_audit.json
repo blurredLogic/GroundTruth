@@ -1,0 +1,117 @@
+{
+  "schema": "groundtruth_evidence_only_v0.5_human_score",
+  "evidence_report_sha256": "e53eead459fe01949406b9854cd1fe7952d7c2f9f50a0a90af7ab158a56f6ecf",
+  "original_input_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "summary": {
+    "reviewed": 10,
+    "unreviewed": 0,
+    "total_questions": 10,
+    "all_reviewed": true,
+    "human_judgments": {
+      "insufficient": 1,
+      "partial": 3,
+      "supported": 6
+    },
+    "positive_reviewed": 4,
+    "negative_reviewed": 6,
+    "positive_supported": 2,
+    "positive_partial": 2,
+    "negative_contradicted": 0,
+    "negative_insufficient": 1,
+    "negative_supported_REVIEW_FOR_GOLD_LABEL_ERROR": 4,
+    "automatic_groundedness_score": null
+  },
+  "warning": "These are HUMAN evidence-sufficiency judgments, not automatic answer correctness or generator groundedness.",
+  "per_question": [
+    {
+      "question_id": "k8s-001",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-012",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-018",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "insufficient",
+      "review_confidence_0_2": "1",
+      "notes": "",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-020",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "1",
+      "notes": "",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-024",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "1",
+      "notes": "",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-054",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-060",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-066",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-073",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "1",
+      "notes": "",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-078",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "",
+      "followup_needed": ""
+    }
+  ]
+}

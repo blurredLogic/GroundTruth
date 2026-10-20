@@ -1,0 +1,42 @@
+{
+  "schema": "groundtruth_answer_factuality_audit_v0.7",
+  "dataset": "DEV ONLY; original 60-question saved generation report",
+  "source_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "review_csv_sha256": "234421742e0c877ad48937dabfaea137f3198874fd12cae422af3ba987e69256",
+  "generation_status_counts": {
+    "answered": 56,
+    "abstained": 1,
+    "generation_error": 3
+  },
+  "generated_answer_count": 56,
+  "assistant_assessed_answer_count": 56,
+  "assistant_unreviewed_answer_count": 0,
+  "assistant_reviewed_assessment_counts": {
+    "correct_complete": 26,
+    "correct_incomplete": 17,
+    "incorrect": 13
+  },
+  "assistant_citation_counts": {
+    "fully_supported": 24,
+    "partially_supported": 23,
+    "unsupported": 9
+  },
+  "assistant_assessed_accuracy_complete_only": 0.464286,
+  "assistant_assessed_accuracy_allow_incomplete": 0.767857,
+  "independent_reviewed_question_count": 0,
+  "negative_false_answer_count_from_operational_labels": 5,
+  "negative_correct_abstention_count_from_operational_labels": 1,
+  "generation_error_ids": [
+    "k8s-022",
+    "k8s-034",
+    "k8s-068"
+  ],
+  "groundedness_claim_level_independently_verified": false,
+  "limitations": [
+    "Assistant review is not an independent human judgment.",
+    "Assistant-assessed accuracy denominators exclude unanswered/unassessed answers; do not call them model accuracy.",
+    "Source label correctness depends on saved excerpt completeness and reviewer assessment.",
+    "Citation syntax and gold overlap do not prove semantic entailment.",
+    "Generation errors and abstentions are scored separately; held-out TEST is not used."
+  ]
+}

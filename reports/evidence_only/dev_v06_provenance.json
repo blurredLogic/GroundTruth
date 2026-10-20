@@ -1,0 +1,20 @@
+{
+  "schema": "gt_dev_review_provenance_v0.6",
+  "origin": "assistant-reviewed evidence-sufficiency draft, not independent human adjudication",
+  "scope": "60 DEV questions (57 have saved retrieval; 3 lack evidence); no TEST data accessed",
+  "saved_evidence_method": "unchanged v0.5 excerpt selector; at most six spans from top 4 original chunks",
+  "assistant_reviewed": 57,
+  "unreviewed_missing_evidence": 3,
+  "gold_labels_not_used_for_sufficiency_annotation": true,
+  "generated_answers_not_used_for_evidence_annotation": true,
+  "factual_correctness_of_generated_answers": "not scored",
+  "source_report_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "review_csv_sha256": "bcfba11e819c608d8c5edd4871d8430d9230ba1088835e55af83749dfc3a5a4a",
+  "evidence_report_sha256": "0076d49c8a75f3d87b09bfb710dd02a437233bf421e2273d769635970f9bda1b",
+  "warnings": [
+    "Some selected excerpts already truncated within saved generated report",
+    "Excerpt sufficiency is narrower than all available full retrieved chunks",
+    "Labels authored by assistant require independent review before publication-quality accuracy claims",
+    "All six negative DEV items were previously inspected in the ten-question subset"
+  ]
+}

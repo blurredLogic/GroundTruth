@@ -1,0 +1,23 @@
+{
+  "question": "When authoring Deployment, ReplicaSet, DaemonSet, StatefulSet, and Job manifests, how do their Pod selector requirements differ?",
+  "backend": "ollama",
+  "model": "llama3.2:3b",
+  "allowed_evidence_ids": [
+    "C1",
+    "C2",
+    "C3",
+    "C4"
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "validation_error": "Model output must have answer:str and citations:list",
+      "raw_model_output": "{\"abstain\":false,\"answer\":\"The Pod selector requirements differ as follows:\\n\\n- For DaemonSet, the `.spec.selector` must match the `.spec.template.metadata.labels`, and it cannot be mutated after creation.\\n\\n- For ReplicaSet, the `.spec.selector` is a label selector that must match `.spec.template.metadata.labels`. Mutating the selector can lead to unintended orphaning of Pods.\\n\\n- For StatefulSet, the `.spec.selector` is a label selector that must match `.spec.template.metadata.labels`, similar to ReplicaSet.\\n\\n- For Job, the `.spec.selector` is not required, but if specified, it must be unique to avoid conflicts with other jobs or controllers.\\n\\n[C1]\\n[C2]\\n[C3]\\n[C4]\"}"
+    },
+    {
+      "attempt": 2,
+      "validation_error": "Model output must have answer:str and citations:list",
+      "raw_model_output": "{\"abstain\":false,\"answer\":\"The Pod selector requirements differ as follows:\\n\\n- For DaemonSet, the `.spec.selector` must match the `.spec.template.metadata.labels`, and it cannot be mutated after creation.\\n\\n- For ReplicaSet, the `.spec.selector` is a label selector that must match `.spec.template.metadata.labels`. Mutating the selector can lead to unintended orphaning of Pods.\\n\\n- For StatefulSet, the `.spec.selector` is a label selector that must match `.spec.template.metadata.labels`, similar to ReplicaSet.\\n\\n- For Job, the `.spec.selector` is not required, but if specified, it must be unique to avoid conflicts with other jobs or controllers.\\n\\n[C1][C2][C3][C4]\"}"
+    }
+  ]
+}

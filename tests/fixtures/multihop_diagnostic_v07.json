@@ -1,0 +1,383 @@
+{
+  "schema": "groundtruth_multihop_diagnostic_v0.7",
+  "split": "dev",
+  "shadow_only": true,
+  "source_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "retriever_description": {
+    "retriever_version": "0.1.0",
+    "index_type": "hybrid_rrf",
+    "fusion": "reciprocal_rank_fusion",
+    "rrf_k": 20.0,
+    "candidate_k": 20,
+    "dense_weight": 1.0,
+    "bm25_weight": 0.1,
+    "chunk_count": 1223,
+    "dense": {
+      "retriever_version": "0.1.0",
+      "index_type": "dense",
+      "model": "BAAI/bge-small-en-v1.5",
+      "device": "cpu",
+      "device_description": "Intel64 Family 6 Model 165 Stepping 2, GenuineIntel",
+      "query_prefix": "",
+      "chunk_count": 1223,
+      "embedding_dimension": 384,
+      "similarity": "cosine"
+    },
+    "bm25": {
+      "index_type": "bm25",
+      "implementation": "groundtruth_native_bm25",
+      "document_count": 1223,
+      "vocabulary_size": 7954,
+      "average_document_length": 124.04415372035977,
+      "k1": 1.5,
+      "b": 0.75,
+      "tokenizer": {
+        "lowercase": true,
+        "name": "groundtruth_regex_v0.1",
+        "pattern": "[A-Za-z0-9]+(?:[._/-][A-Za-z0-9]+)*"
+      }
+    }
+  },
+  "records": [
+    {
+      "question_id": "k8s-034",
+      "retrievals": [
+        {
+          "subquery": "Deployment spec.selector requirement matches Pod template metadata labels immutable",
+          "sources": [
+            {
+              "rank": 1,
+              "chunk_id": "work-009-sec-033-ch-001",
+              "document_id": "work-009",
+              "heading_path": [
+                "Deployments",
+                "Writing a Deployment Spec",
+                "Selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+              "text": "### Selector\n\n`.spec.selector` is a required field that specifies a [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)\nfor the Pods targeted by this Deployment.\n\n`.spec.selector` must match `.spec.template.metadata.labels`, or it will be rejected by the API.\n\nIn API version `apps/v1`, `.spec.selector` and `.metadata.labels` do not default to `.spec.template.metadata.labels` if not set. So they must be set explicitly. Also note that `.spec.selector` is immutable after creation of the Deployment in `apps/v1`.\n\nA Deployment may terminate Pods whose labels match the selector if their template is different\nfrom `.spec.template` or if the total number of such Pods exceeds `.spec.replicas`. It brings up new\nPods with `.spec.template` if the number of Pods is less than the desired number."
+            },
+            {
+              "rank": 2,
+              "chunk_id": "work-009-sec-031-ch-001",
+              "document_id": "work-009",
+              "heading_path": [
+                "Deployments",
+                "Writing a Deployment Spec",
+                "Pod Template"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+              "text": "### Pod Template\n\nThe `.spec.template` and `.spec.selector` are the only required fields of the `.spec`.\n\nThe `.spec.template` is a [Pod template](https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates). It has exactly the same schema as a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/), except it is nested and does not have an `apiVersion` or `kind`.\n\nIn addition to required fields for a Pod, a Pod template in a Deployment must specify appropriate\nlabels and an appropriate restart policy. For labels, make sure not to overlap with other controllers. See [selector](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#selector).\n\nOnly a [`.spec.template.spec.restartPolicy`](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy) equal to `Always` is\nallowed, which is the default if not specified."
+            },
+            {
+              "rank": 3,
+              "chunk_id": "work-011-sec-006-ch-001",
+              "document_id": "work-011",
+              "heading_path": [
+                "StatefulSets",
+                "Components",
+                "Pod Selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+              "text": "### Pod Selector\n\nYou must set the `.spec.selector` field of a StatefulSet to match the labels of its\n`.spec.template.metadata.labels`. Failing to specify a matching Pod Selector will result in a\nvalidation error during StatefulSet creation."
+            },
+            {
+              "rank": 4,
+              "chunk_id": "work-009-sec-012-ch-001",
+              "document_id": "work-009",
+              "heading_path": [
+                "Deployments",
+                "Updating a Deployment",
+                "Label selector updates"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+              "text": "### Label selector updates\n\nIt is generally discouraged to make label selector updates and it is suggested to plan your selectors up front.\nA Deployment's label selector is **immutable** after creation;\nit cannot be updated via `kubectl patch`, `kubectl edit`, `kubectl apply`, or tools like `helm upgrade`.\n\nIf you must change the selector, you have to delete the Deployment and recreate it.\nBy default, deleting the Deployment also deletes its running Pods, causing downtime; use\n`--cascade=orphan` if you need those Pods to keep running while you recreate the Deployment\n(see the implications below).\nExercise great caution and ensure you grasp the following implications:\n\n- Additions: When you create a new Deployment with a narrower selector, the new Deployment must also have a suitable Pod template. If you have an existing manifest and you edit the manifest to narrow the selector, you need to edit the metadata of the Pod template inside that Deployment, adding the new labels to match, as otherwise the API server returns a validation error. This is a non-overlapping change: the new Deployment will not \"see\" the old Pods (which lack the new label), causing the old ReplicaSet to be orphaned and a brand-new ReplicaSet to be created.\n- Value Updates: Changing the existing value in a selector key (e.g., from v1 to v2 ) results in the same behavior as additions (orphaning and recreation).\n- Removals: Removing an existing key from the Deployment selector does not require any changes in the Pod template labels. This is an overlapping change: the new, broader selector would match the old Pods. Existing ReplicaSets are not orphaned, and a new ReplicaSet is not created, but note that the removed label still exists in any existing Pods and ReplicaSets. You can clean that up by triggering a rollout for the Deployment."
+            }
+          ],
+          "count": 4
+        },
+        {
+          "subquery": "StatefulSet spec.selector Pod template matching labels immutable",
+          "sources": [
+            {
+              "rank": 1,
+              "chunk_id": "work-011-sec-006-ch-001",
+              "document_id": "work-011",
+              "heading_path": [
+                "StatefulSets",
+                "Components",
+                "Pod Selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+              "text": "### Pod Selector\n\nYou must set the `.spec.selector` field of a StatefulSet to match the labels of its\n`.spec.template.metadata.labels`. Failing to specify a matching Pod Selector will result in a\nvalidation error during StatefulSet creation."
+            },
+            {
+              "rank": 2,
+              "chunk_id": "work-012-sec-006-ch-001",
+              "document_id": "work-012",
+              "heading_path": [
+                "DaemonSet",
+                "Writing a DaemonSet Spec",
+                "Pod Selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+              "text": "### Pod Selector\n\nThe `.spec.selector` field is a pod selector. It works the same as the `.spec.selector` of\na [Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/).\n\nYou must specify a pod selector that matches the labels of the\n`.spec.template`.\nAlso, once a DaemonSet is created,\nits `.spec.selector` can not be mutated. Mutating the pod selector can lead to the\nunintentional orphaning of Pods, and it was found to be confusing to users.\n\nThe `.spec.selector` is an object consisting of two fields:\n\n- matchLabels - works the same as the .spec.selector of a ReplicationController .\n- matchExpressions - allows to build more sophisticated selectors by specifying key, list of values and an operator that relates the key and values.\n\nWhen the two are specified the result is ANDed.\n\nThe `.spec.selector` must match the `.spec.template.metadata.labels`.\nConfig with these two not matching will be rejected by the API."
+            },
+            {
+              "rank": 3,
+              "chunk_id": "work-009-sec-033-ch-001",
+              "document_id": "work-009",
+              "heading_path": [
+                "Deployments",
+                "Writing a Deployment Spec",
+                "Selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+              "text": "### Selector\n\n`.spec.selector` is a required field that specifies a [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)\nfor the Pods targeted by this Deployment.\n\n`.spec.selector` must match `.spec.template.metadata.labels`, or it will be rejected by the API.\n\nIn API version `apps/v1`, `.spec.selector` and `.metadata.labels` do not default to `.spec.template.metadata.labels` if not set. So they must be set explicitly. Also note that `.spec.selector` is immutable after creation of the Deployment in `apps/v1`.\n\nA Deployment may terminate Pods whose labels match the selector if their template is different\nfrom `.spec.template` or if the total number of such Pods exceeds `.spec.replicas`. It brings up new\nPods with `.spec.template` if the number of Pods is less than the desired number."
+            },
+            {
+              "rank": 4,
+              "chunk_id": "work-010-sec-008-ch-001",
+              "document_id": "work-010",
+              "heading_path": [
+                "ReplicaSet",
+                "Writing a ReplicaSet manifest",
+                "Pod Selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
+              "text": "### Pod Selector\n\nThe `.spec.selector` field is a [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/). As discussed\n[earlier](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#how-a-replicaset-works) these are the labels used to identify potential Pods to acquire. In our\n`frontend.yaml` example, the selector was:\n\n```yaml\nmatchLabels:\n  tier: frontend\n```\n\nIn the ReplicaSet, `.spec.template.metadata.labels` must match `spec.selector`, or it will\nbe rejected by the API."
+            }
+          ],
+          "count": 4
+        },
+        {
+          "subquery": "ReplicaSet DaemonSet Job pod selector requirement auto generated selector",
+          "sources": [
+            {
+              "rank": 1,
+              "chunk_id": "work-012-sec-006-ch-001",
+              "document_id": "work-012",
+              "heading_path": [
+                "DaemonSet",
+                "Writing a DaemonSet Spec",
+                "Pod Selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+              "text": "### Pod Selector\n\nThe `.spec.selector` field is a pod selector. It works the same as the `.spec.selector` of\na [Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/).\n\nYou must specify a pod selector that matches the labels of the\n`.spec.template`.\nAlso, once a DaemonSet is created,\nits `.spec.selector` can not be mutated. Mutating the pod selector can lead to the\nunintentional orphaning of Pods, and it was found to be confusing to users.\n\nThe `.spec.selector` is an object consisting of two fields:\n\n- matchLabels - works the same as the .spec.selector of a ReplicationController .\n- matchExpressions - allows to build more sophisticated selectors by specifying key, list of values and an operator that relates the key and values.\n\nWhen the two are specified the result is ANDed.\n\nThe `.spec.selector` must match the `.spec.template.metadata.labels`.\nConfig with these two not matching will be rejected by the API."
+            },
+            {
+              "rank": 2,
+              "chunk_id": "work-013-sec-040-ch-001",
+              "document_id": "work-013",
+              "heading_path": [
+                "Jobs",
+                "Advanced usage",
+                "Specifying your own Pod selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/",
+              "text": "### Specifying your own Pod selector\n\nNormally, when you create a Job object, you do not specify `.spec.selector`.\nThe system defaulting logic adds this field when the Job is created.\nIt picks a selector value that will not overlap with any other jobs.\n\nHowever, in some cases, you might need to override this automatically set selector.\nTo do this, you can specify the `.spec.selector` of the Job.\n\nBe very careful when doing this. If you specify a label selector which is not\nunique to the pods of that Job, and which matches unrelated Pods, then pods of the unrelated\njob may be deleted, or this Job may count other Pods as completing it, or one or both\nJobs may refuse to create Pods or run to completion. If a non-unique selector is\nchosen, then other controllers (e.g. ReplicationController) and their Pods may behave\nin unpredictable ways too. Kubernetes will not stop you from making a mistake when\nspecifying `.spec.selector`.\n\nHere is an example of a case when you might want to use this feature.\n\nSay Job `old` is already running. You want existing Pods\nto keep running, but you want the rest of the Pods it creates\nto use a different pod template and for the Job to have a new name.\nYou cannot update the Job because these fields are not updatable.\nTherefore, you delete Job `old` but *leave its pods running*, using `kubectl delete jobs/old --cascade=orphan`.\nBefore deleting it, you make a note of what selector it uses:\n\n```shell\nkubectl get job old -o yaml\n```\n\nThe output is similar to this:\n\n```yaml\nkind: Job\nmetadata:\n  name: old\n  ...\nspec:\n  selector:\n    matchLabels:\n      batch.kubernetes.io/controller-uid: a8f3d00d-c6d2-11e5-9f87-42010af00002\n  ...\n```\n\nThen you create a new Job with name `new` and you explicitly specify the same selector.\nSince the existing Pods have label `batch.kubernetes.io/controller-uid=a8f3d00d-c6d2-11e5-9f87-42010af00002`,\nthey are controlled by Job `new` as well.\n\nYou need to specify `manualSelector: true` in the new Job since you are not using\nthe selector that the system normally generates for you automatically.\n\n"
+            },
+            {
+              "rank": 3,
+              "chunk_id": "work-010-sec-008-ch-001",
+              "document_id": "work-010",
+              "heading_path": [
+                "ReplicaSet",
+                "Writing a ReplicaSet manifest",
+                "Pod Selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
+              "text": "### Pod Selector\n\nThe `.spec.selector` field is a [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/). As discussed\n[earlier](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#how-a-replicaset-works) these are the labels used to identify potential Pods to acquire. In our\n`frontend.yaml` example, the selector was:\n\n```yaml\nmatchLabels:\n  tier: frontend\n```\n\nIn the ReplicaSet, `.spec.template.metadata.labels` must match `spec.selector`, or it will\nbe rejected by the API."
+            },
+            {
+              "rank": 4,
+              "chunk_id": "work-013-sec-040-ch-002",
+              "document_id": "work-013",
+              "heading_path": [
+                "Jobs",
+                "Advanced usage",
+                "Specifying your own Pod selector"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/",
+              "text": "d00d-c6d2-11e5-9f87-42010af00002`,\nthey are controlled by Job `new` as well.\n\nYou need to specify `manualSelector: true` in the new Job since you are not using\nthe selector that the system normally generates for you automatically.\n\n```yaml\nkind: Job\nmetadata:\n  name: new\n  ...\nspec:\n  manualSelector: true\n  selector:\n    matchLabels:\n      batch.kubernetes.io/controller-uid: a8f3d00d-c6d2-11e5-9f87-42010af00002\n  ...\n```\n\nThe new Job itself will have a different uid from `a8f3d00d-c6d2-11e5-9f87-42010af00002`. Setting\n`manualSelector: true` tells the system that you know what you are doing and to allow this\nmismatch."
+            }
+          ],
+          "count": 4
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-068",
+      "retrievals": [
+        {
+          "subquery": "Kubernetes CSI driver VolumeSnapshot creation only CSI plugins snapshots",
+          "sources": [
+            {
+              "rank": 1,
+              "chunk_id": "stor-008-sec-002-ch-001",
+              "document_id": "stor-008",
+              "heading_path": [
+                "Volume Snapshots",
+                "Introduction"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+              "text": "## Introduction\n\nSimilar to how API resources `PersistentVolume` and `PersistentVolumeClaim` are\nused to provision volumes for users and administrators, `VolumeSnapshotContent`\nand `VolumeSnapshot` API resources are provided to create volume snapshots for\nusers and administrators.\n\nA `VolumeSnapshotContent` is a snapshot taken from a volume in the cluster that\nhas been provisioned by an administrator. It is a resource in the cluster just\nlike a PersistentVolume is a cluster resource.\n\nA `VolumeSnapshot` is a request for snapshot of a volume by a user. It is similar\nto a PersistentVolumeClaim.\n\n`VolumeSnapshotClass` allows you to specify different attributes belonging to a\n`VolumeSnapshot`. These attributes may differ among snapshots taken from the same\nvolume on the storage system and therefore cannot be expressed by using the same\n`StorageClass` of a `PersistentVolumeClaim`.\n\nVolume snapshots provide Kubernetes users with a standardized way to copy a volume's\ncontents at a particular point in time without creating an entirely new volume. This\nfunctionality enables, for example, database administrators to backup databases before\nperforming edit or delete modifications.\n\nUsers need to be aware of the following when using this feature:\n\n- API Objects VolumeSnapshot , VolumeSnapshotContent , and VolumeSnapshotClass are CRDs , not part of the core API.\n- VolumeSnapshot support is only available for CSI drivers.\n- As part of the deployment process of VolumeSnapshot , the Kubernetes team provides a snapshot controller to be deployed into the control plane, and a sidecar helper container called csi-snapshotter to be deployed together with the CSI driver. The snapshot controller watches VolumeSnapshot and VolumeSnapshotContent objects and is responsible for the creation and deletion of VolumeSnapshotContent object. The sidecar csi-snapshotter watches VolumeSnapshotContent objects and triggers CreateSnapshot and DeleteSnapshot operations against a CSI endpoint.\n- There is also a validating webhook server which provides tightened validation on snapshot objects. This should be installed by the Kubernetes distros along with the snapshot controller and CRDs, not CSI drivers. It should be installed in all Kubernetes clusters that has the snapshot feature enabled.\n- CSI drivers may or may not have implemented the volume snapshot functionality. The CSI drivers that have pro"
+            },
+            {
+              "rank": 2,
+              "chunk_id": "stor-008-sec-002-ch-002",
+              "document_id": "stor-008",
+              "heading_path": [
+                "Volume Snapshots",
+                "Introduction"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+              "text": " that has the snapshot feature enabled.\n- CSI drivers may or may not have implemented the volume snapshot functionality. The CSI drivers that have provided support for volume snapshot will likely use the csi-snapshotter. See CSI Driver documentation for details.\n- The CRDs and snapshot controller installations are the responsibility of the Kubernetes distribution.\n\nFor advanced use cases, such as creating group snapshots of multiple volumes, see the external\n[CSI Volume Group Snapshot documentation](https://kubernetes-csi.github.io/docs/group-snapshot-restore-feature.html).\n\nIn clusters where a snapshot is only usable from part of the cluster (for example, a\nsnapshot of a volume in one zone of a multi-zone cluster without shared storage),\nthe snapshot's topology can be recorded and honored when restoring from it. For\ndetails, see the external\n[CSI Documentation](https://kubernetes-csi.github.io/docs/introduction.html)."
+            },
+            {
+              "rank": 3,
+              "chunk_id": "stor-002-sec-048-ch-001",
+              "document_id": "stor-002",
+              "heading_path": [
+                "Volumes",
+                "Out-of-tree volume plugins",
+                "csi",
+                "Note:"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+              "text": "#### Note:\n\nOnce a CSI-compatible volume driver is deployed on a Kubernetes cluster, users\nmay use the `csi` volume type to attach or mount the volumes exposed by the\nCSI driver.\n\nA `csi` volume can be used in a Pod in three different ways:\n\n- through a reference to a PersistentVolumeClaim\n- with a generic ephemeral volume\n- with a CSI ephemeral volume if the driver supports that\n\nThe following fields are available to storage administrators to configure a CSI\npersistent volume:\n\n- driver : A string value that specifies the name of the volume driver to use. This value must correspond to the value returned in the GetPluginInfoResponse by the CSI driver as defined in the CSI spec . It is used by Kubernetes to identify which CSI driver to call out to, and by CSI driver components to identify which PV objects belong to the CSI driver.\n- volumeHandle : A string value that uniquely identifies the volume. This value must correspond to the value returned in the volume.id field of the CreateVolumeResponse by the CSI driver as defined in the CSI spec . The value is passed as volume_id in all calls to the CSI volume driver when referencing the volume.\n- readOnly : An optional boolean value indicating whether the volume is to be \"ControllerPublished\" (attached) as read-only. Default is false. This value is passed to the CSI driver via the readonly field in the ControllerPublishVolumeRequest .\n- fsType : If the PV's VolumeMode is Filesystem , then this field may be used to specify the filesystem that should be used to mount the volume. If the volume has not been formatted and formatting is supported, this value will be used to format the volume. This value is passed to the CSI driver via the VolumeCapability field of ControllerPublishVolumeRequest , NodeStageVolumeRequest , and NodePublishVolumeRequest .\n- volumeAttributes : A map of string to string that specifies static properties of a volume. This map must correspond to the map returned in the volume.attributes field of the CreateVolumeResponse by the CSI driver as defined in the CSI spec . The map is passed to the CSI driver via the volume_context field in the ControllerPublishVolumeRequest , NodeStageVolumeRequest , and NodePublishVolumeRequest .\n- controllerPublishSecretRef : A reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI ControllerPublishVolume and Co"
+            },
+            {
+              "rank": 4,
+              "chunk_id": "stor-002-sec-049-ch-001",
+              "document_id": "stor-002",
+              "heading_path": [
+                "Volumes",
+                "Out-of-tree volume plugins",
+                "csi",
+                "CSI raw block volume support"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+              "text": "#### CSI raw block volume support\n\nVendors with external CSI drivers can implement raw block volume support\nin Kubernetes workloads.\n\nYou can set up your\n[PersistentVolume/PersistentVolumeClaim with raw block volume support](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#raw-block-volume-support)\nas usual, without any CSI-specific changes."
+            }
+          ],
+          "count": 4
+        },
+        {
+          "subquery": "Kubernetes clone PersistentVolumeClaim volume cloning CSI driver prerequisite",
+          "sources": [
+            {
+              "rank": 1,
+              "chunk_id": "stor-003-sec-066-ch-001",
+              "document_id": "stor-003",
+              "heading_path": [
+                "Persistent Volumes",
+                "Volume Cloning"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+              "text": "## Volume Cloning\n\n[Volume Cloning](https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/)\nonly available for CSI volume plugins."
+            },
+            {
+              "rank": 2,
+              "chunk_id": "stor-003-sec-067-ch-001",
+              "document_id": "stor-003",
+              "heading_path": [
+                "Persistent Volumes",
+                "Volume Cloning",
+                "Create PersistentVolumeClaim from an existing PVC"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+              "text": "### Create PersistentVolumeClaim from an existing PVC\n\n```yaml\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: cloned-pvc\nspec:\n  storageClassName: my-csi-plugin\n  dataSource:\n    name: existing-src-pvc-name\n    kind: PersistentVolumeClaim\n  accessModes:\n    - ReadWriteOnce\n  resources:\n    requests:\n      storage: 10Gi\n```"
+            },
+            {
+              "rank": 3,
+              "chunk_id": "stor-002-sec-048-ch-001",
+              "document_id": "stor-002",
+              "heading_path": [
+                "Volumes",
+                "Out-of-tree volume plugins",
+                "csi",
+                "Note:"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+              "text": "#### Note:\n\nOnce a CSI-compatible volume driver is deployed on a Kubernetes cluster, users\nmay use the `csi` volume type to attach or mount the volumes exposed by the\nCSI driver.\n\nA `csi` volume can be used in a Pod in three different ways:\n\n- through a reference to a PersistentVolumeClaim\n- with a generic ephemeral volume\n- with a CSI ephemeral volume if the driver supports that\n\nThe following fields are available to storage administrators to configure a CSI\npersistent volume:\n\n- driver : A string value that specifies the name of the volume driver to use. This value must correspond to the value returned in the GetPluginInfoResponse by the CSI driver as defined in the CSI spec . It is used by Kubernetes to identify which CSI driver to call out to, and by CSI driver components to identify which PV objects belong to the CSI driver.\n- volumeHandle : A string value that uniquely identifies the volume. This value must correspond to the value returned in the volume.id field of the CreateVolumeResponse by the CSI driver as defined in the CSI spec . The value is passed as volume_id in all calls to the CSI volume driver when referencing the volume.\n- readOnly : An optional boolean value indicating whether the volume is to be \"ControllerPublished\" (attached) as read-only. Default is false. This value is passed to the CSI driver via the readonly field in the ControllerPublishVolumeRequest .\n- fsType : If the PV's VolumeMode is Filesystem , then this field may be used to specify the filesystem that should be used to mount the volume. If the volume has not been formatted and formatting is supported, this value will be used to format the volume. This value is passed to the CSI driver via the VolumeCapability field of ControllerPublishVolumeRequest , NodeStageVolumeRequest , and NodePublishVolumeRequest .\n- volumeAttributes : A map of string to string that specifies static properties of a volume. This map must correspond to the map returned in the volume.attributes field of the CreateVolumeResponse by the CSI driver as defined in the CSI spec . The map is passed to the CSI driver via the volume_context field in the ControllerPublishVolumeRequest , NodeStageVolumeRequest , and NodePublishVolumeRequest .\n- controllerPublishSecretRef : A reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI ControllerPublishVolume and Co"
+            },
+            {
+              "rank": 4,
+              "chunk_id": "stor-008-sec-002-ch-001",
+              "document_id": "stor-008",
+              "heading_path": [
+                "Volume Snapshots",
+                "Introduction"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+              "text": "## Introduction\n\nSimilar to how API resources `PersistentVolume` and `PersistentVolumeClaim` are\nused to provision volumes for users and administrators, `VolumeSnapshotContent`\nand `VolumeSnapshot` API resources are provided to create volume snapshots for\nusers and administrators.\n\nA `VolumeSnapshotContent` is a snapshot taken from a volume in the cluster that\nhas been provisioned by an administrator. It is a resource in the cluster just\nlike a PersistentVolume is a cluster resource.\n\nA `VolumeSnapshot` is a request for snapshot of a volume by a user. It is similar\nto a PersistentVolumeClaim.\n\n`VolumeSnapshotClass` allows you to specify different attributes belonging to a\n`VolumeSnapshot`. These attributes may differ among snapshots taken from the same\nvolume on the storage system and therefore cannot be expressed by using the same\n`StorageClass` of a `PersistentVolumeClaim`.\n\nVolume snapshots provide Kubernetes users with a standardized way to copy a volume's\ncontents at a particular point in time without creating an entirely new volume. This\nfunctionality enables, for example, database administrators to backup databases before\nperforming edit or delete modifications.\n\nUsers need to be aware of the following when using this feature:\n\n- API Objects VolumeSnapshot , VolumeSnapshotContent , and VolumeSnapshotClass are CRDs , not part of the core API.\n- VolumeSnapshot support is only available for CSI drivers.\n- As part of the deployment process of VolumeSnapshot , the Kubernetes team provides a snapshot controller to be deployed into the control plane, and a sidecar helper container called csi-snapshotter to be deployed together with the CSI driver. The snapshot controller watches VolumeSnapshot and VolumeSnapshotContent objects and is responsible for the creation and deletion of VolumeSnapshotContent object. The sidecar csi-snapshotter watches VolumeSnapshotContent objects and triggers CreateSnapshot and DeleteSnapshot operations against a CSI endpoint.\n- There is also a validating webhook server which provides tightened validation on snapshot objects. This should be installed by the Kubernetes distros along with the snapshot controller and CRDs, not CSI drivers. It should be installed in all Kubernetes clusters that has the snapshot feature enabled.\n- CSI drivers may or may not have implemented the volume snapshot functionality. The CSI drivers that have pro"
+            }
+          ],
+          "count": 4
+        },
+        {
+          "subquery": "Out of tree CSI volume plugins compared legacy in tree operations resize migration",
+          "sources": [
+            {
+              "rank": 1,
+              "chunk_id": "stor-002-sec-052-ch-001",
+              "document_id": "stor-002",
+              "heading_path": [
+                "Volumes",
+                "Out-of-tree volume plugins",
+                "csi",
+                "Migrating to CSI drivers from in-tree plugins"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+              "text": "#### Migrating to CSI drivers from in-tree plugins\n\nThe `CSIMigration` feature directs operations against existing in-tree\nplugins to corresponding CSI plugins (which are expected to be installed and configured).\nAs a result, operators do not have to make any\nconfiguration changes to existing Storage Classes, PersistentVolumes, or PersistentVolumeClaims\n(referring to in-tree plugins) when transitioning to a CSI driver that supersedes an in-tree plugin."
+            },
+            {
+              "rank": 2,
+              "chunk_id": "stor-002-sec-053-ch-001",
+              "document_id": "stor-002",
+              "heading_path": [
+                "Volumes",
+                "Out-of-tree volume plugins",
+                "csi",
+                "Note:"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+              "text": "#### Note:\n\nExisting PVs created by an in-tree volume plugin can still be used in the future without any configuration\nchanges, even after the migration to CSI is completed for that volume type, and even after you upgrade to a\nversion of Kubernetes that doesn't have compiled-in support for that kind of storage.\n\nAs part of that migration, you - or another cluster administrator - **must** have installed and configured\nthe appropriate CSI driver for that storage. The core of Kubernetes does not install that software for you.\n\n---\n\nAfter that migration, you can also define new PVCs and PVs that refer to the legacy, built-in\nstorage integrations.\nProvided you have the appropriate CSI driver installed and configured, the PV creation continues\nto work, even for brand-new volumes. The actual storage management now happens through\nthe CSI driver.\n\nThe operations and features that are supported include:\nprovisioning/delete, attach/detach, mount/unmount, and resizing of volumes.\n\nIn-tree plugins that support `CSIMigration` and have a corresponding CSI driver implemented\nare listed in [Types of Volumes](https://kubernetes.io/docs/concepts/storage/volumes/#volume-types)."
+            },
+            {
+              "rank": 3,
+              "chunk_id": "stor-002-sec-046-ch-001",
+              "document_id": "stor-002",
+              "heading_path": [
+                "Volumes",
+                "Out-of-tree volume plugins"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+              "text": "## Out-of-tree volume plugins\n\nThe out-of-tree volume plugins include\n[Container Storage Interface](https://kubernetes.io/docs/concepts/storage/volumes/#csi) (CSI), and also\nFlexVolume (which is deprecated). These plugins enable storage vendors to create custom storage plugins\nwithout adding their plugin source code to the Kubernetes repository.\n\nPreviously, all volume plugins were \"in-tree\". The \"in-tree\" plugins were built, linked, compiled,\nand shipped with the core Kubernetes binaries. This meant that adding a new storage system to\nKubernetes (a volume plugin) required checking code into the core Kubernetes code repository.\n\nBoth CSI and FlexVolume allow volume plugins to be developed independently of\nthe Kubernetes code base, and deployed (installed) on Kubernetes clusters as\nextensions.\n\nFor storage vendors looking to create an out-of-tree volume plugin, please refer\nto the [volume plugin FAQ](https://github.com/kubernetes/community/blob/main/sig-storage/volume-plugin-faq.md)."
+            },
+            {
+              "rank": 4,
+              "chunk_id": "stor-002-sec-055-ch-001",
+              "document_id": "stor-002",
+              "heading_path": [
+                "Volumes",
+                "Out-of-tree volume plugins",
+                "flexVolume (deprecated)",
+                "Note:"
+              ],
+              "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+              "text": "#### Note:\n\nFlexVolume is deprecated. Using an out-of-tree CSI driver is the recommended way to integrate external storage with Kubernetes.\n\nMaintainers of the FlexVolume driver should implement a CSI Driver and help migrate users of FlexVolume drivers to CSI.\nUsers of FlexVolume should move their workloads to use the equivalent CSI Driver."
+            }
+          ],
+          "count": 4
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "These subqueries are a manually designed diagnostic, not baseline v0.2 question queries.",
+    "They are evaluated only on DEV and must not be compared to frozen retrieval metrics.",
+    "Retrieved text does not prove generation quality or entailment."
+  ]
+}

@@ -1,0 +1,568 @@
+{
+  "schema": "groundtruth_evidence_only_v0.5_human_score",
+  "evidence_report_sha256": "0076d49c8a75f3d87b09bfb710dd02a437233bf421e2273d769635970f9bda1b",
+  "original_input_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "summary": {
+    "reviewed": 57,
+    "unreviewed": 3,
+    "total_questions": 60,
+    "all_reviewed": false,
+    "human_judgments": {
+      "contradicted": 3,
+      "insufficient": 5,
+      "partial": 15,
+      "supported": 34
+    },
+    "positive_reviewed": 51,
+    "negative_reviewed": 6,
+    "positive_supported": 34,
+    "positive_partial": 15,
+    "negative_contradicted": 3,
+    "negative_insufficient": 3,
+    "negative_supported_REVIEW_FOR_GOLD_LABEL_ERROR": 0,
+    "automatic_groundedness_score": null
+  },
+  "warning": "These are HUMAN evidence-sufficiency judgments, not automatic answer correctness or generator groundedness.",
+  "per_question": [
+    {
+      "question_id": "k8s-001",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E2 defines a PersistentVolume as administrator- or StorageClass-provisioned storage in the cluster.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-002",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E2: Service external exposure and Ingress/Gateway are explicit; rank-1 source describes Service types.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-003",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 explicitly defines the persistentVolumeClaim volume as mounting a PersistentVolume into a Pod.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-005",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E2 describe routable externalIPs, Service port routing, and spec.externalIPs.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-007",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 directly defines cloud-controller-manager cloud API integration and cloud-specific control logic.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-008",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E3 distinguish measurable CPU/memory resource types from API objects such as Pods and Services.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-009",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1, E2 and E4 identify matchLabelKeys, incoming Pod label values, and AND with labelSelector.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-010",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E6 identifies all enforce/audit/warn exemptions; E2-E3 explain workload-creation access to resources and service accounts.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-011",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 states an Ingress references an IngressClass and controller; E4 references default class configuration.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-012",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "insufficient",
+      "review_confidence_0_2": "1",
+      "notes": "E3 describes a PVC dataSource for restoring from a snapshot; E4 describes snapshot source PVCs. None of E1-E6 establishes cross-zone automatic replication by a VolumeSnapshot field.",
+      "followup_needed": "Full VolumeSnapshot API review if asserting universal absence."
+    },
+    {
+      "question_id": "k8s-013",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 explicitly lists liveness, readiness and startup probes.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-014",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E2 locate built-in controllers in kube-controller-manager; E3-E5 locate and describe cloud-controller-manager.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-015",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 and E4 identify kubernetes.io/basic-auth and username/password data keys.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-016",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 establishes best-effort nomination; E6 explains higher-priority preemption can change nominated node.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-017",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E2 and E5 recommend reducing powerful tokens/privileges, isolating nodes and disabling unnecessary token auto-mount.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-018",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "insufficient",
+      "review_confidence_0_2": "1",
+      "notes": "E1-E2 document label-based namespaceSelector filtering; no selected excerpt establishes filtering on namespace creation time without labels.",
+      "followup_needed": "Check full NetworkPolicy selector semantics if needed."
+    },
+    {
+      "question_id": "k8s-019",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 directly explains allowedTopologies with WaitForFirstConsumer, usually unnecessary.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-020",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "1",
+      "notes": "E2 covers Deployment .spec.replicas under HPA; E5 covers ReplicaSet HPA targets. The six selected snippets miss the direct manual ReplicaSet .spec.replicas rule, although rank-4 source contains it.",
+      "followup_needed": "Review full saved rank-4 source work-010-sec-016-ch-001; snippet coverage limitation."
+    },
+    {
+      "question_id": "k8s-021",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 names optional kube-proxy as maintaining Service network rules on nodes.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-022",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "missing_saved_retrieval",
+      "review_relation": "unreviewed",
+      "review_confidence_0_2": "",
+      "notes": "No retrieved passages saved after generation error; evidence relation is NOT SCORABLE. Do not interpret as insufficient.",
+      "followup_needed": "Re-retrieve with frozen Hybrid RRF v0.2, preserve provenance, then review."
+    },
+    {
+      "question_id": "k8s-023",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E4-E5 establish Node spec.podPreemptionPolicy.disableResizePreemption. The excerpts do not explicitly name kubelet as the component applying the eventual resize.",
+      "followup_needed": "Review full retrieved Pod Lifecycle C3 for kubelet action."
+    },
+    {
+      "question_id": "k8s-024",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "contradicted",
+      "review_confidence_0_2": "2",
+      "notes": "E3 explicitly says ResourceQuotas are independent of cluster capacity, expressed in absolute units, and do not automatically increase when nodes are added.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-026",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 identifies VolumeSnapshotClass for snapshots; E3-E4 identify StorageClass for dynamic PV provisioning.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-027",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "1",
+      "notes": "E1 says eight Pods in one zone disrupted together; E2-E3 identify gang policy, schedulingConstraints, disruptionMode. YAML example omitted from selected excerpts.",
+      "followup_needed": "Review saved rank-1 YAML before scoring code-level syntax."
+    },
+    {
+      "question_id": "k8s-028",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E2 show re-registration requirement; E5 states DaemonSet Pod additions/removals when node labels change.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-029",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 and E3-E4 directly describe updating workload Pod templates, replacement Pods and version portability.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-033",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "1",
+      "notes": "E1 exposes non-recursive readOnly behavior; E2 shows prerequisites, E4 names recursiveReadOnly: Enabled but selected code context is fragmented.",
+      "followup_needed": "Check full saved example for proper configuration requirements."
+    },
+    {
+      "question_id": "k8s-034",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "missing_saved_retrieval",
+      "review_relation": "unreviewed",
+      "review_confidence_0_2": "",
+      "notes": "No retrieved passages saved after generation error; evidence relation is NOT SCORABLE. Do not interpret as insufficient.",
+      "followup_needed": "Re-retrieve with frozen Hybrid RRF v0.2, preserve provenance, then review."
+    },
+    {
+      "question_id": "k8s-039",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E3 demonstrate FQDN 64-char Linux nodename limit and Pending state; excerpts omit the suggested preventive admission-webhook control.",
+      "followup_needed": "Check saved rank-1 note for webhook guidance."
+    },
+    {
+      "question_id": "k8s-040",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E5 cover StorageClass/PVC and VolumeSnapshotClass, but the selected excerpts do not state the Pod persistentVolumeClaim mount field and snapshot source field.",
+      "followup_needed": "Review full source or retrieve additional PVC/VolumeSnapshot snippets."
+    },
+    {
+      "question_id": "k8s-054",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "insufficient",
+      "review_confidence_0_2": "1",
+      "notes": "E1 and E3 show how to request/use volumeMode: Block; neither establishes converting an existing Filesystem PV to raw Block on a mismatched claim.",
+      "followup_needed": "Review the full volumeMode binding section for an explicit contradiction."
+    },
+    {
+      "question_id": "k8s-060",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "contradicted",
+      "review_confidence_0_2": "2",
+      "notes": "E1 expressly requires creating the Service before client Pods for Service environment variables; it does not support retroactive injection.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-066",
+      "answerable_gold_for_aggregation_only": false,
+      "evidence_status": "evidence_available",
+      "review_relation": "contradicted",
+      "review_confidence_0_2": "2",
+      "notes": "E1 states default ServiceAccounts get no rights beyond API discovery by default; E2-E4 explain that access requires Roles and bindings.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-067",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E2 explicitly contrast normal Service cluster IP with headless Service backing-Pod IP DNS records.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-068",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "missing_saved_retrieval",
+      "review_relation": "unreviewed",
+      "review_confidence_0_2": "",
+      "notes": "No retrieved passages saved after generation error; evidence relation is NOT SCORABLE. Do not interpret as insufficient.",
+      "followup_needed": "Re-retrieve with frozen Hybrid RRF v0.2, preserve provenance, then review."
+    },
+    {
+      "question_id": "k8s-071",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 and E4 establish checking Secret existence and Pod Events while kubelet retries; E2 describes nonoptional Secrets blocking container start.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-072",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E2 and E5 mention eviction and the start of its ranking criteria; E6 mentions Pod priority, but selected excerpts omit full ordered factors.",
+      "followup_needed": "Inspect full saved Node-pressure eviction rank source."
+    },
+    {
+      "question_id": "k8s-073",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E4-E5 establish the API server presents a server certificate validated via a CA to secure/identify the server; E3 covers CSR-issued client certificates authenticating users.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-076",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "insufficient",
+      "review_confidence_0_2": "2",
+      "notes": "Selected sources describe Job/Pod restartPolicy possibilities, but none states the DaemonSet-specific requirement that the Pod template must use Always.",
+      "followup_needed": "Retrieve DaemonSet Pod-template documentation."
+    },
+    {
+      "question_id": "k8s-077",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E2-E3 cover Node annotation/labels, E6 covers missing cloud VM checks; the selection omits parts of the cloud-node lifecycle list.",
+      "followup_needed": "Review full saved cloud-controller-manager Node-controller source."
+    },
+    {
+      "question_id": "k8s-078",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E6 documents in-place CPU/memory resizing without Pod recreation; E1-E2 identify the separate feature gate for changing memory-backed emptyDir sizeLimit.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-081",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1/E3 show setHostnameAsFQDN and hostname behavior; E4 gives Linux 64-character limit and failed startup.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-082",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 explicitly states PVC volumeName and Pending when target PV already bound; E2 supports exclusive binding.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-083",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E3 explain successful status-code HTTP probes despite connection reset; E2 covers liveness failure/restart. Selected excerpts omit how an unfinished startup probe defers liveness/readiness.",
+      "followup_needed": "Inspect source startup-probe behavior."
+    },
+    {
+      "question_id": "k8s-084",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 names cloud-controller-manager route controller; E5 says it runs in replicated control-plane processes.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-086",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E2/E6 show hard zone affinity blocks placement without matching security=S1 Pod; E3/E4 distinguish required filtering and preferred scoring.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-087",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E1-E2 say default ServiceAccount is created in every namespace and has only discovery rights; excerpts omit explicit recreation after deletion.",
+      "followup_needed": "Find deletion/recreation sentence in full ServiceAccount source."
+    },
+    {
+      "question_id": "k8s-088",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E1 explains temporary duplicate EndpointSlice representation from asynchronous watch/cache, E5 explains slice of Service endpoints; selected excerpts omit the Service stable-front-door distinction.",
+      "followup_needed": "Review retrieved Service documentation."
+    },
+    {
+      "question_id": "k8s-089",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E1 directly explains nodeName bypassing scheduler and PVC Pending; selected excerpts omit alternative spec.nodeSelector configuration.",
+      "followup_needed": "Review full rank-1 StorageClass note including selector example."
+    },
+    {
+      "question_id": "k8s-090",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "insufficient",
+      "review_confidence_0_2": "2",
+      "notes": "E1 confirms RollingUpdate controls, E2/E6 a stuck bad rollout; no selected excerpt shows the claimed rollback event or confirms one occurred.",
+      "followup_needed": "Inspect rollout history and beware stop != rollback; review benchmark premise."
+    },
+    {
+      "question_id": "k8s-091",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E1/E4 describe Konnectivity proxy and E5/E6 old API-server-to-node SSH tunnels; selected excerpts omit agent/server connection initiation details.",
+      "followup_needed": "Review full rank-1 Konnectivity passage."
+    },
+    {
+      "question_id": "k8s-092",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E3 explicitly defines OOMKilled as exceeding memory limit; E1 recommends increasing memory limit/request when app behaves as intended.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-093",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 says evicting lower-priority affinity target breaks required affinity; E5 states feasibility test for preemption.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-094",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E1 explains hostPath/host filesystem danger; E4 begins allowed-creators restriction but selected excerpt omits which principals should retain that privilege.",
+      "followup_needed": "Review full rank-1 RBAC good-practices passage."
+    },
+    {
+      "question_id": "k8s-095",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 describes stable Service address despite changing backend Pods; E4/E6 describe stable service DNS names.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-096",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 explicitly warns about admin-only CSI volumeAttributes; E3 lists disable Ephemeral lifecycle and use admission webhook.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-097",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "supported",
+      "review_confidence_0_2": "2",
+      "notes": "E1 establishes default dependent ReplicaSet Pod garbage collection; E2-E4 describe StatefulSet PVC retention-policy controls and owner references.",
+      "followup_needed": ""
+    },
+    {
+      "question_id": "k8s-098",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E2/E5 show metrics and logging addons, E1 shows DNS, but selected snippets omit kube-scheduler as the specific control-plane component.",
+      "followup_needed": "Check full retrieved Kubernetes Components C2."
+    },
+    {
+      "question_id": "k8s-099",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E2 states Pod and ConfigMap must share a namespace; excerpts do not enumerate all requested Configuration documentation paths.",
+      "followup_needed": "Expand document navigation evidence; this appears to be coverage, not factuality."
+    },
+    {
+      "question_id": "k8s-100",
+      "answerable_gold_for_aggregation_only": true,
+      "evidence_status": "evidence_available",
+      "review_relation": "partial",
+      "review_confidence_0_2": "2",
+      "notes": "E2/E3 cover topologySpreadConstraints spreading Pods across zones; excerpts do not establish how Pod uses downward API node labels to learn zone/region.",
+      "followup_needed": "Retrieve downward API/topology metadata passages for second half."
+    }
+  ]
+}

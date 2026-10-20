@@ -1,0 +1,61 @@
+﻿question_id,answerable_gold_for_aggregation_only,evidence_status,review_relation,review_confidence_0_2,notes,followup_needed
+k8s-001,True,evidence_available,supported,2,E2 defines a PersistentVolume as administrator- or StorageClass-provisioned storage in the cluster.,
+k8s-002,True,evidence_available,supported,2,E1-E2: Service external exposure and Ingress/Gateway are explicit; rank-1 source describes Service types.,
+k8s-003,True,evidence_available,supported,2,E1 explicitly defines the persistentVolumeClaim volume as mounting a PersistentVolume into a Pod.,
+k8s-005,True,evidence_available,supported,2,"E1-E2 describe routable externalIPs, Service port routing, and spec.externalIPs.",
+k8s-007,True,evidence_available,supported,2,E1 directly defines cloud-controller-manager cloud API integration and cloud-specific control logic.,
+k8s-008,True,evidence_available,supported,2,E1-E3 distinguish measurable CPU/memory resource types from API objects such as Pods and Services.,
+k8s-009,True,evidence_available,supported,2,"E1, E2 and E4 identify matchLabelKeys, incoming Pod label values, and AND with labelSelector.",
+k8s-010,True,evidence_available,supported,2,E6 identifies all enforce/audit/warn exemptions; E2-E3 explain workload-creation access to resources and service accounts.,
+k8s-011,True,evidence_available,supported,2,E1 states an Ingress references an IngressClass and controller; E4 references default class configuration.,
+k8s-012,False,evidence_available,insufficient,1,E3 describes a PVC dataSource for restoring from a snapshot; E4 describes snapshot source PVCs. None of E1-E6 establishes cross-zone automatic replication by a VolumeSnapshot field.,Full VolumeSnapshot API review if asserting universal absence.
+k8s-013,True,evidence_available,supported,2,"E1 explicitly lists liveness, readiness and startup probes.",
+k8s-014,True,evidence_available,supported,2,E1-E2 locate built-in controllers in kube-controller-manager; E3-E5 locate and describe cloud-controller-manager.,
+k8s-015,True,evidence_available,supported,2,E1 and E4 identify kubernetes.io/basic-auth and username/password data keys.,
+k8s-016,True,evidence_available,supported,2,E1 establishes best-effort nomination; E6 explains higher-priority preemption can change nominated node.,
+k8s-017,True,evidence_available,supported,2,"E1-E2 and E5 recommend reducing powerful tokens/privileges, isolating nodes and disabling unnecessary token auto-mount.",
+k8s-018,False,evidence_available,insufficient,1,E1-E2 document label-based namespaceSelector filtering; no selected excerpt establishes filtering on namespace creation time without labels.,Check full NetworkPolicy selector semantics if needed.
+k8s-019,True,evidence_available,supported,2,"E1 directly explains allowedTopologies with WaitForFirstConsumer, usually unnecessary.",
+k8s-020,True,evidence_available,partial,1,"E2 covers Deployment .spec.replicas under HPA; E5 covers ReplicaSet HPA targets. The six selected snippets miss the direct manual ReplicaSet .spec.replicas rule, although rank-4 source contains it.",Review full saved rank-4 source work-010-sec-016-ch-001; snippet coverage limitation.
+k8s-021,True,evidence_available,supported,2,E1 names optional kube-proxy as maintaining Service network rules on nodes.,
+k8s-022,True,missing_saved_retrieval,unreviewed,,No retrieved passages saved after generation error; evidence relation is NOT SCORABLE. Do not interpret as insufficient.,"Re-retrieve with frozen Hybrid RRF v0.2, preserve provenance, then review."
+k8s-023,True,evidence_available,partial,2,E4-E5 establish Node spec.podPreemptionPolicy.disableResizePreemption. The excerpts do not explicitly name kubelet as the component applying the eventual resize.,Review full retrieved Pod Lifecycle C3 for kubelet action.
+k8s-024,False,evidence_available,contradicted,2,"E3 explicitly says ResourceQuotas are independent of cluster capacity, expressed in absolute units, and do not automatically increase when nodes are added.",
+k8s-026,True,evidence_available,supported,2,E1 identifies VolumeSnapshotClass for snapshots; E3-E4 identify StorageClass for dynamic PV provisioning.,
+k8s-027,True,evidence_available,supported,1,"E1 says eight Pods in one zone disrupted together; E2-E3 identify gang policy, schedulingConstraints, disruptionMode. YAML example omitted from selected excerpts.",Review saved rank-1 YAML before scoring code-level syntax.
+k8s-028,True,evidence_available,supported,2,E1-E2 show re-registration requirement; E5 states DaemonSet Pod additions/removals when node labels change.,
+k8s-029,True,evidence_available,supported,2,"E1 and E3-E4 directly describe updating workload Pod templates, replacement Pods and version portability.",
+k8s-033,True,evidence_available,supported,1,"E1 exposes non-recursive readOnly behavior; E2 shows prerequisites, E4 names recursiveReadOnly: Enabled but selected code context is fragmented.",Check full saved example for proper configuration requirements.
+k8s-034,True,missing_saved_retrieval,unreviewed,,No retrieved passages saved after generation error; evidence relation is NOT SCORABLE. Do not interpret as insufficient.,"Re-retrieve with frozen Hybrid RRF v0.2, preserve provenance, then review."
+k8s-039,True,evidence_available,partial,2,E1-E3 demonstrate FQDN 64-char Linux nodename limit and Pending state; excerpts omit the suggested preventive admission-webhook control.,Check saved rank-1 note for webhook guidance.
+k8s-040,True,evidence_available,partial,2,"E1-E5 cover StorageClass/PVC and VolumeSnapshotClass, but the selected excerpts do not state the Pod persistentVolumeClaim mount field and snapshot source field.",Review full source or retrieve additional PVC/VolumeSnapshot snippets.
+k8s-054,False,evidence_available,insufficient,1,E1 and E3 show how to request/use volumeMode: Block; neither establishes converting an existing Filesystem PV to raw Block on a mismatched claim.,Review the full volumeMode binding section for an explicit contradiction.
+k8s-060,False,evidence_available,contradicted,2,E1 expressly requires creating the Service before client Pods for Service environment variables; it does not support retroactive injection.,
+k8s-066,False,evidence_available,contradicted,2,E1 states default ServiceAccounts get no rights beyond API discovery by default; E2-E4 explain that access requires Roles and bindings.,
+k8s-067,True,evidence_available,supported,2,E1-E2 explicitly contrast normal Service cluster IP with headless Service backing-Pod IP DNS records.,
+k8s-068,True,missing_saved_retrieval,unreviewed,,No retrieved passages saved after generation error; evidence relation is NOT SCORABLE. Do not interpret as insufficient.,"Re-retrieve with frozen Hybrid RRF v0.2, preserve provenance, then review."
+k8s-071,True,evidence_available,supported,2,E1 and E4 establish checking Secret existence and Pod Events while kubelet retries; E2 describes nonoptional Secrets blocking container start.,
+k8s-072,True,evidence_available,partial,2,"E2 and E5 mention eviction and the start of its ranking criteria; E6 mentions Pod priority, but selected excerpts omit full ordered factors.",Inspect full saved Node-pressure eviction rank source.
+k8s-073,True,evidence_available,supported,2,E4-E5 establish the API server presents a server certificate validated via a CA to secure/identify the server; E3 covers CSR-issued client certificates authenticating users.,
+k8s-076,True,evidence_available,insufficient,2,"Selected sources describe Job/Pod restartPolicy possibilities, but none states the DaemonSet-specific requirement that the Pod template must use Always.",Retrieve DaemonSet Pod-template documentation.
+k8s-077,True,evidence_available,partial,2,"E2-E3 cover Node annotation/labels, E6 covers missing cloud VM checks; the selection omits parts of the cloud-node lifecycle list.",Review full saved cloud-controller-manager Node-controller source.
+k8s-078,True,evidence_available,supported,2,E6 documents in-place CPU/memory resizing without Pod recreation; E1-E2 identify the separate feature gate for changing memory-backed emptyDir sizeLimit.,
+k8s-081,True,evidence_available,supported,2,E1/E3 show setHostnameAsFQDN and hostname behavior; E4 gives Linux 64-character limit and failed startup.,
+k8s-082,True,evidence_available,supported,2,E1 explicitly states PVC volumeName and Pending when target PV already bound; E2 supports exclusive binding.,
+k8s-083,True,evidence_available,partial,2,E1-E3 explain successful status-code HTTP probes despite connection reset; E2 covers liveness failure/restart. Selected excerpts omit how an unfinished startup probe defers liveness/readiness.,Inspect source startup-probe behavior.
+k8s-084,True,evidence_available,supported,2,E1 names cloud-controller-manager route controller; E5 says it runs in replicated control-plane processes.,
+k8s-086,True,evidence_available,supported,2,E2/E6 show hard zone affinity blocks placement without matching security=S1 Pod; E3/E4 distinguish required filtering and preferred scoring.,
+k8s-087,True,evidence_available,partial,2,E1-E2 say default ServiceAccount is created in every namespace and has only discovery rights; excerpts omit explicit recreation after deletion.,Find deletion/recreation sentence in full ServiceAccount source.
+k8s-088,True,evidence_available,partial,2,"E1 explains temporary duplicate EndpointSlice representation from asynchronous watch/cache, E5 explains slice of Service endpoints; selected excerpts omit the Service stable-front-door distinction.",Review retrieved Service documentation.
+k8s-089,True,evidence_available,partial,2,E1 directly explains nodeName bypassing scheduler and PVC Pending; selected excerpts omit alternative spec.nodeSelector configuration.,Review full rank-1 StorageClass note including selector example.
+k8s-090,True,evidence_available,insufficient,2,"E1 confirms RollingUpdate controls, E2/E6 a stuck bad rollout; no selected excerpt shows the claimed rollback event or confirms one occurred.",Inspect rollout history and beware stop != rollback; review benchmark premise.
+k8s-091,True,evidence_available,partial,2,E1/E4 describe Konnectivity proxy and E5/E6 old API-server-to-node SSH tunnels; selected excerpts omit agent/server connection initiation details.,Review full rank-1 Konnectivity passage.
+k8s-092,True,evidence_available,supported,2,E3 explicitly defines OOMKilled as exceeding memory limit; E1 recommends increasing memory limit/request when app behaves as intended.,
+k8s-093,True,evidence_available,supported,2,E1 says evicting lower-priority affinity target breaks required affinity; E5 states feasibility test for preemption.,
+k8s-094,True,evidence_available,partial,2,E1 explains hostPath/host filesystem danger; E4 begins allowed-creators restriction but selected excerpt omits which principals should retain that privilege.,Review full rank-1 RBAC good-practices passage.
+k8s-095,True,evidence_available,supported,2,E1 describes stable Service address despite changing backend Pods; E4/E6 describe stable service DNS names.,
+k8s-096,True,evidence_available,supported,2,E1 explicitly warns about admin-only CSI volumeAttributes; E3 lists disable Ephemeral lifecycle and use admission webhook.,
+k8s-097,True,evidence_available,supported,2,E1 establishes default dependent ReplicaSet Pod garbage collection; E2-E4 describe StatefulSet PVC retention-policy controls and owner references.,
+k8s-098,True,evidence_available,partial,2,"E2/E5 show metrics and logging addons, E1 shows DNS, but selected snippets omit kube-scheduler as the specific control-plane component.",Check full retrieved Kubernetes Components C2.
+k8s-099,True,evidence_available,partial,2,E2 states Pod and ConfigMap must share a namespace; excerpts do not enumerate all requested Configuration documentation paths.,"Expand document navigation evidence; this appears to be coverage, not factuality."
+k8s-100,True,evidence_available,partial,2,E2/E3 cover topologySpreadConstraints spreading Pods across zones; excerpts do not establish how Pod uses downward API node labels to learn zone/region.,Retrieve downward API/topology metadata passages for second half.

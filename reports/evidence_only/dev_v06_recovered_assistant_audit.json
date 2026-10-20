@@ -1,0 +1,47 @@
+{
+  "schema": "groundtruth_dev_recovery_addendum_v0.6.1",
+  "scope": "DEV_ONLY; original TEST untouched",
+  "assistant_reviewed_not_independently_adjudicated": true,
+  "source_generation_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "original_review_sha256": "bcfba11e819c608d8c5edd4871d8430d9230ba1088835e55af83749dfc3a5a4a",
+  "recovery_file_sha256": "df4c3fb7e01339953cfc1ab1cc3f6a81f3d331537156c9141b906136e124e15b",
+  "recovery_annotations_sha256": "faa5d2b4702f09b9f35720a4ba77520889eb95df2246918f1a647404f537f3f9",
+  "recovery_run_is_later_not_original": true,
+  "newly_reviewed_ids": [
+    "k8s-022",
+    "k8s-034",
+    "k8s-068"
+  ],
+  "evidence_relation_counts": {
+    "supported": 35,
+    "insufficient": 5,
+    "partial": 17,
+    "contradicted": 3
+  },
+  "answerable_evidence_relations": {
+    "supported": 35,
+    "partial": 17,
+    "insufficient": 2
+  },
+  "negative_evidence_relations": {
+    "insufficient": 3,
+    "contradicted": 3
+  },
+  "reviewed_count": 60,
+  "generation_status_unchanged": {
+    "answered": 56,
+    "abstained": 1,
+    "generation_error": 3
+  },
+  "generated_answer_correctness_independently_scored": false,
+  "v1_release_ready": false,
+  "limitations": [
+    "Assistant-authored relations evaluate evidence sufficiency, not answer accuracy.",
+    "Three evidence packets were retrieved later, after the original generation errors.",
+    "k8s-034 omits Deployment and StatefulSet selector requirements in top-four chunks.",
+    "k8s-068 omits CSI-only snapshot/restore and cloning evidence in top-four chunks.",
+    "Earlier 57 reviews used selected excerpts; these 3 use full recovered top-four chunks.",
+    "The previously frozen retriever quality metrics are unaffected.",
+    "Independent claim-level review and an untouched TEST evaluation remain required."
+  ]
+}

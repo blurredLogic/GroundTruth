@@ -1,0 +1,62 @@
+{
+  "schema": "groundtruth_dev_release_audit_v0.6",
+  "data_scope": "DEV ONLY; TEST data not used",
+  "annotation_origin": "assistant-reviewed evidence-sufficiency draft, not independent human adjudication",
+  "source_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "review_sha256": "bcfba11e819c608d8c5edd4871d8430d9230ba1088835e55af83749dfc3a5a4a",
+  "question_count": 60,
+  "generation": {
+    "status_counts": {
+      "answered": 56,
+      "abstained": 1,
+      "generation_error": 3
+    },
+    "negative_false_answers": 5,
+    "negative_correct_abstentions": 1,
+    "answerable_answered": 51,
+    "manual_factual_correctness_scored": false
+  },
+  "evidence": {
+    "relation_counts": {
+      "supported": 34,
+      "insufficient": 5,
+      "partial": 15,
+      "unreviewed": 3,
+      "contradicted": 3
+    },
+    "answerable_relations": {
+      "supported": 34,
+      "partial": 15,
+      "unreviewed": 3,
+      "insufficient": 2
+    },
+    "negative_relations": {
+      "insufficient": 3,
+      "contradicted": 3
+    },
+    "missing_saved_retrieval_ids": [
+      "k8s-022",
+      "k8s-034",
+      "k8s-068"
+    ],
+    "assistant_reviewed_count": 57,
+    "independently_human_adjudicated": false,
+    "generated_answer_groundedness_scored": false
+  },
+  "release_gates": {
+    "frozen_retriever_regression": "PASSED IN USER LOCAL LOGS; NOT REEXECUTED HERE",
+    "evidence_review_provenance": "COMPLETE_ASSISTANT_ONLY",
+    "missing_evidence_recovered": false,
+    "independent_factual_review_complete": false,
+    "semantic_generator_reliability": "NOT_PASSED",
+    "base_v1_release_ready": false
+  },
+  "limitations": [
+    "Review uses up to six selected lexical excerpts, not exhaustive retrieved context.",
+    "Evidence sufficiency is not the same as the correctness of the model answer.",
+    "Assistant annotations are not independent human ground truth.",
+    "Three generation-error questions lack saved source passages.",
+    "All six gold-negative DEV questions were in an earlier probe; DEV should not be used as fresh independent confirmation.",
+    "Held-out TEST set is untouched."
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "schema": "groundtruth_missing_dev_recovery_v0.6",
+  "split": "dev",
+  "source_input_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "frozen_hybrid_rrf_params": {
+    "candidate_k": 20,
+    "rrf_k": 20.0,
+    "dense_weight": 1.0,
+    "bm25_weight": 0.1
+  },
+  "retriever_description": {
+    "retriever_version": "0.1.0",
+    "index_type": "hybrid_rrf",
+    "fusion": "reciprocal_rank_fusion",
+    "rrf_k": 20.0,
+    "candidate_k": 20,
+    "dense_weight": 1.0,
+    "bm25_weight": 0.1,
+    "chunk_count": 1223,
+    "dense": {
+      "retriever_version": "0.1.0",
+      "index_type": "dense",
+      "model": "BAAI/bge-small-en-v1.5",
+      "device": "cpu",
+      "device_description": "Intel64 Family 6 Model 165 Stepping 2, GenuineIntel",
+      "query_prefix": "",
+      "chunk_count": 1223,
+      "embedding_dimension": 384,
+      "similarity": "cosine"
+    },
+    "bm25": {
+      "index_type": "bm25",
+      "implementation": "groundtruth_native_bm25",
+      "document_count": 1223,
+      "vocabulary_size": 7954,
+      "average_document_length": 124.04415372035977,
+      "k1": 1.5,
+      "b": 0.75,
+      "tokenizer": {
+        "lowercase": true,
+        "name": "groundtruth_regex_v0.1",
+        "pattern": "[A-Za-z0-9]+(?:[._/-][A-Za-z0-9]+)*"
+      }
+    }
+  },
+  "records": [
+    {
+      "question_id": "k8s-022",
+      "question": "How do container resource requests and limits contribute to a Pod's overall resource values, and how are requests and limits used differently while the Pod is scheduled and running?",
+      "sources": [
+        {
+          "id": "C1",
+          "rank": 1,
+          "chunk_id": "conf-004-sec-007-ch-001",
+          "document_id": "conf-004",
+          "section_id": "conf-004-sec-007",
+          "heading_path": [
+            "Resource Management for Pods and Containers",
+            "Resource requests and limits of Pod and container"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "text": "## Resource requests and limits of Pod and container\n\nFor each container, you can specify resource limits and requests,\nincluding the following:\n\n- spec.containers[].resources.limits.cpu\n- spec.containers[].resources.limits.memory\n- spec.containers[].resources.limits.ephemeral-storage\n- spec.containers[].resources.limits.hugepages-<size>\n- spec.containers[].resources.requests.cpu\n- spec.containers[].resources.requests.memory\n- spec.containers[].resources.requests.ephemeral-storage\n- spec.containers[].resources.requests.hugepages-<size>\n\nAlthough you can only specify requests and limits for individual containers,\nit is also useful to think about the overall resource requests and limits for\na Pod.\nFor a particular resource, a *Pod resource request/limit* is the sum of the\nresource requests/limits of that type for each container in the Pod.",
+          "cited": false
+        },
+        {
+          "id": "C2",
+          "rank": 2,
+          "chunk_id": "work-002-sec-022-ch-001",
+          "document_id": "work-002",
+          "section_id": "work-002-sec-022",
+          "heading_path": [
+            "Pods",
+            "Resource requests and limits"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/",
+          "text": "## Resource requests and limits\n\nWhen you specify a Pod, you can optionally specify how much of each resource\na container needs. The most common resources to specify are CPU and memory (RAM).\n\nWhen you specify the resource *request* for containers in a Pod, the\nkube-scheduler uses this information to decide which node to place the Pod on.\nWhen you specify a resource *limit* for a container, the kubelet enforces\nthose limits so that the running container is not allowed to use more of that\nresource than the limit you set.\n\nCPU limits are enforced by CPU throttling. When a container approaches its\nCPU limit, the kernel restricts its access to CPU. Memory limits are enforced\nby the kernel with out-of-memory (OOM) kills when a container exceeds its limit.",
+          "cited": false
+        },
+        {
+          "id": "C3",
+          "rank": 3,
+          "chunk_id": "conf-004-sec-015-ch-001",
+          "document_id": "conf-004",
+          "section_id": "conf-004-sec-015",
+          "heading_path": [
+            "Resource Management for Pods and Containers",
+            "How Pods with resource requests are scheduled"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "text": "## How Pods with resource requests are scheduled\n\nWhen you create a Pod, the Kubernetes scheduler selects a node for the Pod to\nrun on. Each node has a maximum capacity for each of the resource types: the\namount of CPU and memory it can provide for Pods. The scheduler ensures that,\nfor each resource type, the sum of the resource requests of the scheduled\ncontainers is less than the capacity of the node.\nNote that although actual memory\nor CPU resource usage on nodes is very low, the scheduler still refuses to place\na Pod on a node if the capacity check fails. This protects against a resource\nshortage on a node when resource usage later increases, for example, during a\ndaily peak in request rate.",
+          "cited": false
+        },
+        {
+          "id": "C4",
+          "rank": 4,
+          "chunk_id": "conf-004-sec-002-ch-001",
+          "document_id": "conf-004",
+          "section_id": "conf-004-sec-002",
+          "heading_path": [
+            "Resource Management for Pods and Containers",
+            "Requests and limits"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "text": "## Requests and limits\n\nIf the node where a Pod is running has enough of a resource available, it's possible (and\nallowed) for a container to use more resource than its `request` for that resource specifies.\n\nFor example, if you set a `memory` request of 256 MiB for a container, and that container is in\na Pod scheduled to a Node with 8GiB of memory and no other Pods, then the container can try to use\nmore RAM.\n\nLimits are a different story. Both `cpu` and `memory` limits are applied by the kubelet (and\n[container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes)),\nand are ultimately enforced by the kernel. On Linux nodes, the Linux kernel\nenforces limits with\n[cgroups](https://kubernetes.io/docs/reference/glossary/?all=true#term-cgroup).\nThe behavior of `cpu` and `memory` limit enforcement is slightly different.\n\n`cpu` limits are enforced by CPU throttling. When a container approaches\nits `cpu` limit, the kernel will restrict access to the CPU corresponding to the\ncontainer's limit. Thus, a `cpu` limit is a hard limit the kernel enforces.\nContainers may not use more CPU than is specified in their `cpu` limit.\n\n`memory` limits are enforced by the kernel with out of memory (OOM) kills. When\na container uses more than its `memory` limit, the kernel may terminate it. However,\nterminations only happen when the kernel detects memory pressure. Thus, a\ncontainer that over allocates memory may not be immediately killed. This means\n`memory` limits are [TRUNCATED EXCERPT]",
+          "cited": false
+        }
+      ],
+      "recovered_count": 4
+    },
+    {
+      "question_id": "k8s-034",
+      "question": "When authoring Deployment, ReplicaSet, DaemonSet, StatefulSet, and Job manifests, how do their Pod selector requirements differ?",
+      "sources": [
+        {
+          "id": "C1",
+          "rank": 1,
+          "chunk_id": "work-012-sec-006-ch-001",
+          "document_id": "work-012",
+          "section_id": "work-012-sec-006",
+          "heading_path": [
+            "DaemonSet",
+            "Writing a DaemonSet Spec",
+            "Pod Selector"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+          "text": "### Pod Selector\n\nThe `.spec.selector` field is a pod selector. It works the same as the `.spec.selector` of\na [Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/).\n\nYou must specify a pod selector that matches the labels of the\n`.spec.template`.\nAlso, once a DaemonSet is created,\nits `.spec.selector` can not be mutated. Mutating the pod selector can lead to the\nunintentional orphaning of Pods, and it was found to be confusing to users.\n\nThe `.spec.selector` is an object consisting of two fields:\n\n- matchLabels - works the same as the .spec.selector of a ReplicationController .\n- matchExpressions - allows to build more sophisticated selectors by specifying key, list of values and an operator that relates the key and values.\n\nWhen the two are specified the result is ANDed.\n\nThe `.spec.selector` must match the `.spec.template.metadata.labels`.\nConfig with these two not matching will be rejected by the API.",
+          "cited": false
+        },
+        {
+          "id": "C2",
+          "rank": 2,
+          "chunk_id": "work-013-sec-040-ch-001",
+          "document_id": "work-013",
+          "section_id": "work-013-sec-040",
+          "heading_path": [
+            "Jobs",
+            "Advanced usage",
+            "Specifying your own Pod selector"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/",
+          "text": "### Specifying your own Pod selector\n\nNormally, when you create a Job object, you do not specify `.spec.selector`.\nThe system defaulting logic adds this field when the Job is created.\nIt picks a selector value that will not overlap with any other jobs.\n\nHowever, in some cases, you might need to override this automatically set selector.\nTo do this, you can specify the `.spec.selector` of the Job.\n\nBe very careful when doing this. If you specify a label selector which is not\nunique to the pods of that Job, and which matches unrelated Pods, then pods of the unrelated\njob may be deleted, or this Job may count other Pods as completing it, or one or both\nJobs may refuse to create Pods or run to completion. If a non-unique selector is\nchosen, then other controllers (e.g. ReplicationController) and their Pods may behave\nin unpredictable ways too. Kubernetes will not stop you from making a mistake when\nspecifying `.spec.selector`.\n\nHere is an example of a case when you might want to use this feature.\n\nSay Job `old` is already running. You want existing Pods\nto keep running, but you want the rest of the Pods it creates\nto use a different pod template and for the Job to have a new name.\nYou cannot update the Job because these fields are not updatable.\nTherefore, you delete Job `old` but *leave its pods running*, using `kubectl delete jobs/old --cascade=orphan`.\nBefore deleting it, you make a note of what selector it uses:\n\n```shell\nkubectl get job old -o yaml\n```\n\nThe output is similar  [TRUNCATED EXCERPT]",
+          "cited": false
+        },
+        {
+          "id": "C3",
+          "rank": 3,
+          "chunk_id": "work-012-sec-008-ch-001",
+          "document_id": "work-012",
+          "section_id": "work-012-sec-008",
+          "heading_path": [
+            "DaemonSet",
+            "How Daemon Pods are scheduled"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+          "text": "## How Daemon Pods are scheduled\n\nA DaemonSet can be used to ensure that all eligible nodes run a copy of a Pod.\nThe DaemonSet controller creates a Pod for each eligible node and adds the\n`spec.affinity.nodeAffinity` field of the Pod to match the target host. After\nthe Pod is created, the default scheduler typically takes over and then binds\nthe Pod to the target host by setting the `.spec.nodeName` field. If the new\nPod cannot fit on the node, the default scheduler may preempt (evict) some of\nthe existing Pods based on the\n[priority](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority)\nof the new Pod.",
+          "cited": false
+        },
+        {
+          "id": "C4",
+          "rank": 4,
+          "chunk_id": "work-010-sec-008-ch-001",
+          "document_id": "work-010",
+          "section_id": "work-010-sec-008",
+          "heading_path": [
+            "ReplicaSet",
+            "Writing a ReplicaSet manifest",
+            "Pod Selector"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
+          "text": "### Pod Selector\n\nThe `.spec.selector` field is a [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/). As discussed\n[earlier](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#how-a-replicaset-works) these are the labels used to identify potential Pods to acquire. In our\n`frontend.yaml` example, the selector was:\n\n```yaml\nmatchLabels:\n  tier: frontend\n```\n\nIn the ReplicaSet, `.spec.template.metadata.labels` must match `spec.selector`, or it will\nbe rejected by the API.",
+          "cited": false
+        }
+      ],
+      "recovered_count": 4
+    },
+    {
+      "question_id": "k8s-068",
+      "question": "How do out-of-tree CSI volume plugins differ from legacy in-tree volume plugins, and which advanced storage operations in the supplied documentation depend on CSI?",
+      "sources": [
+        {
+          "id": "C1",
+          "rank": 1,
+          "chunk_id": "stor-002-sec-046-ch-001",
+          "document_id": "stor-002",
+          "section_id": "stor-002-sec-046",
+          "heading_path": [
+            "Volumes",
+            "Out-of-tree volume plugins"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "text": "## Out-of-tree volume plugins\n\nThe out-of-tree volume plugins include\n[Container Storage Interface](https://kubernetes.io/docs/concepts/storage/volumes/#csi) (CSI), and also\nFlexVolume (which is deprecated). These plugins enable storage vendors to create custom storage plugins\nwithout adding their plugin source code to the Kubernetes repository.\n\nPreviously, all volume plugins were \"in-tree\". The \"in-tree\" plugins were built, linked, compiled,\nand shipped with the core Kubernetes binaries. This meant that adding a new storage system to\nKubernetes (a volume plugin) required checking code into the core Kubernetes code repository.\n\nBoth CSI and FlexVolume allow volume plugins to be developed independently of\nthe Kubernetes code base, and deployed (installed) on Kubernetes clusters as\nextensions.\n\nFor storage vendors looking to create an out-of-tree volume plugin, please refer\nto the [volume plugin FAQ](https://github.com/kubernetes/community/blob/main/sig-storage/volume-plugin-faq.md).",
+          "cited": false
+        },
+        {
+          "id": "C2",
+          "rank": 2,
+          "chunk_id": "stor-002-sec-053-ch-001",
+          "document_id": "stor-002",
+          "section_id": "stor-002-sec-053",
+          "heading_path": [
+            "Volumes",
+            "Out-of-tree volume plugins",
+            "csi",
+            "Note:"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "text": "#### Note:\n\nExisting PVs created by an in-tree volume plugin can still be used in the future without any configuration\nchanges, even after the migration to CSI is completed for that volume type, and even after you upgrade to a\nversion of Kubernetes that doesn't have compiled-in support for that kind of storage.\n\nAs part of that migration, you - or another cluster administrator - **must** have installed and configured\nthe appropriate CSI driver for that storage. The core of Kubernetes does not install that software for you.\n\n---\n\nAfter that migration, you can also define new PVCs and PVs that refer to the legacy, built-in\nstorage integrations.\nProvided you have the appropriate CSI driver installed and configured, the PV creation continues\nto work, even for brand-new volumes. The actual storage management now happens through\nthe CSI driver.\n\nThe operations and features that are supported include:\nprovisioning/delete, attach/detach, mount/unmount, and resizing of volumes.\n\nIn-tree plugins that support `CSIMigration` and have a corresponding CSI driver implemented\nare listed in [Types of Volumes](https://kubernetes.io/docs/concepts/storage/volumes/#volume-types).",
+          "cited": false
+        },
+        {
+          "id": "C3",
+          "rank": 3,
+          "chunk_id": "stor-002-sec-052-ch-001",
+          "document_id": "stor-002",
+          "section_id": "stor-002-sec-052",
+          "heading_path": [
+            "Volumes",
+            "Out-of-tree volume plugins",
+            "csi",
+            "Migrating to CSI drivers from in-tree plugins"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "text": "#### Migrating to CSI drivers from in-tree plugins\n\nThe `CSIMigration` feature directs operations against existing in-tree\nplugins to corresponding CSI plugins (which are expected to be installed and configured).\nAs a result, operators do not have to make any\nconfiguration changes to existing Storage Classes, PersistentVolumes, or PersistentVolumeClaims\n(referring to in-tree plugins) when transitioning to a CSI driver that supersedes an in-tree plugin.",
+          "cited": false
+        },
+        {
+          "id": "C4",
+          "rank": 4,
+          "chunk_id": "stor-002-sec-055-ch-001",
+          "document_id": "stor-002",
+          "section_id": "stor-002-sec-055",
+          "heading_path": [
+            "Volumes",
+            "Out-of-tree volume plugins",
+            "flexVolume (deprecated)",
+            "Note:"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "text": "#### Note:\n\nFlexVolume is deprecated. Using an out-of-tree CSI driver is the recommended way to integrate external storage with Kubernetes.\n\nMaintainers of the FlexVolume driver should implement a CSI Driver and help migrate users of FlexVolume drivers to CSI.\nUsers of FlexVolume should move their workloads to use the equivalent CSI Driver.",
+          "cited": false
+        }
+      ],
+      "recovered_count": 4
+    }
+  ],
+  "limitations": [
+    "Recovered passages were retrieved later, not recorded at original generation time.",
+    "Retrieval does not establish model answer correctness or human support.",
+    "No TEST queries or gold labels used."
+  ]
+}

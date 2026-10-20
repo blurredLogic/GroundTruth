@@ -1,0 +1,23 @@
+{
+  "question": "How do out-of-tree CSI volume plugins differ from legacy in-tree volume plugins, and which advanced storage operations in the supplied documentation depend on CSI?",
+  "backend": "ollama",
+  "model": "llama3.2:3b",
+  "allowed_evidence_ids": [
+    "C1",
+    "C2",
+    "C3",
+    "C4"
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "validation_error": "Model output must have answer:str and citations:list",
+      "raw_model_output": "{\"abstain\":false,\"answer\":\"Out-of-tree CSI volume plugins differ from legacy in-tree volume plugins in that they enable storage vendors to create custom storage plugins without adding their plugin source code to the Kubernetes repository. Both CSI and FlexVolume allow volume plugins to be developed independently of the Kubernetes code base, and deployed as extensions. FlexVolume is deprecated and using an out-of-tree CSI driver is the recommended way to integrate external storage with Kubernetes. The operations and features that are supported include provisioning/delete, attach/detach, mount/unmount, and resizing of volumes. [C1] [C2] [C3] [C4],\"}"
+    },
+    {
+      "attempt": 2,
+      "validation_error": "Model output must have answer:str and citations:list",
+      "raw_model_output": "{\"abstain\":false,\"answer\":\"Out-of-tree CSI volume plugins differ from legacy in-tree volume plugins in that they enable storage vendors to create custom storage plugins without adding their plugin source code to the Kubernetes repository. Both CSI and FlexVolume allow volume plugins to be developed independently of the Kubernetes code base, and deployed as extensions. FlexVolume is deprecated and using an out-of-tree CSI driver is the recommended way to integrate external storage with Kubernetes. The operations and features that are supported include provisioning/delete, attach/detach, mount/unmount, and resizing of volumes. [C1] [C2] [C3] [C4],\"}"
+    }
+  ]
+}

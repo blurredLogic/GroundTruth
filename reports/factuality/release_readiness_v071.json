@@ -1,0 +1,55 @@
+{
+  "schema": "groundtruth_release_readiness_v0.7.1",
+  "source_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "research_preview_documentation_possible": true,
+  "factuality_validated_v1_release_ready": false,
+  "gates": [
+    {
+      "name": "Full DEV assistant first-pass answer audit",
+      "status": "met_first_pass_only",
+      "actual": "56/56 generated answers assistant-reviewed"
+    },
+    {
+      "name": "Diagnostic multi-part source coverage",
+      "status": "met_diagnostic_only",
+      "actual": "10/10 manually specified anchors present"
+    },
+    {
+      "name": "Independent claim/citation factuality adjudication",
+      "status": "blocked",
+      "actual": "0/56 generated answers independently adjudicated"
+    },
+    {
+      "name": "False answers on negative DEV questions",
+      "status": "blocked",
+      "actual": "5 negative false answers"
+    },
+    {
+      "name": "Generation runtime errors on DEV",
+      "status": "blocked",
+      "actual": "3 generation errors"
+    },
+    {
+      "name": "First-pass incorrect generated answers",
+      "status": "requires_review",
+      "actual": "13 assistant-judged incorrect of 56"
+    },
+    {
+      "name": "Frozen retrieval CI regression",
+      "status": "must_run_locally",
+      "actual": "Previously frozen metrics; this preflight does not rerun CI"
+    },
+    {
+      "name": "Held-out TEST generation evaluation",
+      "status": "not_run_by_this_workflow",
+      "actual": "Freeze final policy and protocol before first held-out evaluation"
+    }
+  ],
+  "interpretation": "Research prototype may be published with explicit limitations and independently reproducible frozen retrieval metrics; validated-accuracy or production readiness must not be claimed.",
+  "next_actions": [
+    "Run original frozen retrieval regression and full unit-test suite locally.",
+    "Obtain independent adjudication of generated claims and citations (ideally all 56; prioritize 6 negatives and known failures).",
+    "Choose and freeze a single generation/abstention policy before touching TEST.",
+    "Conduct held-out TEST evaluation once and transparently report unsupported negative answers, missing generations and citation support."
+  ]
+}

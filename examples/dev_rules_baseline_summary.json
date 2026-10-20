@@ -1,0 +1,27 @@
+{
+  "schema": "dev_rules_replay_summary_v0.1",
+  "source_report_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "mode": "rules",
+  "stage": "answer",
+  "shadow_only": true,
+  "summary": {
+    "questions": 60,
+    "answerable": 54,
+    "negative": 6,
+    "negative_false_answers_before": 5,
+    "negative_false_answers_after_shadow_gate": 2,
+    "negative_false_answer_rate_before": 0.833333,
+    "negative_false_answer_rate_after_shadow_gate": 0.333333,
+    "answerable_answers_before": 51,
+    "answerable_answers_after_shadow_gate": 51,
+    "answerable_answer_rate_before": 0.944444,
+    "answerable_answer_rate_after_shadow_gate": 0.944444,
+    "newly_blocked_answerable": 0,
+    "newly_blocked_negative": 3,
+    "verifier_errors": 0,
+    "uncertain_verdicts": 0,
+    "original_generation_errors_unchanged": 3,
+    "factually_correct_answers_verified": false
+  },
+  "note": "Historical replay of uploaded 60-question DEV report; not a deployed gate or measured semantic correctness."
+}

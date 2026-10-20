@@ -1,0 +1,1512 @@
+{
+  "schema": "groundtruth_evidence_only_v0.5",
+  "shadow_only": true,
+  "selection_is_not_truth_or_abstention": true,
+  "input_sha256": "5a04e6d3bed733e7a3e9ef2f82f3adbe82cf0b6296f02f5445862a79420a46f7",
+  "run_fingerprint": "6c1f402319cc5b259d669c195c6542eeaa755341c687386e763688d43420f4e3",
+  "split": "dev",
+  "config": {
+    "top_k": 4,
+    "max_snippets": 6,
+    "per_source": 2,
+    "max_chars": 450,
+    "question_ids": [
+      "k8s-001",
+      "k8s-012",
+      "k8s-018",
+      "k8s-020",
+      "k8s-024",
+      "k8s-054",
+      "k8s-060",
+      "k8s-066",
+      "k8s-073",
+      "k8s-078"
+    ]
+  },
+  "summary": {
+    "questions": 10,
+    "with_saved_retrieval_evidence": 10,
+    "missing_saved_retrieval_evidence": 0,
+    "candidate_quotes": 60,
+    "automatically_supported_answers": null,
+    "human_adjudication_complete": false
+  },
+  "per_question": [
+    {
+      "question_id": "k8s-001",
+      "question": "What is a PersistentVolume in Kubernetes?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "section_id": "stor-003-sec-002",
+          "heading_path": [
+            "Persistent Volumes",
+            "Introduction"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "Managing storage is a distinct problem from managing compute instances.\nThe PersistentVolume subsystem provides an API for users and administrators\nthat abstracts details of how storage is provided from how it is consumed.\nTo do this, we introduce two new API resources: PersistentVolume and PersistentVolumeClaim.",
+          "source_start": 17,
+          "source_end": 331,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "persistent",
+            "volume"
+          ],
+          "lexical_score": 3.03093,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "stor-003-sec-002-ch-001",
+          "section_id": "stor-003-sec-002",
+          "heading_path": [
+            "Persistent Volumes",
+            "Introduction"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "A *PersistentVolume* (PV) is a piece of storage in the cluster that has been\nprovisioned by an administrator or dynamically provisioned using\n[Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/).",
+          "source_start": 333,
+          "source_end": 555,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "persistent",
+            "volume"
+          ],
+          "lexical_score": 3.03093,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "stor-002-sec-036-ch-001",
+          "section_id": "stor-002-sec-036",
+          "heading_path": [
+            "Volumes",
+            "Types of volumes",
+            "persistentVolumeClaim"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "quote": "A `persistentVolumeClaim` volume is used to mount a\n[PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) into a Pod. PersistentVolumeClaims\nare a way for users to \"claim\" durable storage (such as an iSCSI volume)\nwithout knowing the details of the particular cloud environment.",
+          "source_start": 27,
+          "source_end": 335,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "persistent",
+            "volume"
+          ],
+          "lexical_score": 2.92093,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "stor-003-sec-017-ch-001",
+          "section_id": "stor-003-sec-017",
+          "heading_path": [
+            "Persistent Volumes",
+            "Lifecycle of a volume and claim",
+            "Reserving a PersistentVolume"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "The control plane can [bind PersistentVolumeClaims to matching PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#binding)\nin the cluster. However, if you want a PVC to bind to a specific PV, you need to pre-bind them.",
+          "source_start": 34,
+          "source_end": 284,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "persistent",
+            "volume"
+          ],
+          "lexical_score": 2.88426,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "stor-003-sec-017-ch-001",
+          "section_id": "stor-003-sec-017",
+          "heading_path": [
+            "Persistent Volumes",
+            "Lifecycle of a volume and claim",
+            "Reserving a PersistentVolume"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "By specifying a PersistentVolume in a PersistentVolumeClaim, you declare a binding\nbetween that specific PV and PVC. If the PersistentVolume exists and has not reserved\nPersistentVolumeClaims through its `claimRef` field, then the PersistentVolume and\nPersistentVolumeClaim will be bound.",
+          "source_start": 286,
+          "source_end": 574,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "persistent",
+            "volume"
+          ],
+          "lexical_score": 2.88426,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C4",
+          "retrieval_rank": 4,
+          "chunk_id": "stor-003-sec-026-ch-001",
+          "section_id": "stor-003-sec-026",
+          "heading_path": [
+            "Persistent Volumes",
+            "Persistent Volumes"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "Each PV contains a spec and status, which is the specification and status of the volume.\nThe name of a PersistentVolume object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",
+          "source_start": 23,
+          "source_end": 281,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "persistent",
+            "volume"
+          ],
+          "lexical_score": 2.86593,
+          "evidence_id": "E6"
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-012",
+      "question": "Which Kubernetes VolumeSnapshot field automatically replicates snapshot data to every availability zone before a restore?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C4",
+          "retrieval_rank": 4,
+          "chunk_id": "stor-003-sec-068-ch-001",
+          "section_id": "stor-003-sec-068",
+          "heading_path": [
+            "Persistent Volumes",
+            "Volume populators and data sources"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "[Volume cloning](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-cloning) and\n[snapshot restore](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-snapshot-and-restore-volume-from-snapshot-support) pre-populate\na new volume from a built-in *data source*.",
+          "source_start": 39,
+          "source_end": 337,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "data",
+            "restore",
+            "snapshot",
+            "volume"
+          ],
+          "lexical_score": 6.85994,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "stor-008-sec-014-ch-001",
+          "section_id": "stor-008-sec-014",
+          "heading_path": [
+            "Volume Snapshots",
+            "Provisioning Volumes from Snapshots"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+          "quote": "For more details, see\n[Volume Snapshot and Restore Volume from Snapshot](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-snapshot-and-restore-volume-from-snapshot-support).",
+          "source_start": 185,
+          "source_end": 380,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "restore",
+            "snapshot",
+            "volume"
+          ],
+          "lexical_score": 5.28349,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "stor-008-sec-014-ch-001",
+          "section_id": "stor-008-sec-014",
+          "heading_path": [
+            "Volume Snapshots",
+            "Provisioning Volumes from Snapshots"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+          "quote": "You can provision a new volume, pre-populated with data from a snapshot, by using\nthe *dataSource* field in the `PersistentVolumeClaim` object.",
+          "source_start": 40,
+          "source_end": 183,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "data",
+            "snapshot",
+            "volume"
+          ],
+          "lexical_score": 4.59034,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "stor-008-sec-010-ch-001",
+          "section_id": "stor-008-sec-010",
+          "heading_path": [
+            "Volume Snapshots",
+            "VolumeSnapshots"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+          "quote": "`persistentVolumeClaimName` is the name of the PersistentVolumeClaim data source\nfor the snapshot. This field is required for dynamically provisioning a snapshot.",
+          "source_start": 286,
+          "source_end": 448,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "data",
+            "snapshot",
+            "volume"
+          ],
+          "lexical_score": 4.44368,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "stor-008-sec-002-ch-001",
+          "section_id": "stor-008-sec-002",
+          "heading_path": [
+            "Volume Snapshots",
+            "Introduction"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volume-snapshots/",
+          "quote": "Volume snapshots provide Kubernetes users with a standardized way to copy a volume's\ncontents at a particular point in time without creating an entirely new volume. This\nfunctionality enables, for example, database administrators to backup databases before\nperforming edit or delete modifications.",
+          "source_start": 890,
+          "source_end": 1187,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "before",
+            "volume"
+          ],
+          "lexical_score": 4.31069,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C4",
+          "retrieval_rank": 4,
+          "chunk_id": "stor-003-sec-068-ch-001",
+          "section_id": "stor-003-sec-068",
+          "heading_path": [
+            "Persistent Volumes",
+            "Volume populators and data sources"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "*Volume populators* extend this mechanism so that\na PersistentVolumeClaim can be pre-populated from other kinds of source (a custom resource),\nreferenced through its `dataSourceRef` field:",
+          "source_start": 338,
+          "source_end": 526,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "data",
+            "volume"
+          ],
+          "lexical_score": 3.15708,
+          "evidence_id": "E6"
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-018",
+      "question": "How can a NetworkPolicy select every namespace that was created after a particular date without adding any labels to those namespaces?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "net-006-sec-018-ch-001",
+          "section_id": "net-006-sec-018",
+          "heading_path": [
+            "Network Policies",
+            "Targeting multiple namespaces by label"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+          "quote": "In this scenario, your `Egress` NetworkPolicy targets more than one namespace using their\nlabel names. For this to work, you need to label the target namespaces. For example:",
+          "source_start": 43,
+          "source_end": 217,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "namespace",
+            "namespaces",
+            "network",
+            "policy"
+          ],
+          "lexical_score": 6.44562,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "net-006-sec-018-ch-001",
+          "section_id": "net-006-sec-018",
+          "heading_path": [
+            "Network Policies",
+            "Targeting multiple namespaces by label"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+          "quote": "Add the labels under `namespaceSelector` in your NetworkPolicy document. For example:",
+          "source_start": 335,
+          "source_end": 420,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "labels",
+            "namespace",
+            "network",
+            "policy"
+          ],
+          "lexical_score": 6.44562,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C4",
+          "retrieval_rank": 4,
+          "chunk_id": "sched-003-sec-020-ch-001",
+          "section_id": "sched-003-sec-020",
+          "heading_path": [
+            "Assigning Pods to Nodes",
+            "Affinity and anti-affinity",
+            "Inter-pod affinity and anti-affinity",
+            "Namespace Selector"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+          "quote": "You can also select matching namespaces using `namespaceSelector`, which is a label query over the set of namespaces.\nThe affinity term is applied to namespaces selected by both `namespaceSelector` and the `namespaces` field.\nNote that an empty `namespaceSelector` ({}) matches all namespaces, while a null or empty `namespaces` list and\nnull `namespaceSelector` matches the namespace of the Pod where the rule is defined.",
+          "source_start": 25,
+          "source_end": 447,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "namespace",
+            "namespaces",
+            "select"
+          ],
+          "lexical_score": 5.68609,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "sec-006-sec-018-ch-001",
+          "section_id": "sec-006-sec-018",
+          "heading_path": [
+            "Role Based Access Control Good Practices",
+            "Kubernetes RBAC - privilege escalation risks",
+            "Namespace modification"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/rbac-good-practices/",
+          "quote": "For clusters where NetworkPolicy is used, users may be set labels that indirectly allow\naccess to services that an administrator did not intend to allow.",
+          "source_start": 356,
+          "source_end": 509,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "labels",
+            "network",
+            "policy"
+          ],
+          "lexical_score": 5.1936,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "net-006-sec-020-ch-001",
+          "section_id": "net-006-sec-020",
+          "heading_path": [
+            "Network Policies",
+            "Targeting a Namespace by its name"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+          "quote": "While NetworkPolicy cannot target a namespace by its name with some object field, you can use the\nstandardized label to target a specific namespace.",
+          "source_start": 187,
+          "source_end": 335,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "namespace",
+            "network",
+            "policy"
+          ],
+          "lexical_score": 4.41933,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "sec-006-sec-018-ch-001",
+          "section_id": "sec-006-sec-018",
+          "heading_path": [
+            "Role Based Access Control Good Practices",
+            "Kubernetes RBAC - privilege escalation risks",
+            "Namespace modification"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/rbac-good-practices/",
+          "quote": "For clusters using Dynamic Resource Allocation, labeling a namespace with\n`resource.kubernetes.io/admin-access: \"true\"` allows any user who can create ResourceClaims in that namespace\nto request admin access to devices already allocated to any other claim in any namespace.",
+          "source_start": 510,
+          "source_end": 783,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "any",
+            "namespace"
+          ],
+          "lexical_score": 3.78813,
+          "evidence_id": "E6"
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-020",
+      "question": "How should replica counts be managed differently when a Deployment is controlled by a HorizontalPodAutoscaler versus when you manually scale a ReplicaSet?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "work-009-sec-032-ch-001",
+          "section_id": "work-009-sec-032",
+          "heading_path": [
+            "Deployments",
+            "Writing a Deployment Spec",
+            "Replicas"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+          "quote": "Should you manually scale a Deployment, example via `kubectl scale deployment deployment --replicas=X`, and then you update that Deployment based on a manifest\n(for example: by running `kubectl apply -f deployment.yaml`),\nthen applying that manifest overwrites the manual scaling that you previously did.",
+          "source_start": 114,
+          "source_end": 418,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "deployment",
+            "manually",
+            "scale"
+          ],
+          "lexical_score": 7.76063,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "work-009-sec-032-ch-001",
+          "section_id": "work-009-sec-032",
+          "heading_path": [
+            "Deployments",
+            "Writing a Deployment Spec",
+            "Replicas"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+          "quote": "If a [HorizontalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/) (or any\nsimilar API for horizontal scaling) is managing scaling for a Deployment, don't set `.spec.replicas`.",
+          "source_start": 420,
+          "source_end": 645,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "autoscaler",
+            "deployment",
+            "horizontal"
+          ],
+          "lexical_score": 7.76063,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "work-011-sec-039-ch-001",
+          "section_id": "work-011-sec-039",
+          "heading_path": [
+            "StatefulSets",
+            "PersistentVolumeClaim retention",
+            "Replicas"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+          "quote": "Should you manually scale a StatefulSet, via `kubectl scale statefulset statefulset --replicas=X`, and then you update that StatefulSet\nbased on a manifest (for example: by running `kubectl apply -f statefulset.yaml`), then applying that manifest overwrites the manual scaling\nthat you previously did.",
+          "source_start": 114,
+          "source_end": 415,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "manually",
+            "scale"
+          ],
+          "lexical_score": 5.00453,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "work-011-sec-039-ch-001",
+          "section_id": "work-011-sec-039",
+          "heading_path": [
+            "StatefulSets",
+            "PersistentVolumeClaim retention",
+            "Replicas"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+          "quote": "If a [HorizontalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/)\n(or any similar API for horizontal scaling) is managing scaling for a\nStatefulset, don't set `.spec.replicas`. Instead, allow the Kubernetes\n[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane) to manage\nthe `.spec.replicas` field automatically.",
+          "source_start": 417,
+          "source_end": 817,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "autoscaler",
+            "horizontal"
+          ],
+          "lexical_score": 5.00453,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "work-010-sec-020-ch-001",
+          "section_id": "work-010-sec-020",
+          "heading_path": [
+            "ReplicaSet",
+            "Working with ReplicaSets",
+            "ReplicaSet as a Horizontal Pod Autoscaler Target"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
+          "quote": "A ReplicaSet can also be a target for\n[Horizontal Pod Autoscalers (HPA)](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). That is,\na ReplicaSet can be auto-scaled by an HPA. Here is an example HPA targeting\nthe ReplicaSet we created in the previous example.",
+          "source_start": 54,
+          "source_end": 339,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "horizontal",
+            "replica"
+          ],
+          "lexical_score": 4.53037,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C4",
+          "retrieval_rank": 4,
+          "chunk_id": "work-010-sec-016-ch-001",
+          "section_id": "work-010-sec-016",
+          "heading_path": [
+            "ReplicaSet",
+            "Working with ReplicaSets",
+            "Scaling a ReplicaSet"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
+          "quote": "1. Pending (and unschedulable) pods are scaled down first\n2. If controller.kubernetes.io/pod-deletion-cost annotation is set, then the pod with the lower value will come first.\n3. Pods on nodes with more replicas come before pods on nodes with fewer replicas.\n4. If the pods' creation times differ, the pod that was created more recently comes before the older pod (the creation times are bucketed on an integer log scale).",
+          "source_start": 424,
+          "source_end": 847,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "scale"
+          ],
+          "lexical_score": 2.37676,
+          "evidence_id": "E6"
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-024",
+      "question": "Which ResourceQuota field lets a namespace reserve a fixed percentage of total cluster CPU and automatically increases that namespace's quota whenever new nodes are added?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "sec-009-sec-017-ch-001",
+          "section_id": "sec-009-sec-017",
+          "heading_path": [
+            "Resource Quotas",
+            "Quota and Cluster Capacity"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+          "quote": "- Proportionally divide total cluster resources among several teams.\n- Allow each tenant to grow resource usage as needed, but have a generous limit to prevent accidental resource exhaustion.\n- Detect demand from one namespace, add nodes, and increase quota.",
+          "source_start": 311,
+          "source_end": 569,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "namespace",
+            "nodes",
+            "quota",
+            "resource",
+            "total"
+          ],
+          "lexical_score": 11.34496,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "sec-009-sec-004-ch-001",
+          "section_id": "sec-009-sec-004",
+          "heading_path": [
+            "Resource Quotas",
+            "How Kubernetes ResourceQuotas work",
+            "Note:"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+          "quote": "If you enforce a resource quota in a namespace for either cpu or memory , you and other clients, must specify either requests or limits for that resource, for every new Pod you submit.",
+          "source_start": 914,
+          "source_end": 1098,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "cpu",
+            "namespace",
+            "new",
+            "quota",
+            "resource"
+          ],
+          "lexical_score": 11.19829,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "sec-009-sec-017-ch-001",
+          "section_id": "sec-009-sec-017",
+          "heading_path": [
+            "Resource Quotas",
+            "Quota and Cluster Capacity"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+          "quote": "ResourceQuotas are independent of the cluster capacity. They are\nexpressed in absolute units. So, if you add nodes to your cluster, this does *not*\nautomatically give each namespace the ability to consume more resources.",
+          "source_start": 31,
+          "source_end": 251,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "automatically",
+            "namespace",
+            "nodes",
+            "resource"
+          ],
+          "lexical_score": 9.98205,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "sec-009-sec-004-ch-001",
+          "section_id": "sec-009-sec-004",
+          "heading_path": [
+            "Resource Quotas",
+            "How Kubernetes ResourceQuotas work",
+            "Note:"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+          "quote": "- For cpu and memory resources, ResourceQuotas enforce that every (new) pod in that namespace sets a limit for that resource.",
+          "source_start": 788,
+          "source_end": 913,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "cpu",
+            "namespace",
+            "new",
+            "resource"
+          ],
+          "lexical_score": 9.14224,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C4",
+          "retrieval_rank": 4,
+          "chunk_id": "conf-004-sec-040-ch-003",
+          "section_id": "conf-004-sec-040",
+          "heading_path": [
+            "Resource Management for Pods and Containers",
+            "Troubleshooting",
+            "My Pods are pending with event message `FailedScheduling`"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "quote": "You can configure [resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)\nto limit the total amount of resources that a namespace can consume.\nKubernetes enforces quotas for objects in particular namespace when there is a\nResourceQuota in that namespace.\nFor example, if you assign specific namespaces to differ [TRUNCATED EXCERPT]",
+          "source_start": 1166,
+          "source_end": 1520,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "namespace",
+            "quota",
+            "resource",
+            "total"
+          ],
+          "lexical_score": 8.43076,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "sec-009-sec-004-ch-002",
+          "section_id": "sec-009-sec-004",
+          "heading_path": [
+            "Resource Quotas",
+            "How Kubernetes ResourceQuotas work",
+            "Note:"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+          "quote": "GiB and 10 cores, let B use 10GiB and 4 cores, and hold 2GiB and 2 cores in reserve for future allocation.\n- Limit the \"testing\" namespace to using 1 core and 1GiB RAM. Let the \"production\" namespace use any amount.",
+          "source_start": 0,
+          "source_end": 215,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "namespace",
+            "reserve"
+          ],
+          "lexical_score": 4.97979,
+          "evidence_id": "E6"
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-054",
+      "question": "Which PersistentVolumeClaim field tells Kubernetes to automatically convert an existing `Filesystem` PersistentVolume into raw `Block` mode when the requested `volumeMode` does not match?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "stor-003-sec-059-ch-001",
+          "section_id": "stor-003-sec-059",
+          "heading_path": [
+            "Persistent Volumes",
+            "Raw Block Volume Support",
+            "PersistentVolumeClaim requesting a Raw Block Volume"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "### PersistentVolumeClaim requesting a Raw Block Volume\n\n```yaml\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: block-pvc\nspec:\n  accessModes:\n    - ReadWriteOnce\n  volumeMode: Block\n  resources:\n    requests:\n      storage: 10Gi\n```",
+          "source_start": 0,
+          "source_end": 247,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "block",
+            "claim",
+            "mode",
+            "persistent",
+            "raw",
+            "volume"
+          ],
+          "lexical_score": 10.13481,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "stor-003-sec-029-ch-001",
+          "section_id": "stor-003-sec-029",
+          "heading_path": [
+            "Persistent Volumes",
+            "Persistent Volumes",
+            "Volume Mode"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "See [Raw Block Volume Support](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#raw-block-volume-support)\nfor an example on how to use a volume with `volumeMode: Block` in a Pod.",
+          "source_start": 873,
+          "source_end": 1066,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "block",
+            "mode",
+            "persistent",
+            "raw",
+            "volume"
+          ],
+          "lexical_score": 8.06615,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "stor-003-sec-029-ch-001",
+          "section_id": "stor-003-sec-029",
+          "heading_path": [
+            "Persistent Volumes",
+            "Persistent Volumes",
+            "Volume Mode"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "You can set the value of `volumeMode` to `Block` to use a volume as a raw block device.",
+          "source_start": 459,
+          "source_end": 546,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "block",
+            "mode",
+            "raw",
+            "volume"
+          ],
+          "lexical_score": 6.44711,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "stor-002-sec-036-ch-001",
+          "section_id": "stor-002-sec-036",
+          "heading_path": [
+            "Volumes",
+            "Types of volumes",
+            "persistentVolumeClaim"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "quote": "A `persistentVolumeClaim` volume is used to mount a\n[PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) into a Pod. PersistentVolumeClaims\nare a way for users to \"claim\" durable storage (such as an iSCSI volume)\nwithout knowing the details of the particular cloud environment.",
+          "source_start": 27,
+          "source_end": 335,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "claim",
+            "persistent",
+            "volume"
+          ],
+          "lexical_score": 5.03808,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C4",
+          "retrieval_rank": 4,
+          "chunk_id": "stor-003-sec-042-ch-001",
+          "section_id": "stor-003-sec-042",
+          "heading_path": [
+            "Persistent Volumes",
+            "PersistentVolumeClaims"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+          "quote": "Each PVC contains a spec and status, which is the specification and status of the claim.\nThe name of a PersistentVolumeClaim object must be a valid\n[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",
+          "source_start": 27,
+          "source_end": 290,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "claim",
+            "persistent",
+            "volume"
+          ],
+          "lexical_score": 5.01975,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "stor-002-sec-036-ch-001",
+          "section_id": "stor-002-sec-036",
+          "heading_path": [
+            "Volumes",
+            "Types of volumes",
+            "persistentVolumeClaim"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "quote": "See the information about [PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) for more\ndetails.",
+          "source_start": 337,
+          "source_end": 465,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "persistent"
+          ],
+          "lexical_score": 1.69237,
+          "evidence_id": "E6"
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-060",
+      "question": "Which Kubernetes setting retroactively injects Service environment variables into Pods that were already running before the Service was created?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "net-002-sec-043-ch-001",
+          "section_id": "net-002-sec-043",
+          "heading_path": [
+            "Service",
+            "Discovering services",
+            "Environment variables",
+            "Note:"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+          "quote": "When you have a Pod that needs to access a Service, and you are using\nthe environment variable method to publish the port and cluster IP to the client\nPods, you must create the Service *before* the client Pods come into existence.\nOtherwise, those client Pods won't have their environment variables populated.",
+          "source_start": 12,
+          "source_end": 321,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "before",
+            "environment",
+            "service",
+            "variables"
+          ],
+          "lexical_score": 9.20224,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "net-002-sec-042-ch-001",
+          "section_id": "net-002-sec-042",
+          "heading_path": [
+            "Service",
+            "Discovering services",
+            "Environment variables"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+          "quote": "When a Pod is run on a Node, the kubelet adds a set of environment variables\nfor each active Service. It adds `{SVCNAME}_SERVICE_HOST` and `{SVCNAME}_SERVICE_PORT` variables,\nwhere the Service name is upper-cased and dashes are converted to underscores.",
+          "source_start": 27,
+          "source_end": 280,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "environment",
+            "service",
+            "variables"
+          ],
+          "lexical_score": 5.89501,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "net-002-sec-042-ch-001",
+          "section_id": "net-002-sec-042",
+          "heading_path": [
+            "Service",
+            "Discovering services",
+            "Environment variables"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+          "quote": "For example, the Service `redis-primary` which exposes TCP port 6379 and has been\nallocated cluster IP address 10.0.0.11, produces the following environment\nvariables:",
+          "source_start": 282,
+          "source_end": 449,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "environment",
+            "service",
+            "variables"
+          ],
+          "lexical_score": 5.89501,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "conf-002-sec-012-ch-001",
+          "section_id": "conf-002-sec-012",
+          "heading_path": [
+            "ConfigMaps",
+            "Using ConfigMaps",
+            "Using Configmaps as environment variables"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/configuration/configmap/",
+          "quote": "1. For each container in your Pod specification, add an environment variable for each Configmap key that you want to use to the env[].valueFrom.configMapKeyRef field.\n2. Modify your image and/or command line so that the program looks for values in the specified environment variables.",
+          "source_start": 177,
+          "source_end": 461,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "environment",
+            "variables"
+          ],
+          "lexical_score": 3.57741,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "conf-002-sec-012-ch-001",
+          "section_id": "conf-002-sec-012",
+          "heading_path": [
+            "ConfigMaps",
+            "Using ConfigMaps",
+            "Using Configmaps as environment variables"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/configuration/configmap/",
+          "quote": "The following Pod consumes the content of the ConfigMap as environment variables:",
+          "source_start": 859,
+          "source_end": 940,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "environment",
+            "variables"
+          ],
+          "lexical_score": 3.57741,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C4",
+          "retrieval_rank": 4,
+          "chunk_id": "work-002-sec-012-ch-001",
+          "section_id": "work-002-sec-012",
+          "heading_path": [
+            "Pods",
+            "Pod update and replacement"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/",
+          "quote": "Kubernetes doesn't prevent you from managing Pods directly. It is possible to\nupdate some fields of a running Pod, in place. However, Pod update operations\nlike\n[`patch`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#patch-pod-v1-core), and\n[`replace`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#replace-pod-v1-core)\nhave some limitations:",
+          "source_start": 241,
+          "source_end": 629,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "running"
+          ],
+          "lexical_score": 3.25222,
+          "evidence_id": "E6"
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-066",
+      "question": "Which ServiceAccount field automatically grants that account read access to every Secret in every namespace without creating any RBAC role or binding?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "sec-004-sec-003-ch-001",
+          "section_id": "sec-004-sec-003",
+          "heading_path": [
+            "Service Accounts",
+            "What are service accounts?",
+            "Default service accounts"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/service-accounts/",
+          "quote": "The `default`\nservice accounts in each namespace get no permissions by default other than the\n[default API discovery permissions](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#default-roles-and-role-bindings)\nthat Kubernetes grants to all authenticated principals if role-based access control (RBAC) is enabled.",
+          "source_start": 167,
+          "source_end": 494,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "access",
+            "grants",
+            "namespace",
+            "rbac",
+            "role",
+            "service"
+          ],
+          "lexical_score": 12.59792,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "sec-004-sec-007-ch-001",
+          "section_id": "sec-004-sec-007",
+          "heading_path": [
+            "Service Accounts",
+            "How to use service accounts",
+            "Grant permissions to a ServiceAccount",
+            "Cross-namespace access using a ServiceAccount"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/service-accounts/",
+          "quote": "Then,\nyou'd create a RoleBinding object in the `maintenance` namespace to bind the\nRole to the ServiceAccount object.",
+          "source_start": 432,
+          "source_end": 549,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "account",
+            "binding",
+            "namespace",
+            "role",
+            "service"
+          ],
+          "lexical_score": 9.91467,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "sec-004-sec-006-ch-001",
+          "section_id": "sec-004-sec-006",
+          "heading_path": [
+            "Service Accounts",
+            "How to use service accounts",
+            "Grant permissions to a ServiceAccount"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/service-accounts/",
+          "quote": "You create a *role*, which grants access, and then *bind* the role to your\nServiceAccount.",
+          "source_start": 254,
+          "source_end": 344,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "access",
+            "account",
+            "grants",
+            "role",
+            "service"
+          ],
+          "lexical_score": 9.89998,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "sec-004-sec-006-ch-001",
+          "section_id": "sec-004-sec-006",
+          "heading_path": [
+            "Service Accounts",
+            "How to use service accounts",
+            "Grant permissions to a ServiceAccount"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/service-accounts/",
+          "quote": "You can use the built-in Kubernetes\n[role-based access control (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)\nmechanism to grant the minimum permissions required by each service account.",
+          "source_start": 43,
+          "source_end": 253,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "access",
+            "account",
+            "rbac",
+            "role",
+            "service"
+          ],
+          "lexical_score": 9.49452,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "sec-004-sec-003-ch-001",
+          "section_id": "sec-004-sec-003",
+          "heading_path": [
+            "Service Accounts",
+            "What are service accounts?",
+            "Default service accounts"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/service-accounts/",
+          "quote": "When you create a cluster, Kubernetes automatically creates a ServiceAccount\nobject named `default` for every namespace in your cluster.",
+          "source_start": 30,
+          "source_end": 166,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "account",
+            "automatically",
+            "namespace",
+            "service"
+          ],
+          "lexical_score": 7.46872,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "sec-004-sec-007-ch-001",
+          "section_id": "sec-004-sec-007",
+          "heading_path": [
+            "Service Accounts",
+            "How to use service accounts",
+            "Grant permissions to a ServiceAccount",
+            "Cross-namespace access using a ServiceAccount"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/service-accounts/",
+          "quote": "You can use RBAC to allow service accounts in one namespace to perform actions\non resources in a different namespace in the cluster.",
+          "source_start": 52,
+          "source_end": 184,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "namespace",
+            "rbac",
+            "service"
+          ],
+          "lexical_score": 5.25895,
+          "evidence_id": "E6"
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-073",
+      "question": "How does the API server's TLS server certificate protect an API connection differently from a Kubernetes client certificate issued through the CSR API?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "arch-003-sec-004-ch-001",
+          "section_id": "arch-003-sec-004",
+          "heading_path": [
+            "Communication between Nodes and the Control Plane",
+            "Control plane to node",
+            "API server to kubelet"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/",
+          "quote": "These connections terminate at the kubelet's HTTPS endpoint. By default, the API server does not\nverify the kubelet's serving certificate, which makes the connection subject to man-in-the-middle\nattacks and **unsafe** to run over untrusted and/or public networks.",
+          "source_start": 233,
+          "source_end": 496,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "api",
+            "certificate",
+            "connection",
+            "server"
+          ],
+          "lexical_score": 7.78706,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "arch-003-sec-004-ch-001",
+          "section_id": "arch-003-sec-004",
+          "heading_path": [
+            "Communication between Nodes and the Control Plane",
+            "Control plane to node",
+            "API server to kubelet"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/",
+          "quote": "To verify this connection, use the `--kubelet-certificate-authority` flag to provide the API\nserver with a root certificate bundle to use to verify the kubelet's serving certificate.",
+          "source_start": 498,
+          "source_end": 680,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "api",
+            "certificate",
+            "connection",
+            "server"
+          ],
+          "lexical_score": 7.78706,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "sec-006-sec-015-ch-001",
+          "section_id": "sec-006-sec-015",
+          "heading_path": [
+            "Role Based Access Control Good Practices",
+            "Kubernetes RBAC - privilege escalation risks",
+            "CSRs and certificate issuing"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/rbac-good-practices/",
+          "quote": "The CSR API allows for users with `create` rights to CSRs and `update` rights on `certificatesigningrequests/approval`\nwhere the signer is `kubernetes.io/kube-apiserver-client` to create new client certificates\nwhich allow users to authenticate to the cluster. Those client certificates can have arbitrary\nnames including duplicates of Kubernetes system components. This will effectively allow for privilege escalation.",
+          "source_start": 34,
+          "source_end": 453,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "api",
+            "client",
+            "csr"
+          ],
+          "lexical_score": 7.39909,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "sec-005-sec-002-ch-001",
+          "section_id": "sec-005-sec-002",
+          "heading_path": [
+            "Controlling Access to the Kubernetes API",
+            "Transport security"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/controlling-access/",
+          "quote": "The API server presents a certificate. This certificate may be signed using\na private certificate authority (CA), or based on a public key infrastructure linked\nto a generally recognized CA. The certificate and corresponding private key can be set\nby using the `--tls-cert-file` and `--tls-private-key-file` flags.",
+          "source_start": 330,
+          "source_end": 644,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "api",
+            "certificate",
+            "server",
+            "tls"
+          ],
+          "lexical_score": 7.12279,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "sec-005-sec-002-ch-001",
+          "section_id": "sec-005-sec-002",
+          "heading_path": [
+            "Controlling Access to the Kubernetes API",
+            "Transport security"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/security/controlling-access/",
+          "quote": "If your cluster uses a private certificate authority, you need a copy of that CA\ncertificate configured into your `~/.kube/config` on the client, so that you can\ntrust the connection and be confident it was not intercepted.",
+          "source_start": 646,
+          "source_end": 869,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "certificate",
+            "client",
+            "connection"
+          ],
+          "lexical_score": 7.03909,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C4",
+          "retrieval_rank": 4,
+          "chunk_id": "conf-003-sec-019-ch-001",
+          "section_id": "conf-003-sec-019",
+          "heading_path": [
+            "Secrets",
+            "Types of Secret",
+            "TLS Secrets"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/configuration/secret/",
+          "quote": "When using this type of Secret, the `tls.key` and the `tls.crt` key must be provided\nin the `data` (or `stringData`) field of the Secret configuration, although the API\nserver doesn't actually validate the values for each key.",
+          "source_start": 367,
+          "source_end": 593,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "api",
+            "server",
+            "tls"
+          ],
+          "lexical_score": 5.14686,
+          "evidence_id": "E6"
+        }
+      ]
+    },
+    {
+      "question_id": "k8s-078",
+      "question": "How does resizing CPU or memory for a running container differ from resizing the `sizeLimit` of a memory-backed `emptyDir`, particularly in feature-gate requirements and what is being changed?",
+      "evidence_status": "evidence_available",
+      "selected": [
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "conf-004-sec-023-ch-001",
+          "section_id": "conf-004-sec-023",
+          "heading_path": [
+            "Resource Management for Pods and Containers",
+            "How Kubernetes applies resource requests and limits",
+            "Considerations for memory backed `emptyDir` volumes",
+            "Note:"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "quote": "When the `InPlacePodVerticalScalingMemoryBackedVolumes` feature gate is enabled, you can dynamically adjust the `sizeLimit` of a memory-backed (`medium: Memory`) `emptyDir` volume on a running Pod without requiring Pod recreation or container restarts.",
+          "source_start": 462,
+          "source_end": 714,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "backed",
+            "container",
+            "dir",
+            "empty",
+            "feature",
+            "gate",
+            "limit",
+            "memory",
+            "running",
+            "size"
+          ],
+          "lexical_score": 24.47225,
+          "evidence_id": "E1"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "stor-002-sec-015-ch-001",
+          "section_id": "stor-002-sec-015",
+          "heading_path": [
+            "Volumes",
+            "Types of volumes",
+            "emptyDir",
+            "emptyDir and in-place Pod resizing"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "quote": "When the `InPlacePodVerticalScalingMemoryBackedVolumes` feature gate is enabled, you can dynamically adjust the `sizeLimit` of memory-backed (`medium: Memory`) `emptyDir` volumes, without restarting the Pod or its containers.",
+          "source_start": 491,
+          "source_end": 716,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "backed",
+            "dir",
+            "empty",
+            "feature",
+            "gate",
+            "limit",
+            "memory",
+            "size"
+          ],
+          "lexical_score": 19.73894,
+          "evidence_id": "E2"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "work-003-sec-032-ch-001",
+          "section_id": "work-003-sec-032",
+          "heading_path": [
+            "Pod Lifecycle",
+            "Resizing Pods",
+            "In-place Pod resize"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/",
+          "quote": "- Only CPU and memory resources can be resized in-place.\n- The Pod's Quality of Service (QoS) class is determined at creation and cannot be changed by resizing.\n- You can configure whether a container restart is required for the resize using resizePolicy  [TRUNCATED EXCERPT]",
+          "source_start": 1245,
+          "source_end": 1520,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "changed",
+            "container",
+            "cpu",
+            "memory",
+            "resizing"
+          ],
+          "lexical_score": 11.57011,
+          "evidence_id": "E3"
+        },
+        {
+          "source_id": "C1",
+          "retrieval_rank": 1,
+          "chunk_id": "conf-004-sec-023-ch-001",
+          "section_id": "conf-004-sec-023",
+          "heading_path": [
+            "Resource Management for Pods and Containers",
+            "How Kubernetes applies resource requests and limits",
+            "Considerations for memory backed `emptyDir` volumes",
+            "Note:"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "quote": "For step-by-step instructions, see [Resize CPU and Memory Resources assigned to Containers](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#resizing-memory-backed-emptydir-volumes).",
+          "source_start": 715,
+          "source_end": 933,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "backed",
+            "container",
+            "cpu",
+            "memory",
+            "resizing"
+          ],
+          "lexical_score": 10.46402,
+          "evidence_id": "E4"
+        },
+        {
+          "source_id": "C2",
+          "retrieval_rank": 2,
+          "chunk_id": "stor-002-sec-015-ch-001",
+          "section_id": "stor-002-sec-015",
+          "heading_path": [
+            "Volumes",
+            "Types of volumes",
+            "emptyDir",
+            "emptyDir and in-place Pod resizing"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/storage/volumes/",
+          "quote": "For more details, see [Resize CPU and Memory Resources assigned to Containers](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#resizing-memory-backed-emptydir-volumes).",
+          "source_start": 718,
+          "source_end": 923,
+          "excerpt_truncated": false,
+          "lexical_overlap_terms": [
+            "backed",
+            "container",
+            "cpu",
+            "memory",
+            "resizing"
+          ],
+          "lexical_score": 10.35402,
+          "evidence_id": "E5"
+        },
+        {
+          "source_id": "C3",
+          "retrieval_rank": 3,
+          "chunk_id": "work-003-sec-032-ch-001",
+          "section_id": "work-003-sec-032",
+          "heading_path": [
+            "Pod Lifecycle",
+            "Resizing Pods",
+            "In-place Pod resize"
+          ],
+          "source_url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/",
+          "quote": "You can resize a Pod's container-level CPU and memory resources without recreating the Pod.\nThis is also called *in-place Pod vertical scaling*. This allows you to adjust resource\nallocation for running containers while potentially avoiding application disruption.",
+          "source_start": 25,
+          "source_end": 289,
+          "excerpt_truncated": true,
+          "lexical_overlap_terms": [
+            "container",
+            "cpu",
+            "memory",
+            "running"
+          ],
+          "lexical_score": 8.44188,
+          "evidence_id": "E6"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Quotes are selected by lexical overlap with the question, not semantic entailment.",
+    "No answerability prediction, assertion of truth or automatic abstention is made.",
+    "Original source text is from the SAVED generation report, not a refreshed document crawl.",
+    "Some saved source text is already truncated; quote offsets refer to the saved source.",
+    "No retrieved evidence for generation-error records means unavailable context, not an unanswerable question.",
+    "DEV only. Gold answerability labels and reference answers are excluded from extraction and blind reviewer files."
+  ]
+}

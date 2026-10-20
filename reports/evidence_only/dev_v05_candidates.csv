@@ -1,0 +1,1129 @@
+﻿question_id,evidence_id,source_id,retrieval_rank,chunk_id,section_id,heading_path,source_url,quote,source_start,source_end,excerpt_truncated,lexical_overlap_terms,lexical_score
+k8s-001,E1,C1,1,stor-003-sec-002-ch-001,stor-003-sec-002,Persistent Volumes > Introduction,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"Managing storage is a distinct problem from managing compute instances.
+The PersistentVolume subsystem provides an API for users and administrators
+that abstracts details of how storage is provided from how it is consumed.
+To do this, we introduce two new API resources: PersistentVolume and PersistentVolumeClaim.",17,331,True,persistent; volume,3.03093
+k8s-001,E2,C1,1,stor-003-sec-002-ch-001,stor-003-sec-002,Persistent Volumes > Introduction,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"A *PersistentVolume* (PV) is a piece of storage in the cluster that has been
+provisioned by an administrator or dynamically provisioned using
+[Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/).",333,555,True,persistent; volume,3.03093
+k8s-001,E3,C2,2,stor-002-sec-036-ch-001,stor-002-sec-036,Volumes > Types of volumes > persistentVolumeClaim,https://kubernetes.io/docs/concepts/storage/volumes/,"A `persistentVolumeClaim` volume is used to mount a
+[PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) into a Pod. PersistentVolumeClaims
+are a way for users to ""claim"" durable storage (such as an iSCSI volume)
+without knowing the details of the particular cloud environment.",27,335,False,persistent; volume,2.92093
+k8s-001,E4,C3,3,stor-003-sec-017-ch-001,stor-003-sec-017,Persistent Volumes > Lifecycle of a volume and claim > Reserving a PersistentVolume,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"The control plane can [bind PersistentVolumeClaims to matching PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#binding)
+in the cluster. However, if you want a PVC to bind to a specific PV, you need to pre-bind them.",34,284,True,persistent; volume,2.88426
+k8s-001,E5,C3,3,stor-003-sec-017-ch-001,stor-003-sec-017,Persistent Volumes > Lifecycle of a volume and claim > Reserving a PersistentVolume,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"By specifying a PersistentVolume in a PersistentVolumeClaim, you declare a binding
+between that specific PV and PVC. If the PersistentVolume exists and has not reserved
+PersistentVolumeClaims through its `claimRef` field, then the PersistentVolume and
+PersistentVolumeClaim will be bound.",286,574,True,persistent; volume,2.88426
+k8s-001,E6,C4,4,stor-003-sec-026-ch-001,stor-003-sec-026,Persistent Volumes > Persistent Volumes,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"Each PV contains a spec and status, which is the specification and status of the volume.
+The name of a PersistentVolume object must be a valid
+[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",23,281,False,persistent; volume,2.86593
+k8s-002,E1,C1,1,net-002-sec-018-ch-001,net-002-sec-018,Service > Service type,https://kubernetes.io/docs/concepts/services-networking/service/,"For some parts of your application (for example, frontends) you may want to expose a
+Service onto an external IP address, one that's accessible from outside of your
+cluster.",17,190,True,expose; outside; service,8.82927
+k8s-002,E2,C1,1,net-002-sec-018-ch-001,net-002-sec-018,Service > Service type,https://kubernetes.io/docs/concepts/services-networking/service/,"You can expose the Service to the public internet using an
+[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) or a
+[Gateway](https://gateway-api.sigs.k8s.io/).",638,822,True,expose; service,4.99605
+k8s-002,E3,C3,3,net-002-sec-002-ch-001,net-002-sec-002,Service > Services in Kubernetes,https://kubernetes.io/docs/concepts/services-networking/service/,"The Service API, part of Kubernetes, is an abstraction to help you expose groups of
+Pods over a network. Each Service object defines a logical set of endpoints (usually
+these endpoints are Pods) along with a policy about how to make those pods accessible.",27,282,True,expose; service,4.84939
+k8s-002,E4,C2,2,net-001-sec-002-ch-001,net-001-sec-002,"Services, Load Balancing, and Networking > The Kubernetes network model",https://kubernetes.io/docs/concepts/services-networking/,"On Windows, this rule does not apply to host-network pods.
+  - Agents on a node (such as system daemons, or kubelet) can communicate with all pods on that node.
+- The [Service](https://kubernetes.io/docs/concepts/services-networking/service/) API lets you provide a stable (long lived) IP address or hostname for a service implemented by one or more backend pods, where the individual pods making up the service can change over time.
+- Kubernetes",845,1291,True,service,1.74599
+k8s-002,E5,C2,2,net-001-sec-002-ch-001,net-001-sec-002,"Services, Load Balancing, and Networking > The Kubernetes network model",https://kubernetes.io/docs/concepts/services-networking/,"automatically manages [EndpointSlice](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/) objects to provide information about the pods currently backing a Service.
+  - A service proxy i [TRUNCATED EXCERPT]",1292,1520,True,service,1.74599
+k8s-002,E6,C3,3,net-002-sec-002-ch-001,net-002-sec-002,Service > Services in Kubernetes,https://kubernetes.io/docs/concepts/services-networking/service/,The Service abstraction enables this decoupling.,643,691,True,service,1.70932
+k8s-003,E1,C1,1,stor-002-sec-036-ch-001,stor-002-sec-036,Volumes > Types of volumes > persistentVolumeClaim,https://kubernetes.io/docs/concepts/storage/volumes/,"A `persistentVolumeClaim` volume is used to mount a
+[PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) into a Pod. PersistentVolumeClaims
+are a way for users to ""claim"" durable storage (such as an iSCSI volume)
+without knowing the details of the particular cloud environment.",27,335,False,claim; persistent; volume,5.05258
+k8s-003,E2,C2,2,stor-003-sec-065-ch-001,stor-003-sec-065,Persistent Volumes > Volume Snapshot and Restore Volume from Snapshot Support > Create a PersistentVolumeClaim from a Volume Snapshot,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"### Create a PersistentVolumeClaim from a Volume Snapshot
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: restore-pvc
+spec:
+  storageClassName: csi-hostpath-sc
+  dataSource:
+    name: new-snapshot-test
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+```",0,372,False,claim; persistent; volume,4.94258
+k8s-003,E3,C3,3,stor-003-sec-067-ch-001,stor-003-sec-067,Persistent Volumes > Volume Cloning > Create PersistentVolumeClaim from an existing PVC,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"### Create PersistentVolumeClaim from an existing PVC
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cloned-pvc
+spec:
+  storageClassName: my-csi-plugin
+  dataSource:
+    name: existing-src-pvc-name
+    kind: PersistentVolumeClaim
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+```",0,338,False,claim; persistent; volume,4.90591
+k8s-003,E4,C4,4,stor-003-sec-002-ch-001,stor-003-sec-002,Persistent Volumes > Introduction,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"Managing storage is a distinct problem from managing compute instances.
+The PersistentVolume subsystem provides an API for users and administrators
+that abstracts details of how storage is provided from how it is consumed.
+To do this, we introduce two new API resources: PersistentVolume and PersistentVolumeClaim.",17,331,True,claim; persistent; volume,4.88758
+k8s-003,E5,C4,4,stor-003-sec-002-ch-001,stor-003-sec-002,Persistent Volumes > Introduction,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,A *PersistentVolumeClaim* (PVC) is a request for storage by a user.,879,946,True,claim; persistent; volume,4.88758
+k8s-003,E6,C1,1,stor-002-sec-036-ch-001,stor-002-sec-036,Volumes > Types of volumes > persistentVolumeClaim,https://kubernetes.io/docs/concepts/storage/volumes/,"See the information about [PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) for more
+details.",337,465,False,persistent,1.62547
+k8s-005,E1,C1,1,net-002-sec-049-ch-001,net-002-sec-049,Service > External IPs,https://kubernetes.io/docs/concepts/services-networking/service/,"If there are external IPs that route to one or more cluster nodes, Kubernetes Services
+can be exposed on those `externalIPs`. When network traffic arrives into the cluster, with
+the external IP (as destination IP) and the port matching that Service, rules and routes
+that Kubernetes has configured ensure that the traffic is routed to one of the endpoints
+for that Service.",169,542,False,external; ips; services,6.85872
+k8s-005,E2,C1,1,net-002-sec-049-ch-001,net-002-sec-049,Service > External IPs,https://kubernetes.io/docs/concepts/services-networking/service/,"When you define a Service, you can specify `externalIPs` for any
+[service type](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types).
+In the example below, the Service named `""my-service""` can be accessed by clients using TCP,
+on `""198.51.100.32:80""` (calculated from `.spec.externalIPs[]` and `.spec.ports[].port`).",544,907,False,external; ips; services,6.85872
+k8s-005,E3,C2,2,net-002-sec-009-ch-001,net-002-sec-009,Service > Defining a Service > Services without selectors > Note:,https://kubernetes.io/docs/concepts/services-networking/service/,"The endpoint IP addresses cannot be the cluster IPs of other Kubernetes Services,
+because [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) doesn't support virtual IPs
+as a destination.",174,401,False,ips; services,4.43654
+k8s-005,E4,C4,4,net-002-sec-018-ch-001,net-002-sec-018,Service > Service type,https://kubernetes.io/docs/concepts/services-networking/service/,"**[`LoadBalancer`](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer)**
+: Exposes the Service externally using an external load balancer.",1134,1299,True,external; services,4.22739
+k8s-005,E5,C2,2,net-002-sec-009-ch-001,net-002-sec-009,Service > Defining a Service > Services without selectors > Note:,https://kubernetes.io/docs/concepts/services-networking/service/,"The endpoint IPs *must not* be: loopback (127.0.0.0/8 for IPv4, ::1/128 for IPv6), or
+link-local (169.254.0.0/16 and 224.0.0.0/24 for IPv4, fe80::/64 for IPv6).",12,172,False,ips,2.57634
+k8s-005,E6,C4,4,net-002-sec-018-ch-001,net-002-sec-018,Service > Service type,https://kubernetes.io/docs/concepts/services-networking/service/,"For some parts of your application (for example, frontends) you may want to expose a
+Service onto an external IP address, one that's accessible from outside of your
+cluster.",17,190,True,external,2.36719
+k8s-007,E1,C1,1,arch-007-sec-001-ch-001,arch-007-sec-001,Cloud Controller Manager,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The cloud-controller-manager is a Kubernetes [control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane) component
+that embeds cloud-specific control logic. The cloud controller manager lets you link your
+cluster into your cloud provider's API, and separates out the components that interact
+with that cloud platform from components that only interact with your cluster.",228,630,False,cloud; controller; manager,4.13493
+k8s-007,E2,C1,1,arch-007-sec-001-ch-001,arch-007-sec-001,Cloud Controller Manager,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"By decoupling the interoperability logic between Kubernetes and the underlying cloud
+infrastructure, the cloud-controller-manager component enables cloud providers to release
+features at a different pace compared to the main Kubernetes project.",632,876,False,cloud; controller; manager,4.13493
+k8s-007,E3,C2,2,arch-007-sec-013-ch-001,arch-007-sec-013,Cloud Controller Manager > What's next,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"'- [Cloud Controller Manager Administration](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/#cloud-controller-manager) has instructions on running and managing the cloud controller manager.
+- To upgrade a HA control plane to use the cloud controller manager, see [Migrate Replicated Control Plane To Use Cloud Controller Manager](https://kubernetes.io/docs/tasks/administer-cluster/controller-manager-leader-migration/).",16,465,True,cloud; controller; manager,4.02493
+k8s-007,E4,C2,2,arch-007-sec-013-ch-001,arch-007-sec-013,Cloud Controller Manager > What's next,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"'- Want to know how to implement your own cloud controller manager, or extend an existing project?
+- The cloud controller manager uses Go interfaces, specifically, CloudProvider interface defined in `cloud.go` from kubernetes/cloud-provider to allow implementations from any cloud to be plugged in.
+  - The implementation of the shared controllers highlighted in this document (Node, Route, and Service), and some scaffolding along with the shared",466,912,True,cloud; controller; manager,4.02493
+k8s-007,E5,C3,3,arch-007-sec-002-ch-001,arch-007-sec-002,Cloud Controller Manager > Design,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The cloud controller manager runs in the control plane as a replicated set of processes
+(usually, these are containers in Pods). Each cloud-controller-manager implements
+multiple [controllers](https://kubernetes.io/docs/concepts/architecture/controller/) in a single
+process.",43,318,False,cloud; controller; manager,3.98826
+k8s-007,E6,C4,4,arch-007-sec-006-ch-001,arch-007-sec-006,Cloud Controller Manager > Cloud controller manager functions > Route controller,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The route controller is responsible for configuring routes in the cloud
+appropriately so that containers on different nodes in your Kubernetes
+cluster can communicate with each other.",22,205,False,cloud; controller,2.48442
+k8s-008,E1,C2,2,conf-004-sec-004-ch-001,conf-004-sec-004,Resource Management for Pods and Containers > Resource types,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"| Resource type | Description | Base unit |
+| --- | --- | --- |
+| `cpu` | Compute processing | cpu (core) |
+| `memory` | RAM | Bytes |
+| `ephemeral-storage` | [Local ephemeral storage](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/) | Bytes |
+| `hugepages-<size>` | [Huge pages](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#huge-pages) (Linux only) | Bytes |",148,556,False,compute; cpu; memory; resource; resources,9.19953
+k8s-008,E2,C1,1,conf-004-sec-006-ch-001,conf-004-sec-006,Resource Management for Pods and Containers > Resource types > Huge pages > Note:,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"CPU and memory are collectively referred to as *compute resources*, or *resources*.",12,95,False,compute; cpu; memory; resources,8.14999
+k8s-008,E3,C1,1,conf-004-sec-006-ch-001,conf-004-sec-006,Resource Management for Pods and Containers > Resource types > Huge pages > Note:,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"API resources, such as Pods and
+[Services](https://kubernetes.io/docs/concepts/services-networking/service/) are objects that can be read and modified
+through the Kubernetes API server.",290,475,False,api; resources; services,7.95897
+k8s-008,E4,C3,3,conf-004-sec-015-ch-001,conf-004-sec-015,Resource Management for Pods and Containers > How Pods with resource requests are scheduled,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"Each node has a maximum capacity for each of the resource types: the
+amount of CPU and memory it can provide for Pods.",136,254,False,cpu; memory; resource; types,7.82101
+k8s-008,E5,C4,4,conf-004-sec-008-ch-001,conf-004-sec-008,Resource Management for Pods and Containers > Pod-level resource specification,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"At the Pod level, Kubernetes 1.37
+only supports resource requests or limits for specific resource types: `cpu` and /
+or `memory` and / or `hugepages`.",256,406,False,cpu; memory; resource; types,7.80267
+k8s-008,E6,C4,4,conf-004-sec-008-ch-001,conf-004-sec-008,Resource Management for Pods and Containers > Pod-level resource specification,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"'- spec.resources.limits.cpu
+- spec.resources.limits.memory
+- spec.resources.limits.hugepages-<size>
+- spec.resources.requests.cpu
+- spec.resources.requests.memory
+- spec.resources.requests.hugepages-<size>",874,1079,False,cpu; memory; resources,5.42685
+k8s-009,E1,C1,1,sched-003-sec-022-ch-001,sched-003-sec-022,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Note:,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"The keys are used to look up values from the Pod labels; those key-value labels are combined
+(using `AND`) with the match restrictions defined using the `labelSelector` field. The combined
+filtering selects the set of existing Pods that will be taken into Pod (anti)affinity calculation.",528,815,False,affinity; existing; label; match; selector; value,9.70148
+k8s-009,E2,C3,3,sched-003-sec-023-ch-001,sched-003-sec-023,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Caution:,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"A common use case is to use `matchLabelKeys` with `pod-template-hash` (set on Pods
+managed as part of a Deployment, where the value is unique for each revision).
+Using `pod-template-hash` in `matchLabelKeys` allows you to target the Pods that belong
+to the same revision as the incoming Pod, so that a rolling upgrade won't break affinity.",15,354,False,affinity; incoming; label; match; value,6.88084
+k8s-009,E3,C2,2,sched-003-sec-020-ch-001,sched-003-sec-020,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Namespace Selector,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"You can also select matching namespaces using `namespaceSelector`, which is a label query over the set of namespaces.
+The affinity term is applied to namespaces selected by both `namespaceSelector` and the `namespaces` field.
+Note that an empty `namespaceSelector` ({}) matches all namespaces, while a null or empty `namespaces` list and
+null `namespaceSelector` matches the namespace of the Pod where the rule is defined.",25,447,False,affinity; applied; label; selector,6.47712
+k8s-009,E4,C1,1,sched-003-sec-022-ch-001,sched-003-sec-022,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Note:,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"The `matchLabelKeys` field is a beta-level field and is enabled by default in
+Kubernetes 1.37.
+When you want to disable it, you have to disable it explicitly via the
+`MatchLabelKeysInPodAffinity` [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/).",12,305,False,affinity; label; match; want,5.33436
+k8s-009,E5,C4,4,sched-003-sec-025-ch-001,sched-003-sec-025,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Note:,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"The `mismatchLabelKeys` field is a beta-level field and is enabled by default in
+Kubernetes 1.37.
+When you want to disable it, you have to disable it explicitly via the
+`MatchLabelKeysInPodAffinity` [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/).",12,308,False,affinity; label; match; want,5.16936
+k8s-009,E6,C4,4,sched-003-sec-025-ch-001,sched-003-sec-025,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Note:,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"Kubernetes includes an optional `mismatchLabelKeys` field for Pod affinity
+or anti-affinity. The field specifies keys for the labels that should not match with the incoming Pod's labels,
+when satisfying the Pod (anti)affinity.",310,536,False,affinity; incoming; label; match,4.88168
+k8s-010,E1,C3,3,sec-002-sec-014-ch-001,sec-002-sec-014,Pod Security Standards > User namespaces,https://kubernetes.io/docs/concepts/security/pod-security-standards/,"User Namespaces are a Linux-only feature to run workloads with increased
+isolation. How they work together with Pod Security Standards is described in
+the [documentation](https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/#integration-with-pod-security-admission-checks) for Pods that use user namespaces.",20,341,False,admission; checks; security; workloads,9.45554
+k8s-010,E2,C2,2,sec-006-sec-009-ch-001,sec-006-sec-009,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Workload creation,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Permission to create workloads (either Pods, or
+[workload resources](https://kubernetes.io/docs/concepts/workloads/controllers/) that manage Pods) in a namespace
+implicitly grants access to many other resources in that namespace, such as Secrets, ConfigMaps, and
+PersistentVolumes that can be mounted in Pods.",23,332,False,create; namespace; workloads,6.63983
+k8s-010,E3,C2,2,sec-006-sec-009-ch-001,sec-006-sec-009,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Workload creation,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Additionally, since Pods can run as any
+[ServiceAccount](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/), granting permission
+to create workloads also implicitly grants the API access levels of any service account in that
+namespace.",333,598,False,create; namespace; workloads,6.63983
+k8s-010,E4,C1,1,sec-003-sec-006-ch-001,sec-003-sec-006,Pod Security Admission > Exemptions,https://kubernetes.io/docs/concepts/security/pod-security-admission/,"You can define *exemptions* from pod security enforcement in order to allow the creation of pods that
+would have otherwise been prohibited due to the policy associated with a given namespace.
+Exemptions can be statically configured in the
+[Admission Controller configuration](https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/#configure-the-admission-controller).",15,424,False,admission; namespace; security,5.65121
+k8s-010,E5,C4,4,sec-003-sec-004-ch-001,sec-003-sec-004,Pod Security Admission > Pod Security Admission labels for namespaces,https://kubernetes.io/docs/concepts/security/pod-security-admission/,"Once the feature is enabled or the webhook is installed, you can configure namespaces to define the admission
+control mode you want to use for pod security in each namespace.",49,223,True,admission; namespace; security,5.48621
+k8s-010,E6,C1,1,sec-003-sec-006-ch-001,sec-003-sec-006,Pod Security Admission > Exemptions,https://kubernetes.io/docs/concepts/security/pod-security-admission/,"Exemptions must be explicitly enumerated. Requests meeting exemption criteria are *ignored* by the
+Admission Controller (all `enforce`, `audit` and `warn` behaviors are skipped). Exemption dimensions include:",426,634,False,admission; skipped,5.40152
+k8s-011,E1,C2,2,net-003-sec-015-ch-001,net-003-sec-015,Ingress > Ingress class,https://kubernetes.io/docs/concepts/services-networking/ingress/,"Ingresses can be implemented by different controllers, often with different
+configuration. Each Ingress should specify a class, a reference to an
+IngressClass resource that contains additional configuration including the name
+of the controller that should implement the class.",18,294,False,class; configuration; controller; ingress,6.6805
+k8s-011,E2,C2,2,net-003-sec-015-ch-001,net-003-sec-015,Ingress > Ingress class,https://kubernetes.io/docs/concepts/services-networking/ingress/,"The `.spec.parameters` field of an IngressClass lets you reference another
+resource that provides configuration related to that IngressClass.",536,677,False,class; configuration; ingress,4.6689
+k8s-011,E3,C3,3,net-003-sec-005-ch-001,net-003-sec-005,Ingress > Prerequisites,https://kubernetes.io/docs/concepts/services-networking/ingress/,"You must have an [Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
+to satisfy an Ingress. Only creating an Ingress resource has no effect.",18,205,False,controller; ingress,3.18024
+k8s-011,E4,C1,1,net-003-sec-019-ch-001,net-003-sec-019,Ingress > Ingress class > Default IngressClass > Caution:,https://kubernetes.io/docs/concepts/services-networking/ingress/,"Start by defining a
+default IngressClass. It is recommended though, to specify the default
+IngressClass:",15,119,False,class; ingress,2.7673
+k8s-011,E5,C4,4,net-003-sec-016-ch-002,net-003-sec-016,Ingress > Ingress class > IngressClass scope,https://kubernetes.io/docs/concepts/services-networking/ingress/,The IngressClass API itself is always cluster-scoped.,286,339,False,class; ingress,2.6023
+k8s-011,E6,C4,4,net-003-sec-016-ch-002,net-003-sec-016,Ingress > Ingress class > IngressClass scope,https://kubernetes.io/docs/concepts/services-networking/ingress/,"Here is an example of an IngressClass that refers to parameters that are
+namespaced:",341,425,False,class; ingress,2.6023
+k8s-012,E1,C4,4,stor-003-sec-068-ch-001,stor-003-sec-068,Persistent Volumes > Volume populators and data sources,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"[Volume cloning](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-cloning) and
+[snapshot restore](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-snapshot-and-restore-volume-from-snapshot-support) pre-populate
+a new volume from a built-in *data source*.",39,337,False,data; restore; snapshot; volume,6.85994
+k8s-012,E2,C1,1,stor-008-sec-014-ch-001,stor-008-sec-014,Volume Snapshots > Provisioning Volumes from Snapshots,https://kubernetes.io/docs/concepts/storage/volume-snapshots/,"For more details, see
+[Volume Snapshot and Restore Volume from Snapshot](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-snapshot-and-restore-volume-from-snapshot-support).",185,380,False,restore; snapshot; volume,5.28349
+k8s-012,E3,C1,1,stor-008-sec-014-ch-001,stor-008-sec-014,Volume Snapshots > Provisioning Volumes from Snapshots,https://kubernetes.io/docs/concepts/storage/volume-snapshots/,"You can provision a new volume, pre-populated with data from a snapshot, by using
+the *dataSource* field in the `PersistentVolumeClaim` object.",40,183,False,data; snapshot; volume,4.59034
+k8s-012,E4,C3,3,stor-008-sec-010-ch-001,stor-008-sec-010,Volume Snapshots > VolumeSnapshots,https://kubernetes.io/docs/concepts/storage/volume-snapshots/,"`persistentVolumeClaimName` is the name of the PersistentVolumeClaim data source
+for the snapshot. This field is required for dynamically provisioning a snapshot.",286,448,False,data; snapshot; volume,4.44368
+k8s-012,E5,C2,2,stor-008-sec-002-ch-001,stor-008-sec-002,Volume Snapshots > Introduction,https://kubernetes.io/docs/concepts/storage/volume-snapshots/,"Volume snapshots provide Kubernetes users with a standardized way to copy a volume's
+contents at a particular point in time without creating an entirely new volume. This
+functionality enables, for example, database administrators to backup databases before
+performing edit or delete modifications.",890,1187,True,before; volume,4.31069
+k8s-012,E6,C4,4,stor-003-sec-068-ch-001,stor-003-sec-068,Persistent Volumes > Volume populators and data sources,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"*Volume populators* extend this mechanism so that
+a PersistentVolumeClaim can be pre-populated from other kinds of source (a custom resource),
+referenced through its `dataSourceRef` field:",338,526,False,data; volume,3.15708
+k8s-013,E1,C1,1,work-003-sec-049-ch-001,work-003-sec-049,Pod Lifecycle > What's next,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"'- Get hands-on experience [attaching handlers to container lifecycle events](https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/).
+- Get hands-on experience [configuring Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+- Learn more about [container lifecycle",16,406,True,configuring; experience; hands; lifecycle,9.32002
+k8s-013,E2,C1,1,work-003-sec-049-ch-001,work-003-sec-049,Pod Lifecycle > What's next,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"hooks](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/).
+- Learn more about [sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/).
+- For detailed information about Pod and container status in the API, see the API reference documentation covering [`status`](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodStatus) for Pod.",407,827,True,documentation; lifecycle,4.31186
+k8s-013,E3,C2,2,work-015-sec-025-ch-001,work-015-sec-025,"Liveness, Readiness, and Startup Probes > What's next",https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/,"'- Learn how to Configure Liveness, Readiness and Startup Probes .
+- For the full specification of probe-related fields, see the API reference: Pod , Container , Probe",16,182,False,probe,1.92093
+k8s-013,E4,C3,3,work-015-sec-009-ch-001,work-015-sec-009,"Liveness, Readiness, and Startup Probes > When to use each probe > When should you use a startup probe?",https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/,"If your container usually starts in more than
+\( initialDelaySeconds + failureThreshold \times periodSeconds \), you should specify a
+startup probe that checks the same endpoint as the liveness probe. The default
+for `periodSeconds` is 10s. You should then set its `failureThreshold` high
+enough to allow the container to start, without changing the default values of
+the liveness probe. This helps to protect against deadlocks.",334,762,False,probe,1.88426
+k8s-013,E5,C4,4,work-003-sec-037-ch-001,work-003-sec-037,Pod Lifecycle > Container probes > Readiness probe,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"If the readiness probe returns a failed state, the
+[EndpointSlice](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/)
+controller removes the Pod's IP address from the EndpointSlices of all Services
+that match the Pod.",396,636,False,probe,1.86593
+k8s-013,E6,C4,4,work-003-sec-037-ch-001,work-003-sec-037,Pod Lifecycle > Container probes > Readiness probe,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"Readiness probes determine when a container is ready to accept traffic.
+This is useful when waiting for an application to perform time-consuming initial
+tasks, such as establishing network connections, loading files, and warming
+caches.
+Readiness probes can also be useful later in the container's lifecycle,
+for example, when recovering from temporary faults or overloads.",21,394,False,lifecycle,1.64279
+k8s-014,E1,C3,3,arch-004-sec-008-ch-001,arch-004-sec-008,Controllers > Ways of running controllers,https://kubernetes.io/docs/concepts/architecture/controller/,"Kubernetes comes with a set of built-in controllers that run inside
+the [kube-controller-manager](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/). These
+built-in controllers provide important core behaviors.",32,283,False,built; controller; controllers; manager; provide; run,12.1196
+k8s-014,E2,C3,3,arch-004-sec-008-ch-001,arch-004-sec-008,Controllers > Ways of running controllers,https://kubernetes.io/docs/concepts/architecture/controller/,"The Deployment controller and Job controller are examples of controllers that
+come as part of Kubernetes itself (""built-in"" controllers).
+Kubernetes lets you run a resilient control plane, so that if any of the built-in
+controllers were to fail, another part of the control plane will take over the work.",285,589,False,built; controller; controllers; run,7.73186
+k8s-014,E3,C2,2,arch-007-sec-002-ch-001,arch-007-sec-002,Cloud Controller Manager > Design,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The cloud controller manager runs in the control plane as a replicated set of processes
+(usually, these are containers in Pods). Each cloud-controller-manager implements
+multiple [controllers](https://kubernetes.io/docs/concepts/architecture/controller/) in a single
+process.",43,318,False,cloud; controller; controllers; manager,6.08213
+k8s-014,E4,C4,4,arch-007-sec-013-ch-001,arch-007-sec-013,Cloud Controller Manager > What's next,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"'- Want to know how to implement your own cloud controller manager, or extend an existing project?
+- The cloud controller manager uses Go interfaces, specifically, CloudProvider interface defined in `cloud.go` from kubernetes/cloud-provider to allow implementations from any cloud to be plugged in.
+  - The implementation of the shared controllers highlighted in this document (Node, Route, and Service), and some scaffolding along with the shared",466,912,True,cloud; controller; controllers; manager,6.02713
+k8s-014,E5,C1,1,arch-007-sec-001-ch-001,arch-007-sec-001,Cloud Controller Manager,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The cloud-controller-manager is a Kubernetes [control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane) component
+that embeds cloud-specific control logic. The cloud controller manager lets you link your
+cluster into your cloud provider's API, and separates out the components that interact
+with that cloud platform from components that only interact with your cluster.",228,630,False,cloud; controller; manager,4.34483
+k8s-014,E6,C1,1,arch-007-sec-001-ch-001,arch-007-sec-001,Cloud Controller Manager,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"By decoupling the interoperability logic between Kubernetes and the underlying cloud
+infrastructure, the cloud-controller-manager component enables cloud providers to release
+features at a different pace compared to the main Kubernetes project.",632,876,False,cloud; controller; manager,4.34483
+k8s-015,E1,C1,1,conf-003-sec-015-ch-001,conf-003-sec-015,Secrets > Types of Secret > Basic authentication Secret,https://kubernetes.io/docs/concepts/configuration/secret/,"The `kubernetes.io/basic-auth` type is provided for storing credentials needed
+for basic authentication. When using this Secret type, the `data` field of the
+Secret must contain one of the following two keys:",33,241,False,authentication; basic; keys; secret; type,9.81388
+k8s-015,E2,C2,2,conf-003-sec-017-ch-001,conf-003-sec-017,Secrets > Types of Secret > SSH authentication Secrets,https://kubernetes.io/docs/concepts/configuration/secret/,"The SSH authentication Secret type is provided only for convenience.
+You can create an `Opaque` type for credentials used for SSH authentication.
+However, using the defined and public Secret type (`kubernetes.io/ssh-auth`) helps other
+people to understand the purpose of your Secret, and sets a convention for what key names
+to expect.
+The Kubernetes API verifies that the required keys are set for a Secret of this type.",597,1018,False,authentication; keys; secret; type,7.38212
+k8s-015,E3,C3,3,conf-003-sec-016-ch-001,conf-003-sec-016,Secrets > Types of Secret > Basic authentication Secret > Note:,https://kubernetes.io/docs/concepts/configuration/secret/,"The basic authentication Secret type is provided only for convenience.
+You can create an `Opaque` type for credentials used for basic authentication.
+However, using the defined and public Secret type (`kubernetes.io/basic-auth`) helps other
+people to understand the purpose of your Secret, and sets a convention for what key names
+to expect.",12,353,False,authentication; basic; secret; type,7.34545
+k8s-015,E4,C1,1,conf-003-sec-015-ch-001,conf-003-sec-015,Secrets > Types of Secret > Basic authentication Secret,https://kubernetes.io/docs/concepts/configuration/secret/,"'- username : the user name for authentication
+- password : the password or token for authentication",243,342,False,authentication; password; username,6.66202
+k8s-015,E5,C2,2,conf-003-sec-017-ch-001,conf-003-sec-017,Secrets > Types of Secret > SSH authentication Secrets,https://kubernetes.io/docs/concepts/configuration/secret/,"The builtin type `kubernetes.io/ssh-auth` is provided for storing data used in
+SSH authentication. When using this Secret type, you will have to specify a
+`ssh-privatekey` key-value pair in the `data` (or `stringData`) field
+as the SSH credential to use.",32,286,False,authentication; secret; type,5.06036
+k8s-015,E6,C4,4,sec-005-sec-003-ch-001,sec-005-sec-003,Controlling Access to the Kubernetes API > Authentication,https://kubernetes.io/docs/concepts/security/controlling-access/,"If the request cannot be authenticated, it is rejected with HTTP status code 401.
+Otherwise, the user is authenticated as a specific `username`, and the user name
+is available to subsequent steps to use in their decisions. Some authenticators
+also provide the group memberships of the user, while other authenticators
+do not.",799,1124,False,http; username,4.98619
+k8s-016,E1,C1,1,sched-003-sec-030-ch-001,sched-003-sec-030,Assigning Pods to Nodes > nominatedNodeName,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"`nominatedNodeName` can be used for external components to nominate node for a pending pod.
+This nomination is best effort: it might be ignored if the scheduler determines the pod cannot go to a nominated node.",22,232,False,name; node; nominated; nomination; pending,11.73256
+k8s-016,E2,C2,2,sched-006-sec-016-ch-001,sched-006-sec-016,Pod Priority and Preemption > Preemption > User exposed information,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"When Pod P preempts one or more Pods on Node N, `nominatedNodeName` field of Pod
+P's status is set to the name of Node N. This field helps the scheduler track
+resources reserved for Pod P and also gives users information about preemptions
+in their clusters.",30,287,False,name; node; nominated; preempts,8.90491
+k8s-016,E3,C3,3,sched-006-sec-028-ch-001,sched-006-sec-028,Pod Priority and Preemption > Troubleshooting > Higher priority Pods are preempted before lower priority pods,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"If a node with low priority Pods is not feasible to run the pending Pod, the scheduler
+may choose another node with higher priority Pods (compared to the Pods on the
+other node) for preemption.",271,464,False,node; pending; priority; run,8.86824
+k8s-016,E4,C3,3,sched-006-sec-028-ch-001,sched-006-sec-028,Pod Priority and Preemption > Troubleshooting > Higher priority Pods are preempted before lower priority pods,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"If no node is
+found, the scheduler tries to remove Pods with lower priority from an arbitrary
+node in order to make room for the pending pod.",129,270,False,lower; node; pending; priority,8.58056
+k8s-016,E5,C4,4,sched-006-sec-021-ch-001,sched-006-sec-021,Pod Priority and Preemption > Preemption > Limitations of preemption > Note:,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"If a pending Pod has inter-pod [affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity)
+to one or more of the lower-priority Pods on the Node, the inter-Pod affinity
+rule cannot be satisfied in the absence of those lower-priority Pods.",12,302,False,lower; node; pending; priority,8.56222
+k8s-016,E6,C2,2,sched-006-sec-016-ch-001,sched-006-sec-016,Pod Priority and Preemption > Preemption > User exposed information,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"Also, if
+the scheduler preempts Pods on Node N, but then a higher priority Pod than Pod P
+arrives, the scheduler may give Node N to the new higher priority Pod.",761,921,False,node; preempts; priority,6.59272
+k8s-017,E1,C1,1,sec-006-sec-004-ch-001,sec-006-sec-004,Role Based Access Control Good Practices > General good practice > Minimize distribution of privileged tokens,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Ensure that any DaemonSets you run are necessary and are run with least privilege to limit the blast radius of container escapes.
+- Avoid running powerful pods alongside untrusted or publicly-exposed ones.",458,663,False,blast; powerful; radius; untrusted,12.12655
+k8s-017,E2,C2,2,sec-006-sec-005-ch-001,sec-006-sec-005,Role Based Access Control Good Practices > General good practice > Hardening,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"'- Review bindings for the system:unauthenticated group and remove them where possible, as this gives access to anyone who can contact the API server at a network level.
+- Avoid the default auto-mounting of service account tokens by setting automountServiceAccountToken: false .",321,598,False,account; review; service,7.84897
+k8s-017,E3,C2,2,sec-006-sec-005-ch-001,sec-006-sec-005,Role Based Access Control Good Practices > General good practice > Hardening,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Setting this value for a Pod will overwrite the service account setting, workloads which require service account tokens can still mount them.",659,800,False,account; service; workloads,7.15583
+k8s-017,E4,C4,4,sec-006-sec-009-ch-001,sec-006-sec-009,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Workload creation,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Additionally, since Pods can run as any
+[ServiceAccount](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/), granting permission
+to create workloads also implicitly grants the API access levels of any service account in that
+namespace.",333,598,False,account; service; workloads,7.10083
+k8s-017,E5,C1,1,sec-006-sec-004-ch-001,sec-006-sec-004,Role Based Access Control Good Practices > General good practice > Minimize distribution of privileged tokens,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Ideally, pods shouldn't be assigned service accounts that have been granted powerful permissions
+(for example, any of the rights listed under [privilege escalation risks](https://kubernetes.io/docs/concepts/security/rbac-good-practices/#privilege-escalation-risks)).
+In cases where a workload requires powerful permissions, consider the following practices:",48,405,False,powerful; security; service,6.67804
+k8s-017,E6,C4,4,sec-006-sec-009-ch-001,sec-006-sec-009,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Workload creation,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Users who can run privileged Pods can use that access to gain node access and potentially to
+further elevate their privileges.",600,726,False,privileged,3.30629
+k8s-018,E1,C1,1,net-006-sec-018-ch-001,net-006-sec-018,Network Policies > Targeting multiple namespaces by label,https://kubernetes.io/docs/concepts/services-networking/network-policies/,"In this scenario, your `Egress` NetworkPolicy targets more than one namespace using their
+label names. For this to work, you need to label the target namespaces. For example:",43,217,False,namespace; namespaces; network; policy,6.44562
+k8s-018,E2,C1,1,net-006-sec-018-ch-001,net-006-sec-018,Network Policies > Targeting multiple namespaces by label,https://kubernetes.io/docs/concepts/services-networking/network-policies/,Add the labels under `namespaceSelector` in your NetworkPolicy document. For example:,335,420,False,labels; namespace; network; policy,6.44562
+k8s-018,E3,C4,4,sched-003-sec-020-ch-001,sched-003-sec-020,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Namespace Selector,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"You can also select matching namespaces using `namespaceSelector`, which is a label query over the set of namespaces.
+The affinity term is applied to namespaces selected by both `namespaceSelector` and the `namespaces` field.
+Note that an empty `namespaceSelector` ({}) matches all namespaces, while a null or empty `namespaces` list and
+null `namespaceSelector` matches the namespace of the Pod where the rule is defined.",25,447,False,namespace; namespaces; select,5.68609
+k8s-018,E4,C3,3,sec-006-sec-018-ch-001,sec-006-sec-018,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Namespace modification,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"For clusters where NetworkPolicy is used, users may be set labels that indirectly allow
+access to services that an administrator did not intend to allow.",356,509,False,labels; network; policy,5.1936
+k8s-018,E5,C2,2,net-006-sec-020-ch-001,net-006-sec-020,Network Policies > Targeting a Namespace by its name,https://kubernetes.io/docs/concepts/services-networking/network-policies/,"While NetworkPolicy cannot target a namespace by its name with some object field, you can use the
+standardized label to target a specific namespace.",187,335,False,namespace; network; policy,4.41933
+k8s-018,E6,C3,3,sec-006-sec-018-ch-001,sec-006-sec-018,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Namespace modification,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"For clusters using Dynamic Resource Allocation, labeling a namespace with
+`resource.kubernetes.io/admin-access: ""true""` allows any user who can create ResourceClaims in that namespace
+to request admin access to devices already allocated to any other claim in any namespace.",510,783,False,any; namespace,3.78813
+k8s-019,E1,C1,1,stor-006-sec-012-ch-001,stor-006-sec-012,Storage Classes > Allowed topologies,https://kubernetes.io/docs/concepts/storage/storage-classes/,"When a cluster operator specifies the `WaitForFirstConsumer` volume binding mode, it is no longer necessary
+to restrict provisioning to specific topologies in most situations. However,
+if still required, `allowedTopologies` can be specified.",23,264,False,allowed; consumer; first; topologies; wait,15.4728
+k8s-019,E2,C2,2,stor-006-sec-025-ch-001,stor-006-sec-025,Storage Classes > Parameters > Local,https://kubernetes.io/docs/concepts/storage/storage-classes/,"Local volumes do not support dynamic provisioning in Kubernetes 1.37;
+however a StorageClass should still be created to delay volume binding until a Pod is actually
+scheduled to the appropriate node. This is specified by the `WaitForFirstConsumer` volume
+binding mode.",262,530,False,class; consumer; first; storage; wait,11.26845
+k8s-019,E3,C4,4,stor-003-sec-051-ch-001,stor-003-sec-051,Persistent Volumes > PersistentVolumeClaims > Class > Retroactive default StorageClass assignment,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"This behavior helps administrators change default StorageClass by removing the
+old one first and then creating or setting another one. This brief window while
+there is no default causes PVCs without `storageClassName` created at that time
+to not have any default, but due to the retroactive default StorageClass
+assignment this way of changing defaults is safe.",1011,1372,False,class; first; storage,5.32163
+k8s-019,E4,C3,3,stor-003-sec-049-ch-001,stor-003-sec-049,Persistent Volumes > PersistentVolumeClaims > Class,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"A claim can request a particular class by specifying the name of a
+[StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/)
+using the attribute `storageClassName`.
+Only PVs of the requested class, ones with the same `storageClassName` as the PVC,
+can be bound to the PVC.",11,302,True,class; storage,2.68174
+k8s-019,E5,C3,3,stor-003-sec-049-ch-001,stor-003-sec-049,Persistent Volumes > PersistentVolumeClaims > Class,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"A PVC with its `storageClassName` set
+equal to `""""` is always interpreted to be requesting a PV with no class, so it
+can only be bound to PVs with no class (no annotation or one set equal to `""""`).",352,549,True,class; storage,2.68174
+k8s-019,E6,C4,4,stor-003-sec-051-ch-001,stor-003-sec-051,Persistent Volumes > PersistentVolumeClaims > Class > Retroactive default StorageClass assignment,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"You can create a PersistentVolumeClaim without specifying a `storageClassName`
+for the new PVC, and you can do so even when no default StorageClass exists
+in your cluster. In this case, the new PVC creates as you defined it, and the
+`storageClassName` of that PVC remains unset until default becomes available.",50,360,False,class; storage,2.66341
+k8s-020,E1,C1,1,work-009-sec-032-ch-001,work-009-sec-032,Deployments > Writing a Deployment Spec > Replicas,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,"Should you manually scale a Deployment, example via `kubectl scale deployment deployment --replicas=X`, and then you update that Deployment based on a manifest
+(for example: by running `kubectl apply -f deployment.yaml`),
+then applying that manifest overwrites the manual scaling that you previously did.",114,418,False,deployment; manually; scale,7.76063
+k8s-020,E2,C1,1,work-009-sec-032-ch-001,work-009-sec-032,Deployments > Writing a Deployment Spec > Replicas,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,"If a [HorizontalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/) (or any
+similar API for horizontal scaling) is managing scaling for a Deployment, don't set `.spec.replicas`.",420,645,False,autoscaler; deployment; horizontal,7.76063
+k8s-020,E3,C3,3,work-011-sec-039-ch-001,work-011-sec-039,StatefulSets > PersistentVolumeClaim retention > Replicas,https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/,"Should you manually scale a StatefulSet, via `kubectl scale statefulset statefulset --replicas=X`, and then you update that StatefulSet
+based on a manifest (for example: by running `kubectl apply -f statefulset.yaml`), then applying that manifest overwrites the manual scaling
+that you previously did.",114,415,False,manually; scale,5.00453
+k8s-020,E4,C3,3,work-011-sec-039-ch-001,work-011-sec-039,StatefulSets > PersistentVolumeClaim retention > Replicas,https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/,"If a [HorizontalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/)
+(or any similar API for horizontal scaling) is managing scaling for a
+Statefulset, don't set `.spec.replicas`. Instead, allow the Kubernetes
+[control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane) to manage
+the `.spec.replicas` field automatically.",417,817,False,autoscaler; horizontal,5.00453
+k8s-020,E5,C2,2,work-010-sec-020-ch-001,work-010-sec-020,ReplicaSet > Working with ReplicaSets > ReplicaSet as a Horizontal Pod Autoscaler Target,https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/,"A ReplicaSet can also be a target for
+[Horizontal Pod Autoscalers (HPA)](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). That is,
+a ReplicaSet can be auto-scaled by an HPA. Here is an example HPA targeting
+the ReplicaSet we created in the previous example.",54,339,False,horizontal; replica,4.53037
+k8s-020,E6,C4,4,work-010-sec-016-ch-001,work-010-sec-016,ReplicaSet > Working with ReplicaSets > Scaling a ReplicaSet,https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/,"1. Pending (and unschedulable) pods are scaled down first
+2. If controller.kubernetes.io/pod-deletion-cost annotation is set, then the pod with the lower value will come first.
+3. Pods on nodes with more replicas come before pods on nodes with fewer replicas.
+4. If the pods' creation times differ, the pod that was created more recently comes before the older pod (the creation times are bucketed on an integer log scale).",424,847,False,scale,2.37676
+k8s-021,E1,C1,1,arch-001-sec-004-ch-001,arch-001-sec-004,Kubernetes Components > Core Components > Node Components,https://kubernetes.io/docs/concepts/overview/components/,"**[kube-proxy](https://kubernetes.io/docs/concepts/architecture/#kube-proxy) (optional)**
+: Maintains network rules on nodes to implement [Services](https://kubernetes.io/docs/concepts/services-networking/service/).",250,465,False,implement; network; rules; services,11.73926
+k8s-021,E2,C2,2,net-001-sec-002-ch-001,net-001-sec-002,"Services, Load Balancing, and Networking > The Kubernetes network model",https://kubernetes.io/docs/concepts/services-networking/,"On Windows, this rule does not apply to host-network pods.
+  - Agents on a node (such as system daemons, or kubelet) can communicate with all pods on that node.
+- The [Service](https://kubernetes.io/docs/concepts/services-networking/service/) API lets you provide a stable (long lived) IP address or hostname for a service implemented by one or more backend pods, where the individual pods making up the service can change over time.
+- Kubernetes",845,1291,True,network; node; services,6.27255
+k8s-021,E3,C1,1,arch-001-sec-004-ch-001,arch-001-sec-004,Kubernetes Components > Core Components > Node Components,https://kubernetes.io/docs/concepts/overview/components/,"**[Container runtime](https://kubernetes.io/docs/concepts/architecture/#container-runtime)**
+: Software responsible for running containers.",466,605,False,responsible; running,6.0912
+k8s-021,E4,C3,3,work-012-sec-010-ch-002,work-012-sec-010,DaemonSet > How Daemon Pods are scheduled > Taints and tolerations,https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/,"For example, without that special toleration, you could end up in a deadlock
+situation where the node is not marked as ready because the network plugin is
+not running there, and at the same time the network plugin is not running on
+that node because the node is not yet ready.",871,1147,False,network; node; running,6.05356
+k8s-021,E5,C3,3,work-012-sec-010-ch-002,work-012-sec-010,DaemonSet > How Daemon Pods are scheduled > Taints and tolerations,https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/,"If you use a DaemonSet to provide an important node-level function, such as
+[cluster networking](https://kubernetes.io/docs/concepts/cluster-administration/networking/), it is
+helpful that Kubernetes places DaemonSet Pods on nodes before they are ready.",617,870,False,function; node,5.17134
+k8s-021,E6,C2,2,net-001-sec-002-ch-001,net-001-sec-002,"Services, Load Balancing, and Networking > The Kubernetes network model",https://kubernetes.io/docs/concepts/services-networking/,"Processes running in different containers in the same pod can communicate with each other over localhost .
+- The *pod network* (also called a cluster network) handles communication between pods.",322,516,True,network; running,4.47712
+k8s-023,E1,C2,2,conf-004-sec-019-ch-001,conf-004-sec-019,Resource Management for Pods and Containers > How Kubernetes applies resource requests and limits > Resizing container resources > Note:,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"When the `InPlacePodVerticalScalingSchedulerPreemption` feature gate is enabled,
+deferred in-place resize requests can trigger `kube-scheduler` to preempt
+lower-priority Pods on the assigned node to make room for the resize.
+For more details, see
+[Preemption for in-place Pod resize](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#preemption-for-in-place-pod-resize).",462,863,False,lower; make; node; place; priority; requests; resize; room; scheduler,23.2888
+k8s-023,E2,C1,1,sched-006-sec-023-ch-001,sched-006-sec-023,Pod Priority and Preemption > Preemption > Preemption for in-place Pod resize,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"When the `InPlacePodVerticalScalingSchedulerPreemption` feature gate is enabled,
+preemption also applies when a running Pod's in-place resize request is `Deferred`
+(meaning the requested resize is temporarily not possible, but might become
+feasible later) due to insufficient node capacity.
+For details on resize states, see
+[Pod resize status](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#pod-resize-status).",490,939,True,but; capacity; configure; node; place; resize; running; scheduler,18.26808
+k8s-023,E3,C1,1,sched-006-sec-023-ch-001,sched-006-sec-023,Pod Priority and Preemption > Preemption > Preemption for in-place Pod resize,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"If a higher-priority Pod cannot be resized in-place because its node lacks
+available CPU or memory, `kube-scheduler` attempts to preempt lower-priority Pods
+on that node to free up the required capacity.",941,1144,True,available; capacity; lower; node; place; priority; scheduler,18.1562
+k8s-023,E4,C4,4,sched-006-sec-024-ch-001,sched-006-sec-024,Pod Priority and Preemption > Preemption > Preemption for in-place Pod resize > Disabling preemption for in-place Pod resize at the Node level,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"Cluster operators and controllers can disable scheduler-triggered preemption
+caused by in-place Pod resize requests on specific nodes.
+This is useful for resizable nodes or nodes with custom autoscaling solutions,
+protecting existing workloads from disruption and allowing node-upsizing to
+handle the resource deficit instead.",69,395,False,node; place; requests; resize; scheduler,10.1051
+k8s-023,E5,C4,4,sched-006-sec-024-ch-001,sched-006-sec-024,Pod Priority and Preemption > Preemption > Preemption for in-place Pod resize > Disabling preemption for in-place Pod resize at the Node level,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"This is configured using the `spec.podPreemptionPolicy` field on the `Node` spec.
+If the `disableResizePreemption` list is non-empty, resize-induced preemption
+is disabled on that node, and `kube-scheduler` will skip preemption attempts
+for any deferred resizes running on that node.",397,680,False,node; resize; running; scheduler,8.05528
+k8s-023,E6,C3,3,work-003-sec-032-ch-001,work-003-sec-032,Pod Lifecycle > Resizing Pods > In-place Pod resize,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"You can resize a Pod's container-level CPU and memory resources without recreating the Pod.
+This is also called *in-place Pod vertical scaling*. This allows you to adjust resource
+allocation for running containers while potentially avoiding application disruption.",25,289,True,place; resize; running,5.65095
+k8s-024,E1,C1,1,sec-009-sec-017-ch-001,sec-009-sec-017,Resource Quotas > Quota and Cluster Capacity,https://kubernetes.io/docs/concepts/policy/resource-quotas/,"'- Proportionally divide total cluster resources among several teams.
+- Allow each tenant to grow resource usage as needed, but have a generous limit to prevent accidental resource exhaustion.
+- Detect demand from one namespace, add nodes, and increase quota.",311,569,False,namespace; nodes; quota; resource; total,11.34496
+k8s-024,E2,C3,3,sec-009-sec-004-ch-001,sec-009-sec-004,Resource Quotas > How Kubernetes ResourceQuotas work > Note:,https://kubernetes.io/docs/concepts/policy/resource-quotas/,"If you enforce a resource quota in a namespace for either cpu or memory , you and other clients, must specify either requests or limits for that resource, for every new Pod you submit.",914,1098,True,cpu; namespace; new; quota; resource,11.19829
+k8s-024,E3,C1,1,sec-009-sec-017-ch-001,sec-009-sec-017,Resource Quotas > Quota and Cluster Capacity,https://kubernetes.io/docs/concepts/policy/resource-quotas/,"ResourceQuotas are independent of the cluster capacity. They are
+expressed in absolute units. So, if you add nodes to your cluster, this does *not*
+automatically give each namespace the ability to consume more resources.",31,251,False,automatically; namespace; nodes; resource,9.98205
+k8s-024,E4,C3,3,sec-009-sec-004-ch-001,sec-009-sec-004,Resource Quotas > How Kubernetes ResourceQuotas work > Note:,https://kubernetes.io/docs/concepts/policy/resource-quotas/,"'- For cpu and memory resources, ResourceQuotas enforce that every (new) pod in that namespace sets a limit for that resource.",788,913,True,cpu; namespace; new; resource,9.14224
+k8s-024,E5,C4,4,conf-004-sec-040-ch-003,conf-004-sec-040,Resource Management for Pods and Containers > Troubleshooting > My Pods are pending with event message `FailedScheduling`,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"You can configure [resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
+to limit the total amount of resources that a namespace can consume.
+Kubernetes enforces quotas for objects in particular namespace when there is a
+ResourceQuota in that namespace.
+For example, if you assign specific namespaces to differ [TRUNCATED EXCERPT]",1166,1520,True,namespace; quota; resource; total,8.43076
+k8s-024,E6,C2,2,sec-009-sec-004-ch-002,sec-009-sec-004,Resource Quotas > How Kubernetes ResourceQuotas work > Note:,https://kubernetes.io/docs/concepts/policy/resource-quotas/,"GiB and 10 cores, let B use 10GiB and 4 cores, and hold 2GiB and 2 cores in reserve for future allocation.
+- Limit the ""testing"" namespace to using 1 core and 1GiB RAM. Let the ""production"" namespace use any amount.",0,215,False,namespace; reserve,4.97979
+k8s-026,E1,C2,2,stor-008-sec-006-ch-001,stor-008-sec-006,Volume Snapshots > Lifecycle of a volume snapshot and volume snapshot content > Provisioning Volume Snapshot > Dynamic,https://kubernetes.io/docs/concepts/storage/volume-snapshots/,"Instead of using a pre-existing snapshot, you can request that a snapshot to be dynamically
+taken from a PersistentVolumeClaim. The [VolumeSnapshotClass](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)
+specifies storage provider-specific parameters to use when taking a snapshot.",14,315,False,class; dynamically; persistent; provider; snapshot; specific; volume,16.85686
+k8s-026,E2,C1,1,stor-007-sec-001-ch-001,stor-007-sec-001,Dynamic Volume Provisioning,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,"Without dynamic provisioning, cluster administrators have to manually make
+calls to their cloud or storage provider to create new storage volumes, and
+then create [`PersistentVolume` objects](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+to represent them in Kubernetes.",107,396,False,dynamic; persistent; provider; provisioning; volume,10.08958
+k8s-026,E3,C4,4,stor-007-sec-004-ch-001,stor-007-sec-004,Dynamic Volume Provisioning > Using Dynamic Provisioning,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,"Users now can and should instead use the
+`storageClassName` field of the `PersistentVolumeClaim` object.",291,395,False,class; object; persistent; volume,8.14659
+k8s-026,E4,C4,4,stor-007-sec-004-ch-001,stor-007-sec-004,Dynamic Volume Provisioning > Using Dynamic Provisioning,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,"Users request dynamically provisioned storage by including a storage class in
+their `PersistentVolumeClaim`.",31,139,False,class; dynamically; persistent; volume,7.45345
+k8s-026,E5,C3,3,stor-003-sec-006-ch-001,stor-003-sec-006,Persistent Volumes > Lifecycle of a volume and claim > Provisioning > Dynamic,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"When none of the static PVs the administrator created match a user's PersistentVolumeClaim,
+the cluster may try to dynamically provision a volume specially for the PVC.",14,182,False,dynamically; persistent; volume,5.92524
+k8s-026,E6,C1,1,stor-007-sec-001-ch-001,stor-007-sec-001,Dynamic Volume Provisioning,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,Dynamic volume provisioning allows storage volumes to be created on-demand.,31,106,False,dynamic; provisioning; volume,5.49654
+k8s-027,E1,C1,1,work-013-sec-013-ch-001,work-013-sec-013,Jobs > Integrate with Workload APIs > Gang scheduling,https://kubernetes.io/docs/concepts/workloads/controllers/job/,"The following Job requests gang scheduling for its 8 Pods, co-located within a
+single zone, and disrupted together:",21,136,True,co; disrupted; job; located; scheduling; together; zone,19.69783
+k8s-027,E2,C2,2,work-013-sec-012-ch-001,work-013-sec-012,Jobs > Integrate with Workload APIs > Scheduling configuration,https://kubernetes.io/docs/concepts/workloads/controllers/job/,"See PodGroup scheduling policies .
+- schedulingConstraints : topology co-location constraints for the Job's Pods.
+- disruptionMode : whether the Pods are disrupted individually ( single ) or as a group ( all ).",306,516,False,co; disrupted; group; job; scheduling,11.81121
+k8s-027,E3,C2,2,work-013-sec-012-ch-001,work-013-sec-012,Jobs > Integrate with Workload APIs > Scheduling configuration,https://kubernetes.io/docs/concepts/workloads/controllers/job/,"With gang , all Pods must be schedulable together before any of them are bound.",159,238,False,must; schedulable; together,9.20507
+k8s-027,E4,C3,3,work-001-sec-002-ch-001,work-001-sec-002,Workloads > Workload placement,https://kubernetes.io/docs/concepts/workloads/,"While standard workload resources (like Deployments and Jobs) manage the lifecycle of Pods,
+you may have complex scheduling requirements where groups of Pods must be treated as a single unit.",415,606,False,must; requirements; scheduling,7.86912
+k8s-027,E5,C1,1,work-013-sec-013-ch-001,work-013-sec-013,Jobs > Integrate with Workload APIs > Gang scheduling,https://kubernetes.io/docs/concepts/workloads/controllers/job/,"The controller discovers these objects through spec references
+(`Workload.spec.controllerRef` and `PodGroup.spec.workloadRef`), not by
+name. Objects the controller creates carry an `ownerReferences` entry pointing to
+the Job, so they are garbage [TRUNCATED EXCERPT]",1255,1520,True,group; job,4.2432
+k8s-027,E6,C3,3,work-001-sec-002-ch-001,work-001-sec-002,Workloads > Workload placement,https://kubernetes.io/docs/concepts/workloads/,"The [Workload API](https://kubernetes.io/docs/concepts/workloads/workload-api/) allows you to define `PodGroupTemplates` to group Pods and apply advanced scheduling policies to them,
+such as [gang scheduling](https://kubernetes.io/docs/concepts/scheduling-eviction/gang-scheduling/).",608,891,False,group; scheduling,3.77808
+k8s-028,E1,C1,1,arch-002-sec-006-ch-001,arch-002-sec-006,Nodes > Management > Self-registration of Nodes > Note:,https://kubernetes.io/docs/concepts/architecture/nodes/,"Pods already scheduled on the Node may misbehave or cause issues if the Node
+configuration will be changed on kubelet restart. For example, an already running
+Pod may be tainted against the new labels assigned to the Node, while other
+Pods, that are incompatible with that Pod will be scheduled based on this new
+label. Node re-registration ensures all Pods will be drained and properly
+re-scheduled.",483,883,False,kubelet; label; labels; new; node; re,13.80498
+k8s-028,E2,C1,1,arch-002-sec-006-ch-001,arch-002-sec-006,Nodes > Management > Self-registration of Nodes > Note:,https://kubernetes.io/docs/concepts/architecture/nodes/,"For example, if the kubelet is being restarted with
+a new set of `--node-labels`, but the same Node name is used, the change will
+not take effect, as labels are only set (or modified) upon Node registration with the API server.",254,481,False,kubelet; labels; new; node,8.33094
+k8s-028,E3,C4,4,work-009-sec-012-ch-001,work-009-sec-012,Deployments > Updating a Deployment > Label selector updates,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,"This is a non-overlapping change: the new Deployment will not ""see"" the old Pods (which lack the new label), causing the old ReplicaSet to be orphaned and a brand-new ReplicaSet to be created.
+- Value Updates: Changing the existing value in a selector key (e.g., from v1 to v2 ) results in the same behavior as additions (orphaning and recreation).
+- Removals: Removing an existing key from the Deployment selector does not require any changes in",1053,1499,True,changes; label; new,7.9461
+k8s-028,E4,C3,3,arch-002-sec-007-ch-001,arch-002-sec-007,Nodes > Management > Manual Node administration,https://kubernetes.io/docs/concepts/architecture/nodes/,"Marking a node as unschedulable prevents the scheduler from placing new pods onto
+that Node but does not affect existing Pods on the Node. This is useful as a
+preparatory step before a node reboot or other maintenance.",1028,1246,False,affect; new; node,6.86582
+k8s-028,E5,C2,2,work-012-sec-012-ch-001,work-012-sec-012,DaemonSet > Updating a DaemonSet,https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/,"If node labels are changed, the DaemonSet will promptly add Pods to newly matching nodes and delete
+Pods from newly not-matching nodes.",25,160,False,daemon; labels; node,5.9862
+k8s-028,E6,C2,2,work-012-sec-012-ch-001,work-012-sec-012,DaemonSet > Updating a DaemonSet,https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/,"You can delete a DaemonSet. If you specify `--cascade=orphan` with `kubectl`, then the Pods
+will be left on the nodes. If you subsequently create a new DaemonSet with the same selector,
+the new DaemonSet adopts the existing Pods. If any Pods need replacing the DaemonSet replaces
+them according to its `updateStrategy`.",387,706,False,daemon; new,4.60321
+k8s-029,E1,C2,2,conf-004-sec-020-ch-001,conf-004-sec-020,Resource Management for Pods and Containers > How Kubernetes applies resource requests and limits > Resizing container resources > Resizing by launching replacement Pods,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"The cloud native approach to changing a Pod's resources is to update the Pod template
+in the workload object (such as a Deployment or StatefulSet) and let the workload's
+controller replace Pods with new ones that have the updated resources. This approach
+works with any Kubernetes version and can change any Pod specification.",45,371,False,approach; change; changing; specification; workload,13.49532
+k8s-029,E2,C3,3,conf-004-sec-008-ch-001,conf-004-sec-008,Resource Management for Pods and Containers > Pod-level resource specification,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"At the Pod level, Kubernetes 1.37
+only supports resource requests or limits for specific resource types: `cpu` and /
+or `memory` and / or `hugepages`.",256,406,False,cpu; limits; memory; only; requests,11.09908
+k8s-029,E3,C1,1,work-003-sec-033-ch-001,work-003-sec-033,Pod Lifecycle > Resizing Pods > Resizing by launching replacement Pods,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"The more cloud native approach to changing a Pod's resources is through the
+workload resource that manages it (such as a Deployment or StatefulSet).
+When you update the resource specifications in the Pod template,
+the workload's controller creates new Pods with the updated resources and terminates
+the old Pods according to its update strategy.",44,389,False,approach; changing; workload,8.13612
+k8s-029,E4,C1,1,work-003-sec-033-ch-001,work-003-sec-033,Pod Lifecycle > Resizing Pods > Resizing by launching replacement Pods,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"'- Works with any Kubernetes version.
+- Can change any Pod specification, not just resources.
+- Results in Pod replacement, so you should design your workload to handle planned disruptions . Consider using a PodDisruptionBudget to control availability.
+- Requires that your Pods are managed by a workload resource.",407,720,False,change; specification; workload,8.13612
+k8s-029,E5,C3,3,conf-004-sec-008-ch-001,conf-004-sec-008,Resource Management for Pods and Containers > Pod-level resource specification,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"For a Pod, you can specify resource limits and requests for CPU and memory by including the following:",770,872,False,cpu; limits; memory; requests,7.95902
+k8s-029,E6,C4,4,work-002-sec-022-ch-001,work-002-sec-022,Pods > Resource requests and limits,https://kubernetes.io/docs/concepts/workloads/pods/,"When you specify the resource *request* for containers in a Pod, the
+kube-scheduler uses this information to decide which node to place the Pod on.
+When you specify a resource *limit* for a container, the kubelet enforces
+those limits so that the running container is not allowed to use more of that
+resource than the limit you set.",193,525,False,containers; limits; running,7.30614
+k8s-033,E1,C1,1,stor-002-sec-058-ch-001,stor-002-sec-058,Volumes > Read-only mounts,https://kubernetes.io/docs/concepts/storage/volumes/,"On Linux, read-only mounts are not recursively read-only by default.
+For example, consider a Pod that mounts the hosts `/mnt` as a `hostPath` volume. If
+there is another filesystem mounted read-write on `/mnt/<SUBMOUNT>` (such as tmpfs,
+NFS, or USB storage), the volume mounted into the container(s) will also have a writeable
+`/mnt/<SUBMOUNT>`, even if the mount itself was specified as read-only.",309,707,False,container; filesystem; host; linux; mnt; mount; mounted; mounts; only; read,18.80686
+k8s-033,E2,C3,3,stor-002-sec-059-ch-001,stor-002-sec-059,Volumes > Read-only mounts > Recursive read-only mounts,https://kubernetes.io/docs/concepts/storage/volumes/,"Needs all the following requirements to be satisfied: It will fail if any of these is not true.
+- readOnly is set to true
+  - mountPropagation is unset, or set to None
+  - The host is running with Linux kernel v5.12 or later
+  - The CRI-level container runtime supports recursive read-only mounts
+  - The OCI-level container runtime supports recursive read-only mounts.
+- `IfPossible`: attempts to apply `Enabled`, and falls back to `Disabled` if",787,1233,True,container; host; linux; mount; mounts; only; read; true,12.96301
+k8s-033,E3,C1,1,stor-002-sec-058-ch-001,stor-002-sec-058,Volumes > Read-only mounts,https://kubernetes.io/docs/concepts/storage/volumes/,"A mount can be made read-only by setting the `.spec.containers[*].volumeMounts[*].readOnly`
+field to `true`.
+This does not make the volume itself read-only, but that specific container will
+not be able to write to it.
+Other containers in the Pod may mount the same volume as read-write.",21,307,False,but; container; mount; mounts; only; read; true,11.38576
+k8s-033,E4,C2,2,stor-002-sec-059-ch-002,stor-002-sec-059,Volumes > Read-only mounts > Recursive read-only mounts,https://kubernetes.io/docs/concepts/storage/volumes/,"recursiveReadOnly: Enabled
+        # /mnt-ro/tmpfs is writable
+        - name: mnt
+          mountPath: /mnt-ro
+          readOnly: true
+        # /mnt-rw/tmpfs is writable
+        - name: mnt
+          mountPath: /mnt-rw
+```",0,225,False,mnt; mount; only; read; true; writable,10.8736
+k8s-033,E5,C4,4,stor-002-sec-057-ch-002,stor-002-sec-057,Volumes > Mount propagation > Caution:,https://kubernetes.io/docs/concepts/storage/volumes/,"the [`mount(8)`](https://man7.org/linux/man-pages/man8/mount.8.html) Warning:`Bidirectional` mount propagation can be dangerous. It can damage the host operating system, and therefore, it is allowed only in privileged containers. Familiarity with Linux kernel behavior is strongly recommended. In addition, any volume mounts created by containers in Pods must be destroyed (unmounted) by the containers on termination.",0,418,False,host; linux; mount; mounts; only,7.94395
+k8s-033,E6,C3,3,stor-002-sec-059-ch-001,stor-002-sec-059,Volumes > Read-only mounts > Recursive read-only mounts,https://kubernetes.io/docs/concepts/storage/volumes/,"This is a stable feature in Kubernetes, and has been since version v1.33. It was first available in the v1.30 release. You can no longer disable or opt out of this feature or behavior (it is locked); if you explicitly set a value for the associated feature gate RecursiveReadOnlyMounts, Kubernetes ignores it but does not report any error.",32,371,True,but; mounts; only; read,5.98705
+k8s-039,E1,C1,1,net-007-sec-012-ch-001,net-007-sec-012,DNS for Services and Pods > Pods > Pod's setHostnameAsFQDN field > Note:,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"The Pod will remain in `Pending` status (`ContainerCreating` as seen by `kubectl`) generating
+error events, such as Failed to construct FQDN from Pod hostname and cluster domain,
+FQDN `long-FQDN` is too long (64 characters is the max, 70 characters requested).",223,483,False,64; characters; container; creating; fqdn; hostname; pending,15.34725
+k8s-039,E2,C1,1,net-007-sec-012-ch-001,net-007-sec-012,DNS for Services and Pods > Pods > Pod's setHostnameAsFQDN field > Note:,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"In Linux, the hostname field of the kernel (the `nodename` field of `struct utsname`) is limited to 64 characters.",12,126,False,64; characters; hostname; linux,9.03566
+k8s-039,E3,C2,2,net-007-sec-011-ch-001,net-007-sec-011,DNS for Services and Pods > Pods > Pod's setHostnameAsFQDN field,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"When you set `setHostnameAsFQDN: true` in the Pod spec, the kubelet writes the Pod's FQDN
+into the hostname for that Pod's namespace. In this case, both `hostname` and `hostname --fqdn`
+return the Pod's FQDN.",407,615,False,fqdn; hostname; true,5.97975
+k8s-039,E4,C4,4,net-007-sec-017-ch-001,net-007-sec-017,DNS for Services and Pods > DNS search domain list limits > Note:,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"Some container runtimes of earlier versions may have their own restrictions on
+the number of DNS search domains. Depending on the container runtime
+environment, the pods with a large number of DNS search domains may get stuck in
+the pending state.",12,259,False,container; pending,4.82759
+k8s-039,E5,C2,2,net-007-sec-011-ch-001,net-007-sec-011,DNS for Services and Pods > Pods > Pod's setHostnameAsFQDN field,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"When a Pod is configured to have fully qualified domain name (FQDN), its
+hostname is the short hostname. For example, if you have a Pod with the fully
+qualified domain name `busybox-1.busybox-subdomain.my-namespace.svc.cluster-domain.example`,
+then by default the `hostname` command inside that Pod returns `busybox-1` and the
+`hostname --fqdn` command returns the FQDN.",35,405,False,fqdn; hostname,3.18799
+k8s-039,E6,C3,3,net-007-sec-009-ch-002,net-007-sec-009,DNS for Services and Pods > Pods > Pod's hostname and subdomain fields,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"labels:
+    name: busybox
+spec:
+  hostname: busybox-2
+  subdomain: busybox-subdomain
+  containers:
+  - image: busybox:1.28
+    command:
+      - sleep
+      - ""3600""
+    name: busybox
+```",0,186,False,hostname,1.61233
+k8s-040,E1,C4,4,stor-007-sec-003-ch-001,stor-007-sec-003,Dynamic Volume Provisioning > Enabling Dynamic Provisioning,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,"To enable dynamic provisioning, a cluster administrator needs to pre-create
+one or more StorageClass objects for users.
+StorageClass objects define which provisioner should be used and what parameters
+should be passed to that provisioner when dynamic provisioning is invoked.
+The name of a StorageClass object must be a valid
+[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",34,475,False,must; needs; objects; storage,9.32824
+k8s-040,E2,C3,3,stor-008-sec-006-ch-001,stor-008-sec-006,Volume Snapshots > Lifecycle of a volume snapshot and volume snapshot content > Provisioning Volume Snapshot > Dynamic,https://kubernetes.io/docs/concepts/storage/volume-snapshots/,"Instead of using a pre-existing snapshot, you can request that a snapshot to be dynamically
+taken from a PersistentVolumeClaim. The [VolumeSnapshotClass](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/)
+specifies storage provider-specific parameters to use when taking a snapshot.",14,315,False,dynamically; persistent; snapshot; storage,8.43029
+k8s-040,E3,C1,1,stor-007-sec-004-ch-001,stor-007-sec-004,Dynamic Volume Provisioning > Using Dynamic Provisioning,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,"Users request dynamically provisioned storage by including a storage class in
+their `PersistentVolumeClaim`.",31,139,False,dynamically; persistent; provisioned; storage,8.17149
+k8s-040,E4,C2,2,stor-007-sec-001-ch-001,stor-007-sec-001,Dynamic Volume Provisioning,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,"Without dynamic provisioning, cluster administrators have to manually make
+calls to their cloud or storage provider to create new storage volumes, and
+then create [`PersistentVolume` objects](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+to represent them in Kubernetes.",107,396,False,objects; persistent; storage,5.09983
+k8s-040,E5,C2,2,stor-007-sec-001-ch-001,stor-007-sec-001,Dynamic Volume Provisioning,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,"Instead, it
+automatically provisions storage when users create
+[`PersistentVolumeClaim` objects](https://kubernetes.io/docs/concepts/storage/persistent-volumes/).",503,665,False,objects; persistent; storage,5.09983
+k8s-040,E6,C1,1,stor-007-sec-004-ch-001,stor-007-sec-004,Dynamic Volume Provisioning > Using Dynamic Provisioning,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,"This claim results in an SSD-like Persistent Disk being automatically
+provisioned. When the claim is deleted, the volume is destroyed.",930,1064,False,persistent; provisioned,4.36398
+k8s-054,E1,C2,2,stor-003-sec-059-ch-001,stor-003-sec-059,Persistent Volumes > Raw Block Volume Support > PersistentVolumeClaim requesting a Raw Block Volume,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"### PersistentVolumeClaim requesting a Raw Block Volume
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: block-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Block
+  resources:
+    requests:
+      storage: 10Gi
+```",0,247,False,block; claim; mode; persistent; raw; volume,10.13481
+k8s-054,E2,C1,1,stor-003-sec-029-ch-001,stor-003-sec-029,Persistent Volumes > Persistent Volumes > Volume Mode,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"See [Raw Block Volume Support](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#raw-block-volume-support)
+for an example on how to use a volume with `volumeMode: Block` in a Pod.",873,1066,False,block; mode; persistent; raw; volume,8.06615
+k8s-054,E3,C1,1,stor-003-sec-029-ch-001,stor-003-sec-029,Persistent Volumes > Persistent Volumes > Volume Mode,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,You can set the value of `volumeMode` to `Block` to use a volume as a raw block device.,459,546,False,block; mode; raw; volume,6.44711
+k8s-054,E4,C3,3,stor-002-sec-036-ch-001,stor-002-sec-036,Volumes > Types of volumes > persistentVolumeClaim,https://kubernetes.io/docs/concepts/storage/volumes/,"A `persistentVolumeClaim` volume is used to mount a
+[PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) into a Pod. PersistentVolumeClaims
+are a way for users to ""claim"" durable storage (such as an iSCSI volume)
+without knowing the details of the particular cloud environment.",27,335,False,claim; persistent; volume,5.03808
+k8s-054,E5,C4,4,stor-003-sec-042-ch-001,stor-003-sec-042,Persistent Volumes > PersistentVolumeClaims,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"Each PVC contains a spec and status, which is the specification and status of the claim.
+The name of a PersistentVolumeClaim object must be a valid
+[DNS subdomain name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names).",27,290,False,claim; persistent; volume,5.01975
+k8s-054,E6,C3,3,stor-002-sec-036-ch-001,stor-002-sec-036,Volumes > Types of volumes > persistentVolumeClaim,https://kubernetes.io/docs/concepts/storage/volumes/,"See the information about [PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) for more
+details.",337,465,False,persistent,1.69237
+k8s-060,E1,C1,1,net-002-sec-043-ch-001,net-002-sec-043,Service > Discovering services > Environment variables > Note:,https://kubernetes.io/docs/concepts/services-networking/service/,"When you have a Pod that needs to access a Service, and you are using
+the environment variable method to publish the port and cluster IP to the client
+Pods, you must create the Service *before* the client Pods come into existence.
+Otherwise, those client Pods won't have their environment variables populated.",12,321,False,before; environment; service; variables,9.20224
+k8s-060,E2,C2,2,net-002-sec-042-ch-001,net-002-sec-042,Service > Discovering services > Environment variables,https://kubernetes.io/docs/concepts/services-networking/service/,"When a Pod is run on a Node, the kubelet adds a set of environment variables
+for each active Service. It adds `{SVCNAME}_SERVICE_HOST` and `{SVCNAME}_SERVICE_PORT` variables,
+where the Service name is upper-cased and dashes are converted to underscores.",27,280,False,environment; service; variables,5.89501
+k8s-060,E3,C2,2,net-002-sec-042-ch-001,net-002-sec-042,Service > Discovering services > Environment variables,https://kubernetes.io/docs/concepts/services-networking/service/,"For example, the Service `redis-primary` which exposes TCP port 6379 and has been
+allocated cluster IP address 10.0.0.11, produces the following environment
+variables:",282,449,False,environment; service; variables,5.89501
+k8s-060,E4,C3,3,conf-002-sec-012-ch-001,conf-002-sec-012,ConfigMaps > Using ConfigMaps > Using Configmaps as environment variables,https://kubernetes.io/docs/concepts/configuration/configmap/,"1. For each container in your Pod specification, add an environment variable for each Configmap key that you want to use to the env[].valueFrom.configMapKeyRef field.
+2. Modify your image and/or command line so that the program looks for values in the specified environment variables.",177,461,True,environment; variables,3.57741
+k8s-060,E5,C3,3,conf-002-sec-012-ch-001,conf-002-sec-012,ConfigMaps > Using ConfigMaps > Using Configmaps as environment variables,https://kubernetes.io/docs/concepts/configuration/configmap/,The following Pod consumes the content of the ConfigMap as environment variables:,859,940,True,environment; variables,3.57741
+k8s-060,E6,C4,4,work-002-sec-012-ch-001,work-002-sec-012,Pods > Pod update and replacement,https://kubernetes.io/docs/concepts/workloads/pods/,"Kubernetes doesn't prevent you from managing Pods directly. It is possible to
+update some fields of a running Pod, in place. However, Pod update operations
+like
+[`patch`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#patch-pod-v1-core), and
+[`replace`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#replace-pod-v1-core)
+have some limitations:",241,629,False,running,3.25222
+k8s-066,E1,C3,3,sec-004-sec-003-ch-001,sec-004-sec-003,Service Accounts > What are service accounts? > Default service accounts,https://kubernetes.io/docs/concepts/security/service-accounts/,"The `default`
+service accounts in each namespace get no permissions by default other than the
+[default API discovery permissions](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#default-roles-and-role-bindings)
+that Kubernetes grants to all authenticated principals if role-based access control (RBAC) is enabled.",167,494,False,access; grants; namespace; rbac; role; service,12.59792
+k8s-066,E2,C1,1,sec-004-sec-007-ch-001,sec-004-sec-007,Service Accounts > How to use service accounts > Grant permissions to a ServiceAccount > Cross-namespace access using a ServiceAccount,https://kubernetes.io/docs/concepts/security/service-accounts/,"Then,
+you'd create a RoleBinding object in the `maintenance` namespace to bind the
+Role to the ServiceAccount object.",432,549,False,account; binding; namespace; role; service,9.91467
+k8s-066,E3,C2,2,sec-004-sec-006-ch-001,sec-004-sec-006,Service Accounts > How to use service accounts > Grant permissions to a ServiceAccount,https://kubernetes.io/docs/concepts/security/service-accounts/,"You create a *role*, which grants access, and then *bind* the role to your
+ServiceAccount.",254,344,False,access; account; grants; role; service,9.89998
+k8s-066,E4,C2,2,sec-004-sec-006-ch-001,sec-004-sec-006,Service Accounts > How to use service accounts > Grant permissions to a ServiceAccount,https://kubernetes.io/docs/concepts/security/service-accounts/,"You can use the built-in Kubernetes
+[role-based access control (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
+mechanism to grant the minimum permissions required by each service account.",43,253,False,access; account; rbac; role; service,9.49452
+k8s-066,E5,C3,3,sec-004-sec-003-ch-001,sec-004-sec-003,Service Accounts > What are service accounts? > Default service accounts,https://kubernetes.io/docs/concepts/security/service-accounts/,"When you create a cluster, Kubernetes automatically creates a ServiceAccount
+object named `default` for every namespace in your cluster.",30,166,False,account; automatically; namespace; service,7.46872
+k8s-066,E6,C1,1,sec-004-sec-007-ch-001,sec-004-sec-007,Service Accounts > How to use service accounts > Grant permissions to a ServiceAccount > Cross-namespace access using a ServiceAccount,https://kubernetes.io/docs/concepts/security/service-accounts/,"You can use RBAC to allow service accounts in one namespace to perform actions
+on resources in a different namespace in the cluster.",52,184,False,namespace; rbac; service,5.25895
+k8s-067,E1,C1,1,net-007-sec-005-ch-001,net-007-sec-005,DNS for Services and Pods > Services > A/AAAA records,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"""Normal"" (not headless) Services are assigned DNS A and/or AAAA records,
+depending on the IP family or families of the Service, with a name of the form
+`my-svc.my-namespace.svc.cluster-domain.example`. This resolves to the cluster IP
+of the Service.",20,269,False,aaaa; dns; headless; normal; service,9.00295
+k8s-067,E2,C1,1,net-007-sec-005-ch-001,net-007-sec-005,DNS for Services and Pods > Services > A/AAAA records,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"[Headless Services](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services)
+(without a cluster IP) are also assigned DNS A and/or AAAA records,
+with a name of the form `my-svc.my-namespace.svc.cluster-domain.example`. Unlike normal
+Services, this resolves to the set of IPs of all of the Pods selected by the Service.
+Clients are expected to consume the set or else use standard round-robin
+selection from the set.",271,713,False,aaaa; dns; headless; normal; service,8.70295
+k8s-067,E3,C3,3,net-002-sec-039-ch-001,net-002-sec-039,Service > Headless Services > With selectors,https://kubernetes.io/docs/concepts/services-networking/service/,"For headless Services that define selectors, the endpoints controller creates
+EndpointSlices in the Kubernetes API, and modifies the DNS configuration to return
+A or AAAA records (IPv4 or IPv6 addresses) that point directly to the Pods backing the Service.",20,276,False,aaaa; dns; headless; service,6.24684
+k8s-067,E4,C2,2,net-002-sec-040-ch-001,net-002-sec-040,Service > Headless Services > Without selectors,https://kubernetes.io/docs/concepts/services-networking/service/,"'- DNS CNAME records for `type: ExternalName` Services.
+- DNS A / AAAA records for all IP addresses of the Service's ready endpoints, for all Service types other than ExternalName .
+- For IPv4 endpoints, the DNS system creates A records.
+  - For IPv6 endpoints, the DNS system creates AAAA records.",190,487,False,aaaa; dns; service,5.06036
+k8s-067,E5,C4,4,net-002-sec-038-ch-001,net-002-sec-038,Service > Headless Services,https://kubernetes.io/docs/concepts/services-networking/service/,"Services that are headless don't
+configure routes and packet forwarding using
+[virtual IP addresses and proxies](https://kubernetes.io/docs/reference/networking/virtual-ips/); instead, headless Services report the
+endpoint IP addresses of the individual pods via internal DNS records, served through the cluster's
+[DNS service](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/).",629,1031,False,dns; headless; service,4.1299
+k8s-067,E6,C2,2,net-002-sec-040-ch-001,net-002-sec-040,Service > Headless Services > Without selectors,https://kubernetes.io/docs/concepts/services-networking/service/,"For headless Services that do not define selectors, the control plane does
+not create EndpointSlice objects. However, the DNS system looks for and configures
+either:",23,188,False,dns; headless,2.96175
+k8s-071,E1,C1,1,conf-003-sec-027-ch-001,conf-003-sec-027,Secrets > Working with Secrets > Using a Secret,https://kubernetes.io/docs/concepts/configuration/secret/,"If the Secret cannot be fetched (perhaps because it does not exist, or
+due to a temporary lack of connection to the API server) the kubelet
+periodically retries running that Pod. The kubelet also reports an Event
+for that Pod, including details of the problem fetching the Secret.",640,920,False,because; cannot; details; fetched; retries; secret,17.61754
+k8s-071,E2,C2,2,conf-003-sec-028-ch-001,conf-003-sec-028,Secrets > Working with Secrets > Using a Secret > Optional Secrets,https://kubernetes.io/docs/concepts/configuration/secret/,"By default, Secrets are required. None of a Pod's containers will start until
+all non-optional Secrets are available.",478,595,False,start; will,6.61258
+k8s-071,E3,C3,3,conf-003-sec-002-ch-001,conf-003-sec-002,Secrets > Caution:,https://kubernetes.io/docs/concepts/configuration/secret/,See [Information security for Secrets](https://kubernetes.io/docs/concepts/configuration/secret/#information-security-for-secrets) for more details.,898,1046,False,details; secret,4.4657
+k8s-071,E4,C1,1,conf-003-sec-027-ch-001,conf-003-sec-027,Secrets > Working with Secrets > Using a Secret,https://kubernetes.io/docs/concepts/configuration/secret/,"Secret volume sources are validated to ensure that the specified object
+reference actually points to an object of type Secret. Therefore, a Secret
+needs to be created before any Pods that depend on it.",437,638,False,secret,1.76654
+k8s-071,E5,C2,2,conf-003-sec-028-ch-001,conf-003-sec-028,Secrets > Working with Secrets > Using a Secret > Optional Secrets,https://kubernetes.io/docs/concepts/configuration/secret/,"When you reference a Secret in a Pod, you can mark the Secret as *optional*,
+such as in the following example. If an optional Secret doesn't exist,
+Kubernetes ignores it.",23,193,False,secret,1.65654
+k8s-071,E6,C3,3,conf-003-sec-002-ch-001,conf-003-sec-002,Secrets > Caution:,https://kubernetes.io/docs/concepts/configuration/secret/,"Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store
+(etcd). Anyone with API access can retrieve or modify a Secret, and so can anyone with access to etcd.
+Additionally, anyone who is authorized to create a Pod in a namespace can use that access to read
+any Secret in that namespace; this includes indirect access such as the ability to create a
+Deployment.",15,416,False,secret,1.61988
+k8s-072,E1,C3,3,sched-007-sec-002-ch-001,sched-007-sec-002,Node-pressure Eviction > Self healing behavior,https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/,"The kubelet attempts to [reclaim node-level resources](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#reclaim-node-resources)
+before it terminates end-user pods. For example, it removes unused container
+images when disk resources are starved.",26,301,False,end; eviction; kubelet; level; node; pressure; user,15.09725
+k8s-072,E2,C1,1,sched-007-sec-021-ch-001,sched-007-sec-021,Node-pressure Eviction > Node conditions > Pod selection for kubelet eviction,https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/,"If the kubelet's attempts to reclaim node-level resources don't bring the eviction
+signal below the threshold, the kubelet begins to evict end-user pods.",40,193,False,end; eviction; kubelet; level; node; user,12.797
+k8s-072,E3,C2,2,sched-007-sec-017-ch-001,sched-007-sec-017,Node-pressure Eviction > Node conditions > Reclaiming node level resources,https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/,The kubelet tries to reclaim node-level resources before it evicts end-user pods.,37,118,False,end; kubelet; level; node; user,10.46322
+k8s-072,E4,C2,2,sched-007-sec-017-ch-001,sched-007-sec-017,Node-pressure Eviction > Node conditions > Reclaiming node level resources,https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/,"When a `DiskPressure` node condition is reported, the kubelet reclaims node-level
+resources based on the filesystems on the node.",120,249,False,kubelet; level; node; pressure,8.0163
+k8s-072,E5,C1,1,sched-007-sec-021-ch-001,sched-007-sec-021,Node-pressure Eviction > Node conditions > Pod selection for kubelet eviction,https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/,The kubelet uses the following parameters to determine the pod eviction order:,195,273,False,eviction; kubelet; order,6.42132
+k8s-072,E6,C4,4,sched-007-sec-022-ch-001,sched-007-sec-022,Node-pressure Eviction > Node conditions > Pod selection for kubelet eviction > Note:,https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/,"When the kubelet evicts pods in response to inode or process ID starvation, it uses
+the Pods' relative priority to determine the eviction order, because inodes and PIDs have no
+requests.",951,1137,False,eviction; kubelet; order,6.25632
+k8s-073,E1,C3,3,arch-003-sec-004-ch-001,arch-003-sec-004,Communication between Nodes and the Control Plane > Control plane to node > API server to kubelet,https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/,"These connections terminate at the kubelet's HTTPS endpoint. By default, the API server does not
+verify the kubelet's serving certificate, which makes the connection subject to man-in-the-middle
+attacks and **unsafe** to run over untrusted and/or public networks.",233,496,False,api; certificate; connection; server,7.78706
+k8s-073,E2,C3,3,arch-003-sec-004-ch-001,arch-003-sec-004,Communication between Nodes and the Control Plane > Control plane to node > API server to kubelet,https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/,"To verify this connection, use the `--kubelet-certificate-authority` flag to provide the API
+server with a root certificate bundle to use to verify the kubelet's serving certificate.",498,680,False,api; certificate; connection; server,7.78706
+k8s-073,E3,C2,2,sec-006-sec-015-ch-001,sec-006-sec-015,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > CSRs and certificate issuing,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"The CSR API allows for users with `create` rights to CSRs and `update` rights on `certificatesigningrequests/approval`
+where the signer is `kubernetes.io/kube-apiserver-client` to create new client certificates
+which allow users to authenticate to the cluster. Those client certificates can have arbitrary
+names including duplicates of Kubernetes system components. This will effectively allow for privilege escalation.",34,453,False,api; client; csr,7.39909
+k8s-073,E4,C1,1,sec-005-sec-002-ch-001,sec-005-sec-002,Controlling Access to the Kubernetes API > Transport security,https://kubernetes.io/docs/concepts/security/controlling-access/,"The API server presents a certificate. This certificate may be signed using
+a private certificate authority (CA), or based on a public key infrastructure linked
+to a generally recognized CA. The certificate and corresponding private key can be set
+by using the `--tls-cert-file` and `--tls-private-key-file` flags.",330,644,False,api; certificate; server; tls,7.12279
+k8s-073,E5,C1,1,sec-005-sec-002-ch-001,sec-005-sec-002,Controlling Access to the Kubernetes API > Transport security,https://kubernetes.io/docs/concepts/security/controlling-access/,"If your cluster uses a private certificate authority, you need a copy of that CA
+certificate configured into your `~/.kube/config` on the client, so that you can
+trust the connection and be confident it was not intercepted.",646,869,False,certificate; client; connection,7.03909
+k8s-073,E6,C4,4,conf-003-sec-019-ch-001,conf-003-sec-019,Secrets > Types of Secret > TLS Secrets,https://kubernetes.io/docs/concepts/configuration/secret/,"When using this type of Secret, the `tls.key` and the `tls.crt` key must be provided
+in the `data` (or `stringData`) field of the Secret configuration, although the API
+server doesn't actually validate the values for each key.",367,593,True,api; server; tls,5.14686
+k8s-076,E1,C2,2,work-013-sec-024-ch-001,work-013-sec-024,Jobs > Handling Pod and container failures > Pod failure policy > Note:,https://kubernetes.io/docs/concepts/workloads/controllers/job/,"'- if you want to use a .spec.podFailurePolicy field for a Job, you must also define that Job's pod template with .spec.restartPolicy set to Never .
+- the Pod failure policy rules you specify under spec.podFailurePolicy.rules are evaluated in order.",67,315,False,failure; job; policy; restart; template,10.30945
+k8s-076,E2,C1,1,work-003-sec-015-ch-001,work-003-sec-015,Pod Lifecycle > How Pods handle problems with containers > Container restarts > Pod-level container restart policy,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"The `spec` of a Pod has a `restartPolicy` field with possible values Always, OnFailure,
+and Never. The default value is Always.",41,168,False,failure; policy; restart; value,9.21466
+k8s-076,E3,C3,3,work-013-sec-022-ch-001,work-013-sec-022,Jobs > Handling Pod and container failures > Pod failure policy,https://kubernetes.io/docs/concepts/workloads/controllers/job/,Here is a manifest for a Job that defines a `podFailurePolicy`:,1433,1496,True,failure; job; manifest; policy,8.74954
+k8s-076,E4,C4,4,work-013-sec-018-ch-002,work-013-sec-018,Jobs > Handling Pod and container failures,https://kubernetes.io/docs/concepts/workloads/controllers/job/,"Note that even if you specify `.spec.parallelism = 1` and `.spec.completions = 1` and
+`.spec.template.spec.restartPolicy = ""Never""`, the same program may
+sometimes be started twice.",82,263,False,policy; restart; template,6.76872
+k8s-076,E5,C2,2,work-013-sec-024-ch-001,work-013-sec-024,Jobs > Handling Pod and container failures > Pod failure policy > Note:,https://kubernetes.io/docs/concepts/workloads/controllers/job/,"When specified, it should match one the container or initContainer names in the Pod template.
+- you may specify the action taken when a Pod failure policy is matched by spec.podFailurePolicy.rules[*].action .",650,858,False,failure; policy; template,6.19512
+k8s-076,E6,C1,1,work-003-sec-015-ch-001,work-003-sec-015,Pod Lifecycle > How Pods handle problems with containers > Container restarts > Pod-level container restart policy,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"For init containers that exit with an error, the kubelet restarts the init container if
+the Pod level `restartPolicy` is either `OnFailure` or `Always`:",689,841,False,failure; policy; restart,5.61197
+k8s-077,E1,C4,4,arch-007-sec-013-ch-001,arch-007-sec-013,Cloud Controller Manager > What's next,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"Implementations specific to cloud providers are outside the core of Kubernetes and implement the CloudProvider interface.
+  - For more information about developing plugins, see Developing Cloud Controller Manager .",970,1184,False,cloud; controller; information; manager; specific,10.33918
+k8s-077,E2,C1,1,arch-007-sec-005-ch-001,arch-007-sec-005,Cloud Controller Manager > Cloud controller manager functions > Node controller,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The node controller is responsible for updating [Node](https://kubernetes.io/docs/concepts/architecture/nodes/) objects
+when new servers are created in your cloud infrastructure. The node controller obtains information about the
+hosts running inside your tenancy with the cloud provider. The node controller performs the following functions:",21,362,False,cloud; controller; information; node; nodes,9.58789
+k8s-077,E3,C1,1,arch-007-sec-005-ch-001,arch-007-sec-005,Cloud Controller Manager > Cloud controller manager functions > Node controller,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"Annotating and labelling the Node object with cloud-specific information, such as the region the node is deployed into and the resources (CPU, memory, etc) that it has available.
+3.",479,660,False,cloud; information; node; specific,8.50875
+k8s-077,E4,C3,3,arch-002-sec-011-ch-001,arch-002-sec-011,Nodes > Node controller,https://kubernetes.io/docs/concepts/architecture/nodes/,"By default, the node controller checks the state of each node every 5 seconds.
+This period can be configured using the `--node-monitor-period` flag on the
+`kube-controller-manager` component.",1207,1398,False,checks; controller; manager; node,7.83145
+k8s-077,E5,C2,2,arch-007-sec-001-ch-001,arch-007-sec-001,Cloud Controller Manager,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The cloud-controller-manager is a Kubernetes [control plane](https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane) component
+that embeds cloud-specific control logic. The cloud controller manager lets you link your
+cluster into your cloud provider's API, and separates out the components that interact
+with that cloud platform from components that only interact with your cluster.",228,630,False,cloud; controller; manager; specific,7.64498
+k8s-077,E6,C3,3,arch-002-sec-011-ch-001,arch-002-sec-011,Nodes > Node controller,https://kubernetes.io/docs/concepts/architecture/nodes/,"The second is keeping the node controller's internal list of nodes up to date with
+the cloud provider's list of available machines. When running in a cloud
+environment and whenever a node is unhealthy, the node controller asks the cloud
+provider if the VM for that node is still available. If not, the node
+controller deletes the node from its list of nodes.",347,705,False,cloud; controller; node; nodes,6.69202
+k8s-078,E1,C1,1,conf-004-sec-023-ch-001,conf-004-sec-023,Resource Management for Pods and Containers > How Kubernetes applies resource requests and limits > Considerations for memory backed `emptyDir` volumes > Note:,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"When the `InPlacePodVerticalScalingMemoryBackedVolumes` feature gate is enabled, you can dynamically adjust the `sizeLimit` of a memory-backed (`medium: Memory`) `emptyDir` volume on a running Pod without requiring Pod recreation or container restarts.",462,714,False,backed; container; dir; empty; feature; gate; limit; memory; running; size,24.47225
+k8s-078,E2,C2,2,stor-002-sec-015-ch-001,stor-002-sec-015,Volumes > Types of volumes > emptyDir > emptyDir and in-place Pod resizing,https://kubernetes.io/docs/concepts/storage/volumes/,"When the `InPlacePodVerticalScalingMemoryBackedVolumes` feature gate is enabled, you can dynamically adjust the `sizeLimit` of memory-backed (`medium: Memory`) `emptyDir` volumes, without restarting the Pod or its containers.",491,716,False,backed; dir; empty; feature; gate; limit; memory; size,19.73894
+k8s-078,E3,C3,3,work-003-sec-032-ch-001,work-003-sec-032,Pod Lifecycle > Resizing Pods > In-place Pod resize,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"'- Only CPU and memory resources can be resized in-place.
+- The Pod's Quality of Service (QoS) class is determined at creation and cannot be changed by resizing.
+- You can configure whether a container restart is required for the resize using resizePolicy  [TRUNCATED EXCERPT]",1245,1520,True,changed; container; cpu; memory; resizing,11.57011
+k8s-078,E4,C1,1,conf-004-sec-023-ch-001,conf-004-sec-023,Resource Management for Pods and Containers > How Kubernetes applies resource requests and limits > Considerations for memory backed `emptyDir` volumes > Note:,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"For step-by-step instructions, see [Resize CPU and Memory Resources assigned to Containers](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#resizing-memory-backed-emptydir-volumes).",715,933,False,backed; container; cpu; memory; resizing,10.46402
+k8s-078,E5,C2,2,stor-002-sec-015-ch-001,stor-002-sec-015,Volumes > Types of volumes > emptyDir > emptyDir and in-place Pod resizing,https://kubernetes.io/docs/concepts/storage/volumes/,"For more details, see [Resize CPU and Memory Resources assigned to Containers](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#resizing-memory-backed-emptydir-volumes).",718,923,False,backed; container; cpu; memory; resizing,10.35402
+k8s-078,E6,C3,3,work-003-sec-032-ch-001,work-003-sec-032,Pod Lifecycle > Resizing Pods > In-place Pod resize,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"You can resize a Pod's container-level CPU and memory resources without recreating the Pod.
+This is also called *in-place Pod vertical scaling*. This allows you to adjust resource
+allocation for running containers while potentially avoiding application disruption.",25,289,True,container; cpu; memory; running,8.44188
+k8s-081,E1,C1,1,net-007-sec-011-ch-001,net-007-sec-011,DNS for Services and Pods > Pods > Pod's setHostnameAsFQDN field,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"When a Pod is configured to have fully qualified domain name (FQDN), its
+hostname is the short hostname. For example, if you have a Pod with the fully
+qualified domain name `busybox-1.busybox-subdomain.my-namespace.svc.cluster-domain.example`,
+then by default the `hostname` command inside that Pod returns `busybox-1` and the
+`hostname --fqdn` command returns the FQDN.",35,405,False,fqdn; hostname; inside; name; returns; short; then,15.95857
+k8s-081,E2,C3,3,net-007-sec-009-ch-001,net-007-sec-009,DNS for Services and Pods > Pods > Pod's hostname and subdomain fields,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"If there exists a headless Service in the same namespace as the Pod, with
+the same name as the subdomain, the cluster's DNS Server also returns A and/or AAAA
+records for the Pod's fully qualified hostname.",938,1143,True,dns; hostname; name; returns,7.66732
+k8s-081,E3,C1,1,net-007-sec-011-ch-001,net-007-sec-011,DNS for Services and Pods > Pods > Pod's setHostnameAsFQDN field,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"When you set `setHostnameAsFQDN: true` in the Pod spec, the kubelet writes the Pod's FQDN
+into the hostname for that Pod's namespace. In this case, both `hostname` and `hostname --fqdn`
+return the Pod's FQDN.",407,615,False,fqdn; hostname; return,5.96669
+k8s-081,E4,C2,2,net-007-sec-012-ch-001,net-007-sec-012,DNS for Services and Pods > Pods > Pod's setHostnameAsFQDN field > Note:,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"The Pod will remain in `Pending` status (`ContainerCreating` as seen by `kubectl`) generating
+error events, such as Failed to construct FQDN from Pod hostname and cluster domain,
+FQDN `long-FQDN` is too long (64 characters is the max, 70 characters requested).",223,483,False,fqdn; hostname; too,5.85669
+k8s-081,E5,C4,4,net-007-sec-009-ch-002,net-007-sec-009,DNS for Services and Pods > Pods > Pod's hostname and subdomain fields,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"Given the above Service `""busybox-subdomain""` and the Pods which set `spec.subdomain`
+to `""busybox-subdomain""`, the first Pod will see its own FQDN as
+`""busybox-1.busybox-subdomain.my-namespace.svc.cluster-domain.example""`. DNS serves
+A and/or AAAA records at that name, pointing to the Pod's IP. Both Pods ""`busybox1`"" and
+""`busybox2`"" will have their own address records.",188,561,False,dns; fqdn; name,5.42699
+k8s-081,E6,C3,3,net-007-sec-009-ch-001,net-007-sec-009,DNS for Services and Pods > Pods > Pod's hostname and subdomain fields,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"The Pod spec also has an optional `subdomain` field which can be used to indicate
+that the pod is part of sub-group of the namespace. For example, a Pod with `spec.hostname`
+set to `""foo""`, and `spec.subdomain` set to `""bar""`, in namespace `""my-namespace""`, will
+have its hostname set to `""foo""` and its fully qualified domain name (FQDN) set to
+`""foo.bar.my-namespace.svc.cluster.local""` (once more, as observed from within
+the Pod).",502,936,True,fqdn; hostname; name,4.43373
+k8s-082,E1,C3,3,stor-003-sec-045-ch-001,stor-003-sec-045,Persistent Volumes > PersistentVolumeClaims > Volume Name,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"Claims can use the `volumeName` field to explicitly bind to a specific PersistentVolume. You can also leave
+`volumeName` unset, indicating that you'd like Kubernetes to set up a new PersistentVolume
+that matches the claim.
+If the specified PV is already bound to another PVC, the binding will be stuck
+in a pending state.",17,338,False,already; another; bound; claim; explicitly; persistent; volume,15.06841
+k8s-082,E2,C2,2,stor-003-sec-007-ch-001,stor-003-sec-007,Persistent Volumes > Lifecycle of a volume and claim > Binding,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"Once bound, PersistentVolumeClaim binds are exclusive,
+regardless of how they were bound.",525,614,False,binds; bound; claim; persistent; volume,9.07527
+k8s-082,E3,C4,4,stor-002-sec-036-ch-001,stor-002-sec-036,Volumes > Types of volumes > persistentVolumeClaim,https://kubernetes.io/docs/concepts/storage/volumes/,"A `persistentVolumeClaim` volume is used to mount a
+[PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) into a Pod. PersistentVolumeClaims
+are a way for users to ""claim"" durable storage (such as an iSCSI volume)
+without knowing the details of the particular cloud environment.",27,335,False,claim; particular; persistent; volume,7.32712
+k8s-082,E4,C2,2,stor-003-sec-007-ch-001,stor-003-sec-007,Persistent Volumes > Lifecycle of a volume and claim > Binding,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"A user creates, or in the case of dynamic provisioning, has already created,
+a PersistentVolumeClaim with a specific amount of storage requested and with
+certain access modes.",13,188,False,already; claim; persistent; volume,6.97666
+k8s-082,E5,C1,1,stor-003-sec-017-ch-001,stor-003-sec-017,Persistent Volumes > Lifecycle of a volume and claim > Reserving a PersistentVolume,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"By specifying a PersistentVolume in a PersistentVolumeClaim, you declare a binding
+between that specific PV and PVC. If the PersistentVolume exists and has not reserved
+PersistentVolumeClaims through its `claimRef` field, then the PersistentVolume and
+PersistentVolumeClaim will be bound.",286,574,True,bound; claim; persistent; volume,6.57583
+k8s-082,E6,C1,1,stor-003-sec-017-ch-001,stor-003-sec-017,Persistent Volumes > Lifecycle of a volume and claim > Reserving a PersistentVolume,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"This method does not guarantee any binding privileges to the PersistentVolume.
+If other PersistentVolumeClaims could use the PV that you specify, you first
+need to reserve that storage volume. Specify the relevant PersistentVolumeClaim
+in the `claimRef` field of the PV so that other PVCs can not bind to it.",1070,1378,True,claim; persistent; volume,4.47722
+k8s-083,E1,C1,1,work-015-sec-021-ch-001,work-015-sec-021,"Liveness, Readiness, and Startup Probes > Probe mechanism details > HTTP probes > Caution:",https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/,"If you probe an endpoint that returns a response body larger than **10KiB**,
+the kubelet will still mark the probe as successful based on the status code,
+but it will close the connection after reaching the 10KiB limit.
+This abrupt closure can cause **connection reset by peer** or **broken pipe errors** to appear in your application's logs,
+which can be difficult to distinguish from legitimate network issues.",219,631,False,application; broken; connection; logs; peer; pipe; probe; reset; successful,22.39368
+k8s-083,E2,C3,3,work-015-sec-004-ch-001,work-015-sec-004,"Liveness, Readiness, and Startup Probes > Types of probe > Liveness probe",https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/,"If a container fails its liveness probe more times than the configured tolerance,
+the kubelet restarts that container.
+Liveness probes do not wait for readiness probes to succeed. If you want to
+wait before executing a liveness probe, you can either define
+`initialDelaySeconds` or use a [startup probe](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/#startup-probe).",292,696,False,liveness; probe; startup,5.54852
+k8s-083,E3,C1,1,work-015-sec-021-ch-001,work-015-sec-021,"Liveness, Readiness, and Startup Probes > Probe mechanism details > HTTP probes > Caution:",https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/,"When processing an `httpGet` probe, the kubelet stops reading the response body after 10KiB.
+The probe's success is determined solely by the response status code, which is found in the response headers.",15,217,False,http; probe,3.68359
+k8s-083,E4,C4,4,work-015-sec-010-ch-001,work-015-sec-010,"Liveness, Readiness, and Startup Probes > When to use each probe > When should you use a liveness probe?",https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/,"A common pattern for liveness probes is to use the same low-cost HTTP endpoint
+as for readiness probes, but with a higher `failureThreshold`. This ensures
+that the pod is observed as not-ready for some period of time before it is hard
+killed.",473,715,False,http; liveness,3.38505
+k8s-083,E5,C2,2,work-015-sec-005-ch-001,work-015-sec-005,"Liveness, Readiness, and Startup Probes > Types of probe > Liveness probe > Caution:",https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/,"Liveness probes can be a powerful way to recover from application failures,
+but they should be used with caution.
+Liveness probes must be configured carefully to ensure that they truly indicate
+unrecoverable application failure, for example a deadlock.",15,267,False,application; liveness,3.21691
+k8s-083,E6,C2,2,work-015-sec-005-ch-001,work-015-sec-005,"Liveness, Readiness, and Startup Probes > Types of probe > Liveness probe > Caution:",https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/,"Incorrect implementation of liveness probes can lead to cascading failures.
+This results in restarting of container under high load; failed client requests
+as your application became less scalable; and increased workload on remaining
+pods due to some failed pods. Understand the difference between liveness and
+readiness probes and when to apply them for your app.",269,633,False,application; liveness,3.21691
+k8s-084,E1,C1,1,arch-007-sec-006-ch-001,arch-007-sec-006,Cloud Controller Manager > Cloud controller manager functions > Route controller,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The route controller is responsible for configuring routes in the cloud
+appropriately so that containers on different nodes in your Kubernetes
+cluster can communicate with each other.",22,205,False,cloud; communicate; controller; different; nodes; routes,13.44348
+k8s-084,E2,C2,2,arch-007-sec-001-ch-001,arch-007-sec-001,Cloud Controller Manager,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"By decoupling the interoperability logic between Kubernetes and the underlying cloud
+infrastructure, the cloud-controller-manager component enables cloud providers to release
+features at a different pace compared to the main Kubernetes project.",632,876,False,cloud; controller; different; manager,6.20358
+k8s-084,E3,C2,2,arch-007-sec-001-ch-001,arch-007-sec-001,Cloud Controller Manager,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The cloud-controller-manager is structured using a plugin
+mechanism that allows different cloud providers to integrate their platforms with Kubernetes.",878,1029,False,cloud; controller; different; manager,6.20358
+k8s-084,E4,C1,1,arch-007-sec-006-ch-001,arch-007-sec-006,Cloud Controller Manager > Cloud controller manager functions > Route controller,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"Depending on the cloud provider, the route controller might also allocate blocks
+of IP addresses for the Pod network.",207,324,False,cloud; controller; network,5.52122
+k8s-084,E5,C3,3,arch-007-sec-002-ch-001,arch-007-sec-002,Cloud Controller Manager > Design,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"The cloud controller manager runs in the control plane as a replicated set of processes
+(usually, these are containers in Pods). Each cloud-controller-manager implements
+multiple [controllers](https://kubernetes.io/docs/concepts/architecture/controller/) in a single
+process.",43,318,False,cloud; controller; manager,3.98826
+k8s-084,E6,C4,4,arch-007-sec-013-ch-001,arch-007-sec-013,Cloud Controller Manager > What's next,https://kubernetes.io/docs/concepts/architecture/cloud-controller/,"'- [Cloud Controller Manager Administration](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/#cloud-controller-manager) has instructions on running and managing the cloud controller manager.
+- To upgrade a HA control plane to use the cloud controller manager, see [Migrate Replicated Control Plane To Use Cloud Controller Manager](https://kubernetes.io/docs/tasks/administer-cluster/controller-manager-leader-migration/).",16,465,True,cloud; controller; manager,3.96993
+k8s-086,E1,C1,1,sched-003-sec-019-ch-001,sched-003-sec-019,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Pod Affinity Example,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"This example defines one Pod affinity rule and one Pod anti-affinity rule. The
+Pod affinity rule uses the ""hard""
+`requiredDuringSchedulingIgnoredDuringExecution`, while the anti-affinity rule
+uses the ""soft"" `preferredDuringSchedulingIgnoredDuringExecution`.",814,1072,True,affinity; during; execution; ignored; preferred; required; rule; scheduling,17.89001
+k8s-086,E2,C1,1,sched-003-sec-019-ch-001,sched-003-sec-019,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Pod Affinity Example,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"The affinity rule specifies that the scheduler is allowed to place the example Pod
+on a node only if that node belongs to a specific [zone](https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/)
+where other Pods have been labeled with `security=S1`.
+For instance, if we have a cluster with a designated zone, let's call it ""Zone V,""
+consisting of nodes labeled with `topology.kubernetes.io/zone= [TRUNCATED EXCERPT]",1074,1520,True,affinity; labeled; rule; s1; scheduling; security; zone,14.96722
+k8s-086,E3,C3,3,sched-003-sec-017-ch-001,sched-003-sec-017,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Scheduling Behavior,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"Hard Constraints (Node Filtering):
+- podAffinity.requiredDuringSchedulingIgnoredDuringExecution and podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution :
+- The scheduler ensures the new Pod is assigned to nodes that satisfy these required affinity and anti-affinity rules based on existing Pods.
+2.",176,485,False,affinity; during; execution; ignored; required; scheduling,12.8502
+k8s-086,E4,C3,3,sched-003-sec-017-ch-001,sched-003-sec-017,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Scheduling Behavior,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"Soft Constraints (Scoring):
+- podAffinity.preferredDuringSchedulingIgnoredDuringExecution and podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution :
+- The scheduler scores nodes based on how well they meet these preferred affinity and anti-affinity rules to optimize Pod placement.
+3.",486,781,False,affinity; during; execution; ignored; preferred; scheduling,12.56251
+k8s-086,E5,C2,2,sched-003-sec-019-ch-002,sched-003-sec-019,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Pod Affinity Example,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"Conversely, the anti-affinity rule does not impact
+scheduling into Zone R if there are no Pods with `security=S2` labels.",864,985,True,affinity; no; rule; scheduling; security; zone,12.23454
+k8s-086,E6,C2,2,sched-003-sec-019-ch-002,sched-003-sec-019,Assigning Pods to Nodes > Affinity and anti-affinity > Inter-pod affinity and anti-affinity > Pod Affinity Example,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"assign the Pod to any node within Zone V, as long as there is at least one Pod within
+Zone V already labeled with `security=S1`. Conversely, if there are no Pods with `security=S1`
+labels in Zone V, the scheduler will not assign the example Pod to any node in that zone.",0,270,True,labeled; no; s1; security; zone,12.15433
+k8s-087,E1,C1,1,sec-004-sec-003-ch-001,sec-004-sec-003,Service Accounts > What are service accounts? > Default service accounts,https://kubernetes.io/docs/concepts/security/service-accounts/,"The `default`
+service accounts in each namespace get no permissions by default other than the
+[default API discovery permissions](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#default-roles-and-role-bindings)
+that Kubernetes grants to all authenticated principals if role-based access control (RBAC) is enabled.",167,494,False,default; namespace; permissions; rbac; service,10.13249
+k8s-087,E2,C1,1,sec-004-sec-003-ch-001,sec-004-sec-003,Service Accounts > What are service accounts? > Default service accounts,https://kubernetes.io/docs/concepts/security/service-accounts/,"When you create a cluster, Kubernetes automatically creates a ServiceAccount
+object named `default` for every namespace in your cluster.",30,166,False,account; create; default; namespace; service,9.26499
+k8s-087,E3,C2,2,sec-004-sec-006-ch-001,sec-004-sec-006,Service Accounts > How to use service accounts > Grant permissions to a ServiceAccount,https://kubernetes.io/docs/concepts/security/service-accounts/,"You can use the built-in Kubernetes
+[role-based access control (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
+mechanism to grant the minimum permissions required by each service account.",43,253,False,account; permissions; rbac; service,6.78308
+k8s-087,E4,C2,2,sec-004-sec-006-ch-001,sec-004-sec-006,Service Accounts > How to use service accounts > Grant permissions to a ServiceAccount,https://kubernetes.io/docs/concepts/security/service-accounts/,"RBAC lets you define a minimum set of permissions so that the
+service account permissions follow the principle of least privilege.",345,475,False,account; permissions; rbac; service,6.78308
+k8s-087,E5,C4,4,sec-004-sec-005-ch-001,sec-004-sec-005,Service Accounts > How to use service accounts,https://kubernetes.io/docs/concepts/security/service-accounts/,"Grant permissions to the ServiceAccount object using an authorization mechanism such as [RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
+3.",209,370,False,account; permissions; rbac; service,6.72808
+k8s-087,E6,C3,3,sec-004-sec-002-ch-001,sec-004-sec-002,Service Accounts > What are service accounts?,https://kubernetes.io/docs/concepts/security/service-accounts/,"Every namespace gets a [`default` ServiceAccount](https://kubernetes.io/docs/concepts/security/service-accounts/#default-service-accounts) upon creation.
+- **Lightweight:** Service accounts exist in the cluster and are defined in the Kubernetes API.",733,982,True,account; default; namespace; service,6.59226
+k8s-088,E1,C1,1,net-005-sec-012-ch-001,net-005-sec-012,EndpointSlices > EndpointSlice API > Duplicate endpoints,https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/,"Due to the nature of EndpointSlice changes, endpoints may be represented in more
+than one EndpointSlice at the same time. This naturally occurs as changes to
+different EndpointSlice objects can arrive at the Kubernetes client watch / cache
+at different times.",25,284,False,endpoint; more; one; same; slice,11.28884
+k8s-088,E2,C3,3,net-005-sec-011-ch-001,net-005-sec-011,EndpointSlices > EndpointSlice API > Distribution of EndpointSlices,https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/,"Each EndpointSlice has a set of ports that applies to all endpoints within the
+resource. When named ports are used for a Service, Pods may end up with
+different target port numbers for the same named port, requiring different
+EndpointSlices.",36,277,True,endpoint; same; service; slice; slices,8.72626
+k8s-088,E3,C3,3,net-005-sec-011-ch-001,net-005-sec-011,EndpointSlices > EndpointSlice API > Distribution of EndpointSlices,https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/,"Importantly, the third step prioritizes limiting EndpointSlice updates over a
+perfectly full distribution of EndpointSlices. As an example, if there are 10
+new endpoints to add and 2 EndpointSlices with room for 5 more endpoints each,
+this approach will create a new EndpointSlice instead of filling up the 2
+existing EndpointSlices. In other words, a single EndpointSlice creation is
+preferable to multiple EndpointSlice updates.",806,1236,True,endpoint; more; slice; slices,6.25036
+k8s-088,E4,C4,4,net-005-sec-002-ch-001,net-005-sec-002,EndpointSlices > EndpointSlice API,https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/,"By default, the control plane creates and manages EndpointSlices to have no
+more than 100 endpoints each. You can configure this with the
+`--max-endpoints-per-slice`
+[kube-controller-manager](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/)
+flag, up to a maximum of 1000.",1139,1453,True,endpoint; more; slice; slices,6.23202
+k8s-088,E5,C2,2,net-002-sec-012-ch-001,net-002-sec-012,Service > Defining a Service > EndpointSlices,https://kubernetes.io/docs/concepts/services-networking/service/,"[EndpointSlices](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/) are objects that
+represent a subset (a *slice*) of the backing network endpoints for a Service.",20,206,False,endpoint; service; slice; slices,5.51702
+k8s-088,E6,C2,2,net-002-sec-012-ch-001,net-002-sec-012,Service > Defining a Service > EndpointSlices,https://kubernetes.io/docs/concepts/services-networking/service/,"See [EndpointSlices](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/) for more
+information about this API.",664,795,False,endpoint; more; slices,4.95055
+k8s-089,E1,C1,1,stor-006-sec-011-ch-001,stor-006-sec-011,Storage Classes > Volume binding mode > Note:,https://kubernetes.io/docs/concepts/storage/storage-classes/,"If you choose to use `WaitForFirstConsumer`, do not use `nodeName` in the Pod spec
+to specify node affinity.
+If `nodeName` is used in this case, the scheduler will be bypassed and PVC will remain in `pending` state.",12,227,False,consumer; first; name; node; pending; pvc; spec; wait,22.92808
+k8s-089,E2,C4,4,stor-005-sec-007-ch-001,stor-005-sec-007,Ephemeral Volumes > Lifecycle and PersistentVolumeClaim,https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/,"That triggers volume binding and/or provisioning, either immediately if
+the [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes) uses immediate volume binding or when the Pod is
+tentatively scheduled onto a node (`WaitForFirstConsumer` volume
+binding mode).",574,854,True,class; consumer; first; node; storage; uses; wait,18.53575
+k8s-089,E3,C2,2,stor-006-sec-004-ch-001,stor-006-sec-004,Storage Classes > Default StorageClass > Note:,https://kubernetes.io/docs/concepts/storage/storage-classes/,"You can create a PersistentVolumeClaim without specifying a `storageClassName`
+for the new PVC, and you can do so even when no default StorageClass exists
+in your cluster. In this case, the new PVC creates as you defined it, and the
+`storageClassName` of that PVC remains unset until a default becomes available.",12,324,False,class; name; pvc; remains; storage,10.27936
+k8s-089,E4,C3,3,stor-003-sec-049-ch-001,stor-003-sec-049,Persistent Volumes > PersistentVolumeClaims > Class,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"A claim can request a particular class by specifying the name of a
+[StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/)
+using the attribute `storageClassName`.
+Only PVs of the requested class, ones with the same `storageClassName` as the PVC,
+can be bound to the PVC.",11,302,True,class; name; pvc; same; storage,9.54954
+k8s-089,E5,C3,3,stor-003-sec-049-ch-001,stor-003-sec-049,Persistent Volumes > PersistentVolumeClaims > Class,https://kubernetes.io/docs/concepts/storage/persistent-volumes/,"A PVC with no `storageClassName` is not quite the same and is treated differently
+by the cluster, depending on whether the
+[`DefaultStorageClass` admission plugin](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#defaultstorageclass)
+is turned on.",550,827,True,class; name; pvc; same; storage,9.54954
+k8s-089,E6,C2,2,stor-006-sec-004-ch-001,stor-006-sec-004,Storage Classes > Default StorageClass > Note:,https://kubernetes.io/docs/concepts/storage/storage-classes/,"If you have an existing PVC where the `storageClassName` is `""""`, and you configure
+a default StorageClass, then this PVC will not get updated.",913,1056,False,class; name; pvc; storage,6.71441
+k8s-090,E1,C2,2,work-009-sec-038-ch-001,work-009-sec-038,Deployments > Writing a Deployment Spec > Strategy > Rolling Update Deployment,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,"The Deployment updates Pods in a rolling update
+fashion (gradually scale down the old ReplicaSets and scale up the new one) when `.spec.strategy.type==RollingUpdate`. You can specify `maxUnavailable` and `maxSurge` to control
+the rolling update process.",32,285,False,deployment; max; replica; rolling; surge; unavailable; update,15.71374
+k8s-090,E2,C1,1,work-009-sec-014-ch-002,work-009-sec-014,Deployments > Rolling Back a Deployment > Note:,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,"mng 0/1 ImagePullBackOff 0 6s` Note:The Deployment controller stops the bad rollout automatically, and stops scaling up the new ReplicaSet.",0,139,True,back; bad; deployment; replica; rollout,11.46889
+k8s-090,E3,C1,1,work-009-sec-014-ch-002,work-009-sec-014,Deployments > Rolling Back a Deployment > Note:,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,"Kubernetes by default sets the value to 25%.
+- Get the description of the Deployment: `kubectl describe deployment` The output is similar to this: `Name: nginx-deployment Namespace: default CreationTimestamp: Tue, 15 Mar 2016 14:48:04 -0700 Labels: app=nginx Selector: app=nginx Replicas: 3 desired | 1 updated | 4 total | 3 available | 1 unavailable StrategyType: RollingUpdate MinReadySeconds: 0 RollingUpdateStrategy: 25% max unavailable, 25% max",242,691,True,deployment; max; rolling; unavailable; update,11.20183
+k8s-090,E4,C4,4,work-009-sec-015-ch-001,work-009-sec-015,Deployments > Rolling Back a Deployment > Checking Rollout History of a Deployment,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,"This flag is deprecated and will be removed in a future release.
+- Annotating the Deployment with kubectl annotate deployment/nginx-deployment kubernetes.io/change-cause=""image updated to 1.16.1""
+  - Manually editing the manifest of the resource.
+  - Using tooling that sets the annotation automatically.
+2.",632,939,False,deployment; manifest; release,7.52929
+k8s-090,E5,C4,4,work-009-sec-015-ch-001,work-009-sec-015,Deployments > Rolling Back a Deployment > Checking Rollout History of a Deployment,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,"First, check the revisions of this Deployment: `kubectl rollout history deployment/nginx-deployment` The output is similar to this: `deployments ""nginx-deployment"" REVISION CHANGE-CAUSE 1 <none> 2 <none> 3 <none>` `CHANGE-CAUSE` is copied from the Deployment annotation `kubernetes.io/change-cause` to its revisions upon creation.",109,439,False,deployment; history; rollout,5.58338
+k8s-090,E6,C3,3,work-009-sec-014-ch-001,work-009-sec-014,Deployments > Rolling Back a Deployment > Note:,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,"'- Suppose that you made a typo while updating the Deployment, by putting the image name as `nginx:1.161` instead of `nginx:1.16.1`: `kubectl set image deployment/nginx-deployment nginx = nginx:1.161` The output is similar to this: `deployment.apps/nginx-deployment image updated`
+- The rollout gets stuck.",12,317,True,deployment; rollout,3.15479
+k8s-091,E1,C1,1,arch-003-sec-008-ch-001,arch-003-sec-008,Communication between Nodes and the Control Plane > Control plane to node > Konnectivity service,https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/,"After enabling the Konnectivity service, all control plane to nodes traffic goes through these
+connections.",422,529,False,after; control; enabling; konnectivity; nodes; plane,14.7167
+k8s-091,E2,C4,4,arch-003-sec-002-ch-001,arch-003-sec-002,Communication between Nodes and the Control Plane > Node to Control Plane,https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/,"None of the other control plane components are designed to expose
+remote services.",150,232,True,components; control; plane; services,10.14918
+k8s-091,E3,C2,2,arch-003-sec-009-ch-001,arch-003-sec-009,Communication between Nodes and the Control Plane > What's next,https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/,"'- Read about the Kubernetes control plane components
+- Learn more about Hubs and Spoke model
+- Learn how to Secure a Cluster
+- Learn more about the Kubernetes API
+- Set up Konnectivity service
+- Use Port Forwarding to Access Applications in a Cluster
+- Learn how to Fetch logs for Pods , use kubectl port-forward",16,328,False,components; control; konnectivity; plane,8.95141
+k8s-091,E4,C1,1,arch-003-sec-008-ch-001,arch-003-sec-008,Communication between Nodes and the Control Plane > Control plane to node > Konnectivity service,https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/,"As a replacement to the SSH tunnels, the Konnectivity service provides TCP level proxy for the
+control plane to cluster communication.",26,160,False,control; konnectivity; plane; ssh,8.77373
+k8s-091,E5,C3,3,arch-003-sec-006-ch-001,arch-003-sec-006,Communication between Nodes and the Control Plane > Control plane to node > SSH tunnels,https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/,Kubernetes supports [SSH tunnels](https://www.ssh.com/academy/ssh/tunneling) to protect the control plane to nodes communication paths.,17,152,False,control; nodes; plane; ssh,8.62706
+k8s-091,E6,C3,3,arch-003-sec-006-ch-001,arch-003-sec-006,Communication between Nodes and the Control Plane > Control plane to node > SSH tunnels,https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/,"In this
+configuration, the API server initiates an SSH tunnel to each node in the cluster (connecting to
+the SSH server listening on port 22) and passes all traffic destined for a kubelet, node, pod, or
+service through the tunnel.",153,383,False,ssh; tunnel,5.4773
+k8s-092,E1,C1,1,conf-004-sec-041-ch-002,conf-004-sec-041,Resource Management for Pods and Containers > Troubleshooting > My container is terminated,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"Your next step might be to check the application code for a memory leak. If you
+find that the application is behaving how you expect, consider setting a higher
+memory limit (and possibly request) for that container.",439,654,False,application; behaving; consider; container,10.98851
+k8s-092,E2,C2,2,conf-004-sec-041-ch-001,conf-004-sec-041,Resource Management for Pods and Containers > Troubleshooting > My container is terminated,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"Your container might get terminated because it is resource-starved. To check
+whether a container is being killed because it is hitting a resource limit, call
+`kubectl describe pod` on the Pod of interest:",32,236,True,container; describe; kubectl; resource,10.47304
+k8s-092,E3,C1,1,conf-004-sec-041-ch-002,conf-004-sec-041,Resource Management for Pods and Containers > Troubleshooting > My container is terminated,https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/,"In the preceding example, the `Restart Count: 5` indicates that the `simmemleak`
+container in the Pod was terminated and restarted five times (so far).
+The `OOMKilled` reason shows that the container tried to use more memory than its limit.",197,437,False,container; oomkilled; reason; restarted,10.29536
+k8s-092,E4,C3,3,work-004-sec-011-ch-001,work-004-sec-011,Init Containers > Detailed behavior > Pod restart reasons,https://kubernetes.io/docs/concepts/workloads/pods/init-containers/,"'- The Pod infrastructure container is restarted. This is uncommon and would have to be done by someone with root access to nodes.
+- All containers in a Pod are terminated while restartPolicy is set to Always, forcing a restart, and the init container completion record has been lost due to garbage collection .",113,423,False,container; has; restarted,6.60316
+k8s-092,E5,C3,3,work-004-sec-011-ch-001,work-004-sec-011,Init Containers > Detailed behavior > Pod restart reasons,https://kubernetes.io/docs/concepts/workloads/pods/init-containers/,"The Pod will not be restarted when the init container image is changed, or the
+init container completion record has been lost due to garbage collection. This
+applies for Kubernetes v1.20 and later. If you are using an earlier version of
+Kubernetes, consult the documentation for the version you are using.",425,730,False,container; has; restarted,6.60316
+k8s-092,E6,C4,4,work-003-sec-012-ch-001,work-003-sec-012,Pod Lifecycle > How Pods handle problems with containers,https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/,"CrashLoopBackOff state : This indicates that the backoff delay mechanism is currently in effect for a given container that is in a crash loop, failing and restarting repeatedly.
+4.",691,871,True,container; repeatedly,4.54337
+k8s-093,E1,C1,1,sched-006-sec-021-ch-001,sched-006-sec-021,Pod Priority and Preemption > Preemption > Limitations of preemption > Note:,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"If a pending Pod has inter-pod [affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity)
+to one or more of the lower-priority Pods on the Node, the inter-Pod affinity
+rule cannot be satisfied in the absence of those lower-priority Pods.",12,302,False,affinity; has; inter; lower; node; pending; priority,15.12078
+k8s-093,E2,C3,3,sched-006-sec-022-ch-001,sched-006-sec-022,Pod Priority and Preemption > Preemption > Limitations of preemption > Cross node preemption,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"'- Pod P is being considered for Node N.
+- Pod Q is running on another Node in the same Zone as Node N.
+- Pod P has Zone-wide anti-affinity with Pod Q ( topologyKey: topology.kubernetes.io/zone ).
+- There are no other cases of anti-affinity between Pod P and other Pods in the Zone.
+- In order to schedule Pod P on Node N, Pod Q can be preempted, but scheduler does not perform cross-node preemption. So, Pod P will be deemed unschedulable on Node N.",220,669,False,affinity; but; has; node; running,12.79179
+k8s-093,E3,C1,1,sched-006-sec-021-ch-001,sched-006-sec-021,Pod Priority and Preemption > Preemption > Limitations of preemption > Note:,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"Our recommended solution for this problem is to create inter-Pod affinity only
+towards equal or higher priority Pods.",526,643,False,affinity; higher; inter; only; priority,11.994
+k8s-093,E4,C4,4,sched-006-sec-028-ch-001,sched-006-sec-028,Pod Priority and Preemption > Troubleshooting > Higher priority Pods are preempted before lower priority pods,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"If no node is
+found, the scheduler tries to remove Pods with lower priority from an arbitrary
+node in order to make room for the pending pod.",129,270,False,lower; make; node; pending; priority,10.28855
+k8s-093,E5,C2,2,sched-006-sec-020-ch-001,sched-006-sec-020,Pod Priority and Preemption > Preemption > Limitations of preemption > Inter-Pod affinity on lower-priority Pods,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"A Node is considered for preemption only when the answer to this question is
+yes: ""If all the Pods with lower priority than the pending Pod are removed from
+the Node, can the pending Pod be scheduled on the Node?""",48,261,False,lower; node; only; pending; priority,9.6504
+k8s-093,E6,C3,3,sched-006-sec-022-ch-001,sched-006-sec-022,Pod Priority and Preemption > Preemption > Limitations of preemption > Cross node preemption,https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/,"Suppose a Node N is being considered for preemption so that a pending Pod P can
+be scheduled on N. P might become feasible on N only if a Pod on another Node is
+preempted. Here's an example:",28,218,False,might; node; only; pending,8.43141
+k8s-094,E1,C1,1,sec-006-sec-010-ch-001,sec-006-sec-010,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Persistent volume creation,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"If someone - or some application - is allowed to create arbitrary PersistentVolumes, that access
+includes the creation of `hostPath` volumes, which then means that a Pod would get access
+to the underlying host filesystem(s) on the associated node. Granting that ability is a security risk.",32,321,False,access; application; arbitrary; create; creation; granting; host; persistent,21.94341
+k8s-094,E2,C2,2,sec-006-sec-009-ch-001,sec-006-sec-009,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Workload creation,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Additionally, since Pods can run as any
+[ServiceAccount](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/), granting permission
+to create workloads also implicitly grants the API access levels of any service account in that
+namespace.",333,598,False,access; create; granting; workloads,9.52652
+k8s-094,E3,C2,2,sec-006-sec-009-ch-001,sec-006-sec-009,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Workload creation,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Permission to create workloads (either Pods, or
+[workload resources](https://kubernetes.io/docs/concepts/workloads/controllers/) that manage Pods) in a namespace
+implicitly grants access to many other resources in that namespace, such as Secrets, ConfigMaps, and
+PersistentVolumes that can be mounted in Pods.",23,332,False,access; create; persistent; workloads,8.83337
+k8s-094,E4,C1,1,sec-006-sec-010-ch-001,sec-006-sec-010,Role Based Access Control Good Practices > Kubernetes RBAC - privilege escalation risks > Persistent volume creation,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,You should only allow access to create PersistentVolume objects for:,540,608,False,access; create; persistent; volume,8.65569
+k8s-094,E5,C4,4,sec-006-sec-020-ch-001,sec-006-sec-020,Role Based Access Control Good Practices > Kubernetes RBAC - denial of service risks > Object creation denial-of-service,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,"Users who have rights to create objects in a cluster may be able to create sufficient large
+objects to create a denial of service condition either based on the size or number of objects, as discussed in
+[etcd used by Kubernetes is vulnerable to OOM attack](https://github.com/kubernetes/kubernetes/issues/107325). This may be
+specifically relevant in multi-tenant clusters if semi-trusted or untrusted users
+are allowed limited access to a system.",39,486,False,able; access; create,6.93107
+k8s-094,E6,C3,3,sec-006-sec-003-ch-001,sec-006-sec-003,Role Based Access Control Good Practices > General good practice > Least privilege,https://kubernetes.io/docs/concepts/security/rbac-good-practices/,'- Assign permissions at the namespace level where possible.,257,316,False,level; permissions,5.85979
+k8s-095,E1,C1,1,net-001-sec-002-ch-001,net-001-sec-002,"Services, Load Balancing, and Networking > The Kubernetes network model",https://kubernetes.io/docs/concepts/services-networking/,"On Windows, this rule does not apply to host-network pods.
+  - Agents on a node (such as system daemons, or kubelet) can communicate with all pods on that node.
+- The [Service](https://kubernetes.io/docs/concepts/services-networking/service/) API lets you provide a stable (long lived) IP address or hostname for a service implemented by one or more backend pods, where the individual pods making up the service can change over time.
+- Kubernetes",845,1291,True,backend; change; ip; network; service,13.72477
+k8s-095,E2,C2,2,net-002-sec-009-ch-001,net-002-sec-009,Service > Defining a Service > Services without selectors > Note:,https://kubernetes.io/docs/concepts/services-networking/service/,"The endpoint IP addresses cannot be the cluster IPs of other Kubernetes Services,
+because [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) doesn't support virtual IPs
+as a destination.",174,401,False,addresses; ip; ips,8.10821
+k8s-095,E3,C1,1,net-001-sec-002-ch-001,net-001-sec-002,"Services, Load Balancing, and Networking > The Kubernetes network model",https://kubernetes.io/docs/concepts/services-networking/,The Kubernetes network model is built out of several pieces:,33,93,True,model; network,5.72656
+k8s-095,E4,C4,4,net-007-sec-001-ch-001,net-007-sec-001,DNS for Services and Pods,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"Kubernetes creates DNS records for Services and Pods. You can contact
+Services with consistent DNS names instead of IP addresses.",29,158,False,addresses; ip,5.15609
+k8s-095,E5,C2,2,net-002-sec-009-ch-001,net-002-sec-009,Service > Defining a Service > Services without selectors > Note:,https://kubernetes.io/docs/concepts/services-networking/service/,"You should
+avoid using the reserved value `""controller""`, which identifies EndpointSlices
+managed by Kubernetes' own control plane.",1114,1245,False,avoid,3.41259
+k8s-095,E6,C4,4,net-007-sec-001-ch-001,net-007-sec-001,DNS for Services and Pods,https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/,"Kubernetes publishes information about Pods and Services which is used
+to program DNS. kubelet configures Pods' DNS so that running containers
+can look up Services by name rather than IP.",160,347,False,ip,2.25897
+k8s-096,E1,C1,1,stor-005-sec-005-ch-001,stor-005-sec-005,Ephemeral Volumes > CSI driver restrictions,https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/,"CSI ephemeral volumes allow users to provide `volumeAttributes`
+directly to the CSI driver as part of the Pod spec. A CSI driver
+allowing `volumeAttributes` that are typically restricted to
+administrators is NOT suitable for use in an inline ephemeral volume.
+For example, parameters that are normally defined in the StorageClass
+should not be exposed to users through the use of inline ephemeral volumes.",29,434,False,attributes; csi; driver; ephemeral; inline; parameters; storage; volume,18.55911
+k8s-096,E2,C4,4,sec-002-sec-007-ch-001,sec-002-sec-007,Pod Security Standards > Profile Details > Restricted > Note:,https://kubernetes.io/docs/concepts/security/pod-security-standards/,"*[This is Linux only policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#os-specific-policy-controls) in v1.25+ `(spec.os.name != windows)`***Restricted Fields**`spec.containers[*].securityContext.allowPrivilegeEscalation``spec.initContainers[*].securityContext.allowPrivilegeEscalation``spec.ephemeralContainers[*].securityContext.allowPrivilegeEscalation`**Allowed Values**`false` |
+| Running as Non-root | Containers must",685,1134,True,controls; ephemeral; only,8.21182
+k8s-096,E3,C1,1,stor-005-sec-005-ch-001,stor-005-sec-005,Ephemeral Volumes > CSI driver restrictions,https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/,"'- Removing Ephemeral from volumeLifecycleModes in the CSIDriver spec, which prevents the driver from being used as an inline ephemeral volume.
+- Using an admission webhook to restrict how this driver is used.",575,783,False,driver; ephemeral; inline; volume,8.19386
+k8s-096,E4,C2,2,stor-005-sec-004-ch-001,stor-005-sec-004,Ephemeral Volumes > CSI ephemeral volumes > Note:,https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/,"The `volumeAttributes` determine what volume is prepared by the
+driver. These attributes are specific to each driver and not
+standardized. See the documentation of each CSI driver for further
+instructions.",1203,1408,False,attributes; csi; driver; volume,7.79618
+k8s-096,E5,C3,3,stor-002-sec-048-ch-001,stor-002-sec-048,Volumes > Out-of-tree volume plugins > csi > Note:,https://kubernetes.io/docs/concepts/storage/volumes/,"The value is passed as volume_id in all calls to the CSI volume driver when referencing the volume.
+- readOnly : An optional boolean value indicating whether the volume is to be ""ControllerPublished"" (attached) as read-only.",1058,1282,True,csi; driver; only; volume,7.24869
+k8s-096,E6,C2,2,stor-005-sec-004-ch-001,stor-005-sec-004,Ephemeral Volumes > CSI ephemeral volumes > Note:,https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/,"Conceptually, CSI ephemeral volumes are similar to `configMap`,
+`downwardAPI` and `secret` volume types: the storage is managed locally on each
+node and is created together with other local resources after a Pod has been
+scheduled onto a node.",12,255,False,csi; ephemeral; storage; volume,7.23657
+k8s-097,E1,C3,3,work-010-sec-012-ch-001,work-010-sec-012,ReplicaSet > Working with ReplicaSets > Deleting a ReplicaSet and its Pods,https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/,"To delete a ReplicaSet and all of its Pods, use
+[`kubectl delete`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#delete). The
+[Garbage collector](https://kubernetes.io/docs/concepts/architecture/garbage-collection/) automatically deletes all of
+the dependent Pods by default.",40,341,False,collection; dependent; garbage; replica,12.60591
+k8s-097,E2,C2,2,work-011-sec-038-ch-001,work-011-sec-038,StatefulSets > PersistentVolumeClaim retention,https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/,"**`whenDeleted`**
+: Configures the volume retention behavior that applies when the StatefulSet is deleted.
+**`whenScaled`**
+: Configures the volume retention behavior that applies when the replica count of
+the StatefulSet is reduced; for example, when scaling down the set.",583,856,True,replica; retention; scaling; stateful,10.65015
+k8s-097,E3,C2,2,work-011-sec-038-ch-001,work-011-sec-038,StatefulSets > PersistentVolumeClaim retention,https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/,"The optional `.spec.persistentVolumeClaimRetentionPolicy` field controls if
+and how PVCs are deleted during the lifecycle of a StatefulSet. You must enable the
+`StatefulSetAutoDeletePVC` [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)
+on the API server and the controller manager to use this field.
+Once enabled, there are two policies you can configure for each StatefulSet:",157,581,True,policy; pvc; retention; stateful,10.46782
+k8s-097,E4,C1,1,work-011-sec-038-ch-002,work-011-sec-038,StatefulSets > PersistentVolumeClaim retention,https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/,"The StatefulSet [controller](https://kubernetes.io/docs/concepts/architecture/controller/) adds
+[owner references](https://kubernetes.io/docs/concepts/overview/working-with-objects/owners-dependents/#owner-references-in-object-specifications)
+to its PVCs, which are then deleted by the [garbage collector](https://kubernetes.io/docs/concepts/architecture/garbage-collection/) after the Pod is terminated.",253,657,True,collection; garbage; stateful,8.39917
+k8s-097,E5,C1,1,work-011-sec-038-ch-002,work-011-sec-038,StatefulSets > PersistentVolumeClaim retention,https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/,"Any StatefulSet Pod
+whose id greater than the replica count is condemned and marked for deletion.",1223,1320,True,replica; stateful; whose,8.29381
+k8s-097,E6,C4,4,work-011-sec-039-ch-001,work-011-sec-039,StatefulSets > PersistentVolumeClaim retention > Replicas,https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/,"Should you manually scale a StatefulSet, via `kubectl scale statefulset statefulset --replicas=X`, and then you update that StatefulSet
+based on a manifest (for example: by running `kubectl apply -f statefulset.yaml`), then applying that manifest overwrites the manual scaling
+that you previously did.",114,415,False,scaling; stateful,4.787
+k8s-098,E1,C4,4,net-002-sec-044-ch-001,net-002-sec-044,Service > Discovering services > DNS,https://kubernetes.io/docs/concepts/services-networking/service/,"A cluster-aware DNS server, such as CoreDNS, watches the Kubernetes API for new
+Services and creates a set of DNS records for each one. If DNS has been enabled
+throughout your cluster then all Pods should automatically be able to resolve
+Services by their DNS name.",181,446,False,aware; core; dns; new,12.3364
+k8s-098,E2,C1,1,arch-001-sec-005-ch-001,arch-001-sec-005,Kubernetes Components > Addons,https://kubernetes.io/docs/concepts/overview/components/,"**[Container Resource Monitoring](https://kubernetes.io/docs/concepts/architecture/#container-resource-monitoring)**
+: For collecting and storing container metrics.",332,496,False,container; metrics; resource,9.57611
+k8s-098,E3,C4,4,net-002-sec-044-ch-001,net-002-sec-044,Service > Discovering services > DNS,https://kubernetes.io/docs/concepts/services-networking/service/,"For example, if you have a Service called `my-service` in a Kubernetes
+namespace `my-ns`, the control plane and the DNS Service acting together
+create a DNS record for `my-service.my-ns`. Pods in the `my-ns` namespace
+should be able to find the service by doing a name lookup for `my-service`
+(`my-service.my-ns` would also work).",448,778,False,control; dns; plane,8.85149
+k8s-098,E4,C2,2,arch-001-sec-003-ch-001,arch-001-sec-003,Kubernetes Components > Core Components > Control Plane Components,https://kubernetes.io/docs/concepts/overview/components/,"**[kube-apiserver](https://kubernetes.io/docs/concepts/architecture/#kube-apiserver)**
+: The core component server that exposes the Kubernetes HTTP API.",72,224,False,component; core,6.67435
+k8s-098,E5,C1,1,arch-001-sec-005-ch-001,arch-001-sec-005,Kubernetes Components > Addons,https://kubernetes.io/docs/concepts/overview/components/,"**[Cluster-level Logging](https://kubernetes.io/docs/concepts/architecture/#cluster-level-logging)**
+: For saving container logs to a central log store.",497,649,False,container; logs,6.0912
+k8s-098,E6,C3,3,net-001-sec-002-ch-002,net-001-sec-002,"Services, Load Balancing, and Networking > The Kubernetes network model",https://kubernetes.io/docs/concepts/services-networking/,"'- Pod network namespace setup is handled by system-level software implementing the [Container Runtime Interface](https://kubernetes.io/docs/concepts/containers/cri/).
+- The pod network itself is managed by a [pod network implementation](https://kubernetes.io/docs/concepts/cluster-administration/addons/#networking-and-network-policy).",1043,1378,True,addons; container,5.25139
+k8s-099,E1,C2,2,stor-002-sec-005-ch-001,stor-002-sec-005,Volumes > Types of volumes > configMap,https://kubernetes.io/docs/concepts/storage/volumes/,"A [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
+provides a way to inject configuration data into Pods.
+The data stored in a ConfigMap can be referenced in a volume of type
+`configMap` and then consumed by containerized applications running in a Pod.",15,313,False,config; configuration; configure; map; tasks; then,12.25322
+k8s-099,E2,C1,1,conf-002-sec-006-ch-001,conf-002-sec-006,ConfigMaps > ConfigMaps and Pods,https://kubernetes.io/docs/concepts/configuration/configmap/,"You can write a Pod `spec` that refers to a ConfigMap and configures the container(s)
+in that Pod based on the data in the ConfigMap. The Pod and the ConfigMap must be in
+the same [namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces).",24,294,False,config; map; namespace,5.25189
+k8s-099,E3,C4,4,conf-002-sec-007-ch-001,conf-002-sec-007,ConfigMaps > ConfigMaps and Pods > Note:,https://kubernetes.io/docs/concepts/configuration/configmap/,"There are four different ways that you can use a ConfigMap to configure
+a container inside a Pod:",575,672,True,config; configure; map,4.68142
+k8s-099,E4,C2,2,stor-002-sec-005-ch-001,stor-002-sec-005,Volumes > Types of volumes > configMap,https://kubernetes.io/docs/concepts/storage/volumes/,"When referencing a ConfigMap, you provide the name of the ConfigMap in the
+volume. You can customize the path to use for a specific
+entry in the ConfigMap. The following configuration shows how to mount
+the `log-config` ConfigMap onto a Pod called `configmap-pod`:",315,579,False,config; configuration; map,4.04328
+k8s-099,E5,C3,3,conf-001-sec-003-ch-001,conf-001-sec-003,Configuration > Kubernetes configuration-related APIs > ConfigMaps,https://kubernetes.io/docs/concepts/configuration/,"A ConfigMap is an API object used to store non-confidential data in key-value pairs.
+[Pods](https://kubernetes.io/docs/concepts/workloads/pods/) can consume ConfigMaps as
+environment variables, command-line arguments, or as configuration files in a
+[volume](https://kubernetes.io/docs/concepts/storage/volumes/).",16,328,False,config; configuration; map,4.00661
+k8s-099,E6,C3,3,conf-001-sec-003-ch-001,conf-001-sec-003,Configuration > Kubernetes configuration-related APIs > ConfigMaps,https://kubernetes.io/docs/concepts/configuration/,"A ConfigMap allows you to decouple environment-specific configuration from your [container images](https://kubernetes.io/docs/reference/glossary/?all=true#term-image), so that your applications are easily portable.",330,544,False,config; configuration; map,4.00661
+k8s-100,E1,C3,3,stor-007-sec-006-ch-001,stor-007-sec-006,Dynamic Volume Provisioning > Topology Awareness,https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/,"In [Multi-Zone](https://kubernetes.io/docs/setup/best-practices/multiple-zones/) clusters, Pods can be spread across
+Zones in a Region. Single-Zone storage backends should be provisioned in the Zones where
+Pods are scheduled. This can be accomplished by setting the
+[Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).",23,393,False,across; region; scheduled; spread; zone; zones,11.91974
+k8s-100,E2,C1,1,sched-003-sec-031-ch-001,sched-003-sec-031,Assigning Pods to Nodes > Pod topology spread constraints,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"You can use *topology spread constraints* to control how [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
+are spread across your cluster among failure-domains such as regions, zones, nodes, or among any other
+topology domains that you define. You might do this to improve performance, expected availability, or
+overall utilization.",36,378,False,across; domains; spread; topology; zones,8.30957
+k8s-100,E3,C2,2,sched-004-sec-001-ch-001,sched-004-sec-001,Pod Topology Spread Constraints,https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/,"You can use *topology spread constraints* to control how
+[Pods](https://kubernetes.io/docs/concepts/workloads/pods/) are spread across your cluster
+among failure-domains such as regions, zones, nodes, and other user-defined topology
+domains. This can help to achieve high availability as well as efficient resource
+utilization.",35,362,False,across; domains; spread; topology; zones,8.19957
+k8s-100,E4,C4,4,sched-004-sec-008-ch-001,sched-004-sec-008,Pod Topology Spread Constraints > Consistency,https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/,"You need a mechanism to ensure that all the nodes in a topology domain (such as a
+cloud provider region) are labeled consistently.
+To avoid you needing to manually label nodes, most clusters automatically
+populate well-known labels such as `kubernetes.io/hostname`. Check whether
+your cluster supports this.",412,719,False,region; topology,3.40493
+k8s-100,E5,C1,1,sched-003-sec-031-ch-001,sched-003-sec-031,Assigning Pods to Nodes > Pod topology spread constraints,https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/,"Read [Pod topology spread constraints](https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/)
+to learn more about how these work.",380,540,False,spread; topology,2.5891
+k8s-100,E6,C2,2,sched-004-sec-001-ch-001,sched-004-sec-001,Pod Topology Spread Constraints,https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/,"You can set [cluster-level constraints](https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#cluster-level-default-constraints) as a default,
+or configure topology spread constraints for individual workloads.",364,604,False,spread; topology,2.4791
