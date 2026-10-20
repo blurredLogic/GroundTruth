@@ -221,3 +221,24 @@ data/ci/
 reports/ci/
 __pycache__/
 .pytest_cache/
+
+# Generated retrieval indexes and caches
+/data/index/
+
+# Downloaded Kubernetes documentation
+/data/raw/documents/
+/data/raw/fetch_metadata.jsonl
+
+# Local Python environments
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+
+# Local publication reports
+/publication_preflight_report.json
